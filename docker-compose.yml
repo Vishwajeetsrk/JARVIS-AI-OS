@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  openhands:
+    image: ghcr.io/all-hands-ai/openhands:latest
+    container_name: ai_os_openhands_sandbox
+    ports:
+      - '3000:3000'
+    environment:
+      - SANDBOX_USER_ID=1000
+      - WORKSPACE_BASE=/app/workspace
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/app/workspace
+    restart: unless-stopped
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: ai_os_n8n_automation
+    ports:
+      - '5678:5678'
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://localhost:5678/
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: ai_os_postgres
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=ai_os_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: ai_os_redis
+    ports:
+      - '6379:6379'
+    restart: unless-stopped
+
+volumes:
+  n8n_data:
+  postgres_data:

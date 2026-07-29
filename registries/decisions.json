@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "decisions": [
+    {
+      "id": "dec-1",
+      "decision": "Use Mastra TS over LangGraph / CrewAI for Phase 1 Orchestrator",
+      "reason": "TypeScript native alignment with Next.js & Supabase stack, Vercel zero-config deployment.",
+      "alternativesConsidered": ["LangGraph (Python/JS split)", "CrewAI (Python-first)"],
+      "tradeOffs": "Mastra TS is newer than LangGraph, but provides zero context switching for Next.js stack.",
+      "risk": "Low",
+      "impact": "High",
+      "reviewDate": "2026-10-28"
+    },
+    {
+      "id": "dec-2",
+      "decision": "Adopt 5 Enterprise Governance Pillars (Registries, Knowledge Graph, Plugins, Observability, 10-Tier Stack)",
+      "reason": "Transforms AI-OS from a prompt script into a maintainable, enterprise-grade AI operating platform.",
+      "alternativesConsidered": ["Monolithic prompt script"],
+      "tradeOffs": "Slightly more initial registry structure, but 10x higher long-term scalability and self-learning.",
+      "risk": "Low",
+      "impact": "Critical",
+      "reviewDate": "2026-12-31"
+    }
+  ]
+}

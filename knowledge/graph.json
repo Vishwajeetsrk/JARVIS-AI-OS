@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    { "id": "client-1", "type": "Client", "name": "AgencyOS Clients" },
+    { "id": "project-learnify", "type": "Project", "name": "Learnify AI", "status": "active" },
+    { "id": "project-agencyos", "type": "Project", "name": "AgencyOS", "status": "active" },
+    { "id": "project-ai-os", "type": "Project", "name": "AI-OS Orchestrator", "status": "active" }
+  ],
+  "edges": [
+    { "source": "client-1", "target": "project-agencyos", "relation": "OWNS_PROJECT" },
+    { "source": "project-ai-os", "target": "project-learnify", "relation": "ORCHESTRATES" },
+    { "source": "project-ai-os", "target": "project-agencyos", "relation": "ORCHESTRATES" }
+  ]
+}

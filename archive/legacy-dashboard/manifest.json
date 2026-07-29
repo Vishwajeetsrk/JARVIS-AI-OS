@@ -1,0 +1,19 @@
+{
+  "name": "Agent Team Skills",
+  "short_name": "Agent Team",
+  "description": "19 specialized AI agents — CEO validates, specialists build, Web3 agents handle blockchain, memory prevents repeat mistakes.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f6f6f7",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["developer-tools", "productivity"],
+  "lang": "en",
+  "orientation": "any"
+}

@@ -1,0 +1,23 @@
+# Node & Environment
+node_modules/
+.env
+.env.*
+*.log
+dist/
+.output/
+.tanstack/
+.nitro/
+
+# System files
+.DS_Store
+Thumbs.db
+*.suo
+
+# Large media / cache
+.cache/
+__pycache__/
+*.pyc
+
+# Nested third-party repos & projects
+GitHub Repo/
+Projects/

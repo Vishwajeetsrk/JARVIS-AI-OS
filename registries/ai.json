@@ -1,0 +1,66 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2026-07-29",
+  "models": [
+    {
+      "id": "gemini-2-0-flash-free",
+      "name": "Google Gemini 2.0 Flash (Free Tier)",
+      "provider": "Google AI Studio",
+      "contextLength": 1000000,
+      "costPer1kInputToken": 0,
+      "costPer1kOutputToken": 0,
+      "latency": "Ultra-Fast (300 ms)",
+      "capabilities": ["free_tier", "large_context", "multimodal", "fast_reasoning"],
+      "status": "active",
+      "reasonForSelection": "Primary $0 cost free cloud model for general task planning, research, and auto-documentation."
+    },
+    {
+      "id": "groq-llama-3-3-70b-free",
+      "name": "Groq Llama 3.3 70B Versatile (Free Tier)",
+      "provider": "Groq Cloud",
+      "contextLength": 128000,
+      "costPer1kInputToken": 0,
+      "costPer1kOutputToken": 0,
+      "latency": "Real-Time (500 tokens/sec)",
+      "capabilities": ["free_tier", "ultra_fast_coding", "reasoning"],
+      "status": "active",
+      "reasonForSelection": "Primary $0 cost free cloud model for real-time code generation and low-latency agent routing."
+    },
+    {
+      "id": "openrouter-free-auto",
+      "name": "OpenRouter Free Auto Fallback",
+      "provider": "OpenRouter",
+      "contextLength": 128000,
+      "costPer1kInputToken": 0,
+      "costPer1kOutputToken": 0,
+      "latency": "Fast",
+      "capabilities": ["free_tier", "auto_routing", "fallback"],
+      "status": "active",
+      "reasonForSelection": "Automatic $0 cost fallback router across open-weights models."
+    },
+    {
+      "id": "claude-3-5-sonnet",
+      "name": "Claude 3.5 Sonnet",
+      "provider": "Anthropic",
+      "contextLength": 200000,
+      "costPer1kInputToken": 0.003,
+      "costPer1kOutputToken": 0.015,
+      "latency": "Fast",
+      "capabilities": ["coding", "reasoning", "multimodal", "security_audit"],
+      "status": "active",
+      "reasonForSelection": "High-precision reasoning layer for test-agent security sign-offs and complex architectural decisions."
+    },
+    {
+      "id": "llama-3-3-70b-local",
+      "name": "Llama 3.3 70B (Ollama Local)",
+      "provider": "Local / Ollama",
+      "contextLength": 128000,
+      "costPer1kInputToken": 0,
+      "costPer1kOutputToken": 0,
+      "latency": "Variable",
+      "capabilities": ["offline_coding", "private_data", "summarization"],
+      "status": "active",
+      "reasonForSelection": "Zero-cost offline execution for non-sensitive local development."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "apis": [
+    {
+      "name": "Anthropic Claude API",
+      "purpose": "Primary reasoning, coding, and security audit layer",
+      "status": "active",
+      "cost": "Metered",
+      "freeTier": false,
+      "rateLimit": "1000 RPM",
+      "owner": "ceo-agent",
+      "usedBy": ["ceo-agent", "saas-builder", "test-agent"]
+    },
+    {
+      "name": "Google Gemini API",
+      "purpose": "Large context research and code review",
+      "status": "active",
+      "cost": "Free/Metered",
+      "freeTier": true,
+      "rateLimit": "360 RPM",
+      "owner": "research-resources",
+      "usedBy": ["research-resources", "design-agent"]
+    },
+    {
+      "name": "Razorpay API",
+      "purpose": "Payment processing & automated client invoicing reconciliation",
+      "status": "active",
+      "cost": "2% per transaction",
+      "freeTier": true,
+      "rateLimit": "100 RPS",
+      "owner": "team-agent",
+      "usedBy": ["n8n-bridge", "agencyos"]
+    }
+  ]
+}

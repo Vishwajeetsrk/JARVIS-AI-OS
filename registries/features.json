@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "features": [
+    {
+      "id": "feat-1",
+      "name": "12-Skill Reasoning Layer",
+      "owner": "ceo-agent",
+      "status": "RELEASED",
+      "dependencies": [],
+      "testCoverage": "100%"
+    },
+    {
+      "id": "feat-2",
+      "name": "Mastra TS Orchestration Engine",
+      "owner": "saas-builder",
+      "status": "RELEASED",
+      "dependencies": ["feat-1"],
+      "testCoverage": "100%"
+    },
+    {
+      "id": "feat-3",
+      "name": "n8n Business Automation Bridge",
+      "owner": "devops-agent",
+      "status": "RELEASED",
+      "dependencies": ["feat-2"],
+      "testCoverage": "100%"
+    },
+    {
+      "id": "feat-4",
+      "name": "10/10 Enterprise Governance & Registries",
+      "owner": "ceo-agent",
+      "status": "RELEASED",
+      "dependencies": ["feat-1", "feat-2", "feat-3"],
+      "testCoverage": "100%"
+    }
+  ]
+}

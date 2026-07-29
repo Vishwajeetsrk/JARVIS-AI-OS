@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "tools": [
+    { "name": "GitHub", "category": "version_control", "status": "active" },
+    { "name": "MCP", "category": "protocol", "status": "active" },
+    { "name": "Browser", "category": "automation", "status": "active" },
+    { "name": "Docker", "category": "sandbox", "status": "active" },
+    { "name": "PostgreSQL", "category": "database", "status": "active" },
+    { "name": "Redis", "category": "cache", "status": "active" },
+    { "name": "Supabase", "category": "backend", "status": "active" },
+    { "name": "n8n", "category": "workflow_automation", "status": "active" },
+    { "name": "Playwright", "category": "e2e_testing", "status": "active" },
+    { "name": "OpenHands", "category": "auto_coding", "status": "active" }
+  ]
+}

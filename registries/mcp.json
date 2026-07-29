@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "mcpServers": [
+    {
+      "name": "stitch",
+      "purpose": "UI/UX component generation & design system application",
+      "tools": ["create_project", "generate_screen_from_text", "apply_design_system"],
+      "status": "active"
+    },
+    {
+      "name": "chrome-devtools-mcp",
+      "purpose": "Browser testing, DOM inspection & lighthouse audit",
+      "tools": ["navigate_page", "lighthouse_audit", "take_screenshot"],
+      "status": "active"
+    },
+    {
+      "name": "firebase-mcp-server",
+      "purpose": "Firebase backend integration & security rules validation",
+      "tools": ["firebase_deploy", "firebase_get_sdk_config"],
+      "status": "active"
+    },
+    {
+      "name": "postman-mcp-server",
+      "purpose": "API testing & collection execution",
+      "tools": ["runCollection", "generateSpecFromCollection"],
+      "status": "active"
+    }
+  ]
+}
