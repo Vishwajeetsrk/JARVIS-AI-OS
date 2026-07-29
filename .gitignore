@@ -33,3 +33,6 @@ __pycache__/
 # Nested third-party repos & projects
 GitHub Repo/
 Projects/
+
+# Oversized files (>100MB)
+agent-team-source/skills/memory-agent/templates/README-templates.md
