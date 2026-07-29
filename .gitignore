@@ -4,14 +4,26 @@ node_modules/
 .env.*
 *.log
 dist/
+dist-ssr/
 .output/
-.tanstack/
+.vinxi/
 .nitro/
+.tanstack/**
+.wrangler/
+.dev.vars
 
 # System files
 .DS_Store
 Thumbs.db
 *.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Editor directories
+.vscode/*
+.idea
 
 # Large media / cache
 .cache/

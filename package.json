@@ -1,7 +1,7 @@
 {
   "name": "vishwajeet-ai-os",
-  "version": "1.0.0",
-  "description": "Vishwajeet's AI Operating System — 12-Skill Reasoning Layer + Mastra TypeScript Orchestrator + n8n Automation",
+  "version": "2.0.0",
+  "description": "JARVIS AI OS — Persistent-memory AI Operating System with 30 agents, 150 design systems, and 68 open-source repos",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -11,14 +11,7 @@
     "test": "vitest run",
     "lint": "tsc --noEmit"
   },
-  "keywords": [
-    "ai-os",
-    "multi-agent",
-    "mastra",
-    "n8n",
-    "claude-skills",
-    "orchestration"
-  ],
+  "keywords": ["ai-os", "multi-agent", "mastra", "jarvis", "agent-skills"],
   "author": "Vishwajeet",
   "license": "MIT",
   "dependencies": {

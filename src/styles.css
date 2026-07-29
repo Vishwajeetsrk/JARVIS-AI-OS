@@ -1,0 +1,183 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Jarvis AI OS — Claude warm terracotta palette.
+ * Dark by default. All tokens defined in oklch, mapped through @theme inline.
+ */
+
+@theme inline {
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--surface);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--surface);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--card);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--primary-foreground);
+  --color-amber: var(--amber);
+  --color-sage: var(--sage);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--primary);
+  --color-ring-offset-background: var(--background);
+  --color-sidebar: var(--card);
+  --color-sidebar-foreground: var(--foreground);
+  --color-sidebar-primary: var(--primary);
+  --color-sidebar-primary-foreground: var(--primary-foreground);
+  --color-sidebar-accent: var(--surface);
+  --color-sidebar-accent-foreground: var(--foreground);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-ring: var(--primary);
+}
+
+:root {
+  --radius: 10px;
+  --background: oklch(0.199 0.005 60);          /* #181816 */
+  --surface: oklch(0.239 0.007 70);             /* #22211E */
+  --card: oklch(0.269 0.008 70);                /* #282724 */
+  --card-foreground: oklch(0.955 0.014 90);
+  --foreground: oklch(0.955 0.014 90);          /* #F3F1EA */
+  --muted-foreground: oklch(0.681 0.012 90);    /* #9E9B92 */
+  --border: oklch(0.319 0.008 70);              /* #383632 */
+  --primary: oklch(0.712 0.132 42);             /* #D97757 terracotta */
+  --primary-hover: oklch(0.649 0.146 42);       /* #C86641 */
+  --primary-foreground: oklch(0.985 0.005 90);
+  --amber: oklch(0.771 0.145 68);               /* #E69D45 */
+  --sage: oklch(0.681 0.128 145);               /* #58A65C */
+  --destructive: oklch(0.62 0.22 27);
+
+  --gradient-hero: radial-gradient(1200px 600px at 15% -10%, color-mix(in oklab, var(--primary) 25%, transparent), transparent 60%),
+                   radial-gradient(900px 500px at 90% 10%, color-mix(in oklab, var(--sage) 12%, transparent), transparent 60%);
+  --shadow-glow: 0 0 0 1px color-mix(in oklab, var(--primary) 25%, transparent),
+                 0 24px 60px -20px color-mix(in oklab, var(--primary) 40%, transparent);
+  --shadow-elevated: 0 20px 60px -30px rgba(0,0,0,0.7);
+}
+
+.dark { color-scheme: dark; }
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body { background-color: var(--color-background); color: var(--color-foreground); }
+  body {
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .font-display { font-family: var(--font-serif); letter-spacing: -0.01em; }
+  code, kbd, .font-mono { font-family: var(--font-mono); }
+  ::selection { background: color-mix(in oklab, var(--primary) 40%, transparent); }
+}
+
+/* ── Ambient scenography ─────────────────────────────── */
+@keyframes noise-drift {
+  0% { transform: translate(0,0); }
+  100% { transform: translate(-40px,-40px); }
+}
+.bg-noise::before {
+  content: "";
+  position: absolute; inset: -40px;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, color-mix(in oklab, var(--primary) 60%, transparent) 50%, transparent 51%),
+    radial-gradient(1px 1px at 70% 60%, color-mix(in oklab, var(--sage) 50%, transparent) 50%, transparent 51%),
+    radial-gradient(1px 1px at 40% 80%, color-mix(in oklab, var(--primary) 40%, transparent) 50%, transparent 51%),
+    radial-gradient(1px 1px at 85% 20%, color-mix(in oklab, var(--amber) 50%, transparent) 50%, transparent 51%);
+  background-size: 220px 220px;
+  animation: noise-drift 20s linear infinite;
+  opacity: 0.7; pointer-events: none;
+}
+
+/* ── Status dots ─────────────────────────────────────── */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--sage) 60%, transparent); }
+  70% { box-shadow: 0 0 0 8px color-mix(in oklab, var(--sage) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--sage) 0%, transparent); }
+}
+@keyframes amber-blink {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+@keyframes spin-terracotta { to { transform: rotate(360deg); } }
+.status-dot { width: 8px; height: 8px; border-radius: 999px; display: inline-block; }
+.status-ready { background: var(--sage); animation: pulse-ring 2s ease-out infinite; }
+.status-amber { background: var(--amber); animation: amber-blink 1.5s ease-in-out infinite; }
+.status-processing {
+  width: 12px; height: 12px; border-radius: 999px;
+  border: 2px solid color-mix(in oklab, var(--primary) 30%, transparent);
+  border-top-color: var(--primary);
+  animation: spin-terracotta 0.8s ease-in-out infinite;
+}
+
+/* ── Reveal on mount ─────────────────────────────────── */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal { animation: reveal-up 220ms ease-out both; }
+.reveal-stagger > * { animation: reveal-up 320ms ease-out both; }
+.reveal-stagger > *:nth-child(1) { animation-delay: 40ms; }
+.reveal-stagger > *:nth-child(2) { animation-delay: 100ms; }
+.reveal-stagger > *:nth-child(3) { animation-delay: 160ms; }
+.reveal-stagger > *:nth-child(4) { animation-delay: 220ms; }
+.reveal-stagger > *:nth-child(5) { animation-delay: 280ms; }
+.reveal-stagger > *:nth-child(6) { animation-delay: 340ms; }
+
+/* ── Sidebar item hover: slide-in left bar ───────────── */
+.side-item {
+  position: relative;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.side-item::before {
+  content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px;
+  background: var(--primary); border-radius: 2px;
+  transform: scaleY(0); transform-origin: center; transition: transform 160ms ease;
+}
+.side-item:hover::before, .side-item[data-active="true"]::before { transform: scaleY(1); }
+.side-item:hover { background: color-mix(in oklab, white 6%, transparent); }
+.side-item[data-active="true"] {
+  background: color-mix(in oklab, var(--primary) 12%, transparent);
+  color: var(--foreground);
+}
+
+/* ── Marquee for skills carousel ─────────────────────── */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { display: flex; width: max-content; animation: marquee 40s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+/* ── Utility ─────────────────────────────────────────── */
+.text-mono-xs { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-foreground); }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 12px; color: var(--muted-foreground);
+}
+.btn-hero {
+  background: var(--primary); color: var(--primary-foreground);
+  padding: 12px 20px; border-radius: 8px; font-weight: 500;
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+.btn-hero:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
