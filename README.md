@@ -14,7 +14,7 @@
 > **Persistent-memory AI Operating System — 30 specialized agents, 150 design systems, 10-tier open-source stack, and $0 free cloud models.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg)](LICENSE)
-[![Vercel](https://img.shields.io/badge/Live%20Console-Vercel-black.svg)](https://jarvis-ai-os-kappa.vercel.app)
+[![Vercel](https://img.shields.io/badge/Live%20Console-Vercel-black.svg)](https://jarvisaios.vercel.app)
 [![GitHub Repos](https://img.shields.io/badge/Open%20Source-68%20Repos-blue.svg)](GitHub%20Repo/CATALOG.md)
 
 ---
@@ -23,7 +23,7 @@
 
 | Surface | URL | Description |
 |---|---|---|
-| **Jarvis Console** | https://jarvis-ai-os-kappa.vercel.app | TanStack SPA with auth, chat, 30 agents |
+| **Jarvis Console** | https://jarvisaios.vercel.app | TanStack SPA with auth, chat, 30 agents |
 | **GitHub** | https://github.com/Vishwajeetsrk/JARVIS-AI-OS | Main repository |
 
 ---
