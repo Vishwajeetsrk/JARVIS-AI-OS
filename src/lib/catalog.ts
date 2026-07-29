@@ -71,6 +71,7 @@ export const SKILLS: CatalogItem[] = [
   { id: "connector", name: "connector", description: "MCPs and external APIs.", icon: Cable },
   { id: "voice", name: "voice", description: "Speech I/O.", icon: AudioLines },
   { id: "coworker", name: "coworker", description: "Pair-programs live.", icon: Bot },
+  { id: "morning", name: "morning", description: "Morning briefing & daily status check.", icon: Sparkles },
   { id: "open-design", name: "open-design", description: "32+ design systems (Claude, Apple, Arc, Bento).", icon: Palette },
 ];
 
