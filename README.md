@@ -111,6 +111,38 @@ D:\Team of Vishwajeet/
 
 ---
 
+## Features
+
+### AI Chat with Tool Calling
+- **10 agent tools** wired directly into the chat — memory (read/write/search), hardware detection, cost tracking, project reports, documentation, PR audits, SEO generation, framework evaluation
+- **Web search toggle** — enables real-time web search via Tavily/Brave API
+- **Voice input** — microphone button records audio, transcribes via Groq Whisper, and sends as text
+- **Model selection** — Google Gemini (free) and Groq (free) models, with auto-fallback
+- **File attachments** — images, PDFs, markdown, code files
+
+### Persistent Memory
+- **File-based memory** — `~/.agent-memory/global/` stores decisions, mistakes, patterns, and stack notes as markdown
+- **Vector memory search** — Supabase pgvector enables semantic search across past entries
+- **Auto-titling** — threads are automatically named from the first user message
+
+### Agent System
+- **7 Mastra agents** — CEO, Team, SaaS Builder, Design, Test, DevOps, Memory
+- **11 Mastra tools** — including memory, hardware detection, cost tracking, documentation, PR security audit, SEO generator, framework evaluation
+- **Golden Flow workflow** — 6-step pipeline from validation to deployment
+- **30 agent skills** — executive, engineering, design, research, operations
+
+### Authentication & Storage
+- **Supabase Auth** — Google OAuth + email/password
+- **Supabase Database** — threads, messages, projects, user_settings, memory_entries tables
+- **Row Level Security** — all tables protected with per-user policies
+
+### Voice & Desktop
+- **Voice input** — microphone recording → Groq Whisper transcription
+- **Text-to-speech** — Groq Orpheus TTS API endpoint
+- **Desktop automation** — Python bridge for system info, screenshots, app launching
+
+---
+
 ## Quickstart Guide
 
 ### 1. Prerequisites
@@ -124,6 +156,9 @@ D:\Team of Vishwajeet/
 # Clone the repository
 git clone https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git
 cd "jarvis console"
+
+# Copy environment file and fill in your keys
+cp .env.example .env
 
 # Install dependencies
 npm install
