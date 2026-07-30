@@ -7,11 +7,13 @@ node_modules/
 dist/
 dist-ssr/
 .output/
+.output/
 .vinxi/
 .nitro/
 .tanstack/**
 .wrangler/
 .dev.vars
+.vercel/
 
 # System files
 .DS_Store

@@ -56,3 +56,7 @@ All notable changes to this project will be documented in this file.
 ## [2.2.0] - 2026-07-30
 - **Summary**: Deployed PR Security Audit Gate, Technical SEO Generator, and Multi-Agent Framework Evaluator.
 - **Author**: ceo-agent & test-agent
+
+## [2.2.0] - 2026-07-30
+- **Summary**: Deployed PR Security Audit Gate, Technical SEO Generator, and Multi-Agent Framework Evaluator.
+- **Author**: ceo-agent & test-agent
