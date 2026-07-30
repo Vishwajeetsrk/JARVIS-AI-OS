@@ -68,12 +68,12 @@ TRADITIONAL AI CHATS                           JARVIS AI OS SYSTEM
 
 ```
 D:\Team of Vishwajeet/
-├── jarvis console/          TanStack SPA (deployed to Vercel)
-│   ├── src/routes/
-│   │   ├── index.tsx              Landing page with interactive shell
-│   │   ├── auth.tsx               Sign-in page (Google OAuth + email)
-│   │   └── _authenticated/console/ Protected agent console
-│   └── package.json
+├── src/                     TanStack Start SPA + Mastra engine
+│   ├── routes/              File-based routes (index, auth, console, etc.)
+│   ├── components/          React components (ui, chat, agents, etc.)
+│   ├── lib/                 Utilities, hooks, Supabase client
+│   ├── mastra/              Mastra AI engine (agents, tools, workflows)
+│   └── integrations/        Supabase, Lovable connectors
 │
 ├── Agent-Team-Skills/       30-agent skill system
 │   ├── .claude/skills/      30 agent skill definitions
@@ -87,8 +87,7 @@ D:\Team of Vishwajeet/
 ├── Projects/                48 project templates
 ├── skills/                  30 master agent skills (mirrored to ~/.agent-memory/)
 ├── scripts/                 CLI, sync, and build scripts
-├── src/                     Mastra TS engine
-├── public/                  Static shell demo
+├── public/                  Static assets
 └── README.md                This file
 ```
 
@@ -108,8 +107,8 @@ D:\Team of Vishwajeet/
         ┌───────────────────┬───────────────┴───────────────┬───────────────────┐
         v                   v                               v                   v
   WEB CONSOLE          VOICE & CHAT                    TERMINAL CLI        DESKTOP OS
-  jarvis console      /api/chat + /api/transcribe      scripts/jarvis.ts   desktop-voice-bridge.py
-  TanStack SPA        Groq Whisper / Orpheus TTS       Mastra TS CLI       Python + Win32
+  TanStack SPA         /api/chat + /api/transcribe      scripts/jarvis.ts   desktop-voice-bridge.py
+  src/routes/          Groq Whisper / Orpheus TTS       Mastra TS CLI       Python + Win32
 ```
 
 ---
@@ -319,7 +318,7 @@ Powered by **Supabase Auth**:
 - **Protected routes** — all `/console/*` routes require auth
 - **Server-side JWT verification** — all server functions validate tokens
 
-Config: `jarvis console/src/integrations/supabase/`
+Config: `src/integrations/supabase/`
 
 ---
 
