@@ -11,6 +11,7 @@ import { createXlsx } from "@/mastra/tools/xlsx-creator";
 import { createReport } from "@/mastra/tools/report-creator";
 import { executeCode } from "@/mastra/tools/code-runner";
 import { autoLearn } from "@/mastra/tools/auto-learner";
+import { listDesignSystems, getDesignSystem } from "@/lib/design-systems";
 
 // ── Free provider setup ─────────────────────────────────────────────────────
 // Primary:  Google Gemini  → https://aistudio.google.com/apikey  (GEMINI_API_KEY)
@@ -51,7 +52,12 @@ governance, growth, ops, billing, connector, voice, coworker).
 Speak in a calm, precise, senior-engineer register. Prefer concrete steps,
 short paragraphs, and code blocks when helpful. If the user attaches files,
 reference them explicitly. If you would delegate a task, say which agent
-you would assign and why.`;
+you would assign and why.
+
+You have access to 32 brand-grade design systems (Corporate, Apple, Airbnb, Claude,
+BMW, Airbnb, and more). Use the listDesignSystems tool to discover them and
+getDesignSystem to apply on-brand CSS tokens and component code. When generating
+UI, always suggest a matching design system and include its CSS tokens.`;
 
 // Skill descriptions injected when the user enables them
 const SKILL_DESCRIPTIONS: Record<string, string> = {
@@ -290,6 +296,42 @@ export const Route = createFileRoute("/api/chat")({
             }),
             execute: async (args: { messages: any[]; projectName?: string }) => {
               return await autoLearn(args.messages, args.projectName);
+            },
+          },
+
+          listDesignSystems: {
+            description: "List all available brand design systems. Use this to discover which design system to apply to a project.",
+            parameters: z.object({}),
+            execute: async () => {
+              const systems = listDesignSystems();
+              return systems.map((s) => ({
+                id: s.id,
+                name: s.name,
+                category: s.category,
+                tokens: s.tokenCount,
+                components: s.componentCount,
+              }));
+            },
+          },
+
+          getDesignSystem: {
+            description: "Get the full details of a design system including CSS tokens, components, and usage guide. Apply these tokens to generate on-brand UI.",
+            parameters: z.object({
+              id: z.string().describe("Design system ID (e.g. 'corporate', 'apple', 'claude', 'airbnb')"),
+            }),
+            execute: async ({ id }: { id: string }) => {
+              const ds = getDesignSystem(id);
+              if (!ds) return { error: `Design system "${id}" not found` };
+              return {
+                name: ds.name,
+                category: ds.category,
+                tokens: ds.tokens,
+                tokenCount: ds.tokenCount,
+                components: ds.components,
+                componentCount: ds.componentCount,
+                usage: ds.usage,
+                design: ds.design,
+              };
             },
           },
         };

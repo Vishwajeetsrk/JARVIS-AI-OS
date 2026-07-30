@@ -39,3 +39,8 @@ Projects/
 
 # Oversized files (>100MB)
 agent-team-source/skills/memory-agent/templates/README-templates.md
+
+# Dev logs
+*.log
+dev-*.txt
+build-*.log

@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { createThread } from "@/lib/threads.functions";
 import { JarvisStar } from "@/components/jarvis/logo";
+import { ChatSuggestions } from "@/components/ai-elements/chat-suggestions";
 
 export const Route = createFileRoute("/_authenticated/console/")({
   component: ConsoleIndex,
@@ -41,17 +42,20 @@ function ConsoleIndex() {
       <p className="mt-2 max-w-lg text-center text-sm text-muted-foreground">
         Ask a question, delegate a project, or continue a thread from the sidebar.
       </p>
-      <div className="mt-8 grid w-full max-w-2xl grid-cols-1 gap-2 sm:grid-cols-2">
-        {SUGGESTIONS.map((s) => (
-          <button
-            key={s}
-            onClick={() => start.mutate(s)}
-            disabled={start.isPending}
-            className="rounded-lg border border-border bg-card p-4 text-left text-sm text-foreground transition-colors hover:border-primary/40 hover:bg-surface"
-          >
-            {s}
-          </button>
-        ))}
+      <div className="mt-8 w-full max-w-2xl">
+        <ChatSuggestions onSelect={(text) => start.mutate(text)} />
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {SUGGESTIONS.map((s) => (
+            <button
+              key={s}
+              onClick={() => start.mutate(s)}
+              disabled={start.isPending}
+              className="rounded-lg border border-border bg-card p-4 text-left text-sm text-foreground transition-colors hover:border-primary/40 hover:bg-surface"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
       </div>
       <button
         onClick={() => start.mutate(undefined)}

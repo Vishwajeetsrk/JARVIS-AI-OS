@@ -17,12 +17,15 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as AuthenticatedConsoleRouteImport } from './routes/_authenticated/console'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiDesignSystemsRouteImport } from './routes/api/design-systems'
+import { Route as ApiSitemapRouteImport } from './routes/api/sitemap'
 import { Route as ApiSpeakRouteImport } from './routes/api/speak'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 import { Route as ApiVisionRouteImport } from './routes/api/vision'
 import { Route as AuthenticatedConsoleIndexRouteImport } from './routes/_authenticated/console/index'
 import { Route as AuthenticatedConsoleThreadIdRouteImport } from './routes/_authenticated/console/$threadId'
 import { Route as AuthenticatedConsoleConnectorsRouteImport } from './routes/_authenticated/console/connectors'
+import { Route as AuthenticatedConsoleDesignRouteImport } from './routes/_authenticated/console/design'
 import { Route as AuthenticatedConsoleGithubRouteImport } from './routes/_authenticated/console/github'
 import { Route as AuthenticatedConsolePluginsRouteImport } from './routes/_authenticated/console/plugins'
 import { Route as AuthenticatedConsoleSettingsRouteImport } from './routes/_authenticated/console/settings'
@@ -30,6 +33,7 @@ import { Route as AuthenticatedConsoleSkillsRouteImport } from './routes/_authen
 import { Route as AuthenticatedConsoleToolsRouteImport } from './routes/_authenticated/console/tools'
 import { Route as ApiDesktopScreenshotRouteImport } from './routes/api/desktop/screenshot'
 import { Route as ApiDesktopSystemRouteImport } from './routes/api/desktop/system'
+import { Route as AuthenticatedConsoleDesignSystemIdRouteImport } from './routes/_authenticated/console/design.$systemId'
 import { Route as AuthenticatedConsoleProjectsProjectIdRouteImport } from './routes/_authenticated/console/projects.$projectId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -71,6 +75,16 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDesignSystemsRoute = ApiDesignSystemsRouteImport.update({
+  id: '/api/design-systems',
+  path: '/api/design-systems',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSitemapRoute = ApiSitemapRouteImport.update({
+  id: '/api/sitemap',
+  path: '/api/sitemap',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSpeakRoute = ApiSpeakRouteImport.update({
   id: '/api/speak',
   path: '/api/speak',
@@ -102,6 +116,12 @@ const AuthenticatedConsoleConnectorsRoute =
   AuthenticatedConsoleConnectorsRouteImport.update({
     id: '/connectors',
     path: '/connectors',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
+const AuthenticatedConsoleDesignRoute =
+  AuthenticatedConsoleDesignRouteImport.update({
+    id: '/design',
+    path: '/design',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
 const AuthenticatedConsoleGithubRoute =
@@ -144,6 +164,12 @@ const ApiDesktopSystemRoute = ApiDesktopSystemRouteImport.update({
   path: '/api/desktop/system',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedConsoleDesignSystemIdRoute =
+  AuthenticatedConsoleDesignSystemIdRouteImport.update({
+    id: '/$systemId',
+    path: '/$systemId',
+    getParentRoute: () => AuthenticatedConsoleDesignRoute,
+  } as any)
 const AuthenticatedConsoleProjectsProjectIdRoute =
   AuthenticatedConsoleProjectsProjectIdRouteImport.update({
     id: '/projects/$projectId',
@@ -159,11 +185,14 @@ export interface FileRoutesByFullPath {
   '/skills': typeof SkillsRoute
   '/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
+  '/api/design-systems': typeof ApiDesignSystemsRoute
+  '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/api/vision': typeof ApiVisionRoute
   '/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
   '/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
+  '/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/console/github': typeof AuthenticatedConsoleGithubRoute
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
@@ -172,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/api/desktop/screenshot': typeof ApiDesktopScreenshotRoute
   '/api/desktop/system': typeof ApiDesktopSystemRoute
   '/console/': typeof AuthenticatedConsoleIndexRoute
+  '/console/design/$systemId': typeof AuthenticatedConsoleDesignSystemIdRoute
   '/console/projects/$projectId': typeof AuthenticatedConsoleProjectsProjectIdRoute
 }
 export interface FileRoutesByTo {
@@ -181,11 +211,14 @@ export interface FileRoutesByTo {
   '/projects': typeof ProjectsRoute
   '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/design-systems': typeof ApiDesignSystemsRoute
+  '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/api/vision': typeof ApiVisionRoute
   '/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
   '/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
+  '/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/console/github': typeof AuthenticatedConsoleGithubRoute
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
@@ -194,6 +227,7 @@ export interface FileRoutesByTo {
   '/api/desktop/screenshot': typeof ApiDesktopScreenshotRoute
   '/api/desktop/system': typeof ApiDesktopSystemRoute
   '/console': typeof AuthenticatedConsoleIndexRoute
+  '/console/design/$systemId': typeof AuthenticatedConsoleDesignSystemIdRoute
   '/console/projects/$projectId': typeof AuthenticatedConsoleProjectsProjectIdRoute
 }
 export interface FileRoutesById {
@@ -206,11 +240,14 @@ export interface FileRoutesById {
   '/skills': typeof SkillsRoute
   '/_authenticated/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
+  '/api/design-systems': typeof ApiDesignSystemsRoute
+  '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/api/vision': typeof ApiVisionRoute
   '/_authenticated/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
   '/_authenticated/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
+  '/_authenticated/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/_authenticated/console/github': typeof AuthenticatedConsoleGithubRoute
   '/_authenticated/console/plugins': typeof AuthenticatedConsolePluginsRoute
   '/_authenticated/console/settings': typeof AuthenticatedConsoleSettingsRoute
@@ -219,6 +256,7 @@ export interface FileRoutesById {
   '/api/desktop/screenshot': typeof ApiDesktopScreenshotRoute
   '/api/desktop/system': typeof ApiDesktopSystemRoute
   '/_authenticated/console/': typeof AuthenticatedConsoleIndexRoute
+  '/_authenticated/console/design/$systemId': typeof AuthenticatedConsoleDesignSystemIdRoute
   '/_authenticated/console/projects/$projectId': typeof AuthenticatedConsoleProjectsProjectIdRoute
 }
 export interface FileRouteTypes {
@@ -231,11 +269,14 @@ export interface FileRouteTypes {
     | '/skills'
     | '/console'
     | '/api/chat'
+    | '/api/design-systems'
+    | '/api/sitemap'
     | '/api/speak'
     | '/api/transcribe'
     | '/api/vision'
     | '/console/$threadId'
     | '/console/connectors'
+    | '/console/design'
     | '/console/github'
     | '/console/plugins'
     | '/console/settings'
@@ -244,6 +285,7 @@ export interface FileRouteTypes {
     | '/api/desktop/screenshot'
     | '/api/desktop/system'
     | '/console/'
+    | '/console/design/$systemId'
     | '/console/projects/$projectId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -253,11 +295,14 @@ export interface FileRouteTypes {
     | '/projects'
     | '/skills'
     | '/api/chat'
+    | '/api/design-systems'
+    | '/api/sitemap'
     | '/api/speak'
     | '/api/transcribe'
     | '/api/vision'
     | '/console/$threadId'
     | '/console/connectors'
+    | '/console/design'
     | '/console/github'
     | '/console/plugins'
     | '/console/settings'
@@ -266,6 +311,7 @@ export interface FileRouteTypes {
     | '/api/desktop/screenshot'
     | '/api/desktop/system'
     | '/console'
+    | '/console/design/$systemId'
     | '/console/projects/$projectId'
   id:
     | '__root__'
@@ -277,11 +323,14 @@ export interface FileRouteTypes {
     | '/skills'
     | '/_authenticated/console'
     | '/api/chat'
+    | '/api/design-systems'
+    | '/api/sitemap'
     | '/api/speak'
     | '/api/transcribe'
     | '/api/vision'
     | '/_authenticated/console/$threadId'
     | '/_authenticated/console/connectors'
+    | '/_authenticated/console/design'
     | '/_authenticated/console/github'
     | '/_authenticated/console/plugins'
     | '/_authenticated/console/settings'
@@ -290,6 +339,7 @@ export interface FileRouteTypes {
     | '/api/desktop/screenshot'
     | '/api/desktop/system'
     | '/_authenticated/console/'
+    | '/_authenticated/console/design/$systemId'
     | '/_authenticated/console/projects/$projectId'
   fileRoutesById: FileRoutesById
 }
@@ -301,6 +351,8 @@ export interface RootRouteChildren {
   ProjectsRoute: typeof ProjectsRoute
   SkillsRoute: typeof SkillsRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiDesignSystemsRoute: typeof ApiDesignSystemsRoute
+  ApiSitemapRoute: typeof ApiSitemapRoute
   ApiSpeakRoute: typeof ApiSpeakRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
   ApiVisionRoute: typeof ApiVisionRoute
@@ -366,6 +418,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/design-systems': {
+      id: '/api/design-systems'
+      path: '/api/design-systems'
+      fullPath: '/api/design-systems'
+      preLoaderRoute: typeof ApiDesignSystemsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sitemap': {
+      id: '/api/sitemap'
+      path: '/api/sitemap'
+      fullPath: '/api/sitemap'
+      preLoaderRoute: typeof ApiSitemapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/speak': {
       id: '/api/speak'
       path: '/api/speak'
@@ -406,6 +472,13 @@ declare module '@tanstack/react-router' {
       path: '/connectors'
       fullPath: '/console/connectors'
       preLoaderRoute: typeof AuthenticatedConsoleConnectorsRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
+    '/_authenticated/console/design': {
+      id: '/_authenticated/console/design'
+      path: '/design'
+      fullPath: '/console/design'
+      preLoaderRoute: typeof AuthenticatedConsoleDesignRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
     '/_authenticated/console/github': {
@@ -457,6 +530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiDesktopSystemRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/console/design/$systemId': {
+      id: '/_authenticated/console/design/$systemId'
+      path: '/$systemId'
+      fullPath: '/console/design/$systemId'
+      preLoaderRoute: typeof AuthenticatedConsoleDesignSystemIdRouteImport
+      parentRoute: typeof AuthenticatedConsoleDesignRoute
+    }
     '/_authenticated/console/projects/$projectId': {
       id: '/_authenticated/console/projects/$projectId'
       path: '/projects/$projectId'
@@ -467,9 +547,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedConsoleDesignRouteChildren {
+  AuthenticatedConsoleDesignSystemIdRoute: typeof AuthenticatedConsoleDesignSystemIdRoute
+}
+
+const AuthenticatedConsoleDesignRouteChildren: AuthenticatedConsoleDesignRouteChildren =
+  {
+    AuthenticatedConsoleDesignSystemIdRoute:
+      AuthenticatedConsoleDesignSystemIdRoute,
+  }
+
+const AuthenticatedConsoleDesignRouteWithChildren =
+  AuthenticatedConsoleDesignRoute._addFileChildren(
+    AuthenticatedConsoleDesignRouteChildren,
+  )
+
 interface AuthenticatedConsoleRouteChildren {
   AuthenticatedConsoleThreadIdRoute: typeof AuthenticatedConsoleThreadIdRoute
   AuthenticatedConsoleConnectorsRoute: typeof AuthenticatedConsoleConnectorsRoute
+  AuthenticatedConsoleDesignRoute: typeof AuthenticatedConsoleDesignRouteWithChildren
   AuthenticatedConsoleGithubRoute: typeof AuthenticatedConsoleGithubRoute
   AuthenticatedConsolePluginsRoute: typeof AuthenticatedConsolePluginsRoute
   AuthenticatedConsoleSettingsRoute: typeof AuthenticatedConsoleSettingsRoute
@@ -482,6 +578,7 @@ interface AuthenticatedConsoleRouteChildren {
 const AuthenticatedConsoleRouteChildren: AuthenticatedConsoleRouteChildren = {
   AuthenticatedConsoleThreadIdRoute: AuthenticatedConsoleThreadIdRoute,
   AuthenticatedConsoleConnectorsRoute: AuthenticatedConsoleConnectorsRoute,
+  AuthenticatedConsoleDesignRoute: AuthenticatedConsoleDesignRouteWithChildren,
   AuthenticatedConsoleGithubRoute: AuthenticatedConsoleGithubRoute,
   AuthenticatedConsolePluginsRoute: AuthenticatedConsolePluginsRoute,
   AuthenticatedConsoleSettingsRoute: AuthenticatedConsoleSettingsRoute,
@@ -514,6 +611,8 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsRoute: ProjectsRoute,
   SkillsRoute: SkillsRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiDesignSystemsRoute: ApiDesignSystemsRoute,
+  ApiSitemapRoute: ApiSitemapRoute,
   ApiSpeakRoute: ApiSpeakRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
   ApiVisionRoute: ApiVisionRoute,

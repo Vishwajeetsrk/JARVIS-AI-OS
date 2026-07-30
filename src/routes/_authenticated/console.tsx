@@ -11,7 +11,7 @@ import { JarvisWordmark } from "@/components/jarvis/logo";
 import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Plus, Trash2, LogOut, MessageSquare, Star, MoreHorizontal, Pencil,
-  FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu,
+  FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu, Palette,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -193,6 +193,7 @@ function ConsoleShell() {
           <NavLink to="/console/connectors" icon={Cable} label="Connectors" />
           <NavLink to="/console/plugins" icon={Puzzle} label="Plugins" />
           <NavLink to="/console/skills" icon={Sparkles} label="Skills" />
+          <NavLink to="/console/design" icon={Palette} label="Design Systems" />
           <NavLink to="/console/github" icon={GitBranch} label="GitHub" />
           <NavLink to="/console/settings" icon={Settings} label="Settings" />
         </div>
