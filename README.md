@@ -70,9 +70,11 @@ TRADITIONAL AI CHATS                           JARVIS AI OS SYSTEM
 D:\Team of Vishwajeet/
 ├── src/                     TanStack Start SPA + Mastra engine
 │   ├── routes/              File-based routes (index, auth, console, etc.)
-│   ├── components/          React components (ui, chat, agents, etc.)
+│   ├── components/          React components (ui, chat, agents, voice-assistant, etc.)
+│   ├── hooks/               Custom hooks (use-wake-word, etc.)
 │   ├── lib/                 Utilities, hooks, Supabase client
 │   ├── mastra/              Mastra AI engine (agents, tools, workflows)
+│   │   └── tools/           18 AI tools (memory, vision, shell, docx, pptx, xlsx, etc.)
 │   └── integrations/        Supabase, Lovable connectors
 │
 ├── Agent-Team-Skills/       30-agent skill system
@@ -143,6 +145,20 @@ D:\Team of Vishwajeet/
 - **Text-to-speech** — Groq Orpheus TTS API endpoint
 - **Desktop automation** — Python bridge for system info, screenshots, app launching
 
+### Voice Assistant (NEW)
+- **Continuous listening** — Always-on mic with speech/silence detection
+- **Wake word detection** — Say "Hey Jarvis" to activate
+- **Screen vision** — Capture and analyze screen with Gemini Vision
+- **OS commands** — Execute shell commands safely from voice
+- **Auto-learning** — Extract patterns from conversations to memory bank
+
+### File Creation (NEW)
+- **Word documents** — Create .docx with headings, tables, lists, formatting
+- **PowerPoint** — Generate .pptx presentations with slides
+- **Excel spreadsheets** — Create .xlsx with formatting, formulas, charts
+- **Reports** — Generate structured reports (Markdown, HTML, Word)
+- **Code execution** — Run JavaScript, TypeScript, Python, Shell snippets
+
 ---
 
 ---
@@ -185,6 +201,9 @@ D:\Team of Vishwajeet/
 | **Ollama** | Local LLM inference (offline/private) |
 | **Mastra AI (@mastra/core)** | Multi-agent orchestration — 7 agents, workflows, tools |
 | **Streamdown** | Streaming markdown renderer with CJK/code/math/Mermaid |
+| **docx** | Word document generation |
+| **pptxgenjs** | PowerPoint presentation generation |
+| **exceljs** | Excel spreadsheet generation |
 
 ### Backend & Infrastructure
 | Technology | Purpose |
@@ -284,6 +303,68 @@ npm run bridge:launch -- "youtube"  # App launcher
 
 # From ANY directory
 "D:\Team of Vishwajeet\bridge.bat" system
+```
+
+#### Voice Assistant Mode
+1. Open the web console at `http://localhost:5173`
+2. Click the microphone button to enable voice mode
+3. Say **"Hey Jarvis"** followed by your command
+4. Jarvis will respond with voice and take action
+
+**Voice Commands Examples:**
+```
+"Hey Jarvis, what's on my screen?"
+"Hey Jarvis, create a Word document with project status"
+"Hey Jarvis, make a PowerPoint about our product"
+"Hey Jarvis, create an Excel spreadsheet with sales data"
+"Hey Jarvis, run this code: console.log('hello')"
+"Hey Jarvis, open YouTube"
+"Hey Jarvis, what time is it?"
+```
+
+**Screen Vision:**
+- Click "Capture Screen" button while in voice mode
+- Jarvis will analyze what's on your screen and respond
+
+**File Creation:**
+- Say "Hey Jarvis, create a [Word/PowerPoint/Excel] document about [topic]"
+- Jarvis generates the file and provides a download link
+
+**Auto-Learning:**
+- Every conversation is automatically analyzed for patterns
+- Mistakes, decisions, and best practices are saved to `~/.agent-memory/global/`
+
+---
+
+## Voice Assistant Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     VOICE ASSISTANT MODE                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
+│  │ Mic ON   │───→│ Whisper  │───→│ AI Chat  │───→│ TTS      │  │
+│  │ (always) │    │ STT      │    │ (Gemini) │    │ Speaker  │  │
+│  └──────────┘    └──────────┘    └──────────┘    └──────────┘  │
+│       │               │               │               │         │
+│       │               │               ▼               │         │
+│       │               │        ┌──────────────┐       │         │
+│       │               │        │ Tool Calling │       │         │
+│       │               │        │ - shell exec │       │         │
+│       │               │        │ - screenshot │       │         │
+│       │               │        │ - docx/pptx  │       │         │
+│       │               │        │ - xlsx/code  │       │         │
+│       │               │        │ - memory     │       │         │
+│       │               │        └──────────────┘       │         │
+│       │               │               │               │         │
+│       │               ▼               ▼               │         │
+│       │        ┌──────────────────────────┐           │         │
+│       └───────→│    AUTO-LEARNER          │←──────────┘         │
+│                │ Extract patterns from    │                     │
+│                │ every conversation       │                     │
+│                └──────────────────────────┘                     │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
