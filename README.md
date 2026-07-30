@@ -162,7 +162,7 @@ D:\Team of Vishwajeet/
 | **React 19** | UI component library |
 | **TanStack React Router + Start** | SSR/SSG meta-framework with file-based routing |
 | **TanStack React Query** | Server-state management & caching |
-| **Vite 5** | Build tool & dev server |
+| **Vite 7** | Build tool & dev server |
 | **Tailwind CSS v4** | Utility-first CSS framework |
 | **Radix UI Primitives** | Accessible, headless UI components (dialog, dropdown, popover, select, tabs, tooltip, etc.) |
 | **shadcn/ui** | Component library (Radix + Tailwind) |
