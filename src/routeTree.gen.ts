@@ -30,11 +30,16 @@ import { Route as AuthenticatedConsoleGithubRouteImport } from './routes/_authen
 import { Route as AuthenticatedConsolePluginsRouteImport } from './routes/_authenticated/console/plugins'
 import { Route as AuthenticatedConsoleSettingsRouteImport } from './routes/_authenticated/console/settings'
 import { Route as AuthenticatedConsoleSkillsRouteImport } from './routes/_authenticated/console/skills'
+import { Route as AuthenticatedConsoleTemplatesRouteImport } from './routes/_authenticated/console/templates'
 import { Route as AuthenticatedConsoleToolsRouteImport } from './routes/_authenticated/console/tools'
 import { Route as ApiDesktopScreenshotRouteImport } from './routes/api/desktop/screenshot'
 import { Route as ApiDesktopSystemRouteImport } from './routes/api/desktop/system'
 import { Route as AuthenticatedConsoleDesignSystemIdRouteImport } from './routes/_authenticated/console/design.$systemId'
 import { Route as AuthenticatedConsoleProjectsProjectIdRouteImport } from './routes/_authenticated/console/projects.$projectId'
+import { Route as AuthenticatedConsoleTemplatesSystemIdRouteImport } from './routes/_authenticated/console/templates.$systemId'
+import { Route as ApiDesignSystemsIdPreviewRouteImport } from './routes/api/design-systems/$id/preview'
+import { Route as ApiDesignSystemsIdTemplatesRouteImport } from './routes/api/design-systems/$id/templates'
+import { Route as ApiDesignSystemsIdTemplatesFileRouteImport } from './routes/api/design-systems/$id/templates/$file'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -148,6 +153,12 @@ const AuthenticatedConsoleSkillsRoute =
     path: '/skills',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
+const AuthenticatedConsoleTemplatesRoute =
+  AuthenticatedConsoleTemplatesRouteImport.update({
+    id: '/templates',
+    path: '/templates',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
 const AuthenticatedConsoleToolsRoute =
   AuthenticatedConsoleToolsRouteImport.update({
     id: '/tools',
@@ -176,6 +187,30 @@ const AuthenticatedConsoleProjectsProjectIdRoute =
     path: '/projects/$projectId',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
+const AuthenticatedConsoleTemplatesSystemIdRoute =
+  AuthenticatedConsoleTemplatesSystemIdRouteImport.update({
+    id: '/$systemId',
+    path: '/$systemId',
+    getParentRoute: () => AuthenticatedConsoleTemplatesRoute,
+  } as any)
+const ApiDesignSystemsIdPreviewRoute =
+  ApiDesignSystemsIdPreviewRouteImport.update({
+    id: '/$id/preview',
+    path: '/$id/preview',
+    getParentRoute: () => ApiDesignSystemsRoute,
+  } as any)
+const ApiDesignSystemsIdTemplatesRoute =
+  ApiDesignSystemsIdTemplatesRouteImport.update({
+    id: '/$id/templates',
+    path: '/$id/templates',
+    getParentRoute: () => ApiDesignSystemsRoute,
+  } as any)
+const ApiDesignSystemsIdTemplatesFileRoute =
+  ApiDesignSystemsIdTemplatesFileRouteImport.update({
+    id: '/$file',
+    path: '/$file',
+    getParentRoute: () => ApiDesignSystemsIdTemplatesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -185,7 +220,7 @@ export interface FileRoutesByFullPath {
   '/skills': typeof SkillsRoute
   '/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
-  '/api/design-systems': typeof ApiDesignSystemsRoute
+  '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
   '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -197,12 +232,17 @@ export interface FileRoutesByFullPath {
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/console/skills': typeof AuthenticatedConsoleSkillsRoute
+  '/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
   '/console/tools': typeof AuthenticatedConsoleToolsRoute
   '/api/desktop/screenshot': typeof ApiDesktopScreenshotRoute
   '/api/desktop/system': typeof ApiDesktopSystemRoute
   '/console/': typeof AuthenticatedConsoleIndexRoute
   '/console/design/$systemId': typeof AuthenticatedConsoleDesignSystemIdRoute
   '/console/projects/$projectId': typeof AuthenticatedConsoleProjectsProjectIdRoute
+  '/console/templates/$systemId': typeof AuthenticatedConsoleTemplatesSystemIdRoute
+  '/api/design-systems/$id/preview': typeof ApiDesignSystemsIdPreviewRoute
+  '/api/design-systems/$id/templates': typeof ApiDesignSystemsIdTemplatesRouteWithChildren
+  '/api/design-systems/$id/templates/$file': typeof ApiDesignSystemsIdTemplatesFileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -211,7 +251,7 @@ export interface FileRoutesByTo {
   '/projects': typeof ProjectsRoute
   '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
-  '/api/design-systems': typeof ApiDesignSystemsRoute
+  '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
   '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -223,12 +263,17 @@ export interface FileRoutesByTo {
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/console/skills': typeof AuthenticatedConsoleSkillsRoute
+  '/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
   '/console/tools': typeof AuthenticatedConsoleToolsRoute
   '/api/desktop/screenshot': typeof ApiDesktopScreenshotRoute
   '/api/desktop/system': typeof ApiDesktopSystemRoute
   '/console': typeof AuthenticatedConsoleIndexRoute
   '/console/design/$systemId': typeof AuthenticatedConsoleDesignSystemIdRoute
   '/console/projects/$projectId': typeof AuthenticatedConsoleProjectsProjectIdRoute
+  '/console/templates/$systemId': typeof AuthenticatedConsoleTemplatesSystemIdRoute
+  '/api/design-systems/$id/preview': typeof ApiDesignSystemsIdPreviewRoute
+  '/api/design-systems/$id/templates': typeof ApiDesignSystemsIdTemplatesRouteWithChildren
+  '/api/design-systems/$id/templates/$file': typeof ApiDesignSystemsIdTemplatesFileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -240,7 +285,7 @@ export interface FileRoutesById {
   '/skills': typeof SkillsRoute
   '/_authenticated/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
-  '/api/design-systems': typeof ApiDesignSystemsRoute
+  '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
   '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -252,12 +297,17 @@ export interface FileRoutesById {
   '/_authenticated/console/plugins': typeof AuthenticatedConsolePluginsRoute
   '/_authenticated/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/_authenticated/console/skills': typeof AuthenticatedConsoleSkillsRoute
+  '/_authenticated/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
   '/_authenticated/console/tools': typeof AuthenticatedConsoleToolsRoute
   '/api/desktop/screenshot': typeof ApiDesktopScreenshotRoute
   '/api/desktop/system': typeof ApiDesktopSystemRoute
   '/_authenticated/console/': typeof AuthenticatedConsoleIndexRoute
   '/_authenticated/console/design/$systemId': typeof AuthenticatedConsoleDesignSystemIdRoute
   '/_authenticated/console/projects/$projectId': typeof AuthenticatedConsoleProjectsProjectIdRoute
+  '/_authenticated/console/templates/$systemId': typeof AuthenticatedConsoleTemplatesSystemIdRoute
+  '/api/design-systems/$id/preview': typeof ApiDesignSystemsIdPreviewRoute
+  '/api/design-systems/$id/templates': typeof ApiDesignSystemsIdTemplatesRouteWithChildren
+  '/api/design-systems/$id/templates/$file': typeof ApiDesignSystemsIdTemplatesFileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -281,12 +331,17 @@ export interface FileRouteTypes {
     | '/console/plugins'
     | '/console/settings'
     | '/console/skills'
+    | '/console/templates'
     | '/console/tools'
     | '/api/desktop/screenshot'
     | '/api/desktop/system'
     | '/console/'
     | '/console/design/$systemId'
     | '/console/projects/$projectId'
+    | '/console/templates/$systemId'
+    | '/api/design-systems/$id/preview'
+    | '/api/design-systems/$id/templates'
+    | '/api/design-systems/$id/templates/$file'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -307,12 +362,17 @@ export interface FileRouteTypes {
     | '/console/plugins'
     | '/console/settings'
     | '/console/skills'
+    | '/console/templates'
     | '/console/tools'
     | '/api/desktop/screenshot'
     | '/api/desktop/system'
     | '/console'
     | '/console/design/$systemId'
     | '/console/projects/$projectId'
+    | '/console/templates/$systemId'
+    | '/api/design-systems/$id/preview'
+    | '/api/design-systems/$id/templates'
+    | '/api/design-systems/$id/templates/$file'
   id:
     | '__root__'
     | '/'
@@ -335,12 +395,17 @@ export interface FileRouteTypes {
     | '/_authenticated/console/plugins'
     | '/_authenticated/console/settings'
     | '/_authenticated/console/skills'
+    | '/_authenticated/console/templates'
     | '/_authenticated/console/tools'
     | '/api/desktop/screenshot'
     | '/api/desktop/system'
     | '/_authenticated/console/'
     | '/_authenticated/console/design/$systemId'
     | '/_authenticated/console/projects/$projectId'
+    | '/_authenticated/console/templates/$systemId'
+    | '/api/design-systems/$id/preview'
+    | '/api/design-systems/$id/templates'
+    | '/api/design-systems/$id/templates/$file'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -351,7 +416,7 @@ export interface RootRouteChildren {
   ProjectsRoute: typeof ProjectsRoute
   SkillsRoute: typeof SkillsRoute
   ApiChatRoute: typeof ApiChatRoute
-  ApiDesignSystemsRoute: typeof ApiDesignSystemsRoute
+  ApiDesignSystemsRoute: typeof ApiDesignSystemsRouteWithChildren
   ApiSitemapRoute: typeof ApiSitemapRoute
   ApiSpeakRoute: typeof ApiSpeakRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
@@ -509,6 +574,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsoleSkillsRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
+    '/_authenticated/console/templates': {
+      id: '/_authenticated/console/templates'
+      path: '/templates'
+      fullPath: '/console/templates'
+      preLoaderRoute: typeof AuthenticatedConsoleTemplatesRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
     '/_authenticated/console/tools': {
       id: '/_authenticated/console/tools'
       path: '/tools'
@@ -544,6 +616,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsoleProjectsProjectIdRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
+    '/_authenticated/console/templates/$systemId': {
+      id: '/_authenticated/console/templates/$systemId'
+      path: '/$systemId'
+      fullPath: '/console/templates/$systemId'
+      preLoaderRoute: typeof AuthenticatedConsoleTemplatesSystemIdRouteImport
+      parentRoute: typeof AuthenticatedConsoleTemplatesRoute
+    }
+    '/api/design-systems/$id/preview': {
+      id: '/api/design-systems/$id/preview'
+      path: '/$id/preview'
+      fullPath: '/api/design-systems/$id/preview'
+      preLoaderRoute: typeof ApiDesignSystemsIdPreviewRouteImport
+      parentRoute: typeof ApiDesignSystemsRoute
+    }
+    '/api/design-systems/$id/templates': {
+      id: '/api/design-systems/$id/templates'
+      path: '/$id/templates'
+      fullPath: '/api/design-systems/$id/templates'
+      preLoaderRoute: typeof ApiDesignSystemsIdTemplatesRouteImport
+      parentRoute: typeof ApiDesignSystemsRoute
+    }
+    '/api/design-systems/$id/templates/$file': {
+      id: '/api/design-systems/$id/templates/$file'
+      path: '/$file'
+      fullPath: '/api/design-systems/$id/templates/$file'
+      preLoaderRoute: typeof ApiDesignSystemsIdTemplatesFileRouteImport
+      parentRoute: typeof ApiDesignSystemsIdTemplatesRoute
+    }
   }
 }
 
@@ -562,6 +662,21 @@ const AuthenticatedConsoleDesignRouteWithChildren =
     AuthenticatedConsoleDesignRouteChildren,
   )
 
+interface AuthenticatedConsoleTemplatesRouteChildren {
+  AuthenticatedConsoleTemplatesSystemIdRoute: typeof AuthenticatedConsoleTemplatesSystemIdRoute
+}
+
+const AuthenticatedConsoleTemplatesRouteChildren: AuthenticatedConsoleTemplatesRouteChildren =
+  {
+    AuthenticatedConsoleTemplatesSystemIdRoute:
+      AuthenticatedConsoleTemplatesSystemIdRoute,
+  }
+
+const AuthenticatedConsoleTemplatesRouteWithChildren =
+  AuthenticatedConsoleTemplatesRoute._addFileChildren(
+    AuthenticatedConsoleTemplatesRouteChildren,
+  )
+
 interface AuthenticatedConsoleRouteChildren {
   AuthenticatedConsoleThreadIdRoute: typeof AuthenticatedConsoleThreadIdRoute
   AuthenticatedConsoleConnectorsRoute: typeof AuthenticatedConsoleConnectorsRoute
@@ -570,6 +685,7 @@ interface AuthenticatedConsoleRouteChildren {
   AuthenticatedConsolePluginsRoute: typeof AuthenticatedConsolePluginsRoute
   AuthenticatedConsoleSettingsRoute: typeof AuthenticatedConsoleSettingsRoute
   AuthenticatedConsoleSkillsRoute: typeof AuthenticatedConsoleSkillsRoute
+  AuthenticatedConsoleTemplatesRoute: typeof AuthenticatedConsoleTemplatesRouteWithChildren
   AuthenticatedConsoleToolsRoute: typeof AuthenticatedConsoleToolsRoute
   AuthenticatedConsoleIndexRoute: typeof AuthenticatedConsoleIndexRoute
   AuthenticatedConsoleProjectsProjectIdRoute: typeof AuthenticatedConsoleProjectsProjectIdRoute
@@ -583,6 +699,8 @@ const AuthenticatedConsoleRouteChildren: AuthenticatedConsoleRouteChildren = {
   AuthenticatedConsolePluginsRoute: AuthenticatedConsolePluginsRoute,
   AuthenticatedConsoleSettingsRoute: AuthenticatedConsoleSettingsRoute,
   AuthenticatedConsoleSkillsRoute: AuthenticatedConsoleSkillsRoute,
+  AuthenticatedConsoleTemplatesRoute:
+    AuthenticatedConsoleTemplatesRouteWithChildren,
   AuthenticatedConsoleToolsRoute: AuthenticatedConsoleToolsRoute,
   AuthenticatedConsoleIndexRoute: AuthenticatedConsoleIndexRoute,
   AuthenticatedConsoleProjectsProjectIdRoute:
@@ -603,6 +721,34 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface ApiDesignSystemsIdTemplatesRouteChildren {
+  ApiDesignSystemsIdTemplatesFileRoute: typeof ApiDesignSystemsIdTemplatesFileRoute
+}
+
+const ApiDesignSystemsIdTemplatesRouteChildren: ApiDesignSystemsIdTemplatesRouteChildren =
+  {
+    ApiDesignSystemsIdTemplatesFileRoute: ApiDesignSystemsIdTemplatesFileRoute,
+  }
+
+const ApiDesignSystemsIdTemplatesRouteWithChildren =
+  ApiDesignSystemsIdTemplatesRoute._addFileChildren(
+    ApiDesignSystemsIdTemplatesRouteChildren,
+  )
+
+interface ApiDesignSystemsRouteChildren {
+  ApiDesignSystemsIdPreviewRoute: typeof ApiDesignSystemsIdPreviewRoute
+  ApiDesignSystemsIdTemplatesRoute: typeof ApiDesignSystemsIdTemplatesRouteWithChildren
+}
+
+const ApiDesignSystemsRouteChildren: ApiDesignSystemsRouteChildren = {
+  ApiDesignSystemsIdPreviewRoute: ApiDesignSystemsIdPreviewRoute,
+  ApiDesignSystemsIdTemplatesRoute:
+    ApiDesignSystemsIdTemplatesRouteWithChildren,
+}
+
+const ApiDesignSystemsRouteWithChildren =
+  ApiDesignSystemsRoute._addFileChildren(ApiDesignSystemsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -611,7 +757,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsRoute: ProjectsRoute,
   SkillsRoute: SkillsRoute,
   ApiChatRoute: ApiChatRoute,
-  ApiDesignSystemsRoute: ApiDesignSystemsRoute,
+  ApiDesignSystemsRoute: ApiDesignSystemsRouteWithChildren,
   ApiSitemapRoute: ApiSitemapRoute,
   ApiSpeakRoute: ApiSpeakRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
