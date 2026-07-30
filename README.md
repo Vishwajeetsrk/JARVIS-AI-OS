@@ -14,7 +14,10 @@
 > **Persistent-memory AI Operating System — 30 specialized agents, 150 design systems, 10-tier open-source stack, and $0 free cloud models.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
 [![Vercel](https://img.shields.io/badge/Live%20Console-Vercel-black.svg)](https://jarvisaios.vercel.app)
+[![Supabase](https://img.shields.io/badge/Supabase-BaaS-3FCF8E?logo=supabase)](https://supabase.com)
 [![GitHub Repos](https://img.shields.io/badge/Open%20Source-68%20Repos-blue.svg)](GitHub%20Repo/CATALOG.md)
 
 ---
@@ -143,6 +146,95 @@ D:\Team of Vishwajeet/
 
 ---
 
+---
+
+## Tech Stack
+
+### Languages
+| Language | Usage |
+|---|---|
+| **TypeScript** | Primary language — web app, agents, CLI |
+| **Python** | Desktop automation bridge, skill scripts |
+| **SQL** | Supabase PostgreSQL schema, RLS policies |
+
+### Frontend
+| Technology | Purpose |
+|---|---|
+| **React 19** | UI component library |
+| **TanStack React Router + Start** | SSR/SSG meta-framework with file-based routing |
+| **TanStack React Query** | Server-state management & caching |
+| **Vite 5** | Build tool & dev server |
+| **Tailwind CSS v4** | Utility-first CSS framework |
+| **Radix UI Primitives** | Accessible, headless UI components (dialog, dropdown, popover, select, tabs, tooltip, etc.) |
+| **shadcn/ui** | Component library (Radix + Tailwind) |
+| **Motion (Framer Motion)** | Declarative animations |
+| **Lucide React** | Icon library |
+| **Recharts** | Charts & data visualization |
+| **Sonner** | Toast notifications |
+| **Vaul** | Drawer/sheet component |
+| **cmdk** | Command palette search |
+| **Embla Carousel** | Touch carousel |
+| **React Hook Form + Zod** | Form validation |
+
+### AI & Agents
+| Technology | Purpose |
+|---|---|
+| **Vercel AI SDK** | Unified LLM streaming, chat, tool calling |
+| **Google Gemini (free)** | Primary LLM — chat, reasoning, vision |
+| **Groq Cloud (free)** | Llama 3.3 70B, Whisper STT, Orpheus TTS |
+| **OpenRouter (free)** | Auto-fallback across open models |
+| **Ollama** | Local LLM inference (offline/private) |
+| **Mastra AI (@mastra/core)** | Multi-agent orchestration — 7 agents, workflows, tools |
+| **Streamdown** | Streaming markdown renderer with CJK/code/math/Mermaid |
+
+### Backend & Infrastructure
+| Technology | Purpose |
+|---|---|
+| **Supabase** | PostgreSQL, Auth (Google OAuth + email), Storage, Realtime |
+| **Vercel** | Deployment — SSR via TanStack Start |
+| **Docker Compose** | Self-hosted services (n8n, OpenHands, PostgreSQL, Redis) |
+| **n8n** | Workflow automation (invoicing, QA, alerts) |
+| **OpenHands** | AI coding sandbox (Docker) |
+| **Node.js / Bun** | JavaScript runtimes |
+| **Redis** | Cache & message broker |
+
+### MCP Servers (Model Context Protocol)
+| Tool | Purpose |
+|---|---|
+| **Supabase MCP** | Database management & debugging |
+| **Stitch MCP** | UI component generation |
+| **Chrome DevTools MCP** | Browser testing & Lighthouse audits |
+| **Firebase MCP** | Backend integration |
+| **Postman MCP** | API testing & collections |
+
+### Integrations & Connectors
+| Service | Purpose |
+|---|---|
+| **Slack** | Communication & workflows |
+| **Figma** | Design system connector |
+| **Google Calendar** | Scheduling & events |
+| **Gmail** | Email |
+| **Notion** | Documentation |
+| **Cloudflare** | Workers, DNS, R2 |
+| **Razorpay** | Payment processing |
+| **Brave Search** | Web search plugin |
+| **Wolfram Alpha** | Computational knowledge |
+| **ElevenLabs** | Text-to-speech |
+| **Guardrails AI** | PII detection & policy filtering |
+| **Playwright** | E2E browser automation |
+
+### Development Tools
+| Tool | Purpose |
+|---|---|
+| **Git / GitHub** | Version control, CI/CD |
+| **PowerShell** | Windows CLI & automation |
+| **Docker** | Container runtime |
+| **RabbitMQ** | Message queuing (agent communication bus) |
+| **Stitch** | Design-to-code generation |
+| **PostgreSQL 16** | Relational database |
+
+---
+
 ## Quickstart Guide
 
 ### 1. Prerequisites
@@ -155,7 +247,7 @@ D:\Team of Vishwajeet/
 ```bash
 # Clone the repository
 git clone https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git
-cd "jarvis console"
+cd JARVIS-AI-OS
 
 # Copy environment file and fill in your keys
 cp .env.example .env
@@ -174,19 +266,25 @@ Open **`http://localhost:5173`** in your web browser.
 
 #### Terminal CLI Mode
 ```bash
-npx tsx scripts/jarvis.ts status
+# From project root — npm scripts
+npm run jarvis:status
+
+# From ANY directory — batch wrappers (add repo to PATH for permanent use)
+"D:\Team of Vishwajeet\jarvis.bat" status
+
+# Permanent setup: add repo to PATH
+.\setup-cli.ps1          # Run once, then just: jarvis status
 ```
 
 #### Desktop OS Automation Bridge
 ```bash
-# System status query
-python scripts/desktop-voice-bridge.py system
+# From project root — npm scripts
+npm run bridge:system      # System status
+npm run bridge:screenshot   # Screen capture
+npm run bridge:launch -- "youtube"  # App launcher
 
-# Screen capture
-python scripts/desktop-voice-bridge.py screenshot
-
-# App launcher (YouTube, Google, GitHub)
-python scripts/desktop-voice-bridge.py launch "youtube"
+# From ANY directory
+"D:\Team of Vishwajeet\bridge.bat" system
 ```
 
 ---
@@ -229,7 +327,7 @@ Config: `jarvis console/src/integrations/supabase/`
 
 - **Zero Secret Leaks**: All API credentials are kept inside `.env` files protected by `.gitignore`.
 - **Local Data Control**: Screen captures and local memory banks reside in `~/.agent-memory/` on your host machine.
-- **Reporting Vulnerabilities**: Report security issues to security@vishwajeet.dev.
+- **Reporting Vulnerabilities**: Report via GitHub Security Advisory or email vishwajeetsrk@gmail.com. See [SECURITY.md](SECURITY.md).
 
 ---
 

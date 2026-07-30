@@ -1,3 +1,9 @@
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __projectRoot = resolve(dirname(__filename), '..');
+
 import { detectHardwareSpecs } from '../src/mastra/tools/hardware-detector.js';
 import { generateProjectManagerReport } from '../src/mastra/tools/auto-pm.js';
 import { readGlobalMemory } from '../src/mastra/tools/memory-tool.js';
@@ -8,6 +14,7 @@ export function runJarvisCLI() {
 
   console.log(`==================================================`);
   console.log(`  JARVIS COMMAND LINE INTERFACE (CLI) v2.2`);
+  console.log(`  Project: ${__projectRoot}`);
   console.log(`==================================================`);
 
   if (command === 'status') {
@@ -21,7 +28,7 @@ export function runJarvisCLI() {
     console.log(`- Recommended Execution Mode: ${hw.recommendedExecutionMode} ($0 Recurring Baseline)`);
 
     console.log(`\n[Active $0 Free Cloud API Providers]`);
-    hw.activeFreeApiProviders.forEach(p => console.log(`  ✓ ${p}`));
+    hw.activeFreeApiProviders.forEach(p => console.log(`  \u2713 ${p}`));
 
     console.log(`\n[Project Manager Status]`);
     console.log(`- Project: ${pm.projectName}`);

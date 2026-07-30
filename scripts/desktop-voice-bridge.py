@@ -8,6 +8,10 @@ import json
 import datetime
 import subprocess
 
+# Detect project root so this script works from any directory
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+_PROJECT_ROOT = os.path.abspath(os.path.join(_SCRIPT_DIR, '..'))
+
 def get_system_info():
     now = datetime.datetime.now()
     return {

@@ -9,7 +9,13 @@
     "dev": "tsx watch src/mastra/index.ts",
     "start": "node dist/index.js",
     "test": "vitest run",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "jarvis": "tsx scripts/jarvis.ts",
+    "jarvis:status": "tsx scripts/jarvis.ts status",
+    "bridge": "python scripts/desktop-voice-bridge.py",
+    "bridge:system": "python scripts/desktop-voice-bridge.py system",
+    "bridge:screenshot": "python scripts/desktop-voice-bridge.py screenshot",
+    "bridge:launch": "python scripts/desktop-voice-bridge.py launch"
   },
   "keywords": ["ai-os", "multi-agent", "mastra", "jarvis", "agent-skills"],
   "author": "Vishwajeet",
