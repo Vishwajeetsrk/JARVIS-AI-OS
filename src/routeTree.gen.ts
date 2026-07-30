@@ -19,6 +19,7 @@ import { Route as AuthenticatedConsoleRouteImport } from './routes/_authenticate
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiSpeakRouteImport } from './routes/api/speak'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
+import { Route as ApiVisionRouteImport } from './routes/api/vision'
 import { Route as AuthenticatedConsoleIndexRouteImport } from './routes/_authenticated/console/index'
 import { Route as AuthenticatedConsoleThreadIdRouteImport } from './routes/_authenticated/console/$threadId'
 import { Route as AuthenticatedConsoleConnectorsRouteImport } from './routes/_authenticated/console/connectors'
@@ -78,6 +79,11 @@ const ApiSpeakRoute = ApiSpeakRouteImport.update({
 const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
   id: '/api/transcribe',
   path: '/api/transcribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiVisionRoute = ApiVisionRouteImport.update({
+  id: '/api/vision',
+  path: '/api/vision',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedConsoleIndexRoute =
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
+  '/api/vision': typeof ApiVisionRoute
   '/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
   '/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
   '/console/github': typeof AuthenticatedConsoleGithubRoute
@@ -176,6 +183,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
+  '/api/vision': typeof ApiVisionRoute
   '/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
   '/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
   '/console/github': typeof AuthenticatedConsoleGithubRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
+  '/api/vision': typeof ApiVisionRoute
   '/_authenticated/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
   '/_authenticated/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
   '/_authenticated/console/github': typeof AuthenticatedConsoleGithubRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/speak'
     | '/api/transcribe'
+    | '/api/vision'
     | '/console/$threadId'
     | '/console/connectors'
     | '/console/github'
@@ -245,6 +255,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/speak'
     | '/api/transcribe'
+    | '/api/vision'
     | '/console/$threadId'
     | '/console/connectors'
     | '/console/github'
@@ -268,6 +279,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/speak'
     | '/api/transcribe'
+    | '/api/vision'
     | '/_authenticated/console/$threadId'
     | '/_authenticated/console/connectors'
     | '/_authenticated/console/github'
@@ -291,6 +303,7 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   ApiSpeakRoute: typeof ApiSpeakRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
+  ApiVisionRoute: typeof ApiVisionRoute
   ApiDesktopScreenshotRoute: typeof ApiDesktopScreenshotRoute
   ApiDesktopSystemRoute: typeof ApiDesktopSystemRoute
 }
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       path: '/api/transcribe'
       fullPath: '/api/transcribe'
       preLoaderRoute: typeof ApiTranscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/vision': {
+      id: '/api/vision'
+      path: '/api/vision'
+      fullPath: '/api/vision'
+      preLoaderRoute: typeof ApiVisionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/console/': {
@@ -496,6 +516,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   ApiSpeakRoute: ApiSpeakRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
+  ApiVisionRoute: ApiVisionRoute,
   ApiDesktopScreenshotRoute: ApiDesktopScreenshotRoute,
   ApiDesktopSystemRoute: ApiDesktopSystemRoute,
 }

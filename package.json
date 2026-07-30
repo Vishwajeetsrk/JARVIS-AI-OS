@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "tsx watch src/mastra/index.ts",
+    "dev": "vite dev",
+    "dev:mastra": "tsx watch src/mastra/index.ts",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:mastra\"",
     "start": "node dist/index.js",
     "test": "vitest run",
     "lint": "tsc --noEmit",
@@ -108,6 +110,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.4.1",
+    "concurrently": "^9.1.2",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.2.0"

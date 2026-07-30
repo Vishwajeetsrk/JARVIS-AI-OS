@@ -9,8 +9,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const Route = createFileRoute("/api/vision" as any)({
+export const Route = createFileRoute("/api/vision")({
   server: {
     handlers: {
       POST: async ({ request }) => {

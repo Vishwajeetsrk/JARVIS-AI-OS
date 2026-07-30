@@ -253,86 +253,82 @@ D:\Team of Vishwajeet/
 
 ---
 
-## Quickstart Guide
+## How to Run
 
-### 1. Prerequisites
-- Node.js >= 20.0
-- Python 3.10+ (for Desktop OS automation)
-- Free Google Gemini Key (https://aistudio.google.com/apikey)
-- Free Groq Key (https://console.groq.com)
-
-### 2. Setup & Installation
 ```bash
-# Clone the repository
-git clone https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git
-cd JARVIS-AI-OS
+# 1. Install dependencies (if not already)
+npm install --legacy-peer-deps
 
-# Copy environment file and fill in your keys
+# 2. Set up environment
 cp .env.example .env
+# Edit .env and add:
+#   GEMINI_API_KEY=your_key
+#   GROQ_API_KEY=your_key
+#   SUPABASE_URL=your_url
+#   SUPABASE_PUBLISHABLE_KEY=your_key
 
-# Install dependencies
-npm install
-
-# Start the web app console
+# 3. Start the web console
 npm run dev
+
+# 4. (Optional) Start AI agents in parallel
+npm run dev:all
 ```
 
-### 3. Launching Surfaces
+Open http://localhost:5173 in your browser.
 
-#### Web App Console
-Open **`http://localhost:5173`** in your web browser.
+### Available Scripts
 
-#### Terminal CLI Mode
-```bash
-# From project root — npm scripts
-npm run jarvis:status
+| Command | What It Does |
+|---|---|
+| `npm run dev` | Start web console only (Vite + TanStack Start) |
+| `npm run dev:mastra` | Start AI agent backend only |
+| `npm run dev:all` | Start both web + AI agents in parallel |
+| `npm run build` | Build for production |
+| `npm run test` | Run tests |
 
-# From ANY directory — batch wrappers (add repo to PATH for permanent use)
-"D:\Team of Vishwajeet\jarvis.bat" status
+---
 
-# Permanent setup: add repo to PATH
-.\setup-cli.ps1          # Run once, then just: jarvis status
-```
+## How to Use
 
-#### Desktop OS Automation Bridge
-```bash
-# From project root — npm scripts
-npm run bridge:system      # System status
-npm run bridge:screenshot   # Screen capture
-npm run bridge:launch -- "youtube"  # App launcher
+### Voice Assistant
 
-# From ANY directory
-"D:\Team of Vishwajeet\bridge.bat" system
-```
+1. Open the web console
+2. Click the microphone button (bottom right)
+3. Say "Hey Jarvis" + your command
+4. Jarvis responds with voice and takes action
 
-#### Voice Assistant Mode
-1. Open the web console at `http://localhost:5173`
-2. Click the microphone button to enable voice mode
-3. Say **"Hey Jarvis"** followed by your command
-4. Jarvis will respond with voice and take action
+### Voice Commands
 
-**Voice Commands Examples:**
-```
-"Hey Jarvis, what's on my screen?"
-"Hey Jarvis, create a Word document with project status"
-"Hey Jarvis, make a PowerPoint about our product"
-"Hey Jarvis, create an Excel spreadsheet with sales data"
-"Hey Jarvis, run this code: console.log('hello')"
-"Hey Jarvis, open YouTube"
-"Hey Jarvis, what time is it?"
-```
+| Command | What Jarvis Does |
+|---|---|
+| "Hey Jarvis, what's on my screen?" | Captures screenshot, analyzes with Gemini Vision |
+| "Hey Jarvis, create a Word document about..." | Generates .docx file for download |
+| "Hey Jarvis, make a PowerPoint about..." | Generates .pptx presentation |
+| "Hey Jarvis, create an Excel spreadsheet with..." | Generates .xlsx spreadsheet |
+| "Hey Jarvis, run this code: console.log('hello')" | Executes code and returns output |
+| "Hey Jarvis, open YouTube" | Launches app via desktop bridge |
+| "Hey Jarvis, what time is it?" | Returns system info |
 
-**Screen Vision:**
-- Click "Capture Screen" button while in voice mode
-- Jarvis will analyze what's on your screen and respond
+### File Creation
 
-**File Creation:**
-- Say "Hey Jarvis, create a [Word/PowerPoint/Excel] document about [topic]"
-- Jarvis generates the file and provides a download link
+Just tell Jarvis what you want:
 
-**Auto-Learning:**
-- Every conversation is automatically analyzed for patterns
-- Mistakes, decisions, and best practices are saved to `~/.agent-memory/global/`
+- "Create a Word document with project status report"
+- "Make a PowerPoint presentation about our product roadmap"
+- "Create an Excel spreadsheet with monthly sales data"
+- "Generate a report about the Q3 performance"
+
+### Screen Vision
+
+- Click "Capture Screen" button in voice mode
+- Jarvis analyzes what's on your screen
+- Ask: "What's on my screen?" or "Explain this code"
+
+### Auto-Learning
+
+- Every conversation is automatically analyzed
+- Mistakes, decisions, and patterns are saved to ~/.agent-memory/global/
+- Jarvis remembers what it learned for future sessions
 
 ---
 

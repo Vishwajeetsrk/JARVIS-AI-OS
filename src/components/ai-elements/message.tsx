@@ -12,23 +12,37 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { cjk } from "@streamdown/cjk";
-import { code } from "@streamdown/code";
-import { math } from "@streamdown/math";
-import { mermaid } from "@streamdown/mermaid";
 import type { UIMessage } from "ai";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
 import {
   createContext,
+  lazy,
   memo,
+  Suspense,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { Streamdown } from "streamdown";
+import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
+
+const Streamdown = lazy(() =>
+  import("streamdown").then((m) => ({ default: m.Streamdown }))
+);
+
+function useStreamdownPlugins() {
+  const [plugins, setPlugins] = useState<Record<string, unknown> | null>(null);
+  useEffect(() => {
+    Promise.all([
+      import("@streamdown/cjk").then((m) => ["cjk", m.cjk]),
+      import("@streamdown/code").then((m) => ["code", m.code]),
+      import("@streamdown/math").then((m) => ["math", m.math]),
+      import("@streamdown/mermaid").then((m) => ["mermaid", m.mermaid]),
+    ]).then((entries) => setPlugins(Object.fromEntries(entries)));
+  }, []);
+  return plugins;
+}
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
   from: UIMessage["role"];
@@ -319,21 +333,42 @@ export const MessageBranchPage = ({
   );
 };
 
-export type MessageResponseProps = ComponentProps<typeof Streamdown>;
-
-const streamdownPlugins = { cjk, code, math, mermaid };
+export type MessageResponseProps = ComponentProps<"div"> & {
+  children?: React.ReactNode;
+  isAnimating?: boolean;
+};
 
 export const MessageResponse = memo(
-  ({ className, ...props }: MessageResponseProps) => (
-    <Streamdown
-      className={cn(
-        "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
-        className
-      )}
-      plugins={streamdownPlugins}
-      {...props}
-    />
-  ),
+  ({ className, children, isAnimating, ...props }: MessageResponseProps) => {
+    const plugins = useStreamdownPlugins();
+    return (
+      <Suspense
+        fallback={
+          <div className="size-full animate-pulse text-sm text-muted-foreground">
+            Loading...
+          </div>
+        }
+      >
+        {plugins ? (
+          <Streamdown
+            className={cn(
+              "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+              className
+            )}
+            plugins={plugins}
+            isAnimating={isAnimating}
+            {...props}
+          >
+            {children}
+          </Streamdown>
+        ) : (
+          <div className="size-full animate-pulse text-sm text-muted-foreground">
+            Loading...
+          </div>
+        )}
+      </Suspense>
+    );
+  },
   (prevProps, nextProps) =>
     prevProps.children === nextProps.children &&
     nextProps.isAnimating === prevProps.isAnimating
