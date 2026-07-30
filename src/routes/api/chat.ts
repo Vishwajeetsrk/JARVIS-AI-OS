@@ -3,6 +3,14 @@ import { google } from "@ai-sdk/google";
 import { createGroq } from "@ai-sdk/groq";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { createClient } from "@supabase/supabase-js";
+import { z } from "zod";
+import { executeShell } from "@/mastra/tools/shell-executor";
+import { createDocx } from "@/mastra/tools/docx-creator";
+import { createPptx } from "@/mastra/tools/pptx-creator";
+import { createXlsx } from "@/mastra/tools/xlsx-creator";
+import { createReport } from "@/mastra/tools/report-creator";
+import { executeCode } from "@/mastra/tools/code-runner";
+import { autoLearn } from "@/mastra/tools/auto-learner";
 
 // ── Free provider setup ─────────────────────────────────────────────────────
 // Primary:  Google Gemini  → https://aistudio.google.com/apikey  (GEMINI_API_KEY)
@@ -164,12 +172,135 @@ export const Route = createFileRoute("/api/chat")({
           } catch {}
         }
 
-        // ── Stream response ───────────────────────────────────────────────
+        // ── Stream response with tools ──────────────────────────────────────
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const tools: any = {
+          executeShell: {
+            description: "Execute a shell command on the user's computer.",
+            parameters: z.object({
+              command: z.string(),
+              workingDirectory: z.string().optional(),
+            }),
+            execute: async ({ command, workingDirectory }: { command: string; workingDirectory?: string }) => {
+              return await executeShell({ command, workingDirectory });
+            },
+          },
+
+          createWordDocument: {
+            description: "Create a Microsoft Word document (.docx).",
+            parameters: z.object({
+              title: z.string(),
+              sections: z.array(z.object({
+                type: z.enum(["heading", "paragraph", "list", "table", "pageBreak"]),
+                text: z.string().optional(),
+                level: z.number().optional(),
+                items: z.array(z.string()).optional(),
+                ordered: z.boolean().optional(),
+                rows: z.array(z.array(z.string())).optional(),
+                headerRow: z.array(z.string()).optional(),
+                bold: z.boolean().optional(),
+                italic: z.boolean().optional(),
+                alignment: z.enum(["left", "center", "right", "justify"]).optional(),
+              })),
+            }),
+            execute: async (args: { title: string; sections: any[] }) => {
+              const blob = await createDocx(args);
+              return { success: true, filename: `${args.title.replace(/[^a-zA-Z0-9]/g, "_")}.docx`, size: blob.size };
+            },
+          },
+
+          createPresentation: {
+            description: "Create a PowerPoint presentation (.pptx).",
+            parameters: z.object({
+              title: z.string(),
+              slides: z.array(z.object({
+                type: z.enum(["title", "titleContent", "twoColumn", "sectionHeader", "blank"]),
+                title: z.string().optional(),
+                subtitle: z.string().optional(),
+                content: z.array(z.string()).optional(),
+                leftContent: z.array(z.string()).optional(),
+                rightContent: z.array(z.string()).optional(),
+                notes: z.string().optional(),
+              })),
+            }),
+            execute: async (args: { title: string; slides: any[] }) => {
+              const pptx = await createPptx(args);
+              return { success: true, slideCount: args.slides.length, filename: `${args.title.replace(/[^a-zA-Z0-9]/g, "_")}.pptx` };
+            },
+          },
+
+          createSpreadsheet: {
+            description: "Create an Excel spreadsheet (.xlsx).",
+            parameters: z.object({
+              title: z.string(),
+              sheets: z.array(z.object({
+                name: z.string(),
+                headers: z.array(z.string()).optional(),
+                rows: z.array(z.array(z.union([z.string(), z.number(), z.boolean(), z.null()]))).optional(),
+                columnWidths: z.array(z.number()).optional(),
+                autoFilter: z.boolean().optional(),
+                freezeTopRow: z.boolean().optional(),
+              })),
+            }),
+            execute: async (args: { title: string; sheets: any[] }) => {
+              const workbook = await createXlsx(args);
+              return { success: true, filename: `${args.title.replace(/[^a-zA-Z0-9]/g, "_")}.xlsx`, sheetCount: args.sheets.length };
+            },
+          },
+
+          createReport: {
+            description: "Generate a structured report (status, project, analysis, meeting).",
+            parameters: z.object({
+              title: z.string(),
+              type: z.enum(["status", "project", "analysis", "meeting", "custom"]),
+              summary: z.string().optional(),
+              sections: z.array(z.object({
+                title: z.string(),
+                content: z.string(),
+              })),
+              metrics: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+              recommendations: z.array(z.string()).optional(),
+              format: z.enum(["markdown", "docx", "html"]).optional(),
+            }),
+            execute: async (args: any) => {
+              return await createReport(args);
+            },
+          },
+
+          runCode: {
+            description: "Execute a code snippet (JavaScript, TypeScript, Python, Shell).",
+            parameters: z.object({
+              code: z.string(),
+              language: z.enum(["javascript", "typescript", "python", "shell"]),
+              timeout: z.number().optional(),
+            }),
+            execute: async (args: { code: string; language: any; timeout?: number }) => {
+              return await executeCode(args);
+            },
+          },
+
+          autoLearn: {
+            description: "Analyze a conversation and extract learnings to the memory bank.",
+            parameters: z.object({
+              messages: z.array(z.object({
+                role: z.enum(["user", "assistant"]),
+                content: z.string(),
+              })),
+              projectName: z.string().optional(),
+            }),
+            execute: async (args: { messages: any[]; projectName?: string }) => {
+              return await autoLearn(args.messages, args.projectName);
+            },
+          },
+        };
+
         const result = streamText({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           model: aiModel as any,
           system,
           messages: await convertToModelMessages(body.messages),
+          tools: tools as any,
+          toolChoice: "auto",
         });
 
         return result.toUIMessageStreamResponse({

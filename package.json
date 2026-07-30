@@ -18,7 +18,13 @@
     "bridge:screenshot": "python scripts/desktop-voice-bridge.py screenshot",
     "bridge:launch": "python scripts/desktop-voice-bridge.py launch"
   },
-  "keywords": ["ai-os", "multi-agent", "mastra", "jarvis", "agent-skills"],
+  "keywords": [
+    "ai-os",
+    "multi-agent",
+    "mastra",
+    "jarvis",
+    "agent-skills"
+  ],
   "author": "Vishwajeet",
   "license": "MIT",
   "dependencies": {
@@ -69,13 +75,17 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "docx": "^9.7.1",
     "embla-carousel-react": "^8.6.0",
     "es-toolkit": "^1.31.0",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "input-otp": "^1.4.2",
     "lucide-react": "^1.27.0",
     "motion": "^12.42.2",
     "nanoid": "^6.0.0",
     "ollama-ai-provider": "^1.2.0",
+    "pptxgenjs": "^4.0.1",
     "react": "^19.2.0",
     "react-day-picker": "^10.0.1",
     "react-dom": "^19.2.0",
@@ -96,8 +106,8 @@
   "devDependencies": {
     "@types/node": "^20.11.0",
     "@types/react": "^19.2.17",
-    "@vitejs/plugin-react": "^4.4.1",
     "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.4.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.2.0"

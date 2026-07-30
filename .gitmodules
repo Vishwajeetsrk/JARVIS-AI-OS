@@ -1,7 +1,0 @@
-[submodule "Agent-Team-Skills"]
-	path = Agent-Team-Skills
-	url = https://github.com/Vishwajeetsrk/Agent-Team-Skills.git
-
-[submodule "jarvis console"]
-	path = jarvis console
-	url = https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git

@@ -18,7 +18,7 @@ import { PageHeader, CatalogGrid } from "@/components/jarvis/catalog-grid";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
-  Palette, FileText, Link2, Sparkles, BookOpen, Plus, Trash2, ExternalLink, GitBranch, Layout, Globe,
+  Palette, FileText, Link2, Sparkles, BookOpen, Plus, Trash2, ExternalLink, GitBranch, Layout, Globe, Mic,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/console/settings")({
@@ -112,6 +112,7 @@ export function SettingsPage() {
           <TabsTrigger value="skills">Skills</TabsTrigger>
           <TabsTrigger value="connectors">Connectors</TabsTrigger>
           <TabsTrigger value="plugins">Plugins</TabsTrigger>
+          <TabsTrigger value="voice">Voice Mode</TabsTrigger>
           <TabsTrigger value="profile">Profile</TabsTrigger>
         </TabsList>
 
@@ -328,6 +329,132 @@ export function SettingsPage() {
           <div className="mt-6">
             <Label className="mb-2 block">Tools</Label>
             <CatalogGrid items={TOOLS} enabled={(settings.enabled_tools as string[]) ?? []} onToggle={(id, n) => toggle("enabled_tools", id, n)} />
+          </div>
+        </TabsContent>
+
+        {/* ── Voice Mode Tab ─────────────────────────────────────────────── */}
+        <TabsContent value="voice" className="mt-6 space-y-6">
+          <div className="rounded-lg border border-border bg-card p-5 space-y-4">
+            <div className="flex items-center gap-2 text-primary font-medium">
+              <Mic className="h-5 w-5" /> Voice Assistant Settings
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Configure Jarvis voice assistant. Say "Hey Jarvis" followed by your command.
+              Jarvis can listen, speak, see your screen, execute commands, create files, and learn.
+            </p>
+
+            <div className="grid gap-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Voice Mode</Label>
+                  <p className="text-xs text-muted-foreground">Enable continuous voice listening</p>
+                </div>
+                <Switch
+                  checked={(settings as Record<string, unknown>).voice_enabled as boolean ?? false}
+                  onCheckedChange={(v) => m.mutate({ voice_enabled: v })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Wake Word Detection</Label>
+                  <p className="text-xs text-muted-foreground">Require "Hey Jarvis" before processing</p>
+                </div>
+                <Switch
+                  checked={(settings as Record<string, unknown>).wake_word_enabled as boolean ?? true}
+                  onCheckedChange={(v) => m.mutate({ wake_word_enabled: v })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Auto-Learn</Label>
+                  <p className="text-xs text-muted-foreground">Automatically extract learnings from conversations</p>
+                </div>
+                <Switch
+                  checked={(settings as Record<string, unknown>).auto_learn_enabled as boolean ?? true}
+                  onCheckedChange={(v) => m.mutate({ auto_learn_enabled: v })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Screen Vision</Label>
+                  <p className="text-xs text-muted-foreground">Allow Jarvis to capture and analyze your screen</p>
+                </div>
+                <Switch
+                  checked={(settings as Record<string, unknown>).screen_vision_enabled as boolean ?? true}
+                  onCheckedChange={(v) => m.mutate({ screen_vision_enabled: v })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Shell Execution</Label>
+                  <p className="text-xs text-muted-foreground">Allow Jarvis to execute shell commands</p>
+                </div>
+                <Switch
+                  checked={(settings as Record<string, unknown>).shell_execution_enabled as boolean ?? true}
+                  onCheckedChange={(v) => m.mutate({ shell_execution_enabled: v })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-border bg-card p-5 space-y-4">
+            <div className="flex items-center gap-2 text-primary font-medium">
+              <FileText className="h-5 w-5" /> File Creation
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Enable/disable file creation capabilities. Jarvis can create Word, PowerPoint,
+              Excel, and other file types from voice commands.
+            </p>
+
+            <div className="grid gap-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Word Documents (.docx)</Label>
+                  <p className="text-xs text-muted-foreground">Create Microsoft Word documents</p>
+                </div>
+                <Switch
+                  checked={(settings as Record<string, unknown>).docx_enabled as boolean ?? true}
+                  onCheckedChange={(v) => m.mutate({ docx_enabled: v })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>PowerPoint (.pptx)</Label>
+                  <p className="text-xs text-muted-foreground">Create presentations</p>
+                </div>
+                <Switch
+                  checked={(settings as Record<string, unknown>).pptx_enabled as boolean ?? true}
+                  onCheckedChange={(v) => m.mutate({ pptx_enabled: v })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Excel Spreadsheets (.xlsx)</Label>
+                  <p className="text-xs text-muted-foreground">Create spreadsheets</p>
+                </div>
+                <Switch
+                  checked={(settings as Record<string, unknown>).xlsx_enabled as boolean ?? true}
+                  onCheckedChange={(v) => m.mutate({ xlsx_enabled: v })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Code Execution</Label>
+                  <p className="text-xs text-muted-foreground">Run code snippets (JS, TS, Python, Shell)</p>
+                </div>
+                <Switch
+                  checked={(settings as Record<string, unknown>).code_execution_enabled as boolean ?? true}
+                  onCheckedChange={(v) => m.mutate({ code_execution_enabled: v })}
+                />
+              </div>
+            </div>
           </div>
         </TabsContent>
 
