@@ -58,6 +58,34 @@ function ConsoleShell() {
   const inv = () => qc.invalidateQueries({ queryKey: ["threads"] });
   const invP = () => qc.invalidateQueries({ queryKey: ["projects"] });
 
+  // Realtime: keep the thread list and project list fresh as work happens.
+  useEffect(() => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let mounted = true;
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return;
+      const filter = `user_id=eq.${data.user.id}`;
+      channel = supabase
+        .channel("console-shell")
+        .on("postgres_changes", { event: "*", schema: "public", table: "threads", filter }, () => {
+          if (mounted) inv();
+        })
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter }, () => {
+          if (mounted) qc.invalidateQueries({ queryKey: ["messages"] });
+        })
+        .on("postgres_changes", { event: "*", schema: "public", table: "projects", filter }, () => {
+          if (mounted) invP();
+        })
+        .subscribe();
+    })();
+    return () => {
+      mounted = false;
+      channel?.unsubscribe();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const mCreate = useMutation({
     mutationFn: (project_id?: string) => createFn({ data: { project_id: project_id ?? null } }),
     onSuccess: (t) => { inv(); navigate({ to: "/console/$threadId", params: { threadId: t.id } }); },

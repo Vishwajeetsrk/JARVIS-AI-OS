@@ -18,6 +18,7 @@ import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as AuthenticatedConsoleRouteImport } from './routes/_authenticated/console'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiDesignSystemsRouteImport } from './routes/api/design-systems'
+import { Route as ApiNewsRouteImport } from './routes/api/news'
 import { Route as ApiSitemapRouteImport } from './routes/api/sitemap'
 import { Route as ApiSpeakRouteImport } from './routes/api/speak'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
@@ -83,6 +84,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
 const ApiDesignSystemsRoute = ApiDesignSystemsRouteImport.update({
   id: '/api/design-systems',
   path: '/api/design-systems',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiNewsRoute = ApiNewsRouteImport.update({
+  id: '/api/news',
+  path: '/api/news',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSitemapRoute = ApiSitemapRouteImport.update({
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
+  '/api/news': typeof ApiNewsRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -252,6 +259,7 @@ export interface FileRoutesByTo {
   '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
+  '/api/news': typeof ApiNewsRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -286,6 +294,7 @@ export interface FileRoutesById {
   '/_authenticated/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
+  '/api/news': typeof ApiNewsRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -320,6 +329,7 @@ export interface FileRouteTypes {
     | '/console'
     | '/api/chat'
     | '/api/design-systems'
+    | '/api/news'
     | '/api/sitemap'
     | '/api/speak'
     | '/api/transcribe'
@@ -351,6 +361,7 @@ export interface FileRouteTypes {
     | '/skills'
     | '/api/chat'
     | '/api/design-systems'
+    | '/api/news'
     | '/api/sitemap'
     | '/api/speak'
     | '/api/transcribe'
@@ -384,6 +395,7 @@ export interface FileRouteTypes {
     | '/_authenticated/console'
     | '/api/chat'
     | '/api/design-systems'
+    | '/api/news'
     | '/api/sitemap'
     | '/api/speak'
     | '/api/transcribe'
@@ -417,6 +429,7 @@ export interface RootRouteChildren {
   SkillsRoute: typeof SkillsRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiDesignSystemsRoute: typeof ApiDesignSystemsRouteWithChildren
+  ApiNewsRoute: typeof ApiNewsRoute
   ApiSitemapRoute: typeof ApiSitemapRoute
   ApiSpeakRoute: typeof ApiSpeakRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
@@ -488,6 +501,13 @@ declare module '@tanstack/react-router' {
       path: '/api/design-systems'
       fullPath: '/api/design-systems'
       preLoaderRoute: typeof ApiDesignSystemsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/news': {
+      id: '/api/news'
+      path: '/api/news'
+      fullPath: '/api/news'
+      preLoaderRoute: typeof ApiNewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/sitemap': {
@@ -758,6 +778,7 @@ const rootRouteChildren: RootRouteChildren = {
   SkillsRoute: SkillsRoute,
   ApiChatRoute: ApiChatRoute,
   ApiDesignSystemsRoute: ApiDesignSystemsRouteWithChildren,
+  ApiNewsRoute: ApiNewsRoute,
   ApiSitemapRoute: ApiSitemapRoute,
   ApiSpeakRoute: ApiSpeakRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,

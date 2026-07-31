@@ -14,6 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_activity: {
+        Row: {
+          created_at: string
+          detail: string | null
+          id: string
+          kind: string
+          meta: Json
+          thread_id: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          kind?: string
+          meta?: Json
+          thread_id?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          kind?: string
+          meta?: Json
+          thread_id?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_activity_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connections: {
+        Row: {
+          account_label: string | null
+          access_token: string | null
+          created_at: string
+          id: string
+          kind: string
+          provider: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          account_label?: string | null
+          access_token?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          provider: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          account_label?: string | null
+          access_token?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          provider?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           created_at: string
