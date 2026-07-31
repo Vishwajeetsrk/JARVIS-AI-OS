@@ -5,7 +5,9 @@
  */
 
 import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+import fileSaver from "file-saver";
+
+const { saveAs } = fileSaver as { saveAs: typeof saveAs };
 
 export interface XlsxSheet {
   /** Sheet name */

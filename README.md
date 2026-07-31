@@ -276,6 +276,11 @@ npm run dev:all
 
 Open http://localhost:5173 in your browser.
 
+> **Note:** The dev server runs on port **8080** (configured in `vite.config.ts`). The
+> workspace root contains very large unrelated directories (`GitHub Repo/` has ~590k
+> files); these are excluded from the Vite file watcher via `server.watch.ignored`, so
+> `npm run dev` stays fast. If startup is slow, make sure those directories are ignored.
+
 ### Available Scripts
 
 | Command | What It Does |

@@ -17,7 +17,9 @@ import {
   TableCell,
   WidthType,
 } from "docx";
-import { saveAs } from "file-saver";
+import fileSaver from "file-saver";
+
+const { saveAs } = fileSaver as { saveAs: typeof saveAs };
 
 export interface ReportSection {
   title: string;
