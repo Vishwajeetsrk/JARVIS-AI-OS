@@ -26,7 +26,7 @@
 
 | Surface | URL | Description |
 |---|---|---|
-| **Jarvis Console** | https://jarvisaios.vercel.app | TanStack SPA with auth, chat, 30 agents |
+| **Jarvis Console** | https://jarvisaios.vercel.app | TanStack SPA with auth, chat, 30 agents, real-time dashboard |
 | **GitHub** | https://github.com/Vishwajeetsrk/JARVIS-AI-OS | Main repository |
 
 ---
@@ -69,8 +69,8 @@ TRADITIONAL AI CHATS                           JARVIS AI OS SYSTEM
 ```
 D:\Team of Vishwajeet/
 ├── src/                     TanStack Start SPA + Mastra engine
-│   ├── routes/              File-based routes (index, auth, console, etc.)
-│   ├── components/          React components (ui, chat, agents, voice-assistant, etc.)
+│   ├── routes/              File-based routes (index, auth, console, api/news, etc.)
+│   ├── components/          React components (ui, chat, agents, voice-assistant, dashboard, etc.)
 │   ├── hooks/               Custom hooks (use-wake-word, etc.)
 │   ├── lib/                 Utilities, hooks, Supabase client
 │   ├── mastra/              Mastra AI engine (agents, tools, workflows)
@@ -88,6 +88,7 @@ D:\Team of Vishwajeet/
 │
 ├── Projects/                48 project templates
 ├── skills/                  30 master agent skills (mirrored to ~/.agent-memory/)
+├── supabase/                Migrations (agent_activity feed, RLS policies)
 ├── scripts/                 CLI, sync, and build scripts
 ├── public/                  Static assets
 └── README.md                This file
@@ -158,6 +159,19 @@ D:\Team of Vishwajeet/
 - **Excel spreadsheets** — Create .xlsx with formatting, formulas, charts
 - **Reports** — Generate structured reports (Markdown, HTML, Word)
 - **Code execution** — Run JavaScript, TypeScript, Python, Shell snippets
+
+### Real-Time Console Dashboard (NEW)
+- **Live activity feed** — every chat message and agent tool call streams into the console via Supabase Realtime (`agent_activity` table)
+- **Stat cards** — chat threads, messages, projects, today's activity, enabled skills/connectors/plugins/tools
+- **Quick Command** — send Jarvis a command straight from the dashboard header, with voice input
+- **News & Updates** — real tech/AI headlines aggregated from Hacker News, TechCrunch, The Verge, and MIT Tech Review (RSS, no API keys, 10-min cache)
+- **Recent projects** — jump into any project directly from the console
+- **Live sidebar** — thread list updates in real time as new chats arrive
+
+### Live News Route
+- **`/api/news`** — server route that fetches and merges Hacker News, TechCrunch, The Verge, and MIT Tech Review RSS feeds
+- **Entity-safe parsing** — strips HTML, decodes XML/HTML entities (incl. numeric `&#x27;`-style), sorts by publish time, returns top 18
+- **Cached** — in-memory 10-minute TTL, per-feed 12s timeout via `AbortController`
 
 ---
 
