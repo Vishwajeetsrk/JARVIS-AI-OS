@@ -88,9 +88,54 @@ export type Database = {
         }
         Relationships: []
       }
+      cron_jobs: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          last_run_at: string | null
+          name: string
+          next_run_at: string | null
+          prompt: string
+          schedule: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          name: string
+          next_run_at?: string | null
+          prompt: string
+          schedule: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          name?: string
+          next_run_at?: string | null
+          prompt?: string
+          schedule?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cron_jobs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           created_at: string
+          embedding: number[] | null
           id: string
           parts: Json
           role: string
@@ -99,6 +144,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          embedding?: number[] | null
           id?: string
           parts: Json
           role: string
@@ -107,6 +153,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          embedding?: number[] | null
           id?: string
           parts?: Json
           role?: string

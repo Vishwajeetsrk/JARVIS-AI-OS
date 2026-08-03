@@ -1,0 +1,9 @@
+{
+  "claude-plugin": {
+    "name": "web-automation",
+    "description": "Browser automation with Playwright. Lets Jarvis open pages, run tests, and interact with the web.",
+    "version": "1.0.0",
+    "author": "Vishwajeet",
+    "license": "MIT"
+  }
+}

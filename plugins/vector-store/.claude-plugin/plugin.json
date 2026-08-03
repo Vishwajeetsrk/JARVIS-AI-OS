@@ -1,0 +1,9 @@
+{
+  "claude-plugin": {
+    "name": "vector-store",
+    "description": "Semantic memory index. Embeds chat messages and powers cross-session recall with pgvector similarity search.",
+    "version": "1.0.0",
+    "author": "Vishwajeet",
+    "license": "MIT"
+  }
+}

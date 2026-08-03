@@ -25,6 +25,7 @@ import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 import { Route as ApiVisionRouteImport } from './routes/api/vision'
 import { Route as AuthenticatedConsoleIndexRouteImport } from './routes/_authenticated/console/index'
 import { Route as AuthenticatedConsoleThreadIdRouteImport } from './routes/_authenticated/console/$threadId'
+import { Route as AuthenticatedConsoleAutomationsRouteImport } from './routes/_authenticated/console/automations'
 import { Route as AuthenticatedConsoleConnectorsRouteImport } from './routes/_authenticated/console/connectors'
 import { Route as AuthenticatedConsoleDesignRouteImport } from './routes/_authenticated/console/design'
 import { Route as AuthenticatedConsoleGithubRouteImport } from './routes/_authenticated/console/github'
@@ -121,6 +122,12 @@ const AuthenticatedConsoleThreadIdRoute =
   AuthenticatedConsoleThreadIdRouteImport.update({
     id: '/$threadId',
     path: '/$threadId',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
+const AuthenticatedConsoleAutomationsRoute =
+  AuthenticatedConsoleAutomationsRouteImport.update({
+    id: '/automations',
+    path: '/automations',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
 const AuthenticatedConsoleConnectorsRoute =
@@ -233,6 +240,7 @@ export interface FileRoutesByFullPath {
   '/api/transcribe': typeof ApiTranscribeRoute
   '/api/vision': typeof ApiVisionRoute
   '/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
+  '/console/automations': typeof AuthenticatedConsoleAutomationsRoute
   '/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
   '/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/console/github': typeof AuthenticatedConsoleGithubRoute
@@ -265,6 +273,7 @@ export interface FileRoutesByTo {
   '/api/transcribe': typeof ApiTranscribeRoute
   '/api/vision': typeof ApiVisionRoute
   '/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
+  '/console/automations': typeof AuthenticatedConsoleAutomationsRoute
   '/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
   '/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/console/github': typeof AuthenticatedConsoleGithubRoute
@@ -300,6 +309,7 @@ export interface FileRoutesById {
   '/api/transcribe': typeof ApiTranscribeRoute
   '/api/vision': typeof ApiVisionRoute
   '/_authenticated/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
+  '/_authenticated/console/automations': typeof AuthenticatedConsoleAutomationsRoute
   '/_authenticated/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
   '/_authenticated/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/_authenticated/console/github': typeof AuthenticatedConsoleGithubRoute
@@ -335,6 +345,7 @@ export interface FileRouteTypes {
     | '/api/transcribe'
     | '/api/vision'
     | '/console/$threadId'
+    | '/console/automations'
     | '/console/connectors'
     | '/console/design'
     | '/console/github'
@@ -367,6 +378,7 @@ export interface FileRouteTypes {
     | '/api/transcribe'
     | '/api/vision'
     | '/console/$threadId'
+    | '/console/automations'
     | '/console/connectors'
     | '/console/design'
     | '/console/github'
@@ -401,6 +413,7 @@ export interface FileRouteTypes {
     | '/api/transcribe'
     | '/api/vision'
     | '/_authenticated/console/$threadId'
+    | '/_authenticated/console/automations'
     | '/_authenticated/console/connectors'
     | '/_authenticated/console/design'
     | '/_authenticated/console/github'
@@ -552,6 +565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsoleThreadIdRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
+    '/_authenticated/console/automations': {
+      id: '/_authenticated/console/automations'
+      path: '/automations'
+      fullPath: '/console/automations'
+      preLoaderRoute: typeof AuthenticatedConsoleAutomationsRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
     '/_authenticated/console/connectors': {
       id: '/_authenticated/console/connectors'
       path: '/connectors'
@@ -699,6 +719,7 @@ const AuthenticatedConsoleTemplatesRouteWithChildren =
 
 interface AuthenticatedConsoleRouteChildren {
   AuthenticatedConsoleThreadIdRoute: typeof AuthenticatedConsoleThreadIdRoute
+  AuthenticatedConsoleAutomationsRoute: typeof AuthenticatedConsoleAutomationsRoute
   AuthenticatedConsoleConnectorsRoute: typeof AuthenticatedConsoleConnectorsRoute
   AuthenticatedConsoleDesignRoute: typeof AuthenticatedConsoleDesignRouteWithChildren
   AuthenticatedConsoleGithubRoute: typeof AuthenticatedConsoleGithubRoute
@@ -713,6 +734,7 @@ interface AuthenticatedConsoleRouteChildren {
 
 const AuthenticatedConsoleRouteChildren: AuthenticatedConsoleRouteChildren = {
   AuthenticatedConsoleThreadIdRoute: AuthenticatedConsoleThreadIdRoute,
+  AuthenticatedConsoleAutomationsRoute: AuthenticatedConsoleAutomationsRoute,
   AuthenticatedConsoleConnectorsRoute: AuthenticatedConsoleConnectorsRoute,
   AuthenticatedConsoleDesignRoute: AuthenticatedConsoleDesignRouteWithChildren,
   AuthenticatedConsoleGithubRoute: AuthenticatedConsoleGithubRoute,

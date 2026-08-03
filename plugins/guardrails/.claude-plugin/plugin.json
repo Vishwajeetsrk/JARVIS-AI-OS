@@ -1,0 +1,9 @@
+{
+  "claude-plugin": {
+    "name": "guardrails",
+    "description": "PII detection and policy filtering on every Jarvis response. Safety-first guardrails for outgoing content.",
+    "version": "1.0.0",
+    "author": "Vishwajeet",
+    "license": "MIT"
+  }
+}

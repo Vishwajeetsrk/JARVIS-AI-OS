@@ -1,0 +1,9 @@
+{
+  "claude-plugin": {
+    "name": "design-systems",
+    "description": "Brand design systems engine. Serves 30+ Open Design manifests (Apple, Arc, Claude, …) with tokens and components.",
+    "version": "1.0.0",
+    "author": "Vishwajeet",
+    "license": "MIT"
+  }
+}

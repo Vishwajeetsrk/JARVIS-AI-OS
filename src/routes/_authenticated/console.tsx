@@ -11,7 +11,8 @@ import { JarvisWordmark } from "@/components/jarvis/logo";
 import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Plus, Trash2, LogOut, MessageSquare, Star, MoreHorizontal, Pencil,
-  FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu, Palette,
+  FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu, Palette, LayoutDashboard,
+  Clock,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -113,14 +114,15 @@ function ConsoleShell() {
   const [newProjName, setNewProjName] = useState("");
 
   const signOut = async () => {
+    localStorage.removeItem("jarvis-guest-mode");
     await supabase.auth.signOut();
     router.invalidate();
     navigate({ to: "/" });
     toast.success("Signed out.");
   };
 
-  const starred = threads.filter((t) => t.starred);
-  const unstarred = threads.filter((t) => !t.starred);
+  const starred = (threads as any[]).filter((t: any) => t.starred);
+  const unstarred = (threads as any[]).filter((t: any) => !t.starred);
 
   const NavLink = ({ to, icon: Icon, label }: { to: string; icon: typeof Wrench; label: string }) => (
     <Link
@@ -176,7 +178,7 @@ function ConsoleShell() {
                   <DropdownMenuItem onClick={() => mUpdate.mutate({ id: t.id, project_id: null })}>
                     (No project)
                   </DropdownMenuItem>
-                  {projects.map((p) => (
+                  {(projects as any[]).map((p: any) => (
                     <DropdownMenuItem key={p.id} onClick={() => mUpdate.mutate({ id: t.id, project_id: p.id })}>
                       <span className="mr-2 h-2 w-2 rounded-full" style={{ background: p.color }} />
                       {p.name}
@@ -210,17 +212,20 @@ function ConsoleShell() {
       </div>
       <button
         onClick={() => mCreate.mutate(undefined)}
-        className="m-3 flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90"
+        className="m-3 flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90 active:scale-[0.98]"
       >
         <Plus className="h-4 w-4" /> New chat
+        <kbd className="ml-auto hidden rounded bg-primary-foreground/20 px-1.5 text-[10px] font-mono sm:block">⌘N</kbd>
       </button>
 
       <nav className="flex-1 space-y-4 overflow-y-auto px-2 pb-3">
         <div className="space-y-0.5">
+          <NavLink to="/console" icon={LayoutDashboard} label="Dashboard" />
           <NavLink to="/console/tools" icon={Wrench} label="Tools" />
           <NavLink to="/console/connectors" icon={Cable} label="Connectors" />
           <NavLink to="/console/plugins" icon={Puzzle} label="Plugins" />
           <NavLink to="/console/skills" icon={Sparkles} label="Skills" />
+          <NavLink to="/console/automations" icon={Clock} label="Automations" />
           <NavLink to="/console/design" icon={Palette} label="Design Systems" />
           <NavLink to="/console/github" icon={GitBranch} label="GitHub" />
           <NavLink to="/console/settings" icon={Settings} label="Settings" />
@@ -273,12 +278,28 @@ function ConsoleShell() {
         </div>
       </nav>
 
-      <div className="border-t border-border p-3">
+      <div className="border-t border-border p-3 space-y-2">
+        {typeof localStorage !== "undefined" && localStorage.getItem("jarvis-guest-mode") === "true" ? (
+          <div className="rounded-md border border-amber/30 bg-amber/10 p-2.5 text-xs text-amber flex items-center justify-between">
+            <span className="font-medium">Guest Demo Mode</span>
+            <button
+              onClick={signOut}
+              className="text-[11px] underline font-mono hover:text-foreground"
+            >
+              Sign In
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground/60">
+            <span className="h-1.5 w-1.5 rounded-full bg-sage" />
+            <span className="font-mono">Gemini + Groq · Free tier</span>
+          </div>
+        )}
         <button
           onClick={signOut}
           className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-background hover:text-foreground"
         >
-          <LogOut className="h-4 w-4" /> Sign out
+          <LogOut className="h-4 w-4" /> {typeof localStorage !== "undefined" && localStorage.getItem("jarvis-guest-mode") === "true" ? "Exit Guest Mode" : "Sign out"}
         </button>
       </div>
     </>

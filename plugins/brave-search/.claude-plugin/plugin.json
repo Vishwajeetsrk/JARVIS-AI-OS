@@ -1,0 +1,9 @@
+{
+  "claude-plugin": {
+    "name": "brave-search",
+    "description": "Real-time web search via Brave Search API. Enables Jarvis to look up live information in chat.",
+    "version": "1.0.0",
+    "author": "Vishwajeet",
+    "license": "MIT"
+  }
+}

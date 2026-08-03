@@ -91,3 +91,7 @@ app.listen(PORT, HOST, () => {
   console.log(`[daemon] JARVIS Design Daemon running on http://${HOST}:${PORT}`);
   console.log(`[daemon] Data dir: ${DATA_DIR}`);
 });
+
+// Scheduled automations (hermes-style cron scheduler).
+import { startScheduler } from "@/lib/scheduler";
+startScheduler();
