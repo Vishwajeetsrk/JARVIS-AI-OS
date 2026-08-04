@@ -12,14 +12,14 @@ export function ProjectCards({ onNewProject }: { onNewProject?: () => void }) {
   const { data: ws = [] } = useQuery({ queryKey: ["wsProjects"], queryFn: () => wsFn({}) });
 
   const all = [
-    ...projects.map((p) => ({
+    ...projects.map((p: any) => ({
       id: p.id as string,
       name: p.name as string,
       color: (p.color as string) ?? "#D97757",
       updated_at: p.updated_at as string | null,
       isWorkspace: false,
     })),
-    ...ws.map((p) => ({
+    ...ws.map((p: any) => ({
       id: p.id as string,
       name: p.name as string,
       color: (p.color as string) ?? "#D97757",

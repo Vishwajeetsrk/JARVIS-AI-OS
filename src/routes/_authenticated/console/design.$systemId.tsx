@@ -1,33 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  ArrowLeft, Code, FileText, Eye, BookOpen, Palette, Layers, Monitor, Smartphone,
+  ArrowLeft, Code, FileText, Eye, BookOpen, Palette, Layers, Monitor, Smartphone, ExternalLink,
 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
-interface DesignSystemDetail {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  tokenCount: number;
-  componentCount: number;
-  tokens: string;
-  components: string;
-  usage: string;
-  design: string;
-}
+import { getDesignSystem, type DesignSystemDetail } from "@/lib/design-systems";
 
-export const Route = createFileRoute("/_authenticated/console/design/$systemId")({
-  component: DesignSystemDetailPage,
-  loader: async ({ params }) => {
-    const res = await fetch(`/api/design-systems?id=${params.systemId}`);
-    if (!res.ok) return null;
-    return (await res.json()) as DesignSystemDetail;
-  },
-  notFoundComponent: () => (
+function DesignSystemNotFound() {
+  return (
     <div className="flex h-full flex-col items-center justify-center gap-4 p-10">
       <Palette className="h-12 w-12 text-muted-foreground/40" />
       <h2 className="text-xl font-semibold">Design system not found</h2>
@@ -35,50 +17,59 @@ export const Route = createFileRoute("/_authenticated/console/design/$systemId")
         ← Back to design systems
       </Link>
     </div>
-  ),
+  );
+}
+
+export const Route = createFileRoute("/_authenticated/console/design/$systemId")({
+  component: DesignSystemDetailPage,
+  loader: async ({ params }) => {
+    try {
+      const res = await fetch(`/api/design-systems?id=${params.systemId}`);
+      if (!res.ok) return null;
+      return (await res.json()) as DesignSystemDetail;
+    } catch {
+      return null;
+    }
+  },
+  notFoundComponent: DesignSystemNotFound,
 });
 
 function DesignSystemDetailPage() {
   const data = Route.useLoaderData();
-  if (!data) return <Route.notFoundComponent />;
+  if (!data) return <DesignSystemNotFound />;
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <header className="flex items-center gap-3 border-b border-border px-4 py-3">
-        <Link to="/console/design" className="rounded p-1 hover:bg-background">
+      <header className="flex items-center gap-3 border-b border-border px-6 py-3.5 bg-surface/40">
+        <Link to="/console/design" className="rounded-lg p-1.5 hover:bg-background border border-border text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" />
         </Link>
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold">{data.name}</h1>
-            <Badge variant="outline" className="text-xs">{data.category}</Badge>
+            <h1 className="text-lg font-semibold truncate">{data.name}</h1>
+            <Badge variant="outline" className="text-xs shrink-0">{data.category}</Badge>
           </div>
-          <p className="text-xs text-muted-foreground">{data.description}</p>
+          <p className="text-xs text-muted-foreground truncate">{data.description}</p>
         </div>
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><Palette className="h-3.5 w-3.5" />{data.tokenCount} tokens</span>
-          <span className="flex items-center gap-1"><Layers className="h-3.5 w-3.5" />{data.componentCount} components</span>
+        <div className="flex items-center gap-3 text-xs text-muted-foreground font-mono shrink-0">
+          <span className="flex items-center gap-1 rounded-md bg-background border border-border px-2.5 py-1"><Palette className="h-3.5 w-3.5 text-primary" />{data.tokenCount} tokens</span>
+          <span className="flex items-center gap-1 rounded-md bg-background border border-border px-2.5 py-1"><Layers className="h-3.5 w-3.5 text-primary" />{data.componentCount} components</span>
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4">
-        <Tabs defaultValue="preview" className="h-full">
-          <TabsList>
-            <TabsTrigger value="preview"><Eye className="mr-1.5 h-3.5 w-3.5" />Preview</TabsTrigger>
-            <TabsTrigger value="studio"><Monitor className="mr-1.5 h-3.5 w-3.5" />Studio</TabsTrigger>
-            <TabsTrigger value="tokens"><Code className="mr-1.5 h-3.5 w-3.5" />Tokens</TabsTrigger>
-            <TabsTrigger value="components"><Layers className="mr-1.5 h-3.5 w-3.5" />Components</TabsTrigger>
-            <TabsTrigger value="usage"><BookOpen className="mr-1.5 h-3.5 w-3.5" />Usage</TabsTrigger>
-            <TabsTrigger value="design"><FileText className="mr-1.5 h-3.5 w-3.5" />Design</TabsTrigger>
+      <div className="flex-1 overflow-hidden p-6">
+        <Tabs defaultValue="preview" className="flex h-full flex-col">
+          <TabsList className="w-fit">
+            <TabsTrigger value="preview"><Eye className="mr-1.5 h-3.5 w-3.5 text-primary" />Live Preview</TabsTrigger>
+            <TabsTrigger value="tokens"><Code className="mr-1.5 h-3.5 w-3.5 text-primary" />Tokens ({data.tokenCount})</TabsTrigger>
+            <TabsTrigger value="components"><Layers className="mr-1.5 h-3.5 w-3.5 text-primary" />HTML Source</TabsTrigger>
+            <TabsTrigger value="usage"><BookOpen className="mr-1.5 h-3.5 w-3.5 text-primary" />Usage Guide</TabsTrigger>
+            <TabsTrigger value="design"><FileText className="mr-1.5 h-3.5 w-3.5 text-primary" />Design System Spec</TabsTrigger>
           </TabsList>
 
-          <div className="mt-4 h-[calc(100%-48px)]">
+          <div className="mt-4 flex-1 min-h-0">
             <TabsContent value="preview" className="m-0 h-full">
-              <PreviewTab systemId={data.id} tokens={data.tokens} components={data.components} />
-            </TabsContent>
-
-            <TabsContent value="studio" className="m-0 h-full">
-              <StudioTab systemId={data.id} systemName={data.name} />
+              <PreviewTab components={data.components} tokens={data.tokens} />
             </TabsContent>
 
             <TabsContent value="tokens" className="m-0 h-full">
@@ -103,101 +94,66 @@ function DesignSystemDetailPage() {
   );
 }
 
-const DEVICE_FRAMES = [
-  { id: "desktop", label: "MacBook", icon: Monitor, path: "/assets/frames/macbook.html", width: 1440, height: 900 },
-  { id: "tablet", label: "iPad Pro", icon: Monitor, path: "/assets/frames/ipad-pro.html", width: 834, height: 1194 },
-  { id: "mobile", label: "iPhone 15 Pro", icon: Smartphone, path: "/assets/frames/iphone-15-pro.html", width: 390, height: 844 },
-  { id: "android", label: "Android Pixel", icon: Smartphone, path: "/assets/frames/android-pixel.html", width: 412, height: 915 },
-  { id: "browser", label: "Browser", icon: Monitor, path: "/assets/frames/browser-chrome.html", width: 1280, height: 800 },
-] as const;
+function PreviewTab({ components, tokens }: { components: string; tokens: string }) {
+  const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
 
-function StudioTab({ systemId, systemName }: { systemId: string; systemName: string }) {
-  const [device, setDevice] = useState<typeof DEVICE_FRAMES[number]>(DEVICE_FRAMES[0]);
-  const [mode, setMode] = useState<"light" | "dark">("light");
-  const previewUrl = `/api/design-systems/${systemId}/preview`;
-  const frameUrl = `${device.path}?screen=${encodeURIComponent(previewUrl)}`;
+  // Determine if components string is already a complete HTML document
+  let srcDoc = components;
+  if (!components.toLowerCase().includes("<!doctype html>") && !components.toLowerCase().includes("<html")) {
+    srcDoc = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    ${tokens}
+    body { background: var(--bg, #0f172a); color: var(--fg, #f8fafc); font-family: var(--font-body, system-ui); padding: 2rem; margin: 0; }
+  </style>
+</head>
+<body>
+  ${components}
+</body>
+</html>`;
+  }
+
+  const widths = {
+    desktop: "w-full h-full",
+    tablet: "w-[768px] h-full mx-auto shadow-2xl rounded-xl border border-border",
+    mobile: "w-[390px] h-full mx-auto shadow-2xl rounded-2xl border-4 border-border",
+  };
 
   return (
     <div className="flex h-full flex-col">
-      <div className="mb-3 flex items-center gap-3 border-b border-border pb-3">
-        <div className="flex items-center gap-1.5 rounded-lg bg-background p-1">
-          {DEVICE_FRAMES.map((d) => (
+      <div className="mb-3 flex items-center justify-between gap-2 bg-surface/40 p-2 rounded-lg border border-border">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs text-muted-foreground font-mono mr-2">Viewport:</span>
+          {(["desktop", "tablet", "mobile"] as const).map((d) => (
             <button
-              key={d.id}
+              key={d}
               onClick={() => setDevice(d)}
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs transition-colors ${
-                device.id === d.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+              className={`rounded-md px-3 py-1 text-xs font-medium capitalize transition-colors ${
+                device === d
+                  ? "bg-primary text-primary-foreground"
+                  : "border border-border bg-background text-muted-foreground hover:text-foreground"
               }`}
             >
-              <d.icon className="h-3.5 w-3.5" />
-              {d.label}
+              {d}
             </button>
           ))}
         </div>
-        <div className="ml-auto flex items-center gap-2">
-          <button
-            onClick={() => setMode(mode === "light" ? "dark" : "light")}
-            className="rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
-          >
-            {mode === "light" ? "☀ Light" : "🌙 Dark"}
-          </button>
-          <a
-            href={previewUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
-          >
-            Open standalone
-          </a>
-        </div>
+        <span className="text-[11px] font-mono text-sage flex items-center gap-1">
+          ● Interactive Live Frame
+        </span>
       </div>
 
-      <div className="flex-1 overflow-hidden rounded-xl border border-border bg-background/50">
-        {device.id === "desktop" || device.id === "browser" ? (
-          <iframe
-            src={frameUrl}
-            className="h-full w-full"
-            title={`${systemName} on ${device.label}`}
-            sandbox="allow-scripts allow-same-origin"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-b from-muted/30 to-muted/10 p-4">
-            <div className="overflow-hidden rounded-[calc(56px*0.7)] shadow-2xl" style={{ transform: "scale(0.7)", transformOrigin: "center center" }}>
-              <iframe
-                src={frameUrl}
-                className="border-0"
-                style={{ width: device.width, height: device.height }}
-                title={`${systemName} on ${device.label}`}
-                sandbox="allow-scripts allow-same-origin"
-              />
-            </div>
-          </div>
-        )}
+      <div className="flex-1 min-h-0 bg-background/50 rounded-xl overflow-hidden p-2">
+        <iframe
+          srcDoc={srcDoc}
+          className={`${widths[device]} transition-all bg-background border-0 rounded-lg`}
+          title="Design system live preview"
+          sandbox="allow-scripts allow-same-origin"
+        />
       </div>
-    </div>
-  );
-}
-
-function PreviewTab({ systemId, tokens, components }: { systemId: string; tokens: string; components: string }) {
-  const previewHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><style>${tokens}body{background:var(--bg);color:var(--fg);font-family:var(--font-body);padding:2rem;max-width:1200px;margin:0 auto}section{border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:2rem;background:var(--surface)}h2{font-size:1.25rem;margin:0 0 1rem;color:var(--fg)}h3{margin:0 0 .75rem;color:var(--fg-2)}pre{background:color-mix(in oklab,var(--bg),black 5%);padding:1rem;border-radius:8px;overflow-x:auto;font-family:var(--font-mono);font-size:13px}.grid{display:grid;gap:1rem}.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.color-swatch{height:48px;border-radius:8px;border:1px solid var(--border)}.token-label{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--font-mono)}button{background:var(--accent);color:var(--accent-on);border:none;padding:8px 16px;border-radius:8px;font-family:var(--font-body);cursor:pointer}input{border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:var(--font-body);background:var(--surface)}</style></head><body>${components}</body></html>`;
-
-  return (
-    <div className="flex h-full flex-col">
-      <div className="mb-3 flex items-center gap-2">
-        <span className="text-xs text-muted-foreground">Device:</span>
-        <select className="rounded border border-border bg-background px-2 py-1 text-xs">
-          <option value="desktop">Desktop</option>
-          <option value="tablet">Tablet</option>
-          <option value="mobile">Mobile</option>
-        </select>
-      </div>
-      <iframe
-        srcDoc={previewHtml}
-        className="w-full flex-1 rounded-lg border border-border"
-        title={`${systemId} preview`}
-      />
     </div>
   );
 }
@@ -206,7 +162,6 @@ function TokensTab({ tokens }: { tokens: string }) {
   const lines = tokens.split("\n");
   const tokenLines = lines.filter((l) => l.trim().startsWith("--") && l.includes(":"));
 
-  // Group tokens by category
   const categories: Record<string, { name: string; value: string }[]> = {};
   for (const line of tokenLines) {
     const [key, ...rest] = line.trim().split(":");
@@ -220,61 +175,76 @@ function TokensTab({ tokens }: { tokens: string }) {
     bg: "Backgrounds",
     surface: "Surfaces",
     fg: "Foregrounds",
-    muted: "Muted",
-    accent: "Accent",
-    border: "Borders",
-    success: "Success",
-    warn: "Warning",
-    danger: "Danger",
-    font: "Typography",
-    text: "Typography",
-    spacing: "Spacing",
-    radius: "Borders & Radius",
-    shadow: "Shadows",
-    transition: "Motion",
+    muted: "Muted Text",
+    accent: "Accents & Brand",
+    border: "Borders & Dividers",
+    success: "Success States",
+    warn: "Warning States",
+    danger: "Danger & Error",
+    font: "Typography Stacks",
+    text: "Text Scales",
+    space: "Spacing Tokens",
+    radius: "Border Radii",
+    elev: "Elevations & Shadows",
+    motion: "Transitions & Motion",
   };
 
   return (
-    <div className="h-full overflow-y-auto">
-      {Object.entries(categories).map(([cat, vars]) => (
-        <div key={cat} className="mb-6">
-          <h3 className="mb-2 text-sm font-medium text-foreground">{categoryLabels[cat] || cat}</h3>
-          <div className="space-y-1">
-            {vars.slice(0, 20).map((v) => (
-              <div key={v.name} className="flex items-center gap-3 rounded-md bg-background px-3 py-1.5 text-xs">
-                {v.name.startsWith("--bg") || v.name.startsWith("--surface") || v.name.startsWith("--accent") || v.name.startsWith("--fg") ? (
-                  <span className="h-5 w-5 shrink-0 rounded border border-border" style={{ background: v.value }} />
-                ) : null}
-                <code className="flex-1 font-mono text-muted-foreground">{v.name}</code>
-                <span className="text-foreground">{v.value}</span>
-              </div>
-            ))}
+    <div className="h-full overflow-y-auto pr-2 space-y-6">
+      {Object.keys(categories).length === 0 ? (
+        <pre className="rounded-xl border border-border bg-card p-4 font-mono text-xs text-foreground overflow-x-auto">
+          {tokens}
+        </pre>
+      ) : (
+        Object.entries(categories).map(([cat, vars]) => (
+          <div key={cat} className="rounded-xl border border-border bg-card p-4">
+            <h3 className="mb-3 text-xs font-mono font-bold uppercase tracking-wider text-primary">
+              {categoryLabels[cat] || cat}
+            </h3>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {vars.map((v) => (
+                <div key={v.name} className="flex items-center gap-2.5 rounded-lg border border-border/60 bg-surface/50 p-2 text-xs">
+                  {v.value.startsWith("#") || v.value.startsWith("rgb") || v.value.startsWith("hsl") || v.name.includes("bg") || v.name.includes("accent") || v.name.includes("surface") ? (
+                    <span className="h-5 w-5 shrink-0 rounded border border-border shadow-sm" style={{ background: v.value }} />
+                  ) : null}
+                  <div className="min-w-0 flex-1">
+                    <code className="font-mono text-[11px] font-semibold text-foreground truncate block">{v.name}</code>
+                    <span className="font-mono text-[10px] text-muted-foreground truncate block">{v.value}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
 
 function ComponentsTab({ components }: { components: string }) {
-  const previewHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><style>body{margin:1rem;font-family:system-ui,sans-serif}${components.match(/<style>([\s\S]*?)<\/style>/)?.[1] || ""}</style></head><body>${components.replace(/<style>[\s\S]*?<\/style>/, "")}</body></html>`;
-
   return (
-    <iframe
-      srcDoc={previewHtml}
-      className="h-full w-full rounded-lg border border-border"
-      title="Components preview"
-    />
+    <div className="h-full overflow-hidden rounded-xl border border-border bg-card flex flex-col">
+      <div className="border-b border-border px-4 py-2 text-xs font-mono text-muted-foreground bg-surface/40">
+        HTML Component Fixture Code
+      </div>
+      <pre className="flex-1 overflow-auto p-4 font-mono text-xs text-foreground leading-relaxed">
+        {components}
+      </pre>
+    </div>
   );
 }
 
 function UsageTab({ usage }: { usage: string }) {
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto rounded-xl border border-border bg-card p-6">
       <div className="prose prose-sm max-w-none dark:prose-invert">
-        {usage.split("\n").map((line, i) => (
-          <p key={i} className="text-sm text-muted-foreground">{line || "\u00A0"}</p>
-        ))}
+        {usage ? (
+          usage.split("\n").map((line, i) => (
+            <p key={i} className="text-sm text-foreground leading-relaxed">{line || "\u00A0"}</p>
+          ))
+        ) : (
+          <div className="text-sm text-muted-foreground">No usage documentation provided.</div>
+        )}
       </div>
     </div>
   );
@@ -282,11 +252,15 @@ function UsageTab({ usage }: { usage: string }) {
 
 function DesignTab({ design }: { design: string }) {
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto rounded-xl border border-border bg-card p-6">
       <div className="prose prose-sm max-w-none dark:prose-invert">
-        {design.split("\n").map((line, i) => (
-          <p key={i} className="text-sm text-muted-foreground">{line || "\u00A0"}</p>
-        ))}
+        {design ? (
+          design.split("\n").map((line, i) => (
+            <p key={i} className="text-sm text-foreground leading-relaxed">{line || "\u00A0"}</p>
+          ))
+        ) : (
+          <div className="text-sm text-muted-foreground">No design specification provided.</div>
+        )}
       </div>
     </div>
   );

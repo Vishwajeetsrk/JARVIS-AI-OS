@@ -339,8 +339,9 @@ export type MessageResponseProps = ComponentProps<"div"> & {
 };
 
 export const MessageResponse = memo(
-  ({ className, children, isAnimating, ...props }: MessageResponseProps) => {
+  ({ className, children, isAnimating, dir, onAnimationStart, onAnimationEnd, ...props }: MessageResponseProps) => {
     const plugins = useStreamdownPlugins();
+    const validDir = dir === "auto" || dir === "ltr" || dir === "rtl" ? dir : undefined;
     return (
       <Suspense
         fallback={
@@ -357,9 +358,10 @@ export const MessageResponse = memo(
             )}
             plugins={plugins}
             isAnimating={isAnimating}
+            dir={validDir}
             {...props}
           >
-            {children}
+            {typeof children === "string" ? children : children ? String(children) : undefined}
           </Streamdown>
         ) : (
           <div className="size-full animate-pulse text-sm text-muted-foreground">

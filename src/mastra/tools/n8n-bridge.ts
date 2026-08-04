@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const n8nTriggerSchema = z.object({
-  workflowName: z.enum(['agencyos_invoicing', 'learnify_qa_report', 'devops_deploy_alert']),
-  payload: z.record(z.unknown()),
+  workflowName: z.enum(['agencyos_invoicing', 'learnify_qa_report', 'devops_deploy_alert'] as const),
+  payload: z.record(z.string(), z.unknown()),
 });
 
 export type N8nTriggerPayload = z.infer<typeof n8nTriggerSchema>;

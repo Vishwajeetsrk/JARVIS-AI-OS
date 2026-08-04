@@ -23,8 +23,8 @@ function ProjectPage() {
 
   const { data: projects = [] } = useQuery({ queryKey: ["projects"], queryFn: () => listP({}) });
   const { data: threads = [] } = useQuery({ queryKey: ["threads"], queryFn: () => listT({}) });
-  const project = projects.find((p) => p.id === projectId);
-  const projectThreads = threads.filter((t) => t.project_id === projectId);
+  const project = (projects as any[]).find((p: any) => p.id === projectId);
+  const projectThreads = (threads as any[]).filter((t: any) => t.project_id === projectId);
 
   const mDel = useMutation({
     mutationFn: () => delP({ data: { id: projectId } }),
@@ -67,7 +67,7 @@ function ProjectPage() {
             </div>
           ) : (
             <ul className="space-y-2">
-              {projectThreads.map((t) => (
+              {projectThreads.map((t: any) => (
                 <li key={t.id}>
                   <button
                     onClick={() => nav({ to: "/console/$threadId", params: { threadId: t.id } })}

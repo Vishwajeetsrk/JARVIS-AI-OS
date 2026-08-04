@@ -12,7 +12,7 @@ import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Plus, Trash2, LogOut, MessageSquare, Star, MoreHorizontal, Pencil,
   FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu, Palette, LayoutDashboard,
-  Clock,
+  Clock, BookOpen,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -225,6 +225,7 @@ function ConsoleShell() {
           <NavLink to="/console/connectors" icon={Cable} label="Connectors" />
           <NavLink to="/console/plugins" icon={Puzzle} label="Plugins" />
           <NavLink to="/console/skills" icon={Sparkles} label="Skills" />
+          <NavLink to="/console/roadmaps" icon={BookOpen} label="Roadmaps & Learnify" />
           <NavLink to="/console/automations" icon={Clock} label="Automations" />
           <NavLink to="/console/design" icon={Palette} label="Design Systems" />
           <NavLink to="/console/github" icon={GitBranch} label="GitHub" />

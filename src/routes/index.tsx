@@ -1,10 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { JarvisStar, JarvisWordmark } from "@/components/jarvis/logo";
 import { MarketingNav, MarketingFooter } from "@/components/jarvis/marketing-nav";
 import heroImg from "@/assets/console-hero.jpg";
 import { StatusBadge } from "@/components/jarvis/status-badge";
-import { CheckCircle2, ShieldCheck, Zap, Globe, Cpu, Smartphone, Monitor, Terminal, Radio } from "lucide-react";
+import {
+  CheckCircle2, ShieldCheck, Zap, Globe, Cpu, Smartphone, Monitor, Terminal,
+  Radio, TrendingUp, Users, MemoryStick, Sparkles, ArrowRight, GitBranch,
+  Database, Brain, Infinity,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -29,21 +33,83 @@ const AGENTS = [
 
 const FEATURES = [
   {
-    icon: "◈",
+    icon: MemoryStick,
     title: "Persistent Memory",
     body: "No project ever repeats a mistake another already made. Every decision, indexed forever in ~/.agent-memory/.",
   },
   {
-    icon: "⚡",
+    icon: Users,
     title: "30 Specialized Agents",
     body: "CEO → Builder → Test → Deploy, in sequence. Each with specialized tools, guardrails, and $0 free cloud AI.",
   },
   {
-    icon: "∞",
+    icon: Infinity,
     title: "One Brain, 5 Shells",
     body: "Website, desktop app, web console, terminal CLI, mobile — same agent team, same context, same memory.",
   },
 ];
+
+const STATS = [
+  { value: 30, label: "Specialist Agents", suffix: "" },
+  { value: 150, label: "Design Systems", suffix: "+" },
+  { value: 68, label: "Repos Indexed", suffix: "" },
+  { value: 0, label: "Memory Lost", suffix: "%" },
+];
+
+const SURFACES = [
+  { title: "Web Console", icon: Monitor, link: "/console", sub: "React + TanStack App Shell" },
+  { title: "Voice & Speech", icon: Zap, link: "/console", sub: "Groq Whisper & Orpheus TTS" },
+  { title: "Terminal CLI", icon: Terminal, link: "/console", sub: "npx tsx scripts/jarvis.ts" },
+  { title: "Desktop Bridge", icon: Cpu, link: "/console", sub: "Python Windows Automation" },
+  { title: "Web Landing", icon: Globe, link: "/", sub: "Public Marketing & Specs" },
+];
+
+const ACTIVITY_FEED = [
+  { agent: "saas-builder", action: "Deployed AgencyOS billing webhooks → staging", time: "2m ago", status: "ready" },
+  { agent: "test-agent", action: "6/6 test suites passing — LearnifyAI", time: "7m ago", status: "ready" },
+  { agent: "designer", action: "Generated Arc design tokens for DreamSync", time: "12m ago", status: "ready" },
+  { agent: "ceo-agent", action: "Drafted Q3 roadmap for SkillForge", time: "18m ago", status: "processing" },
+  { agent: "memory-keeper", action: "Indexed 42 new decision logs across 5 projects", time: "25m ago", status: "ready" },
+];
+
+// Animated counter hook
+function useCountUp(target: number, duration = 1500) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current) {
+        started.current = true;
+        const start = Date.now();
+        const tick = () => {
+          const elapsed = Date.now() - start;
+          const progress = Math.min(elapsed / duration, 1);
+          setCount(Math.floor(progress * target));
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+    });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [target, duration]);
+
+  return { count, ref };
+}
+
+function StatCard({ value, label, suffix }: { value: number; label: string; suffix: string }) {
+  const { count, ref } = useCountUp(value);
+  return (
+    <div ref={ref} className="text-center">
+      <div className="font-display text-4xl font-semibold text-foreground md:text-5xl">
+        {count}{suffix}
+      </div>
+      <div className="mt-1 text-sm text-muted-foreground">{label}</div>
+    </div>
+  );
+}
 
 type ShellState = "desktop" | "amber" | "mobile";
 
@@ -62,12 +128,19 @@ function LandingPage() {
         </span>
       </div>
 
-      {/* Hero */}
+      {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
         <div
           className="pointer-events-none absolute inset-0 -z-10"
           style={{ backgroundImage: "var(--gradient-hero)" }}
         />
+        {/* Animated ambient glow */}
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div
+            className="absolute left-1/3 top-0 h-[400px] w-[600px] -translate-x-1/2 rounded-full opacity-[0.07] blur-3xl"
+            style={{ background: "radial-gradient(ellipse, var(--color-primary), transparent)" }}
+          />
+        </div>
         <div className="bg-noise relative -z-10 h-full w-full" />
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 pb-20 pt-16 text-center md:pt-24">
           <span className="chip reveal">
@@ -84,10 +157,16 @@ function LandingPage() {
             Jarvis is the AI operating system that solves session amnesia. A team of 30 specialized
             agents share one persistent memory across every surface you work in.
           </p>
-          
+
           <div className="reveal flex flex-wrap items-center justify-center gap-3">
             <Link to="/console" className="btn-hero inline-flex items-center gap-2">
               Open Jarvis Console <span aria-hidden>→</span>
+            </Link>
+            <Link
+              to="/auth"
+              className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+            >
+              <Sparkles className="h-4 w-4" /> Try as Guest
             </Link>
             <Link
               to="/how-it-works"
@@ -189,7 +268,6 @@ function LandingPage() {
                       <p className="mt-1">Staging build complete. SSL active on agencyos.dev.</p>
                     </div>
                   </div>
-                  {/* Home indicator bar */}
                   <div className="mx-auto h-1 w-24 rounded-full bg-border" />
                 </div>
               )}
@@ -198,16 +276,27 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Feature strip */}
-      <section className="border-y border-border/60 bg-surface">
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-3 reveal-stagger">
+      {/* ── Animated Stats ──────────────────────────────────────────── */}
+      <section className="border-y border-border/60 bg-surface/60 py-16">
+        <div className="mx-auto max-w-4xl px-6">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+            {STATS.map((s) => (
+              <StatCard key={s.label} value={s.value} label={s.label} suffix={s.suffix} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Feature strip ───────────────────────────────────────────── */}
+      <section className="border-b border-border/60 bg-background">
+        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-20 md:grid-cols-3 reveal-stagger">
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="rounded-xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/40"
+              className="rounded-xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
             >
-              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 font-mono text-lg text-primary">
-                {f.icon}
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <f.icon className="h-5 w-5 text-primary" />
               </div>
               <h3 className="font-display text-xl">{f.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
@@ -216,21 +305,43 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* 5 Surfaces Grid */}
+      {/* ── Live Activity Feed ──────────────────────────────────────── */}
+      <section className="border-b border-border/60 py-20 bg-surface/30">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-10 text-center">
+            <div className="text-mono-xs text-muted-foreground mb-2">Live System</div>
+            <h2 className="font-display text-3xl font-semibold md:text-4xl">Agents running now.</h2>
+            <p className="mt-3 text-muted-foreground text-sm max-w-lg mx-auto">
+              Across all your projects, agents are autonomously executing tasks in real time.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card divide-y divide-border overflow-hidden max-w-3xl mx-auto">
+            {ACTIVITY_FEED.map((item, i) => (
+              <div key={i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-surface/50 transition-colors">
+                <span className={`h-2 w-2 rounded-full shrink-0 ${item.status === "ready" ? "bg-sage" : "bg-amber animate-pulse"}`} />
+                <code className="font-mono text-xs text-primary shrink-0 w-28">{item.agent}</code>
+                <span className="text-sm text-foreground flex-1">{item.action}</span>
+                <span className="text-xs text-muted-foreground shrink-0">{item.time}</span>
+              </div>
+            ))}
+            <div className="px-5 py-3 text-xs text-center text-muted-foreground">
+              <Link to="/console" className="text-primary hover:underline inline-flex items-center gap-1">
+                View full live log in console <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5 Surfaces Grid ─────────────────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="mb-10 text-center">
-          <div className="text-mono-xs">Multi-Surface Architecture</div>
+          <div className="text-mono-xs text-muted-foreground mb-2">Multi-Surface Architecture</div>
           <h2 className="font-display text-3xl md:text-5xl font-semibold">5 Front Doors. One Agent Brain.</h2>
         </div>
         <div className="grid gap-4 md:grid-cols-5">
-          {[
-            { title: "Web Console", icon: Monitor, link: "/console", sub: "React + TanStack App Shell" },
-            { title: "Voice & Speech", icon: Zap, link: "/console", sub: "Groq Whisper & Orpheus TTS" },
-            { title: "Terminal CLI", icon: Terminal, link: "/console", sub: "npx tsx scripts/jarvis.ts" },
-            { title: "Desktop OS Bridge", icon: Cpu, link: "/console", sub: "Python Windows Automation" },
-            { title: "Web Landing", icon: Globe, link: "/", sub: "Public Marketing & Specs" },
-          ].map((s) => (
-            <div key={s.title} className="rounded-xl border border-border bg-card p-5 text-left transition-all hover:border-primary/50">
+          {SURFACES.map((s) => (
+            <div key={s.title} className="rounded-xl border border-border bg-card p-5 text-left transition-all hover:border-primary/50 hover:-translate-y-1">
               <s.icon className="h-6 w-6 text-primary mb-3" />
               <div className="font-display text-lg font-semibold">{s.title}</div>
               <div className="mt-1 font-mono text-[11px] text-muted-foreground">{s.sub}</div>
@@ -239,16 +350,16 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Skills carousel */}
-      <section className="border-b border-border/60 py-20">
+      {/* ── Skills carousel ─────────────────────────────────────────── */}
+      <section className="border-y border-border/60 py-20 bg-surface/20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <div className="text-mono-xs">Agent Roster</div>
+              <div className="text-mono-xs text-muted-foreground mb-1">Agent Roster</div>
               <h2 className="font-display text-3xl md:text-4xl">30 skills, one crew.</h2>
             </div>
-            <Link to="/skills" className="text-sm text-primary hover:underline">
-              Full roster →
+            <Link to="/skills" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+              Full roster <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
@@ -260,6 +371,30 @@ function LandingPage() {
               </span>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── CTA ─────────────────────────────────────────────────────── */}
+      <section className="py-24 text-center border-b border-border/60">
+        <div className="mx-auto max-w-3xl px-6">
+          <JarvisStar className="mx-auto mb-6 h-10 w-10 text-primary opacity-80" />
+          <h2 className="font-display text-4xl font-semibold md:text-5xl mb-4">
+            Ready to stop losing context?
+          </h2>
+          <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
+            Jarvis is free. Gemini 2.5 and Groq Llama 3.3 — no credit card, no rate limits that matter.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link to="/console" className="btn-hero inline-flex items-center gap-2 text-base px-8 py-3.5">
+              Open the Console <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/auth" className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-6 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10">
+              <Sparkles className="h-4 w-4" /> Try as Guest
+            </Link>
+          </div>
+          <p className="mt-6 text-xs text-muted-foreground">
+            Free forever on Gemini & Groq · No setup required · Your data stays in your Supabase project
+          </p>
         </div>
       </section>
 

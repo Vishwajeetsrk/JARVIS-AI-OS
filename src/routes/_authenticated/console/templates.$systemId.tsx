@@ -5,19 +5,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Palette, Monitor, Layout, Eye, Code } from "lucide-react";
 import { useState } from "react";
 
-interface TemplateFile {
+export interface TemplateFile {
   path: string;
   label: string;
   type: "kit" | "preview" | "asset";
 }
 
-interface DesignSystemDetail {
+export interface DesignSystemDetail {
   id: string;
   name: string;
   category: string;
   description: string;
   tokenCount: number;
   componentCount: number;
+}
+
+function TemplatesNotFound() {
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-4 p-10">
+      <Layout className="h-12 w-12 text-muted-foreground/40" />
+      <h2 className="text-xl font-semibold">Design system not found</h2>
+      <Link to="/console/templates" className="text-sm text-primary hover:underline">
+        ← Back to templates
+      </Link>
+    </div>
+  );
 }
 
 export const Route = createFileRoute("/_authenticated/console/templates/$systemId")({
@@ -31,20 +43,12 @@ export const Route = createFileRoute("/_authenticated/console/templates/$systemI
     const templates = tmplRes.ok ? (await tmplRes.json()) as TemplateFile[] : [];
     return { system, templates };
   },
-  notFoundComponent: () => (
-    <div className="flex h-full flex-col items-center justify-center gap-4 p-10">
-      <Layout className="h-12 w-12 text-muted-foreground/40" />
-      <h2 className="text-xl font-semibold">Design system not found</h2>
-      <Link to="/console/templates" className="text-sm text-primary hover:underline">
-        ← Back to templates
-      </Link>
-    </div>
-  ),
+  notFoundComponent: TemplatesNotFound,
 });
 
 function TemplatesDetailPage() {
   const { system, templates } = Route.useLoaderData();
-  if (!system) return <Route.notFoundComponent />;
+  if (!system) return <TemplatesNotFound />;
 
   const [active, setActive] = useState(templates[0]?.path || "");
   const activeTemplate = templates.find((t) => t.path === active);

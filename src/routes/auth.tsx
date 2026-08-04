@@ -5,6 +5,7 @@ import { lovable } from "@/integrations/lovable/index";
 import { JarvisStar, JarvisWordmark } from "@/components/jarvis/logo";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Sparkles, ArrowRight, Eye, EyeOff, ShieldCheck, Zap, Brain } from "lucide-react";
 
 const searchSchema = z.object({ next: z.string().optional() });
 
@@ -19,12 +20,19 @@ export const Route = createFileRoute("/auth")({
   }),
 });
 
+const TRUST_BADGES = [
+  { icon: Zap, label: "Free Gemini + Groq" },
+  { icon: Brain, label: "Persistent memory" },
+  { icon: ShieldCheck, label: "Supabase-secured" },
+];
+
 function AuthPage() {
   const navigate = useNavigate();
   const { next } = useSearch({ from: "/auth" });
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -71,82 +79,144 @@ function AuthPage() {
     navigate({ to: next || "/console" });
   };
 
+  const asGuest = () => {
+    localStorage.setItem("jarvis-guest-mode", "true");
+    toast.success("Entering guest demo mode…");
+    navigate({ to: "/console" });
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/60">
-        <div className="mx-auto flex h-16 max-w-7xl items-center px-6">
+    <div className="min-h-screen bg-background text-foreground overflow-hidden">
+      {/* Animated background blobs */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div
+          className="absolute -left-1/4 -top-1/4 h-[600px] w-[600px] rounded-full opacity-[0.08] blur-3xl"
+          style={{ background: "radial-gradient(circle, var(--color-primary), transparent)" }}
+        />
+        <div
+          className="absolute -bottom-1/4 -right-1/4 h-[500px] w-[500px] rounded-full opacity-[0.06] blur-3xl"
+          style={{ background: "radial-gradient(circle, #58A65C, transparent)" }}
+        />
+      </div>
+
+      <header className="border-b border-border/60 bg-background/80 backdrop-blur-sm">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link to="/"><JarvisWordmark /></Link>
+          <Link to="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+            ← Back to home
+          </Link>
         </div>
       </header>
-      <main
-        className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center px-6 py-16"
-        style={{ backgroundImage: "var(--gradient-hero)" }}
-      >
-        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-[var(--shadow-elevated)] reveal">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <JarvisStar className="text-primary" />
-            </div>
-            <div>
-              <div className="text-mono-xs">Console access</div>
-              <h1 className="font-display text-2xl">
-                {mode === "signin" ? "Welcome back." : "Create your account."}
-              </h1>
-            </div>
+
+      <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-6 py-16">
+        <div className="w-full max-w-md space-y-5">
+
+          {/* Trust badges */}
+          <div className="flex items-center justify-center gap-5 flex-wrap">
+            {TRUST_BADGES.map(({ icon: Icon, label }) => (
+              <span key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground/70 font-mono">
+                <Icon className="h-3 w-3 text-primary/60" />
+                {label}
+              </span>
+            ))}
           </div>
 
-          <button
-            type="button"
-            onClick={withGoogle}
-            disabled={busy}
-            className="mb-4 flex w-full items-center justify-center gap-3 rounded-md border border-border bg-surface px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background disabled:opacity-50"
-          >
-            <GoogleIcon />
-            Continue with Google
-          </button>
+          {/* Main auth card */}
+          <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-sm p-8 shadow-[0_8px_48px_-12px_rgba(0,0,0,0.5)] reveal">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                <JarvisStar className="text-primary" />
+              </div>
+              <div>
+                <div className="text-mono-xs text-muted-foreground">Console access</div>
+                <h1 className="font-display text-2xl">
+                  {mode === "signin" ? "Welcome back." : "Create your account."}
+                </h1>
+              </div>
+            </div>
 
-          <div className="my-4 flex items-center gap-3 text-mono-xs">
-            <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
-          </div>
-
-          <form onSubmit={withPassword} className="space-y-3">
-            <label className="block">
-              <span className="text-mono-xs">Email</span>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25"
-              />
-            </label>
-            <label className="block">
-              <span className="text-mono-xs">Password</span>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25"
-              />
-            </label>
             <button
-              type="submit"
+              type="button"
+              onClick={withGoogle}
               disabled={busy}
-              className="btn-hero w-full disabled:opacity-50"
+              className="mb-4 flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium transition-all hover:bg-background hover:border-primary/30 disabled:opacity-50 active:scale-[0.98]"
             >
-              {busy ? "…" : mode === "signin" ? "Sign in" : "Create account"}
+              <GoogleIcon />
+              Continue with Google
             </button>
-          </form>
 
-          <button
-            type="button"
-            onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            className="mt-4 w-full text-center text-sm text-muted-foreground hover:text-foreground"
-          >
-            {mode === "signin" ? "Need an account? Sign up" : "Have an account? Sign in"}
-          </button>
+            <div className="my-4 flex items-center gap-3 text-mono-xs text-muted-foreground">
+              <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
+            </div>
+
+            <form onSubmit={withPassword} className="space-y-3">
+              <label className="block">
+                <span className="text-mono-xs text-muted-foreground">Email</span>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="mt-1 block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 placeholder:text-muted-foreground/40 transition-colors"
+                />
+              </label>
+              <label className="block">
+                <span className="text-mono-xs text-muted-foreground">Password</span>
+                <div className="relative mt-1">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    minLength={6}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 pr-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 placeholder:text-muted-foreground/40 transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </label>
+              <button
+                type="submit"
+                disabled={busy}
+                className="btn-hero w-full disabled:opacity-50 mt-1 active:scale-[0.98] transition-transform"
+              >
+                {busy ? "…" : mode === "signin" ? "Sign in" : "Create account"}
+              </button>
+            </form>
+
+            <button
+              type="button"
+              onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+              className="mt-4 w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {mode === "signin" ? "Need an account? Sign up" : "Have an account? Sign in"}
+            </button>
+          </div>
+
+          {/* Guest mode card */}
+          <div className="rounded-xl border border-border/40 bg-surface/40 p-4 text-center backdrop-blur-sm">
+            <div className="mb-2 flex items-center justify-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span className="text-sm font-medium">Just exploring?</span>
+            </div>
+            <p className="mb-3 text-xs text-muted-foreground leading-relaxed">
+              Try the Jarvis console in guest mode — no account needed. Data resets on refresh.
+            </p>
+            <button
+              onClick={asGuest}
+              className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 hover:border-primary/50 active:scale-[0.98]"
+            >
+              Explore as Guest <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
       </main>
     </div>

@@ -23,7 +23,7 @@ interface ChatSuggestionsProps {
 export function ChatSuggestions({ onSelect }: ChatSuggestionsProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [visible, setVisible] = useState(true);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     timeoutRef.current = setTimeout(() => setIsOpen(false), 60000);

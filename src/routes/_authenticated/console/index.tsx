@@ -1,11 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type ReactNode } from "react";
 import { format } from "date-fns";
 import {
   Activity, FolderOpen, Newspaper, Wrench, Cable, Puzzle, Sparkles,
-  GitBranch, Settings, LayoutDashboard,
+  GitBranch, Settings, LayoutDashboard, Zap, Brain, Plus, ArrowRight,
+  Coffee, Rocket, TestTube, Bot,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { StatusBadge } from "@/components/jarvis/status-badge";
@@ -16,6 +17,8 @@ import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { NewsPanel } from "@/components/dashboard/news-panel";
 import { ProjectCards } from "@/components/dashboard/project-cards";
 import { getDashboardStats } from "@/lib/dashboard.functions";
+import { createThread } from "@/lib/threads.functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/console/")({
   component: ConsoleDashboard,
@@ -61,8 +64,52 @@ const CONTROLS = [
   { to: "/console/settings", icon: Settings, label: "Settings" },
 ];
 
+const QUICK_ACTIONS = [
+  {
+    icon: Coffee,
+    label: "Morning Briefing",
+    description: "Run the morning-agent daily summary",
+    seed: "Run my morning briefing — summarize active projects, list today's priorities, and flag any blockers.",
+    accent: "#E69D45",
+  },
+  {
+    icon: Rocket,
+    label: "Golden Flow",
+    description: "CEO → Build → Test → Deploy pipeline",
+    seed: "Start the CEO golden flow for the current top project: plan → build → test → deploy.",
+    accent: "#D97757",
+  },
+  {
+    icon: TestTube,
+    label: "Run Test Suite",
+    description: "Execute all Vitest + Playwright tests",
+    seed: "Run the full test suite: npm test. Report pass/fail with failure details.",
+    accent: "#58A65C",
+  },
+  {
+    icon: Brain,
+    label: "Memory Digest",
+    description: "Summarize recent decisions + knowledge",
+    seed: "Summarize the last 7 days of decision logs from memory. Highlight key choices and open questions.",
+    accent: "#A855F7",
+  },
+];
+
+// Jarvis engine status (static mock — daemon integration)
+const ENGINE_STATUS = [
+  { label: "Mastra TS Engine", status: "online", value: "v1.0.0" },
+  { label: "Gemini 2.5 Flash", status: "online", value: "15 RPM free" },
+  { label: "Groq Llama 3.3", status: "online", value: "1K/day free" },
+  { label: "Memory Store", status: "online", value: "~/.agent-memory/" },
+  { label: "Supabase DB", status: "online", value: "tupgfxqkefgntrpgakxk" },
+];
+
 function ConsoleDashboard() {
+  const navigate = useNavigate();
+  const qc = useQueryClient();
   const statsFn = useServerFn(getDashboardStats);
+  const createFn = useServerFn(createThread);
+
   const { data: stats } = useQuery({
     queryKey: ["dashboardStats"],
     queryFn: () => statsFn({}),
@@ -81,6 +128,18 @@ function ConsoleDashboard() {
     const t = setInterval(() => setNow(new Date()), 30_000);
     return () => clearInterval(t);
   }, []);
+
+  const mCreate = useMutation({
+    mutationFn: (seed?: string) => createFn({ data: { project_id: null } }),
+    onSuccess: (t, seed) => {
+      qc.invalidateQueries({ queryKey: ["threads"] });
+      if (seed) {
+        navigate({ to: "/console/$threadId", params: { threadId: t.id }, search: { seed } });
+      } else {
+        navigate({ to: "/console/$threadId", params: { threadId: t.id } });
+      }
+    },
+  });
 
   return (
     <div className="flex h-full flex-col overflow-y-auto bg-noise">
@@ -113,6 +172,34 @@ function ConsoleDashboard() {
           skills: 0, connectors: 0, plugins: 0, tools: 0,
         }) as DashboardStats} />
 
+        {/* Quick Actions */}
+        <section>
+          <h2 className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <Zap className="h-3.5 w-3.5 text-primary" /> Quick Actions
+          </h2>
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {QUICK_ACTIONS.map((action) => (
+              <button
+                key={action.label}
+                onClick={() => mCreate.mutate(action.seed)}
+                className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-4 text-left transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md active:scale-[0.98]"
+              >
+                <div
+                  className="flex h-9 w-9 items-center justify-center rounded-lg"
+                  style={{ background: `${action.accent}15`, color: action.accent }}
+                >
+                  <action.icon className="h-4 w-4" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium">{action.label}</div>
+                  <div className="mt-0.5 text-xs text-muted-foreground leading-relaxed">{action.description}</div>
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-primary transition-colors self-end" />
+              </button>
+            ))}
+          </div>
+        </section>
+
         {/* Main grid */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
@@ -125,6 +212,24 @@ function ConsoleDashboard() {
           </div>
 
           <div className="space-y-4">
+            {/* Engine Status */}
+            <section className="rounded-2xl border border-border bg-card p-4">
+              <h2 className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                <Bot className="h-3.5 w-3.5 text-primary" /> Engine Status
+              </h2>
+              <div className="space-y-2">
+                {ENGINE_STATUS.map((e) => (
+                  <div key={e.label} className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-sage" />
+                      <span className="text-muted-foreground">{e.label}</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-muted-foreground/60">{e.value}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
             <SectionCard title="News & Updates" icon={Newspaper}>
               <NewsPanel />
             </SectionCard>

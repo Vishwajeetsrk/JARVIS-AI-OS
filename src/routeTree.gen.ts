@@ -19,6 +19,7 @@ import { Route as AuthenticatedConsoleRouteImport } from './routes/_authenticate
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiDesignSystemsRouteImport } from './routes/api/design-systems'
 import { Route as ApiNewsRouteImport } from './routes/api/news'
+import { Route as ApiRoadmapsRouteImport } from './routes/api/roadmaps'
 import { Route as ApiSitemapRouteImport } from './routes/api/sitemap'
 import { Route as ApiSpeakRouteImport } from './routes/api/speak'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
@@ -30,6 +31,7 @@ import { Route as AuthenticatedConsoleConnectorsRouteImport } from './routes/_au
 import { Route as AuthenticatedConsoleDesignRouteImport } from './routes/_authenticated/console/design'
 import { Route as AuthenticatedConsoleGithubRouteImport } from './routes/_authenticated/console/github'
 import { Route as AuthenticatedConsolePluginsRouteImport } from './routes/_authenticated/console/plugins'
+import { Route as AuthenticatedConsoleRoadmapsRouteImport } from './routes/_authenticated/console/roadmaps'
 import { Route as AuthenticatedConsoleSettingsRouteImport } from './routes/_authenticated/console/settings'
 import { Route as AuthenticatedConsoleSkillsRouteImport } from './routes/_authenticated/console/skills'
 import { Route as AuthenticatedConsoleTemplatesRouteImport } from './routes/_authenticated/console/templates'
@@ -92,6 +94,11 @@ const ApiNewsRoute = ApiNewsRouteImport.update({
   path: '/api/news',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRoadmapsRoute = ApiRoadmapsRouteImport.update({
+  id: '/api/roadmaps',
+  path: '/api/roadmaps',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSitemapRoute = ApiSitemapRouteImport.update({
   id: '/api/sitemap',
   path: '/api/sitemap',
@@ -152,6 +159,12 @@ const AuthenticatedConsolePluginsRoute =
   AuthenticatedConsolePluginsRouteImport.update({
     id: '/plugins',
     path: '/plugins',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
+const AuthenticatedConsoleRoadmapsRoute =
+  AuthenticatedConsoleRoadmapsRouteImport.update({
+    id: '/roadmaps',
+    path: '/roadmaps',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
 const AuthenticatedConsoleSettingsRoute =
@@ -235,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
   '/api/news': typeof ApiNewsRoute
+  '/api/roadmaps': typeof ApiRoadmapsRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -245,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/console/github': typeof AuthenticatedConsoleGithubRoute
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
+  '/console/roadmaps': typeof AuthenticatedConsoleRoadmapsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/console/skills': typeof AuthenticatedConsoleSkillsRoute
   '/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
@@ -268,6 +283,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
   '/api/news': typeof ApiNewsRoute
+  '/api/roadmaps': typeof ApiRoadmapsRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -278,6 +294,7 @@ export interface FileRoutesByTo {
   '/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/console/github': typeof AuthenticatedConsoleGithubRoute
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
+  '/console/roadmaps': typeof AuthenticatedConsoleRoadmapsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/console/skills': typeof AuthenticatedConsoleSkillsRoute
   '/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
@@ -304,6 +321,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
   '/api/news': typeof ApiNewsRoute
+  '/api/roadmaps': typeof ApiRoadmapsRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -314,6 +332,7 @@ export interface FileRoutesById {
   '/_authenticated/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/_authenticated/console/github': typeof AuthenticatedConsoleGithubRoute
   '/_authenticated/console/plugins': typeof AuthenticatedConsolePluginsRoute
+  '/_authenticated/console/roadmaps': typeof AuthenticatedConsoleRoadmapsRoute
   '/_authenticated/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/_authenticated/console/skills': typeof AuthenticatedConsoleSkillsRoute
   '/_authenticated/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
@@ -340,6 +359,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/design-systems'
     | '/api/news'
+    | '/api/roadmaps'
     | '/api/sitemap'
     | '/api/speak'
     | '/api/transcribe'
@@ -350,6 +370,7 @@ export interface FileRouteTypes {
     | '/console/design'
     | '/console/github'
     | '/console/plugins'
+    | '/console/roadmaps'
     | '/console/settings'
     | '/console/skills'
     | '/console/templates'
@@ -373,6 +394,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/design-systems'
     | '/api/news'
+    | '/api/roadmaps'
     | '/api/sitemap'
     | '/api/speak'
     | '/api/transcribe'
@@ -383,6 +405,7 @@ export interface FileRouteTypes {
     | '/console/design'
     | '/console/github'
     | '/console/plugins'
+    | '/console/roadmaps'
     | '/console/settings'
     | '/console/skills'
     | '/console/templates'
@@ -408,6 +431,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/design-systems'
     | '/api/news'
+    | '/api/roadmaps'
     | '/api/sitemap'
     | '/api/speak'
     | '/api/transcribe'
@@ -418,6 +442,7 @@ export interface FileRouteTypes {
     | '/_authenticated/console/design'
     | '/_authenticated/console/github'
     | '/_authenticated/console/plugins'
+    | '/_authenticated/console/roadmaps'
     | '/_authenticated/console/settings'
     | '/_authenticated/console/skills'
     | '/_authenticated/console/templates'
@@ -443,6 +468,7 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   ApiDesignSystemsRoute: typeof ApiDesignSystemsRouteWithChildren
   ApiNewsRoute: typeof ApiNewsRoute
+  ApiRoadmapsRoute: typeof ApiRoadmapsRoute
   ApiSitemapRoute: typeof ApiSitemapRoute
   ApiSpeakRoute: typeof ApiSpeakRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
@@ -523,6 +549,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiNewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/roadmaps': {
+      id: '/api/roadmaps'
+      path: '/api/roadmaps'
+      fullPath: '/api/roadmaps'
+      preLoaderRoute: typeof ApiRoadmapsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/sitemap': {
       id: '/api/sitemap'
       path: '/api/sitemap'
@@ -598,6 +631,13 @@ declare module '@tanstack/react-router' {
       path: '/plugins'
       fullPath: '/console/plugins'
       preLoaderRoute: typeof AuthenticatedConsolePluginsRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
+    '/_authenticated/console/roadmaps': {
+      id: '/_authenticated/console/roadmaps'
+      path: '/roadmaps'
+      fullPath: '/console/roadmaps'
+      preLoaderRoute: typeof AuthenticatedConsoleRoadmapsRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
     '/_authenticated/console/settings': {
@@ -724,6 +764,7 @@ interface AuthenticatedConsoleRouteChildren {
   AuthenticatedConsoleDesignRoute: typeof AuthenticatedConsoleDesignRouteWithChildren
   AuthenticatedConsoleGithubRoute: typeof AuthenticatedConsoleGithubRoute
   AuthenticatedConsolePluginsRoute: typeof AuthenticatedConsolePluginsRoute
+  AuthenticatedConsoleRoadmapsRoute: typeof AuthenticatedConsoleRoadmapsRoute
   AuthenticatedConsoleSettingsRoute: typeof AuthenticatedConsoleSettingsRoute
   AuthenticatedConsoleSkillsRoute: typeof AuthenticatedConsoleSkillsRoute
   AuthenticatedConsoleTemplatesRoute: typeof AuthenticatedConsoleTemplatesRouteWithChildren
@@ -739,6 +780,7 @@ const AuthenticatedConsoleRouteChildren: AuthenticatedConsoleRouteChildren = {
   AuthenticatedConsoleDesignRoute: AuthenticatedConsoleDesignRouteWithChildren,
   AuthenticatedConsoleGithubRoute: AuthenticatedConsoleGithubRoute,
   AuthenticatedConsolePluginsRoute: AuthenticatedConsolePluginsRoute,
+  AuthenticatedConsoleRoadmapsRoute: AuthenticatedConsoleRoadmapsRoute,
   AuthenticatedConsoleSettingsRoute: AuthenticatedConsoleSettingsRoute,
   AuthenticatedConsoleSkillsRoute: AuthenticatedConsoleSkillsRoute,
   AuthenticatedConsoleTemplatesRoute:
@@ -801,6 +843,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   ApiDesignSystemsRoute: ApiDesignSystemsRouteWithChildren,
   ApiNewsRoute: ApiNewsRoute,
+  ApiRoadmapsRoute: ApiRoadmapsRoute,
   ApiSitemapRoute: ApiSitemapRoute,
   ApiSpeakRoute: ApiSpeakRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,

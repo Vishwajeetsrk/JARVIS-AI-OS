@@ -31,6 +31,116 @@ Jarvis is a **persistent-memory AI operating system**: it remembers your decisio
 
 ---
 
+## Available Interfaces
+
+Jarvis is available as a web application, desktop application, and command-line tool:
+
+### Jarvis IDE (Desktop Application)
+
+The standalone desktop application is available for:
+- **macOS** (Apple Silicon + Intel)
+- **Windows** (x64)
+- **Linux** (x64, AppImage + deb)
+
+### Jarvis CLI
+
+Command-line interface for integrating Jarvis into your development workflows and automation scripts.
+
+For detailed information on both interfaces, visit [jarvisaios.com](https://jarvisaios.com)
+
+---
+
+## Download & Install
+
+### IDE: Download the Desktop Application
+
+**Download Jarvis IDE** directly from [jarvisaios.com/download](https://jarvisaios.com/download)
+
+| Platform | Link |
+|---|---|
+| macOS (Apple Silicon) | [Download .dmg](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest/download/Jarvis-IDE-mac-arm64.dmg) |
+| macOS (Intel) | [Download .dmg](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest/download/Jarvis-IDE-mac-x64.dmg) |
+| Windows (x64) | [Download .exe](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest/download/Jarvis-IDE-windows-x64.exe) |
+| Linux (x64) | [Download .AppImage](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest/download/Jarvis-IDE-linux-x64.AppImage) |
+
+### CLI: Install in Your Terminal
+
+**Prompt to code to deployment in your terminal.** Unleash custom agents in a highly interactive terminal experience. Build features in complex codebases. Automate workflows in seconds. Analyze errors and trace bugs with precision.
+
+**Install on macOS, Linux, or Windows:**
+
+#### Windows (PowerShell)
+
+```powershell
+irm 'https://jarvisaios.com/cli/install.ps1' | iex
+```
+
+#### macOS / Linux
+
+```bash
+curl -fsSL https://jarvisaios.com/cli/install.sh | bash
+```
+
+#### npm (All Platforms)
+
+```bash
+npm install -g @jarvis-ai/cli
+```
+
+**Verify installation:**
+
+```bash
+jarvis --version
+jarvis --help
+```
+
+**Quick start with CLI:**
+
+```bash
+# Start a new project
+jarvis init my-project
+
+# Chat with Jarvis in your terminal
+jarvis chat
+
+# Run agent on a task
+jarvis run "build a REST API with auth"
+
+# Check system status
+jarvis status
+```
+
+---
+
+## Getting Started
+
+Get started with Jarvis by following our comprehensive **[first project guide](https://jarvisaios.com/docs/getting-started/first-project/)**. This hands-on tutorial walks you through Jarvis's essential features.
+
+**What you'll learn:**
+
+- Setting up steering files for project-specific guidance
+- Creating and managing specs for structured development
+- Configuring hooks to automate your workflow
+- Connecting MCP servers for external integrations
+
+### One-Click Migration
+
+Import your VS Code setup including extensions and settings during the initial setup process.
+
+---
+
+## Documentation
+
+**[📚 View Documentation →](https://jarvisaios.com/docs/)**
+
+- [Getting Started](https://jarvisaios.com/docs/getting-started) — Installation and first project setup for IDE and CLI
+- [IDE Guide](https://jarvisaios.com/docs/ide) — Desktop application features and workflows
+- [CLI Guide](https://jarvisaios.com/docs/cli) — Command-line interface usage and automation
+- [Agent Guide](https://jarvisaios.com/docs/agents) — Spec-driven development with AI agents
+- [API Reference](https://jarvisaios.com/docs/api) — API documentation for integrations
+
+---
+
 ## Project Structure — What's Inside
 
 ### 1. Website (Live: jarvisaios.vercel.app)
@@ -48,6 +158,7 @@ A TanStack Start SPA with two areas:
 | **Projects** | Project manager + per-project pages |
 | **Design Systems** | 150 brand design systems + detail pages |
 | **Templates** | Reusable project templates + detail pages |
+| **Roadmaps & Learnify** | 91 developer roadmaps (AI Agents, System Design, DevOps, Web) with AI tutoring |
 | **Skills / Plugins / Tools** | Enable the agent skills, plugins, and tools Jarvis can use |
 | **Connectors** | Slack, Figma, Gmail, Notion, GitHub, and more |
 | **GitHub** | Live repo stats from your connected GitHub |
@@ -58,6 +169,7 @@ A TanStack Start SPA with two areas:
 | Route | Purpose |
 |---|---|
 | `/api/chat` | AI chat streaming (Gemini / Groq / OpenRouter) |
+| `/api/roadmaps` | Developer roadmaps catalog & module details |
 | `/api/transcribe` | Speech-to-text (Groq Whisper) |
 | `/api/speak` | Text-to-speech |
 | `/api/vision` | Screen/image analysis |
@@ -191,3 +303,22 @@ npm run daemon       # design-systems daemon (port 7456)
 ## License
 
 MIT License
+
+---
+
+## Code of Conduct
+
+This project has adopted the [Jarvis AI OS Code of Conduct](CODE_OF_CONDUCT.md). For more information see the [Code of Conduct FAQ](https://www.contributor-covenant.org/faq) or contact **vishwajeetsrk@gmail.com** with any additional questions or comments.
+
+---
+
+## Support
+
+For additional support:
+- Join our community [Discord server](https://discord.gg/jarvis-ai) for quick help and discussions with other developers
+- For security issues, please email **vishwajeetsrk@gmail.com** — do NOT create a public GitHub issue
+- For general questions, open a [GitHub Discussion](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/discussions)
+
+---
+
+**Maintainer:** Vishwajeet — vishwajeetsrk@gmail.com

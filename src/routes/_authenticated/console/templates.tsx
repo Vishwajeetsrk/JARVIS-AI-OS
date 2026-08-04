@@ -1,10 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useParams } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/jarvis/catalog-grid";
 import { Palette, Monitor, Layout, Smartphone } from "lucide-react";
 import { useState } from "react";
 
-interface DesignSystemSummary {
+export interface DesignSystemSummary {
   id: string;
   name: string;
   category: string;
@@ -36,11 +36,16 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 function TemplatesPage() {
+  const params = useParams({ strict: false }) as { systemId?: string };
+  if (params.systemId) {
+    return <Outlet />;
+  }
+
   const { systems } = Route.useLoaderData();
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <PageHeader title="Templates Showcase" description="Browse design system UI kits, preview pages, and template files for all 32 brand systems." />
+      <PageHeader title="Templates Showcase" subtitle="Browse design system UI kits, preview pages, and template files for all 32 brand systems." />
 
       <div className="flex-1 overflow-y-auto px-4 pb-6">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
