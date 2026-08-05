@@ -5,6 +5,7 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   nitro: {
@@ -14,6 +15,26 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    plugins: [
+      VitePWA({
+        registerType: "autoUpdate",
+        includeAssets: ["icons/*.svg"],
+        manifest: false,
+        workbox: {
+          globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+              handler: "NetworkFirst",
+              options: {
+                cacheName: "supabase-cache",
+                expiration: { maxEntries: 100, maxAgeSeconds: 3600 },
+              },
+            },
+          ],
+        },
+      }),
+    ],
     server: {
       host: "localhost",
       hmr: {

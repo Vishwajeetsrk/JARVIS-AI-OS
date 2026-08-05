@@ -11,6 +11,7 @@ import { createReport } from "@/mastra/tools/report-creator";
 import { executeCode } from "@/mastra/tools/code-runner";
 import { autoLearn } from "@/mastra/tools/auto-learner";
 import { listDesignSystems, getDesignSystem } from "@/lib/design-systems";
+import { getSteeringForContext } from "@/lib/steering";
 
 const DEFAULT_MODEL = "gemini-1.5-flash";
 
@@ -77,6 +78,11 @@ export const Route = createFileRoute("/api/chat")({
               } catch {}
             }
           }
+
+          try {
+            const steeringContext = getSteeringForContext();
+            if (steeringContext) system = system + steeringContext;
+          } catch {}
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const tools: any = {

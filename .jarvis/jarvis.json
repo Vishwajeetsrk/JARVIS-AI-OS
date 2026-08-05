@@ -1,0 +1,25 @@
+{
+  "$schema": "https://jarvis.dev/schemas/jarvis-project-v1.json",
+  "schemaVersion": "1.0",
+  "projectName": "Jarvis AI OS",
+  "version": "2.4.0",
+  "specs": {
+    "enabled": true,
+    "defaultType": "feature",
+    "autoGenerateTests": true
+  },
+  "hooks": {
+    "enabled": true,
+    "debounceMs": 300,
+    "maxConcurrent": 5
+  },
+  "steering": {
+    "enabled": true,
+    "globalEnabled": true,
+    "autoGenerateFoundation": true
+  },
+  "agents": {
+    "contextInjection": true,
+    "maxContextTokens": 8000
+  }
+}
