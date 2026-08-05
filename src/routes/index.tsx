@@ -7,7 +7,8 @@ import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   CheckCircle2, ShieldCheck, Zap, Globe, Cpu, Smartphone, Monitor, Terminal,
   Radio, TrendingUp, Users, MemoryStick, Sparkles, ArrowRight, GitBranch,
-  Database, Brain, Infinity,
+  Database, Brain, Infinity, Download, ExternalLink, AppWindow, Apple,
+  Laptop,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -370,6 +371,119 @@ function LandingPage() {
                 {a}
               </span>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Download & Live Preview ───────────────────────────────── */}
+      <section className="border-b border-border/60 py-20 bg-surface/30">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-10 text-center">
+            <div className="text-mono-xs text-muted-foreground mb-2">Get Jarvis</div>
+            <h2 className="font-display text-3xl md:text-5xl font-semibold">Download & Live Preview.</h2>
+            <p className="mt-3 text-muted-foreground text-sm max-w-lg mx-auto">
+              Run Jarvis as a desktop app, open the live console, or preview every surface right now.
+            </p>
+          </div>
+
+          {/* Live Preview buttons */}
+          <div className="mb-10 grid gap-4 sm:grid-cols-3">
+            <a
+              href="https://jarvisaios.vercel.app/console"
+              target="_blank"
+              rel="noreferrer"
+              className="group rounded-xl border border-border bg-card p-6 text-left transition-all hover:border-primary/50 hover:-translate-y-1"
+            >
+              <Monitor className="h-6 w-6 text-primary mb-3" />
+              <div className="flex items-center gap-2 font-display text-lg font-semibold">
+                Live Console <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <div className="mt-1 text-sm text-muted-foreground">Open the working console app in your browser — no install needed.</div>
+            </a>
+            <a
+              href="https://jarvisaios.vercel.app/auth"
+              target="_blank"
+              rel="noreferrer"
+              className="group rounded-xl border border-border bg-card p-6 text-left transition-all hover:border-primary/50 hover:-translate-y-1"
+            >
+              <Sparkles className="h-6 w-6 text-primary mb-3" />
+              <div className="flex items-center gap-2 font-display text-lg font-semibold">
+                Try as Guest <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <div className="mt-1 text-sm text-muted-foreground">Instant demo of the console. Data resets on refresh.</div>
+            </a>
+            <a
+              href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS"
+              target="_blank"
+              rel="noreferrer"
+              className="group rounded-xl border border-border bg-card p-6 text-left transition-all hover:border-primary/50 hover:-translate-y-1"
+            >
+              <GitBranch className="h-6 w-6 text-primary mb-3" />
+              <div className="flex items-center gap-2 font-display text-lg font-semibold">
+                Source Code <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <div className="mt-1 text-sm text-muted-foreground">MIT-licensed. Clone, run locally, and extend Jarvis.</div>
+            </a>
+          </div>
+
+          {/* Desktop Downloads */}
+          <div className="rounded-2xl border border-border bg-card overflow-hidden">
+            <div className="flex items-center gap-3 border-b border-border bg-surface/60 px-6 py-4">
+              <AppWindow className="h-5 w-5 text-primary" />
+              <div>
+                <div className="font-display text-lg font-semibold">Jarvis Desktop App</div>
+                <div className="text-xs text-muted-foreground">Tauri 2 · macOS, Windows, Linux — installers from GitHub Releases</div>
+              </div>
+            </div>
+            <div className="grid gap-4 p-6 md:grid-cols-3">
+              <a
+                href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center transition-all hover:border-primary/50 hover:-translate-y-1"
+              >
+                <Apple className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                <div className="font-semibold">macOS</div>
+                <div className="text-xs text-muted-foreground">Apple Silicon + Intel · .dmg</div>
+                <span className="mt-2 inline-flex items-center gap-2 rounded-md bg-primary/10 px-4 py-2 text-xs font-medium text-primary">
+                  <Download className="h-3.5 w-3.5" /> Download
+                </span>
+              </a>
+              <a
+                href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center transition-all hover:border-primary/50 hover:-translate-y-1"
+              >
+                <Monitor className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                <div className="font-semibold">Windows</div>
+                <div className="text-xs text-muted-foreground">x64 · .exe / .msi</div>
+                <span className="mt-2 inline-flex items-center gap-2 rounded-md bg-primary/10 px-4 py-2 text-xs font-medium text-primary">
+                  <Download className="h-3.5 w-3.5" /> Download
+                </span>
+              </a>
+              <a
+                href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center transition-all hover:border-primary/50 hover:-translate-y-1"
+              >
+                <Laptop className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                <div className="font-semibold">Linux</div>
+                <div className="text-xs text-muted-foreground">x64 · .AppImage / .deb</div>
+                <span className="mt-2 inline-flex items-center gap-2 rounded-md bg-primary/10 px-4 py-2 text-xs font-medium text-primary">
+                  <Download className="h-3.5 w-3.5" /> Download
+                </span>
+              </a>
+            </div>
+            <div className="border-t border-border bg-surface/40 px-6 py-4 text-center">
+              <span className="font-mono text-xs text-muted-foreground">
+                Or install the CLI from source:
+              </span>
+              <code className="ml-2 rounded bg-card border border-border px-2 py-1 font-mono text-xs text-primary">
+                npm run jarvis
+              </code>
+            </div>
           </div>
         </div>
       </section>
