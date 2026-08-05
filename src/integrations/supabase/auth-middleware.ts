@@ -48,13 +48,17 @@ const MOCK_GUEST_CLAIMS = {
 
 export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server(
   async ({ next }) => {
-    const SUPABASE_URL = process.env.SUPABASE_URL || 'https://tupgfxqkefgntrpgakxk.supabase.co';
-    const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_xS9EjiYb3cjZQ_hVKWvPWg_wF9SKZML';
+    const SUPABASE_URL = process.env.SUPABASE_URL;
+    const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
+
+    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+      console.error("[auth-middleware] Missing SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY env vars");
+    }
 
     const request = getRequest();
     const authHeader = request?.headers?.get('authorization');
 
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    if (SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY && authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '');
       if (token && token.split('.').length === 3) {
         try {
@@ -85,7 +89,10 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
       }
     }
 
-    // Guest / Dev Mode fallback using admin client
+    // Guest / Dev Mode fallback — only when env vars are missing or auth failed
+    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+      console.warn("[auth-middleware] Running in guest mode — set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY for production");
+    }
     return next({
       context: {
         supabase: supabaseAdmin as unknown as ReturnType<typeof createClient<Database>>,

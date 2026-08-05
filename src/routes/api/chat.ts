@@ -39,6 +39,14 @@ export const Route = createFileRoute("/api/chat")({
             return new Response("messages required", { status: 400 });
           }
 
+          if (body.messages.length === 0) {
+            return new Response("messages must not be empty", { status: 400 });
+          }
+
+          if (body.messages.length > 100) {
+            return new Response("messages limit exceeded (max 100)", { status: 400 });
+          }
+
           const auth = request.headers.get("authorization") ?? "";
           const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
           let userId: string | null = null;

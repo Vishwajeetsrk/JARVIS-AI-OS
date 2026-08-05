@@ -28,13 +28,18 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 function createSupabaseClient() {
   const SUPABASE_URL =
     process.env.SUPABASE_URL ||
-    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL) ||
-    'https://tupgfxqkefgntrpgakxk.supabase.co';
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL);
 
   const SUPABASE_PUBLISHABLE_KEY =
     process.env.SUPABASE_PUBLISHABLE_KEY ||
-    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY) ||
-    'sb_publishable_xS9EjiYb3cjZQ_hVKWvPWg_wF9SKZML';
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY);
+
+  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+    console.error("[supabase-client] Missing SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY env vars");
+    return createClient<Database>("", "", {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+  }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     global: {

@@ -26,11 +26,17 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 }
 
 function createSupabaseAdminClient() {
-  const SUPABASE_URL = process.env.SUPABASE_URL || 'https://tupgfxqkefgntrpgakxk.supabase.co';
+  const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_ROLE_KEY =
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.SUPABASE_SECRET_KEY ||
-    'sb_publishable_xS9EjiYb3cjZQ_hVKWvPWg_wF9SKZML';
+    process.env.SUPABASE_SECRET_KEY;
+
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error(
+      "[supabase-admin] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars. " +
+      "Set them in your .env file or environment."
+    );
+  }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     global: {
