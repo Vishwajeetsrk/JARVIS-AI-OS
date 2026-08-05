@@ -10,6 +10,7 @@ export const listCronJobs = createServerFn({ method: "GET" })
     const { data, error } = await supabase
       .from("cron_jobs")
       .select("*")
+      .eq("user_id", context.userId)
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return data ?? [];

@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, statSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { homedir } from "node:os";
 
@@ -120,7 +120,6 @@ export function createSteeringFile(
   content?: string,
 ): { success: boolean; error?: string; path?: string } {
   if (!existsSync(WORKSPACE_STEERING)) {
-    const { mkdirSync } = require("node:fs");
     mkdirSync(WORKSPACE_STEERING, { recursive: true });
   }
 
@@ -131,7 +130,6 @@ export function createSteeringFile(
 
   const fileContent = content || `---\ninclusion: ${inclusion}\n---\n\n# ${name}\n\n[Add your guidance here]\n`;
 
-  const { writeFileSync } = require("node:fs");
   writeFileSync(filePath, fileContent);
 
   return { success: true, path: filePath };

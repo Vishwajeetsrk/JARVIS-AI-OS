@@ -2,7 +2,6 @@
   "name": "vishwajeet-ai-os",
   "version": "2.4.0",
   "description": "JARVIS AI OS — Persistent-memory AI Operating System with 30 agents, 150 design systems, and 68 open-source repos",
-  "main": "dist/index.js",
   "bin": {
     "jarvis": "./cli/index.ts"
   },
@@ -11,7 +10,7 @@
     "build": "vite build",
     "dev": "vite dev",
     "dev:mastra": "tsx watch src/mastra/index.ts",
-    "start": "node dist/index.js",
+    "start": "vite preview",
     "test": "vitest run",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",

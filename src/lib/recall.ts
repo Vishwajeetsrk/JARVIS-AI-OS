@@ -37,19 +37,21 @@ export async function recall(userId: string, query: string, limit = 5): Promise<
     }
   }
 
-  // 2) Fallback: keyword search across the user's messages.
+  // 2) Fallback: keyword scoring over the user's recent messages (no pgvector).
   const terms = query
     .toLowerCase()
     .split(/\s+/)
     .filter((t) => t.length > 2)
     .slice(0, 4);
 
-  let builder = supabaseAdmin.from("messages").select("id, thread_id, role, parts, created_at").eq("user_id", userId);
-  if (terms.length) {
-    const like = `%${terms[0]}%`;
-    builder = builder.ilike("parts::text", like);
-  }
-  const { data, error } = await (builder as any).order("created_at", { ascending: false }).limit(limit * 4);
+  if (!terms.length) return [];
+
+  const { data, error } = await supabaseAdmin
+    .from("messages")
+    .select("id, thread_id, role, parts, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(200);
   if (error || !data) return [];
 
   const scored = data

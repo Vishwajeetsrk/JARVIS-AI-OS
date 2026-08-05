@@ -43,7 +43,7 @@ import { Route as AuthenticatedConsoleProjectsProjectIdRouteImport } from './rou
 import { Route as AuthenticatedConsoleTemplatesSystemIdRouteImport } from './routes/_authenticated/console/templates.$systemId'
 import { Route as ApiDesignSystemsIdPreviewRouteImport } from './routes/api/design-systems/$id/preview'
 import { Route as ApiDesignSystemsIdTemplatesRouteImport } from './routes/api/design-systems/$id/templates'
-import { Route as ApiDesignSystemsIdTemplatesFileRouteImport } from './routes/api/design-systems/$id/templates/$file'
+import { Route as ApiDesignSystemsIdTemplatesFileRouteImport } from './routes/api/design-systems/$id/templates/$file.'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -233,8 +233,8 @@ const ApiDesignSystemsIdTemplatesRoute =
   } as any)
 const ApiDesignSystemsIdTemplatesFileRoute =
   ApiDesignSystemsIdTemplatesFileRouteImport.update({
-    id: '/$file',
-    path: '/$file',
+    id: '/$file/',
+    path: '/$file/',
     getParentRoute: () => ApiDesignSystemsIdTemplatesRoute,
   } as any)
 
@@ -272,7 +272,7 @@ export interface FileRoutesByFullPath {
   '/console/templates/$systemId': typeof AuthenticatedConsoleTemplatesSystemIdRoute
   '/api/design-systems/$id/preview': typeof ApiDesignSystemsIdPreviewRoute
   '/api/design-systems/$id/templates': typeof ApiDesignSystemsIdTemplatesRouteWithChildren
-  '/api/design-systems/$id/templates/$file': typeof ApiDesignSystemsIdTemplatesFileRoute
+  '/api/design-systems/$id/templates/$file/': typeof ApiDesignSystemsIdTemplatesFileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -345,7 +345,7 @@ export interface FileRoutesById {
   '/_authenticated/console/templates/$systemId': typeof AuthenticatedConsoleTemplatesSystemIdRoute
   '/api/design-systems/$id/preview': typeof ApiDesignSystemsIdPreviewRoute
   '/api/design-systems/$id/templates': typeof ApiDesignSystemsIdTemplatesRouteWithChildren
-  '/api/design-systems/$id/templates/$file': typeof ApiDesignSystemsIdTemplatesFileRoute
+  '/api/design-systems/$id/templates/$file/': typeof ApiDesignSystemsIdTemplatesFileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -383,7 +383,7 @@ export interface FileRouteTypes {
     | '/console/templates/$systemId'
     | '/api/design-systems/$id/preview'
     | '/api/design-systems/$id/templates'
-    | '/api/design-systems/$id/templates/$file'
+    | '/api/design-systems/$id/templates/$file/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -455,7 +455,7 @@ export interface FileRouteTypes {
     | '/_authenticated/console/templates/$systemId'
     | '/api/design-systems/$id/preview'
     | '/api/design-systems/$id/templates'
-    | '/api/design-systems/$id/templates/$file'
+    | '/api/design-systems/$id/templates/$file/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -717,10 +717,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiDesignSystemsIdTemplatesRouteImport
       parentRoute: typeof ApiDesignSystemsRoute
     }
-    '/api/design-systems/$id/templates/$file': {
-      id: '/api/design-systems/$id/templates/$file'
+    '/api/design-systems/$id/templates/$file/': {
+      id: '/api/design-systems/$id/templates/$file/'
       path: '/$file'
-      fullPath: '/api/design-systems/$id/templates/$file'
+      fullPath: '/api/design-systems/$id/templates/$file/'
       preLoaderRoute: typeof ApiDesignSystemsIdTemplatesFileRouteImport
       parentRoute: typeof ApiDesignSystemsIdTemplatesRoute
     }

@@ -9,6 +9,7 @@ export const listThreads = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("threads")
       .select("id, title, project_id, starred, updated_at, created_at")
+      .eq("user_id", context.userId)
       .order("updated_at", { ascending: false })
       .limit(500);
     if (error) throw new Error(error.message);
@@ -41,7 +42,11 @@ export const deleteThread = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("threads").delete().eq("id", data.id);
+    const { error } = await context.supabase
+      .from("threads")
+      .delete()
+      .eq("id", data.id)
+      .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -55,7 +60,8 @@ export const renameThread = createServerFn({ method: "POST" })
     const { error } = await context.supabase
       .from("threads")
       .update({ title: data.title })
-      .eq("id", data.id);
+      .eq("id", data.id)
+      .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -75,7 +81,11 @@ export const updateThread = createServerFn({ method: "POST" })
     if (data.starred !== undefined) patch.starred = data.starred;
     if (data.project_id !== undefined) patch.project_id = data.project_id;
     if (data.title !== undefined) patch.title = data.title;
-    const { error } = await context.supabase.from("threads").update(patch).eq("id", data.id);
+    const { error } = await context.supabase
+      .from("threads")
+      .update(patch)
+      .eq("id", data.id)
+      .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -88,6 +98,7 @@ export const loadMessages = createServerFn({ method: "GET" })
       .from("messages")
       .select("id, role, parts, created_at")
       .eq("thread_id", data.threadId)
+      .eq("user_id", context.userId)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
     return (rows ?? []).map((r) => ({
@@ -105,17 +116,19 @@ export const listProjects = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("projects")
       .select("id, name, description, color, updated_at")
+      .eq("user_id", context.userId)
       .order("updated_at", { ascending: false });
     if (error) throw new Error(error.message);
     return data ?? [];
   });
 
 export const listWorkspaceProjects = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .handler(async () => {
     try {
       const fs = await import("node:fs/promises");
       const path = await import("node:path");
-      const projectsDir = path.resolve(process.cwd(), "..", "Projects");
+      const projectsDir = path.resolve(process.cwd(), "Projects");
       const entries = await fs.readdir(projectsDir, { withFileTypes: true });
       const colors = ["#D97757", "#E69D45", "#58A65C", "#6A9BCC", "#A855F7", "#EC4899"];
       return entries
@@ -159,7 +172,11 @@ export const deleteProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("projects").delete().eq("id", data.id);
+    const { error } = await context.supabase
+      .from("projects")
+      .delete()
+      .eq("id", data.id)
+      .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -176,6 +193,15 @@ const SettingsSchema = z.object({
   enabled_connectors: z.array(z.string()).optional(),
   enabled_plugins: z.array(z.string()).optional(),
   enabled_skills: z.array(z.string()).optional(),
+  auto_learn_enabled: z.boolean().optional(),
+  code_execution_enabled: z.boolean().optional(),
+  docx_enabled: z.boolean().optional(),
+  pptx_enabled: z.boolean().optional(),
+  xlsx_enabled: z.boolean().optional(),
+  screen_vision_enabled: z.boolean().optional(),
+  shell_execution_enabled: z.boolean().optional(),
+  voice_enabled: z.boolean().optional(),
+  wake_word_enabled: z.boolean().optional(),
 });
 
 export const getSettings = createServerFn({ method: "GET" })
@@ -202,9 +228,12 @@ export const updateSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => SettingsSchema.parse(data))
   .handler(async ({ data, context }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const patch: Record<string, any> = { user_id: context.userId, ...data };
     const { error } = await context.supabase
       .from("user_settings")
-      .upsert({ user_id: context.userId, ...data }, { onConflict: "user_id" });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .upsert(patch as any, { onConflict: "user_id" });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

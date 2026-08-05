@@ -32,8 +32,20 @@ export const Route = createFileRoute("/api/transcribe")({
         }
 
         try {
+          const mimeToExt: Record<string, string> = {
+            "audio/webm": "webm",
+            "audio/webm;codecs=opus": "webm",
+            "audio/ogg": "ogg",
+            "audio/mp4": "m4a",
+            "audio/mpeg": "mp3",
+            "audio/wav": "wav",
+            "audio/wave": "wav",
+          };
+          const type = (file.type || "").split(";")[0].toLowerCase();
+          const ext = mimeToExt[type] ?? "webm";
+
           const groqFormData = new FormData();
-          groqFormData.append("file", file, "audio.wav");
+          groqFormData.append("file", file, `audio.${ext}`);
           groqFormData.append("model", "whisper-large-v3-turbo");
           groqFormData.append("response_format", "json");
 

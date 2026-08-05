@@ -1,10 +1,10 @@
-import { createFileRoute, useParams, Link } from "@tanstack/react-router";
+import { createFileRoute, useParams, useNavigate, Link } from "@tanstack/react-router";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage, type FileUIPart } from "ai";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { loadMessages, getSettings } from "@/lib/threads.functions";
+import { loadMessages, getSettings, createThread } from "@/lib/threads.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { MODELS, modelById, type ModelProvider } from "@/lib/models";
 import {
@@ -59,9 +59,11 @@ function AttachmentStrip() {
 
 function ThreadView() {
   const { threadId } = useParams({ from: "/_authenticated/console/$threadId" });
+  const navigate = useNavigate();
   const { seed } = Route.useSearch();
   const loadFn = useServerFn(loadMessages);
   const settingsFn = useServerFn(getSettings);
+  const createThreadFn = useServerFn(createThread);
   const seededRef = useRef(false);
 
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: () => settingsFn({}) });
@@ -72,9 +74,11 @@ function ThreadView() {
     }
   }, [settings?.default_model]);
 
+  const isNewThread = threadId === "new";
   const { data: initial = [], isLoading } = useQuery({
     queryKey: ["messages", threadId],
     queryFn: () => loadFn({ data: { threadId } }),
+    enabled: !isNewThread,
   });
 
   const transport = useMemo(
@@ -109,19 +113,40 @@ function ThreadView() {
     if (!seed || isLoading) return;
     if ((initial as unknown[]).length > 0) return;
     seededRef.current = true;
-    sendMessage({ text: seed });
+    void sendWithThreadSeed(seed);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seed, isLoading]);
+
+  async function ensureThread() {
+    if (!isNewThread) return threadId;
+    const row = await createThreadFn({ data: { title: "New chat" } });
+    return row.id;
+  }
+
+  async function sendWithThreadSeed(text: string, files?: FileUIPart[]) {
+    try {
+      const tid = await ensureThread();
+      if (isNewThread) {
+        navigate({
+          to: "/console/$threadId",
+          params: { threadId: tid },
+          search: { seed: text },
+          replace: true,
+        });
+        return;
+      }
+      sendMessage({ text, files });
+    } catch {
+      sendMessage({ text, files });
+    }
+  }
 
   const busy = status === "submitted" || status === "streaming";
 
   const handleSubmit = (msg: { text: string; files: FileUIPart[] }) => {
     const text = msg.text.trim();
     if ((!text && msg.files.length === 0) || busy) return;
-    sendMessage({
-      text: text || (msg.files.length ? "(attached files)" : ""),
-      files: msg.files,
-    });
+    void sendWithThreadSeed(text || (msg.files.length ? "(attached files)" : ""), msg.files);
   };
 
   const current = modelById(model);

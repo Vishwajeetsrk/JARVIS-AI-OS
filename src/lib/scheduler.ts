@@ -65,11 +65,19 @@ async function runJob(job: CronJobRow): Promise<void> {
   } catch (e) {
     console.error(`[scheduler] job "${job.name}" failed`, e);
   } finally {
-    await supabaseAdmin
-      .from("cron_jobs")
-      .update({ last_run_at: new Date().toISOString() })
-      .eq("id", job.id);
-    await refreshScheduler();
+    try {
+      await supabaseAdmin
+        .from("cron_jobs")
+        .update({ last_run_at: new Date().toISOString() })
+        .eq("id", job.id);
+    } catch (e) {
+      console.error(`[scheduler] could not record last_run_at for "${job.name}"`, e);
+    }
+    try {
+      await refreshScheduler();
+    } catch (e) {
+      console.error("[scheduler] refresh after run failed", e);
+    }
   }
 }
 
@@ -89,7 +97,7 @@ export async function refreshScheduler(): Promise<void> {
     const task = cron.schedule(
       expr,
       () => {
-        void runJob(job);
+        void runJob(job).catch((e) => console.error(`[scheduler] job "${job.name}" rejected`, e));
       },
       { noOverlap: true },
     );

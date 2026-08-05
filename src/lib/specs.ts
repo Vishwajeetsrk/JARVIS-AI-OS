@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync, statSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
 const JARVIS_DIR = join(process.cwd(), ".jarvis");
@@ -175,7 +175,7 @@ export function listSpecs(): SpecSummary[] {
 
       if (existsSync(tasksFile)) {
         const content = readFileSync(tasksFile, "utf-8");
-        const matches = content.match(/- \[[ x]\]/g) || [];
+        const matches = content.match(/- \[[ x\-]\]/g) || [];
         totalTasks = matches.length;
         completedTasks = matches.filter((m) => m === "- [x]").length;
       }
@@ -196,7 +196,7 @@ export function listSpecs(): SpecSummary[] {
       }
 
       try {
-        const stat = require("node:fs").statSync(specDir);
+        const stat = statSync(specDir);
         createdAt = stat.birthtime.toISOString();
         updatedAt = stat.mtime.toISOString();
       } catch {
@@ -265,7 +265,6 @@ export function deleteSpec(name: string): { success: boolean; error?: string } {
     return { success: false, error: `Spec "${name}" not found` };
   }
 
-  const { rmSync } = require("node:fs");
   rmSync(specDir, { recursive: true, force: true });
   return { success: true };
 }

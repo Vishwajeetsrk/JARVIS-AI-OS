@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/desktop/system")({
     handlers: {
       GET: async () => {
         try {
-          const scriptPath = path.resolve(process.cwd(), "..", "scripts", "desktop-voice-bridge.py");
+          const scriptPath = path.resolve(process.cwd(), "scripts", "desktop-voice-bridge.py");
           const { stdout } = await execFileAsync("python", [scriptPath, "system"]);
           const result = JSON.parse(stdout.trim());
           return new Response(JSON.stringify(result), {

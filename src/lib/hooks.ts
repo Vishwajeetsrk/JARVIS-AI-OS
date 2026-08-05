@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, existsSync, statSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, statSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
 const HOOKS_DIR = join(process.cwd(), ".jarvis", "hooks");
@@ -99,7 +99,6 @@ export function deleteHook(name: string): { success: boolean; error?: string } {
     return { success: false, error: `Hook "${name}" not found` };
   }
 
-  const { rmSync } = require("node:fs");
   rmSync(hookFile);
   return { success: true };
 }

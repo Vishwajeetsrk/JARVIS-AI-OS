@@ -38,12 +38,13 @@ export const Route = createFileRoute("/api/chat")({
           if (!Array.isArray(body.messages)) {
             return new Response("messages required", { status: 400 });
           }
+          const requestMessages = body.messages;
 
-          if (body.messages.length === 0) {
+          if (requestMessages.length === 0) {
             return new Response("messages must not be empty", { status: 400 });
           }
 
-          if (body.messages.length > 100) {
+          if (requestMessages.length > 100) {
             return new Response("messages limit exceeded (max 100)", { status: 400 });
           }
 
@@ -70,7 +71,7 @@ export const Route = createFileRoute("/api/chat")({
           // Cross-session memory recall: pull relevant past context for this turn.
           let system = BASE_SYSTEM;
           if (userId) {
-            const lastUser = [...body.messages].reverse().find((m) => m.role === "user");
+            const lastUser = [...requestMessages].reverse().find((m) => m.role === "user");
             const userText = lastUser
               ? (Array.isArray((lastUser as any).parts)
                   ? (lastUser as any).parts
@@ -95,9 +96,12 @@ export const Route = createFileRoute("/api/chat")({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const tools: any = {
             executeShell: {
-              description: "Execute a shell command.",
+              description: "Execute a shell command. Requires a signed-in session.",
               parameters: z.object({ command: z.string(), workingDirectory: z.string().optional() }),
               execute: async ({ command, workingDirectory }: { command: string; workingDirectory?: string }) => {
+                if (!userId) {
+                  return { error: "Sign in to use shell execution" };
+                }
                 return await executeShell({ command, workingDirectory });
               },
             },
@@ -110,9 +114,12 @@ export const Route = createFileRoute("/api/chat")({
               },
             },
             runCode: {
-              description: "Execute a code snippet.",
+              description: "Execute a code snippet. Requires a signed-in session.",
               parameters: z.object({ code: z.string(), language: z.enum(["javascript", "typescript", "python", "shell"]) }),
               execute: async (args: { code: string; language: any }) => {
+                if (!userId) {
+                  return { error: "Sign in to use code execution" };
+                }
                 return await executeCode(args);
               },
             },
@@ -206,23 +213,28 @@ export const Route = createFileRoute("/api/chat")({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             model: aiModel as any,
             system,
-            messages: await convertToModelMessages(body.messages),
+            messages: await convertToModelMessages(requestMessages),
             tools: tools as any,
             toolChoice: "auto",
           });
 
           const streamResponse = result.toUIMessageStreamResponse({
-            originalMessages: body.messages,
+            originalMessages: requestMessages,
             onFinish: async ({ messages }) => {
               if (!userId || !body.threadId) return;
               try {
                 const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-                const last = messages[messages.length - 1];
-                const secondLast = messages[messages.length - 2];
                 const rows: Array<{ thread_id: string; user_id: string; role: string; parts: any }> = [];
-                if (secondLast && secondLast.role === "user") {
-                  rows.push({ thread_id: body.threadId, user_id: userId, role: "user", parts: secondLast.parts ?? [] });
+
+                // The user's message always comes from the original request. The
+                // SDK's final messages only contain tool-turn assistant parts, so
+                // never rely on message index position for the user side.
+                const lastUser = [...requestMessages].reverse().find((m) => m.role === "user");
+                if (lastUser) {
+                  rows.push({ thread_id: body.threadId, user_id: userId, role: "user", parts: (lastUser as any).parts ?? [] });
                 }
+
+                const last = messages[messages.length - 1];
                 if (last && last.role === "assistant") {
                   rows.push({ thread_id: body.threadId, user_id: userId, role: "assistant", parts: last.parts ?? [] });
                 }

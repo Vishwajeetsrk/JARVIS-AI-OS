@@ -37,11 +37,14 @@ export const Route = createFileRoute("/api/speak")({
           });
 
           if (!res.ok) {
-            // Return clean JSON status if TTS model is not available
-            return new Response(JSON.stringify({ status: "processed", text: body.text }), {
-              status: 200,
-              headers: { "Content-Type": "application/json" },
-            });
+            const errText = await res.text().catch(() => "");
+            return new Response(
+              JSON.stringify({ error: `TTS request failed (${res.status}): ${errText.slice(0, 300)}` }),
+              {
+                status: res.status,
+                headers: { "Content-Type": "application/json" },
+              },
+            );
           }
 
           const audioBuffer = await res.arrayBuffer();

@@ -51,48 +51,46 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
 
-    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-      console.error("[auth-middleware] Missing SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY env vars");
-    }
-
     const request = getRequest();
     const authHeader = request?.headers?.get('authorization');
+    const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.replace('Bearer ', '') : null;
 
-    if (SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY && authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.replace('Bearer ', '');
-      if (token && token.split('.').length === 3) {
-        try {
-          const supabase = createClient<Database>(
-            SUPABASE_URL,
-            SUPABASE_PUBLISHABLE_KEY,
-            {
-              global: {
-                fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY),
-                headers: { Authorization: `Bearer ${token}` },
-              },
-              auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-            }
-          );
-          const { data } = await supabase.auth.getClaims(token);
-          if (data?.claims?.sub) {
-            return next({
-              context: {
-                supabase,
-                userId: data.claims.sub,
-                claims: data.claims,
-              },
-            });
+    // ── Fully configured environment: real auth is REQUIRED ────────────
+    if (SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY) {
+      if (!token || token.split('.').length !== 3) {
+        throw new Error("[auth] Missing or malformed bearer token");
+      }
+      try {
+        const supabase = createClient<Database>(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY,
+          {
+            global: {
+              fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY),
+              headers: { Authorization: `Bearer ${token}` },
+            },
+            auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
           }
-        } catch {
-          // Fallback below
+        );
+        const { data, error } = await supabase.auth.getClaims(token);
+        if (error) throw error;
+        if (data?.claims?.sub) {
+          return next({
+            context: {
+              supabase,
+              userId: data.claims.sub,
+              claims: data.claims,
+            },
+          });
         }
+        throw new Error("[auth] Invalid token — no subject claim");
+      } catch (err) {
+        throw new Error(`[auth] Authentication failed: ${err instanceof Error ? err.message : "unknown"}`);
       }
     }
 
-    // Guest / Dev Mode fallback — only when env vars are missing or auth failed
-    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-      console.warn("[auth-middleware] Running in guest mode — set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY for production");
-    }
+    // ── Dev mode: env vars absent → local-only guest fallback ───────────
+    console.warn("[auth-middleware] Running in guest mode — set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY for production");
     return next({
       context: {
         supabase: supabaseAdmin as unknown as ReturnType<typeof createClient<Database>>,

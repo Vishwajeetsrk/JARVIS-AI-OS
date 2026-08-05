@@ -11,12 +11,13 @@ export const getDashboardStats = createServerFn({ method: "GET" })
 
     try {
       const [threads, messages, projects, activity, settings] = await Promise.all([
-        supabase.from("threads").select("id", { count: "exact", head: true }),
-        supabase.from("messages").select("id", { count: "exact", head: true }),
-        supabase.from("projects").select("id", { count: "exact", head: true }),
+        supabase.from("threads").select("id", { count: "exact", head: true }).eq("user_id", userId),
+        supabase.from("messages").select("id", { count: "exact", head: true }).eq("user_id", userId),
+        supabase.from("projects").select("id", { count: "exact", head: true }).eq("user_id", userId),
         supabase
           .from("agent_activity")
           .select("id", { count: "exact", head: true })
+          .eq("user_id", userId)
           .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
         supabase
           .from("user_settings")
