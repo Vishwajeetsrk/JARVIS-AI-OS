@@ -133,6 +133,7 @@ Import your VS Code setup including extensions and settings during the initial s
 
 **[📚 View Documentation →](https://jarvisaios.com/docs/)**
 
+- [Installation Guide](docs/setup/INSTALLATION.md) — Full install guide for Desktop, CLI, and Development Environment
 - [Getting Started](https://jarvisaios.com/docs/getting-started) — Installation and first project setup for IDE and CLI
 - [IDE Guide](https://jarvisaios.com/docs/ide) — Desktop application features and workflows
 - [CLI Guide](https://jarvisaios.com/docs/cli) — Command-line interface usage and automation
