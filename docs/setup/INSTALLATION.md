@@ -1,177 +1,180 @@
 # Installation Guide
 
-Complete guide to installing Jarvis AI OS — Desktop IDE, CLI, and Development Environment.
+Complete guide to installing Jarvis AI OS — CLI, Desktop, and Development Environment.
 
-## Quick Install (CLI)
+## Option 1: Use the Live Demo (No Install)
 
-### Windows (PowerShell)
+The fastest way to try Jarvis — open in your browser:
 
-```powershell
-irm 'https://jarvisaios.com/cli/install.ps1' | iex
-```
+**[jarvisaios.vercel.app](https://jarvisaios.vercel.app)**
 
-### macOS / Linux
-
-```bash
-curl -fsSL https://jarvisaios.com/cli/install.sh | bash
-```
-
-### npm (All Platforms)
-
-```bash
-npm install -g @jarvis-ai/cli
-```
-
-**Verify installation:**
-
-```bash
-jarvis --version
-jarvis --help
-```
+Sign in with Google or email/password. All features work in the browser.
 
 ---
 
-## Desktop IDE
-
-### Download
-
-| Platform | Link | Size |
-|---|---|---|
-| macOS (Apple Silicon) | [Download .dmg](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest/download/Jarvis-IDE-mac-arm64.dmg) | ~120 MB |
-| macOS (Intel) | [Download .dmg](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest/download/Jarvis-IDE-mac-x64.dmg) | ~120 MB |
-| Windows (x64) | [Download .exe](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest/download/Jarvis-IDE-windows-x64.exe) | ~100 MB |
-| Linux (x64) | [Download .AppImage](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest/download/Jarvis-IDE-linux-x64.AppImage) | ~100 MB |
-
-### System Requirements
-
-- **OS:** macOS 12+, Windows 10+, Ubuntu 20.04+
-- **RAM:** 4 GB minimum, 8 GB recommended
-- **Disk:** 500 MB free space
-- **Network:** Internet connection for AI features (free API keys required)
-
-### One-Click Migration
-
-Import your VS Code setup including extensions and settings during the initial setup process.
-
----
-
-## Development Environment
+## Option 2: Run Locally (Development)
 
 ### Prerequisites
 
 - **Node.js 20+** (we recommend 22+)
 - **npm** (comes with Node)
-- (Optional) a free **Supabase** project for auth + database
-- (Optional) free API keys — see step 2
+- (Optional) Free API keys for AI features
 
-### Step 1 — Install
+### Steps
 
 ```bash
-# clone the repo
+# 1. Clone the repo
 git clone https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git
 cd JARVIS-AI-OS
 
-# install dependencies
+# 2. Install dependencies
 npm install --legacy-peer-deps
-```
 
-### Step 2 — Environment
-
-```bash
+# 3. Set up environment
 cp .env.example .env
-```
+# Edit .env with your API keys (see below)
 
-Open `.env` and fill in the keys:
-
-| Key | Where to get it | Required? |
-|---|---|---|
-| `GEMINI_API_KEY` / `GOOGLE_GENERATIVE_AI_API_KEY` | https://aistudio.google.com/apikey (free) | Yes — main AI model |
-| `GROQ_API_KEY` | https://console.groq.com (free) | Yes — STT/TTS + fallback model |
-| `SUPABASE_URL` + `SUPABASE_PUBLISHABLE_KEY` | your Supabase project → Project Settings → API | Yes — auth + database |
-
-> **No Supabase yet?** Sign up at https://supabase.com, create a project, then copy the URL + anon/publishable key into `.env`. Run the SQL in `supabase/migrations/` in the **SQL Editor** to create the tables.
-
-### Step 3 — Start the website
-
-```bash
+# 4. Start the server
 npm run dev
 ```
 
 Open **http://localhost:8080** in your browser.
 
-### Step 4 — (Optional) Start the AI engine + daemon
+### Environment Variables
+
+| Key | Where to get it | Required? |
+|---|---|---|
+| `GEMINI_API_KEY` | https://aistudio.google.com/apikey (free) | Yes — main AI model |
+| `GROQ_API_KEY` | https://console.groq.com (free) | Yes — STT/TTS + fallback |
+| `SUPABASE_URL` | Supabase dashboard → Project Settings → API | Yes — auth + database |
+| `SUPABASE_PUBLISHABLE_KEY` | Same page (the `anon` key) | Yes — auth + database |
+
+### Optional: Full Stack (AI Agents + Daemon)
 
 ```bash
-# website + AI agents + daemon all at once
+# Start everything at once
 npm run dev:all
 
-# or individually:
+# Or individually:
 npm run dev:mastra   # AI agents
-npm run daemon       # design-systems daemon (port 7456)
+npm run daemon       # Design-systems server (port 7456)
 ```
 
 ---
 
-## CLI Commands
+## Option 3: CLI (From Source)
 
-| Command | What it does |
+The CLI runs from the cloned repo — no npm publish needed.
+
+### Install from GitHub
+
+#### macOS / Linux
+
+```bash
+git clone --depth 1 https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git ~/.jarvis-cli
+cd ~/.jarvis-cli && npm install --legacy-peer-deps
+
+# Add to PATH
+echo 'alias jarvis="npx tsx ~/.jarvis-cli/cli/index.ts"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+#### Windows (PowerShell)
+
+```powershell
+git clone --depth 1 https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git "$env:USERPROFILE\.jarvis-cli"
+cd "$env:USERPROFILE\.jarvis-cli"; npm install --legacy-peer-deps
+
+# Create alias
+function jarvis { npx tsx "$env:USERPROFILE\.jarvis-cli\cli\index.ts" @args }
+```
+
+### Verify
+
+```bash
+jarvis --version
+jarvis --help
+jarvis status
+```
+
+### CLI Commands
+
+| Command | Description |
 |---|---|
-| `jarvis init [name]` | Create a new Jarvis project |
-| `jarvis chat` | Chat with Jarvis in your terminal |
-| `jarvis run "task"` | Run agent on a task |
-| `jarvis status` | Check system status |
-| `jarvis config` | Configure API keys and settings |
-| `jarvis skills` | List available agent skills |
-| `jarvis memory` | View and manage memory |
-| `jarvis --help` | Show all commands |
+| `jarvis init` | Initialize `.jarvis/` config directory |
+| `jarvis status` | Show project status |
+| `jarvis config get <key>` | Get a config value |
+| `jarvis config set <key> <value>` | Set a config value |
+| `jarvis specs list` | List all specs |
+| `jarvis specs show <name>` | Show spec details |
+| `jarvis specs create <name>` | Create a new spec |
+| `jarvis hooks list` | List registered hooks |
+| `jarvis steering list` | List steering files |
+| `jarvis memory <query>` | Search cross-session memory |
+| `jarvis run <name>` | Run a hook or workflow |
+| `jarvis update` | Check for updates |
+
+---
+
+## Option 4: Desktop App (In Development)
+
+The desktop app uses Tauri 2 (Rust + Web). To build it:
+
+### Prerequisites
+
+- **Rust toolchain:** https://rustup.rs/
+- **System dependencies:**
+  - **macOS:** Xcode Command Line Tools
+  - **Linux:** `sudo apt install libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev`
+  - **Windows:** Microsoft Visual C++ Build Tools
+
+### Build
+
+```bash
+npm install --legacy-peer-deps
+npm run tauri:build
+```
+
+Output: Platform-specific installers in `src-tauri/target/release/bundle/`.
 
 ---
 
 ## Troubleshooting
 
-### CLI not found after install
+### "npm install" fails with peer dependency errors
 
 ```bash
-# Refresh your shell
-source ~/.bashrc   # Linux
-source ~/.zshrc    # macOS
-
-# Or use npx
-npx jarvis --version
+npm install --legacy-peer-deps
 ```
 
-### Permission denied (macOS/Linux)
+### Port 8080 already in use
 
 ```bash
-sudo npm install -g @jarvis-ai/cli
+# Kill the process using the port
+npx kill-port 8080
+# Or use a different port
+npm run dev -- --port 3000
 ```
 
-### Node.js version too old
+### Missing API keys
 
-```bash
-# Install Node.js 20+ from https://nodejs.org/
-# Or use nvm:
-nvm install 20
-nvm use 20
-```
+All AI features require free API keys. See [Environment Variables](#environment-variables) above.
 
-### Port already in use
+### Database errors
 
-```bash
-# Kill process on port 8080
-lsof -ti:8080 | xargs kill -9   # macOS/Linux
-netstat -ano | findstr :8080     # Windows (then kill the PID)
-```
+You need a Supabase project with the schema applied. Run the SQL in `supabase/migrations/` in the Supabase SQL Editor.
 
 ---
 
-## Community & Support
+## What's Included
 
-- **Documentation:** https://jarvisaios.com/docs
-- **Discord:** https://discord.gg/jarvis-ai
-- **GitHub Issues:** https://github.com/Vishwajeetsrk/JARVIS-AI-OS/issues
-- **Security:** vishwajeetsrk@gmail.com (do NOT create public issues)
+After installation, you have access to:
 
----
-
-**Maintainer:** Vishwajeet — vishwajeetsrk@gmail.com
+- **Web Console** — Full application at http://localhost:8080
+- **30+ AI Agents** — Via Mastra multi-agent engine
+- **150 Design Systems** — Accessible via CLI and web
+- **Persistent Memory** — Cross-session recall via pgvector
+- **Specs System** — Spec-driven development workflow
+- **Hooks** — File change automation
+- **Steering** — Project guidance injected into AI context
+- **Voice** — Speech-to-text and text-to-speech
