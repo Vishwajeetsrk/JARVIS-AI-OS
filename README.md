@@ -59,12 +59,21 @@ Run the full Jarvis stack on your machine:
 | **CLI** | `npm run jarvis` | System status, hardware detect, memory bank |
 | **Voice Bridge** | `npm run bridge` | Desktop system info, screenshots, app launching |
 
-### 3. Desktop App (In Development)
+### 3. Desktop App
 
-Tauri-based desktop shell — builds for macOS, Windows, and Linux.
+Tauri 2-based desktop shell for macOS, Windows, and Linux.
+
+**Download installers from [GitHub Releases](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest):**
+
+| Platform | Format |
+|---|---|
+| **macOS** (Apple Silicon + Intel) | `.dmg` |
+| **Windows** (x64) | `.exe` / `.msi` |
+| **Linux** (x64) | `.AppImage` / `.deb` |
+
+Or build it yourself (requires the Rust toolchain):
 
 ```bash
-# Build the desktop app (requires Rust toolchain)
 npm run tauri:build
 ```
 

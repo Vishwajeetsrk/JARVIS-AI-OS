@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicokosi/tauri-v2-schema/main/json/tauri-v2.schema.json",
   "productName": "Jarvis AI OS",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "identifier": "com.jarvisaios.app",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -10,7 +10,6 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "title": "Jarvis AI OS",
     "windows": [
       {
         "title": "Jarvis AI OS",

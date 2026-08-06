@@ -44,3 +44,5 @@ agent-team-source/skills/memory-agent/templates/README-templates.md
 *.log
 dev-*.txt
 build-*.log
+
+.vercel
