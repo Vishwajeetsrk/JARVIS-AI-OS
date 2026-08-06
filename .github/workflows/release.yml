@@ -50,11 +50,6 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build frontend
-        run: npm run build
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
-
       - name: Install Tauri CLI
         run: npm install -D @tauri-apps/cli@latest
 
@@ -62,6 +57,7 @@ jobs:
         run: npx tauri build --target ${{ matrix.target }}
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
