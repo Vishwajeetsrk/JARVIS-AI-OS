@@ -39,7 +39,7 @@ BEGIN
           ELSE ''
         END, ' ' ORDER BY ord
       ) FROM jsonb_array_elements(NEW.parts) WITH ORDINALITY AS p(value, ord)
-    )), 220);
+    ))), 220);
   ELSIF NEW.role = 'user' THEN
     k := 'user';
     d := left(trim(concat_ws(' ', (
