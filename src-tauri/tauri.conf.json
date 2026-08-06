@@ -1,13 +1,12 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicokosi/tauri-v2-schema/main/json/tauri-v2.schema.json",
   "productName": "Jarvis AI OS",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "identifier": "com.jarvisaios.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:8080",
-    "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist"
+    "frontendDist": "https://jarvisaios.vercel.app"
   },
   "app": {
     "windows": [
@@ -24,7 +23,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; connect-src 'self' https://*.supabase.co https://generativelanguage.googleapis.com https://api.groq.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'"
+      "csp": null
     }
   },
   "bundle": {

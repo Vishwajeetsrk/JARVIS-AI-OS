@@ -88,7 +88,7 @@ jobs:
           cat > dist-cli/package.json << EOF
           {
             "name": "@vishwajeet/jarvis",
-            "version": "${{ github.ref_name || '2.4.0' }}",
+            "version": "${{ github.ref_name }}",
             "description": "Jarvis AI OS — CLI",
             "bin": { "jarvis": "./index.ts" },
             "type": "module",
