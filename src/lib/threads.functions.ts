@@ -125,18 +125,30 @@ export const listProjects = createServerFn({ method: "GET" })
 export const listWorkspaceProjects = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async () => {
+    const colors = ["#D97757", "#E69D45", "#58A65C", "#6A9BCC", "#A855F7", "#EC4899"];
+    const bundled = (await import("@/lib/preset-sites.desc")).PRESET_SITES;
+    if (bundled.length > 0) {
+      return bundled.map((p, idx) => ({
+        id: `local-${p.name}`,
+        name: p.name,
+        color: colors[idx % colors.length],
+        previewUrl: p.path,
+        isWorkspace: true,
+      }));
+    }
+    // Local-dev fallback: read the Projects dir directly when not bundled.
     try {
       const fs = await import("node:fs/promises");
       const path = await import("node:path");
       const projectsDir = path.resolve(process.cwd(), "Projects");
       const entries = await fs.readdir(projectsDir, { withFileTypes: true });
-      const colors = ["#D97757", "#E69D45", "#58A65C", "#6A9BCC", "#A855F7", "#EC4899"];
       return entries
         .filter((e) => e.isDirectory())
         .map((e, idx) => ({
           id: `local-${e.name}`,
           name: e.name,
           color: colors[idx % colors.length],
+          previewUrl: `/preset-sites/${e.name}/`,
           isWorkspace: true,
         }));
     } catch {

@@ -1,10 +1,10 @@
 import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listProjects, deleteProject, listThreads, createThread } from "@/lib/threads.functions";
+import { listProjects, deleteProject, listThreads, createThread, listWorkspaceProjects } from "@/lib/threads.functions";
 import { PageHeader } from "@/components/jarvis/catalog-grid";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, FileText, Palette, Link2 } from "lucide-react";
+import { Plus, Trash2, FileText, Palette, Link2, ExternalLink, Play } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/console/projects/$projectId")({
@@ -20,10 +20,17 @@ function ProjectPage() {
   const delP = useServerFn(deleteProject);
   const listT = useServerFn(listThreads);
   const createT = useServerFn(createThread);
+  const listW = useServerFn(listWorkspaceProjects);
 
   const { data: projects = [] } = useQuery({ queryKey: ["projects"], queryFn: () => listP({}) });
   const { data: threads = [] } = useQuery({ queryKey: ["threads"], queryFn: () => listT({}) });
+  const { data: wsProjects = [] } = useQuery({ queryKey: ["wsProjects"], queryFn: () => listW({}) });
+
+  const isWorkspace = projectId.startsWith("local-");
   const project = (projects as any[]).find((p: any) => p.id === projectId);
+  const wsProject = (wsProjects as any[]).find((p: any) => p.id === projectId);
+  const previewUrl = wsProject?.previewUrl;
+
   const projectThreads = (threads as any[]).filter((t: any) => t.project_id === projectId);
 
   const mDel = useMutation({
@@ -40,23 +47,62 @@ function ProjectPage() {
     onSuccess: (t) => nav({ to: "/console/$threadId", params: { threadId: t.id } }),
   });
 
-  if (!project) return <div className="p-8 text-sm text-muted-foreground">Project not found.</div>;
+  const display = project ?? wsProject;
+
+  if (!display) return <div className="p-8 text-sm text-muted-foreground">Project not found.</div>;
 
   return (
     <div className="h-full overflow-y-auto p-8">
       <div className="mb-6 flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <span className="h-8 w-8 rounded-lg" style={{ background: project.color }} />
+          <span className="h-8 w-8 rounded-lg" style={{ background: display.color }} />
           <div>
-            <h1 className="font-display text-3xl font-semibold">{project.name}</h1>
-            {project.description && <p className="text-sm text-muted-foreground">{project.description}</p>}
+            <h1 className="font-display text-3xl font-semibold">{display.name}</h1>
+            {display.description && <p className="text-sm text-muted-foreground">{display.description}</p>}
           </div>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => mNew.mutate()}><Plus className="mr-2 h-4 w-4" /> New chat</Button>
-          <Button variant="ghost" onClick={() => mDel.mutate()}><Trash2 className="mr-2 h-4 w-4" /> Delete</Button>
+          {previewUrl && (
+            <Button onClick={() => window.open(previewUrl, "_blank", "noopener,noreferrer")}>
+              <ExternalLink className="mr-2 h-4 w-4" /> Open preview
+            </Button>
+          )}
+          {!isWorkspace && (
+            <>
+              <Button onClick={() => mNew.mutate()}><Plus className="mr-2 h-4 w-4" /> New chat</Button>
+              <Button variant="ghost" onClick={() => mDel.mutate()}><Trash2 className="mr-2 h-4 w-4" /> Delete</Button>
+            </>
+          )}
         </div>
       </div>
+
+      {previewUrl && (
+        <div className="mb-8">
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="text-mono-xs opacity-60 flex items-center gap-2">
+              <Play className="h-3 w-3" /> Live preview
+            </h2>
+            <span className="text-mono-xs opacity-40">{previewUrl}</span>
+          </div>
+          <div className="overflow-hidden rounded-xl border border-border bg-background">
+            <div className="flex items-center gap-1.5 border-b border-border bg-card px-3 py-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
+              <span className="ml-2 flex-1 truncate rounded-md bg-background px-2 py-0.5 text-mono-xs text-muted-foreground">
+                {previewUrl}
+              </span>
+            </div>
+            <iframe
+              src={previewUrl}
+              title={display.name}
+              className="h-[68vh] w-full bg-white"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-3">
         <section className="md:col-span-2">
