@@ -48,7 +48,7 @@ export function RoadmapsPage() {
                 Learnify Developer Roadmaps
               </h1>
               <Badge variant="outline" className="border-primary/30 bg-primary/10 text-primary">
-                91 Tracks
+                {roadmaps.length} Tracks
               </Badge>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -61,7 +61,7 @@ export function RoadmapsPage() {
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search 91 roadmaps…"
+                placeholder="Search roadmaps…"
                 className="w-full rounded-lg border border-border bg-surface pl-8 pr-3 py-1.5 text-xs outline-none focus:border-primary"
               />
             </div>

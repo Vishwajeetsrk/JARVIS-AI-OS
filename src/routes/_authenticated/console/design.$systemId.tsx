@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import { getDesignSystem, type DesignSystemDetail } from "@/lib/design-systems";
+import type { DesignSystemDetail } from "@/lib/design-system-types";
 
 function DesignSystemNotFound() {
   return (

@@ -1,0 +1,639 @@
+[
+  {
+    "id": "ai-agents",
+    "name": "Ai Agents",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Ai Agents with 101 structured learning modules.",
+    "topicCount": 101
+  },
+  {
+    "id": "ai-data-scientist",
+    "name": "Ai Data Scientist",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Ai Data Scientist with 9 structured learning modules.",
+    "topicCount": 9
+  },
+  {
+    "id": "ai-engineer",
+    "name": "Ai Engineer",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Ai Engineer with 157 structured learning modules.",
+    "topicCount": 157
+  },
+  {
+    "id": "ai-product-builder",
+    "name": "Ai Product Builder",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Ai Product Builder with 51 structured learning modules.",
+    "topicCount": 51
+  },
+  {
+    "id": "ai-red-teaming",
+    "name": "Ai Red Teaming",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Ai Red Teaming with 64 structured learning modules.",
+    "topicCount": 64
+  },
+  {
+    "id": "android",
+    "name": "Android",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Android with 114 structured learning modules.",
+    "topicCount": 114
+  },
+  {
+    "id": "angular",
+    "name": "Angular",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Angular with 159 structured learning modules.",
+    "topicCount": 159
+  },
+  {
+    "id": "api-design",
+    "name": "Api Design",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Api Design with 99 structured learning modules.",
+    "topicCount": 99
+  },
+  {
+    "id": "aspnet-core",
+    "name": "Aspnet Core",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Aspnet Core with 146 structured learning modules.",
+    "topicCount": 146
+  },
+  {
+    "id": "aws",
+    "name": "Aws",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Aws with 101 structured learning modules.",
+    "topicCount": 101
+  },
+  {
+    "id": "backend",
+    "name": "Backend",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Backend with 156 structured learning modules.",
+    "topicCount": 156
+  },
+  {
+    "id": "backend-beginner",
+    "name": "Backend Beginner",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Backend Beginner with 27 structured learning modules.",
+    "topicCount": 27
+  },
+  {
+    "id": "bi-analyst",
+    "name": "Bi Analyst",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Bi Analyst with 203 structured learning modules.",
+    "topicCount": 203
+  },
+  {
+    "id": "blockchain",
+    "name": "Blockchain",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Blockchain with 127 structured learning modules.",
+    "topicCount": 127
+  },
+  {
+    "id": "c",
+    "name": "C",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for C with 147 structured learning modules.",
+    "topicCount": 147
+  },
+  {
+    "id": "claude-code",
+    "name": "Claude Code",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Claude Code with 116 structured learning modules.",
+    "topicCount": 116
+  },
+  {
+    "id": "cloudflare",
+    "name": "Cloudflare",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Cloudflare with 97 structured learning modules.",
+    "topicCount": 97
+  },
+  {
+    "id": "code-review",
+    "name": "Code Review",
+    "category": "Security",
+    "description": "Comprehensive developer roadmap for Code Review with 6 structured learning modules.",
+    "topicCount": 6
+  },
+  {
+    "id": "computer-science",
+    "name": "Computer Science",
+    "category": "Architecture & CS",
+    "description": "Comprehensive developer roadmap for Computer Science with 188 structured learning modules.",
+    "topicCount": 188
+  },
+  {
+    "id": "cpp",
+    "name": "Cpp",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Cpp with 127 structured learning modules.",
+    "topicCount": 127
+  },
+  {
+    "id": "css",
+    "name": "Css",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Css with 104 structured learning modules.",
+    "topicCount": 104
+  },
+  {
+    "id": "cyber-security",
+    "name": "Cyber Security",
+    "category": "Security",
+    "description": "Comprehensive developer roadmap for Cyber Security with 301 structured learning modules.",
+    "topicCount": 301
+  },
+  {
+    "id": "data-analyst",
+    "name": "Data Analyst",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Data Analyst with 102 structured learning modules.",
+    "topicCount": 102
+  },
+  {
+    "id": "data-engineer",
+    "name": "Data Engineer",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Data Engineer with 190 structured learning modules.",
+    "topicCount": 190
+  },
+  {
+    "id": "datastructures-and-algorithms",
+    "name": "Datastructures And Algorithms",
+    "category": "Architecture & CS",
+    "description": "Comprehensive developer roadmap for Datastructures And Algorithms with 107 structured learning modules.",
+    "topicCount": 107
+  },
+  {
+    "id": "design-system",
+    "name": "Design System",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Design System with 124 structured learning modules.",
+    "topicCount": 124
+  },
+  {
+    "id": "devops",
+    "name": "Devops",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Devops with 138 structured learning modules.",
+    "topicCount": 138
+  },
+  {
+    "id": "devops-beginner",
+    "name": "Devops Beginner",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Devops Beginner with 13 structured learning modules.",
+    "topicCount": 13
+  },
+  {
+    "id": "devrel",
+    "name": "Devrel",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Devrel with 142 structured learning modules.",
+    "topicCount": 142
+  },
+  {
+    "id": "devsecops",
+    "name": "Devsecops",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Devsecops with 94 structured learning modules.",
+    "topicCount": 94
+  },
+  {
+    "id": "django",
+    "name": "Django",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Django with 112 structured learning modules.",
+    "topicCount": 112
+  },
+  {
+    "id": "docker",
+    "name": "Docker",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Docker with 56 structured learning modules.",
+    "topicCount": 56
+  },
+  {
+    "id": "elasticsearch",
+    "name": "Elasticsearch",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Elasticsearch with 113 structured learning modules.",
+    "topicCount": 113
+  },
+  {
+    "id": "engineering-manager",
+    "name": "Engineering Manager",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Engineering Manager with 133 structured learning modules.",
+    "topicCount": 133
+  },
+  {
+    "id": "flutter",
+    "name": "Flutter",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Flutter with 108 structured learning modules.",
+    "topicCount": 108
+  },
+  {
+    "id": "forward-deployed-engineer",
+    "name": "Forward Deployed Engineer",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Forward Deployed Engineer with 99 structured learning modules.",
+    "topicCount": 99
+  },
+  {
+    "id": "frontend",
+    "name": "Frontend",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Frontend with 121 structured learning modules.",
+    "topicCount": 121
+  },
+  {
+    "id": "frontend-beginner",
+    "name": "Frontend Beginner",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Frontend Beginner with 9 structured learning modules.",
+    "topicCount": 9
+  },
+  {
+    "id": "full-stack",
+    "name": "Full Stack",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Full Stack with 37 structured learning modules.",
+    "topicCount": 37
+  },
+  {
+    "id": "game-developer",
+    "name": "Game Developer",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Game Developer with 144 structured learning modules.",
+    "topicCount": 144
+  },
+  {
+    "id": "git-github",
+    "name": "Git Github",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Git Github with 155 structured learning modules.",
+    "topicCount": 155
+  },
+  {
+    "id": "git-github-beginner",
+    "name": "Git Github Beginner",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Git Github Beginner with 5 structured learning modules.",
+    "topicCount": 5
+  },
+  {
+    "id": "golang",
+    "name": "Golang",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Golang with 172 structured learning modules.",
+    "topicCount": 172
+  },
+  {
+    "id": "graphql",
+    "name": "Graphql",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Graphql with 65 structured learning modules.",
+    "topicCount": 65
+  },
+  {
+    "id": "html",
+    "name": "Html",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Html with 88 structured learning modules.",
+    "topicCount": 88
+  },
+  {
+    "id": "ios",
+    "name": "Ios",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Ios with 170 structured learning modules.",
+    "topicCount": 170
+  },
+  {
+    "id": "java",
+    "name": "Java",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Java with 86 structured learning modules.",
+    "topicCount": 86
+  },
+  {
+    "id": "javascript",
+    "name": "Javascript",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Javascript with 126 structured learning modules.",
+    "topicCount": 126
+  },
+  {
+    "id": "kotlin",
+    "name": "Kotlin",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Kotlin with 153 structured learning modules.",
+    "topicCount": 153
+  },
+  {
+    "id": "kubernetes",
+    "name": "Kubernetes",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Kubernetes with 67 structured learning modules.",
+    "topicCount": 67
+  },
+  {
+    "id": "laravel",
+    "name": "Laravel",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Laravel with 104 structured learning modules.",
+    "topicCount": 104
+  },
+  {
+    "id": "leetcode",
+    "name": "Leetcode",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Leetcode with 155 structured learning modules.",
+    "topicCount": 155
+  },
+  {
+    "id": "linux",
+    "name": "Linux",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Linux with 102 structured learning modules.",
+    "topicCount": 102
+  },
+  {
+    "id": "machine-learning",
+    "name": "Machine Learning",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Machine Learning with 150 structured learning modules.",
+    "topicCount": 150
+  },
+  {
+    "id": "mlops",
+    "name": "Mlops",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Mlops with 62 structured learning modules.",
+    "topicCount": 62
+  },
+  {
+    "id": "mongodb",
+    "name": "Mongodb",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Mongodb with 106 structured learning modules.",
+    "topicCount": 106
+  },
+  {
+    "id": "network-engineer",
+    "name": "Network Engineer",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Network Engineer with 196 structured learning modules.",
+    "topicCount": 196
+  },
+  {
+    "id": "nextjs",
+    "name": "Nextjs",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Nextjs with 94 structured learning modules.",
+    "topicCount": 94
+  },
+  {
+    "id": "nodejs",
+    "name": "Nodejs",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Nodejs with 113 structured learning modules.",
+    "topicCount": 113
+  },
+  {
+    "id": "openclaw",
+    "name": "Openclaw",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Openclaw with 122 structured learning modules.",
+    "topicCount": 122
+  },
+  {
+    "id": "php",
+    "name": "Php",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Php with 120 structured learning modules.",
+    "topicCount": 120
+  },
+  {
+    "id": "postgresql-dba",
+    "name": "Postgresql Dba",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Postgresql Dba with 170 structured learning modules.",
+    "topicCount": 170
+  },
+  {
+    "id": "power-bi",
+    "name": "Power Bi",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Power Bi with 146 structured learning modules.",
+    "topicCount": 146
+  },
+  {
+    "id": "product-design",
+    "name": "Product Design",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Product Design with 118 structured learning modules.",
+    "topicCount": 118
+  },
+  {
+    "id": "product-manager",
+    "name": "Product Manager",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Product Manager with 172 structured learning modules.",
+    "topicCount": 172
+  },
+  {
+    "id": "prompt-engineering",
+    "name": "Prompt Engineering",
+    "category": "AI & Data Science",
+    "description": "Comprehensive developer roadmap for Prompt Engineering with 46 structured learning modules.",
+    "topicCount": 46
+  },
+  {
+    "id": "python",
+    "name": "Python",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Python with 85 structured learning modules.",
+    "topicCount": 85
+  },
+  {
+    "id": "python-data-analysis",
+    "name": "Python Data Analysis",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Python Data Analysis with 113 structured learning modules.",
+    "topicCount": 113
+  },
+  {
+    "id": "qa",
+    "name": "Qa",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Qa with 146 structured learning modules.",
+    "topicCount": 146
+  },
+  {
+    "id": "react",
+    "name": "React",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for React with 80 structured learning modules.",
+    "topicCount": 80
+  },
+  {
+    "id": "react-native",
+    "name": "React Native",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for React Native with 94 structured learning modules.",
+    "topicCount": 94
+  },
+  {
+    "id": "redis",
+    "name": "Redis",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Redis with 160 structured learning modules.",
+    "topicCount": 160
+  },
+  {
+    "id": "ruby",
+    "name": "Ruby",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Ruby with 112 structured learning modules.",
+    "topicCount": 112
+  },
+  {
+    "id": "ruby-on-rails",
+    "name": "Ruby On Rails",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Ruby On Rails with 109 structured learning modules.",
+    "topicCount": 109
+  },
+  {
+    "id": "rust",
+    "name": "Rust",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Rust with 121 structured learning modules.",
+    "topicCount": 121
+  },
+  {
+    "id": "scala",
+    "name": "Scala",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Scala with 165 structured learning modules.",
+    "topicCount": 165
+  },
+  {
+    "id": "server-side-game-developer",
+    "name": "Server Side Game Developer",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Server Side Game Developer with 156 structured learning modules.",
+    "topicCount": 156
+  },
+  {
+    "id": "shell-bash",
+    "name": "Shell Bash",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Shell Bash with 174 structured learning modules.",
+    "topicCount": 174
+  },
+  {
+    "id": "software-architect",
+    "name": "Software Architect",
+    "category": "Architecture & CS",
+    "description": "Comprehensive developer roadmap for Software Architect with 112 structured learning modules.",
+    "topicCount": 112
+  },
+  {
+    "id": "software-design-architecture",
+    "name": "Software Design Architecture",
+    "category": "Architecture & CS",
+    "description": "Comprehensive developer roadmap for Software Design Architecture with 94 structured learning modules.",
+    "topicCount": 94
+  },
+  {
+    "id": "spring-boot",
+    "name": "Spring Boot",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Spring Boot with 46 structured learning modules.",
+    "topicCount": 46
+  },
+  {
+    "id": "sql",
+    "name": "Sql",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Sql with 112 structured learning modules.",
+    "topicCount": 112
+  },
+  {
+    "id": "swift-ui",
+    "name": "Swift Ui",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Swift Ui with 156 structured learning modules.",
+    "topicCount": 156
+  },
+  {
+    "id": "system-design",
+    "name": "System Design",
+    "category": "Architecture & CS",
+    "description": "Comprehensive developer roadmap for System Design with 147 structured learning modules.",
+    "topicCount": 147
+  },
+  {
+    "id": "technical-writer",
+    "name": "Technical Writer",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Technical Writer with 84 structured learning modules.",
+    "topicCount": 84
+  },
+  {
+    "id": "terraform",
+    "name": "Terraform",
+    "category": "DevOps & Cloud",
+    "description": "Comprehensive developer roadmap for Terraform with 110 structured learning modules.",
+    "topicCount": 110
+  },
+  {
+    "id": "typescript",
+    "name": "Typescript",
+    "category": "Backend & Systems",
+    "description": "Comprehensive developer roadmap for Typescript with 93 structured learning modules.",
+    "topicCount": 93
+  },
+  {
+    "id": "ux-design",
+    "name": "Ux Design",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Ux Design with 94 structured learning modules.",
+    "topicCount": 94
+  },
+  {
+    "id": "vibe-coding",
+    "name": "Vibe Coding",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Vibe Coding with 54 structured learning modules.",
+    "topicCount": 54
+  },
+  {
+    "id": "vue",
+    "name": "Vue",
+    "category": "Frontend & Web",
+    "description": "Comprehensive developer roadmap for Vue with 84 structured learning modules.",
+    "topicCount": 84
+  },
+  {
+    "id": "wordpress",
+    "name": "Wordpress",
+    "category": "Specialized Skill",
+    "description": "Comprehensive developer roadmap for Wordpress with 115 structured learning modules.",
+    "topicCount": 115
+  }
+]

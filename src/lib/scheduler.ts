@@ -41,7 +41,7 @@ let watcher: NodeJS.Timeout | null = null;
 async function runJob(job: CronJobRow): Promise<void> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   try {
-    const resolved = await resolveChatModel("gemini-1.5-flash");
+    const resolved = await resolveChatModel("gemini-flash-latest");
     const { text } = await generateText({
       model: resolved.model as any,
       system:

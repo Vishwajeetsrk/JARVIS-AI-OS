@@ -13,7 +13,7 @@ import { autoLearn } from "@/mastra/tools/auto-learner";
 import { listDesignSystems, getDesignSystem } from "@/lib/design-systems";
 import { getSteeringForContext } from "@/lib/steering";
 
-const DEFAULT_MODEL = "gemini-1.5-flash";
+const DEFAULT_MODEL = "gemini-flash-latest";
 
 const BASE_SYSTEM = `You are Jarvis — an AI operating system built for Vishwajeet.
 You coordinate 32 specialized agents (ceo-agent, planner, saas-builder, designer,

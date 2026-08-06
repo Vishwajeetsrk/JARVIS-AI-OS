@@ -98,9 +98,9 @@ const QUICK_ACTIONS = [
 // Jarvis engine status (static mock — daemon integration)
 const ENGINE_STATUS = [
   { label: "Mastra TS Engine", status: "online", value: "v1.0.0" },
-  { label: "Gemini 2.5 Flash", status: "online", value: "15 RPM free" },
+  { label: "Gemini Flash", status: "online", value: "free tier" },
   { label: "Groq Llama 3.3", status: "online", value: "1K/day free" },
-  { label: "Memory Store", status: "online", value: "~/.agent-memory/" },
+  { label: "Memory Store", status: "online", value: "Supabase pgvector" },
   { label: "Supabase DB", status: "online", value: "tupgfxqkefgntrpgakxk" },
 ];
 

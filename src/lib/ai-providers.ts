@@ -21,7 +21,13 @@ export interface ResolvedModel {
   usedFallback: boolean;
 }
 
+// Legacy ids are remapped (see remapGemini) to currently-serving models.
 const GEMINI_IDS = new Set([
+  "gemini-flash-latest",
+  "gemini-flash-lite-latest",
+  "gemini-3.6-flash",
+  "gemini-3-flash-preview",
+  "gemini-3.1-flash-lite-preview",
   "gemini-2.5-flash",
   "gemini-2.5-pro",
   "gemini-2.0-flash",
@@ -120,8 +126,11 @@ export async function resolveChatModel(requestedId: string): Promise<ResolvedMod
 }
 
 function remapGemini(id: string): string {
-  if (id === "gemini-2.5-flash" || id === "gemini-2.0-flash") return "gemini-1.5-flash";
-  if (id === "gemini-2.5-pro") return "gemini-1.5-pro";
+  // Gemini 1.5/2.x are retired; route to the currently-serving models.
+  const PRO = "gemini-3.6-flash";
+  const FAST = "gemini-flash-latest";
+  if (id === "gemini-2.5-pro" || id === "gemini-1.5-pro") return PRO;
+  if (id === "gemini-2.5-flash" || id === "gemini-2.0-flash" || id === "gemini-1.5-flash") return FAST;
   return id;
 }
 
@@ -133,10 +142,10 @@ async function fallbackCloud(originalId: string): Promise<ResolvedModel> {
   // Prefer the requested provider's sibling cloud model first, then any other cloud.
   const chain: Array<() => ResolvedModel | Promise<ResolvedModel>> = [];
   if (isOllamaId(originalId)) {
-    if (geminiKey) chain.push(() => ({ model: geminiModel("gemini-1.5-flash"), provider: "gemini", modelId: "gemini-1.5-flash", usedFallback: true }));
+    if (geminiKey) chain.push(() => ({ model: geminiModel("gemini-flash-latest"), provider: "gemini", modelId: "gemini-flash-latest", usedFallback: true }));
     if (groqKey) chain.push(() => ({ model: groqModel("llama-3.3-70b-versatile"), provider: "groq", modelId: "llama-3.3-70b-versatile", usedFallback: true }));
   } else if (GROQ_IDS.has(originalId)) {
-    if (geminiKey) chain.push(() => ({ model: geminiModel("gemini-1.5-flash"), provider: "gemini", modelId: "gemini-1.5-flash", usedFallback: true }));
+    if (geminiKey) chain.push(() => ({ model: geminiModel("gemini-flash-latest"), provider: "gemini", modelId: "gemini-flash-latest", usedFallback: true }));
   } else {
     if (groqKey) chain.push(() => ({ model: groqModel("llama-3.3-70b-versatile"), provider: "groq", modelId: "llama-3.3-70b-versatile", usedFallback: true }));
   }

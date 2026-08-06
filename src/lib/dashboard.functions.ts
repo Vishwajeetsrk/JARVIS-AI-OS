@@ -35,22 +35,22 @@ export const getDashboardStats = createServerFn({ method: "GET" })
         threads: threads?.count ?? 0,
         messages: messages?.count ?? 0,
         projects: projects?.count ?? 0,
-        activityToday: (activity?.count && activity.count > 0) ? activity.count : 3,
-        skills: enabledSkills ? enabledSkills.length : 32,
-        connectors: enabledConnectors ? enabledConnectors.length : 10,
-        plugins: enabledPlugins ? enabledPlugins.length : 8,
-        tools: enabledTools ? enabledTools.length : 14,
+        activityToday: activity?.count ?? 0,
+        skills: enabledSkills ? enabledSkills.length : 0,
+        connectors: enabledConnectors ? enabledConnectors.length : 0,
+        plugins: enabledPlugins ? enabledPlugins.length : 0,
+        tools: enabledTools ? enabledTools.length : 0,
       };
     } catch {
       return {
         threads: 0,
         messages: 0,
         projects: 0,
-        activityToday: 3,
-        skills: 32,
-        connectors: 10,
-        plugins: 8,
-        tools: 14,
+        activityToday: 0,
+        skills: 0,
+        connectors: 0,
+        plugins: 0,
+        tools: 0,
       };
     }
   });

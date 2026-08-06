@@ -1,44 +1,51 @@
-import { readFileSync, readdirSync, existsSync } from "fs";
-import { join } from "path";
+// Bundles the contents of ./data at build time via Vite's import.meta.glob so
+// the design systems are available inside the serverless function (no fs access).
+import type {
+  DesignSystemDetail,
+  DesignSystemManifest,
+  DesignSystemSummary,
+} from "./design-system-types";
 
-const DATA_DIR = join(process.cwd(), "data");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const rawFiles = import.meta.glob("../../data/**/*", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
 
-export interface DesignSystemManifest {
-  schemaVersion: string;
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  source: { type: string; origin: string };
-  files: {
-    design: string;
-    tokens: string;
-    designTokens: string;
-    tailwind: string;
-    components: string;
-  };
-  usage: string;
-  componentsManifest: string;
-  importMode: string;
+// import.meta.glob keys are relative to this file: "../../data/<system>/<file>"
+function readFileSafe(id: string, rel: string): string {
+  const key = `../../data/${id}/${rel}`;
+  return rawFiles[key] ?? "";
 }
 
-export interface DesignSystemSummary {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  tokenCount: number;
-  componentCount: number;
+/** Read a design-system file by id + relative path (for templates/preview routes). */
+export function readDesignSystemFile(id: string, rel: string): string {
+  const safe = rel.replace(/\\/g, "/").replace(/\.\./g, "").replace(/^\/+/, "");
+  return readFileSafe(id, safe);
 }
 
-export interface DesignSystemDetail extends DesignSystemSummary {
-  manifest: DesignSystemManifest;
-  tokens: string;
-  designTokens: Record<string, unknown>;
-  tailwind: string;
-  components: string;
-  usage: string;
-  design: string;
+/** List files that exist under a design system dir (used by the templates API). */
+export function listDesignSystemFiles(id: string): string[] {
+  const prefix = `../../data/${id}/`;
+  return Object.keys(rawFiles)
+    .filter((k) => k.startsWith(prefix))
+    .map((k) => k.slice(prefix.length));
+}
+
+function systemIds(): string[] {
+  const ids = new Set<string>();
+  for (const key of Object.keys(rawFiles)) {
+    const m = key.match(/^\.\.\/\.\.\/data\/([^/]+)\/manifest\.json$/);
+    if (m) ids.add(m[1]);
+  }
+  return [...ids];
+}
+
+function getManifest(id: string): DesignSystemManifest | null {
+  const raw = readFileSafe(id, "manifest.json");
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as DesignSystemManifest;
+  } catch {
+    return null;
+  }
 }
 
 function parseTokenCount(css: string): number {
@@ -51,28 +58,18 @@ function parseComponentCount(html: string): number {
   return matches ? matches.length : 0;
 }
 
-function readFileSafe(path: string): string {
-  try {
-    return readFileSync(path, "utf-8");
-  } catch {
-    return "";
-  }
-}
-
 export function listDesignSystems(): DesignSystemSummary[] {
-  const entries = readdirSync(DATA_DIR, { withFileTypes: true });
   const systems: DesignSystemSummary[] = [];
 
-  for (const entry of entries) {
-    if (!entry.isDirectory() || entry.name.startsWith("_")) continue;
+  for (const id of systemIds()) {
+    if (id.startsWith("_")) continue;
 
-    const manifestPath = join(DATA_DIR, entry.name, "manifest.json");
-    if (!existsSync(manifestPath)) continue;
+    const manifest = getManifest(id);
+    if (!manifest) continue;
 
     try {
-      const manifest: DesignSystemManifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
-      const tokens = readFileSafe(join(DATA_DIR, entry.name, manifest.files.tokens));
-      const components = readFileSafe(join(DATA_DIR, entry.name, manifest.files.components));
+      const tokens = readFileSafe(id, manifest.files.tokens);
+      const components = readFileSafe(id, manifest.files.components);
 
       systems.push({
         id: manifest.id,
@@ -91,16 +88,15 @@ export function listDesignSystems(): DesignSystemSummary[] {
 }
 
 export function getDesignSystem(id: string): DesignSystemDetail | null {
-  const manifestPath = join(DATA_DIR, id, "manifest.json");
-  if (!existsSync(manifestPath)) return null;
+  const manifest = getManifest(id);
+  if (!manifest) return null;
 
   try {
-    const manifest: DesignSystemManifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
-    const tokens = readFileSafe(join(DATA_DIR, id, manifest.files.tokens));
-    const designTokens = JSON.parse(readFileSafe(join(DATA_DIR, id, manifest.files.designTokens)) || "{}");
-    const tailwind = readFileSafe(join(DATA_DIR, id, manifest.files.tailwind));
-    const components = readFileSafe(join(DATA_DIR, id, manifest.files.components));
-    const usage = readFileSafe(join(DATA_DIR, id, manifest.usage));
+    const tokens = readFileSafe(id, manifest.files.tokens);
+    const designTokens = JSON.parse(readFileSafe(id, manifest.files.designTokens) || "{}");
+    const tailwind = readFileSafe(id, manifest.files.tailwind);
+    const components = readFileSafe(id, manifest.files.components);
+    const usage = readFileSafe(id, manifest.usage);
 
     return {
       id: manifest.id,
@@ -115,7 +111,7 @@ export function getDesignSystem(id: string): DesignSystemDetail | null {
       tailwind,
       components,
       usage,
-      design: readFileSafe(join(DATA_DIR, id, manifest.files.design)),
+      design: readFileSafe(id, manifest.files.design),
     };
   } catch {
     return null;

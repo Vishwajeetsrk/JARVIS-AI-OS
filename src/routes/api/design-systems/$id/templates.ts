@@ -1,8 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { readFileSync, existsSync } from "fs";
-import { join } from "path";
-
-const DATA_DIR = join(process.cwd(), "data");
+import { listDesignSystemFiles } from "@/lib/design-systems";
 
 interface TemplateFile {
   path: string;
@@ -14,27 +11,23 @@ export const Route = createFileRoute("/api/design-systems/$id/templates")({
   server: {
     handlers: {
       GET: async ({ params }) => {
-        const systemDir = join(DATA_DIR, params.id);
-        if (!existsSync(systemDir)) {
+        const files = listDesignSystemFiles(String(params.id || ""));
+        if (files.length === 0) {
           return new Response("Not found", { status: 404 });
         }
 
         const templates: TemplateFile[] = [];
 
-        const systemDir2 = join(systemDir, "system");
-        if (existsSync(systemDir2)) {
-          if (existsSync(join(systemDir2, "index.html"))) templates.push({ path: `system/index.html`, label: "Full UI Kit", type: "kit" });
-          if (existsSync(join(systemDir2, "kit.html"))) templates.push({ path: `system/kit.html`, label: "Design Kit", type: "kit" });
-          if (existsSync(join(systemDir2, "kit.dark.html"))) templates.push({ path: `system/kit.dark.html`, label: "Design Kit (Dark)", type: "kit" });
+        for (const name of ["system/index.html", "system/kit.html", "system/kit.dark.html"]) {
+          if (files.includes(name)) {
+            templates.push({ path: name, label: name === "system/index.html" ? "Full UI Kit" : name === "system/kit.html" ? "Design Kit" : "Design Kit (Dark)", type: "kit" });
+          }
         }
 
-        const previewDir = join(systemDir, "preview");
-        if (existsSync(previewDir)) {
-          for (const name of ["colors", "typography", "spacing"]) {
-            const file = `${name}.html`;
-            if (existsSync(join(previewDir, file))) {
-              templates.push({ path: `preview/${file}`, label: name.charAt(0).toUpperCase() + name.slice(1), type: "preview" });
-            }
+        for (const name of ["colors", "typography", "spacing"]) {
+          const file = `preview/${name}.html`;
+          if (files.includes(file)) {
+            templates.push({ path: file, label: name.charAt(0).toUpperCase() + name.slice(1), type: "preview" });
           }
         }
 

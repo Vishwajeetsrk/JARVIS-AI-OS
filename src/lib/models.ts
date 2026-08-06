@@ -15,11 +15,10 @@ export type ModelInfo = {
 
 export const MODELS: ModelInfo[] = [
   // ── Google Gemini (free tier) ──────────────────────────────────────────
-  { id: "gemini-2.5-flash",      label: "Gemini 2.5 Flash",      icon: "✦", provider: "gemini", supportsVision: true,  reqPerDay: Infinity },
-  { id: "gemini-2.5-pro",        label: "Gemini 2.5 Pro",        icon: "◈", provider: "gemini", supportsVision: true,  reqPerDay: Infinity },
-  { id: "gemini-2.0-flash",      label: "Gemini 2.0 Flash",      icon: "✧", provider: "gemini", supportsVision: true,  reqPerDay: Infinity },
-  { id: "gemini-1.5-flash",      label: "Gemini 1.5 Flash",      icon: "•", provider: "gemini", supportsVision: true,  reqPerDay: Infinity },
-  { id: "gemini-1.5-pro",        label: "Gemini 1.5 Pro",        icon: "◆", provider: "gemini", supportsVision: true,  reqPerDay: Infinity },
+  { id: "gemini-flash-latest",      label: "Gemini Flash",          icon: "✦", provider: "gemini", supportsVision: true,  reqPerDay: Infinity },
+  { id: "gemini-3.6-flash",         label: "Gemini 3.6 Flash",      icon: "◈", provider: "gemini", supportsVision: true,  reqPerDay: Infinity },
+  { id: "gemini-flash-lite-latest", label: "Gemini Flash Lite",     icon: "✧", provider: "gemini", supportsVision: true,  reqPerDay: Infinity },
+  { id: "gemini-3-flash-preview",   label: "Gemini 3 Flash",        icon: "•", provider: "gemini", supportsVision: true,  reqPerDay: Infinity },
 
   // ── Groq — General models (free tier) ─────────────────────────────────
   { id: "llama-3.3-70b-versatile",  label: "Llama 3.3 70B",        icon: "⚡", provider: "groq", reqPerDay: 1000  },

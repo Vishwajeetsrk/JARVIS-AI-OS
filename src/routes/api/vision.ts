@@ -41,7 +41,7 @@ export const Route = createFileRoute("/api/vision")({
             : "";
 
           const result = await generateText({
-            model: google("gemini-2.0-flash"),
+            model: google("gemini-flash-latest"),
             messages: [
               {
                 role: "user",
@@ -62,7 +62,7 @@ export const Route = createFileRoute("/api/vision")({
           return new Response(
             JSON.stringify({
               analysis: result.text,
-              model: "gemini-2.0-flash",
+              model: "gemini-flash-latest",
               usage: result.usage,
             }),
             { status: 200, headers: { "Content-Type": "application/json" } }

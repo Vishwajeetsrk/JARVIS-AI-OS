@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/jarvis/catalog-grid";
 import { useState } from "react";
 
-import { listDesignSystems, getDesignSystem, type DesignSystemSummary } from "@/lib/design-systems";
+import type { DesignSystemSummary } from "@/lib/design-system-types";
 
 export const Route = createFileRoute("/_authenticated/console/design")({
   component: DesignSystemsPage,
@@ -12,30 +12,15 @@ export const Route = createFileRoute("/_authenticated/console/design")({
   loader: async () => {
     try {
       const res = await fetch("/api/design-systems");
-      if (!res.ok) return { systems: FALLBACK_SYSTEMS };
-      const systems = await res.json() as DesignSystemSummary[];
-      return { systems: systems.length > 0 ? systems : FALLBACK_SYSTEMS };
-    } catch {
-      return { systems: FALLBACK_SYSTEMS };
+      if (!res.ok) throw new Error(`API ${res.status}`);
+      const systems = (await res.json()) as DesignSystemSummary[];
+      return { systems };
+    } catch (err) {
+      console.error("[design.loader]", err);
+      return { systems: [] };
     }
   },
 });
-
-// Fallback data in case the API isn't running
-const FALLBACK_SYSTEMS: DesignSystemSummary[] = [
-  { id: "apple", name: "Apple HIG", category: "Technology", description: "Apple Human Interface Guidelines — SF Pro, spatial design, and native patterns.", tokenCount: 84, componentCount: 28 },
-  { id: "arc", name: "Arc Browser", category: "Technology", description: "Arc's signature space sidebar, boosts, and floating panels.", tokenCount: 72, componentCount: 24 },
-  { id: "claude", name: "Claude / Anthropic", category: "Minimal & Clean", description: "Anthropic's warm, thoughtful AI interface — Claude Orange and clean typefaces.", tokenCount: 68, componentCount: 22 },
-  { id: "bento", name: "Bento Grid", category: "Bold & Experimental", description: "Bento-box modular grid layouts — popular in 2024 SaaS landing pages.", tokenCount: 56, componentCount: 18 },
-  { id: "linear", name: "Linear", category: "Technology", description: "Issue tracking precision — tight spacing, cool grays, keyboard-first UX.", tokenCount: 91, componentCount: 32 },
-  { id: "vercel", name: "Vercel", category: "Minimal & Clean", description: "Deployment-grade dark mode — geist mono, sharp borders, system UI.", tokenCount: 78, componentCount: 26 },
-  { id: "stripe", name: "Stripe", category: "Professional & Corporate", description: "Payment-grade trust design — blues, whites, and pixel-perfect forms.", tokenCount: 103, componentCount: 38 },
-  { id: "notion", name: "Notion", category: "Minimal & Clean", description: "Block-editor simplicity — sans-serif, generous whitespace, soft borders.", tokenCount: 64, componentCount: 21 },
-  { id: "github", name: "GitHub Primer", category: "Technology", description: "GitHub's design system — accessible, monospace-forward, octicons.", tokenCount: 118, componentCount: 44 },
-  { id: "airbnb", name: "Airbnb DLS", category: "Professional & Corporate", description: "Hospitality warmth — Cereal typeface, coral accents, trust-first.", tokenCount: 89, componentCount: 31 },
-  { id: "ant", name: "Ant Design", category: "Professional & Corporate", description: "Enterprise React components — Alibaba's comprehensive design language.", tokenCount: 142, componentCount: 52 },
-  { id: "airtable", name: "Airtable", category: "Bold & Experimental", description: "Database-as-canvas — pastel blocks, grid views, and colorful bases.", tokenCount: 74, componentCount: 27 },
-];
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
   "Technology": "from-cyan-950 to-blue-950",
