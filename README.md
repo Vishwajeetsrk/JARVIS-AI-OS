@@ -18,6 +18,7 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
 [![Vercel](https://img.shields.io/badge/Live%20Demo-Vercel-black.svg)](https://jarvisaios.vercel.app)
 [![Supabase](https://img.shields.io/badge/Supabase-BaaS-3FCF8E?logo=supabase)](https://supabase.com)
+[![Release](https://img.shields.io/github/v/release/Vishwajeetsrk/JARVIS-AI-OS?label=Desktop%20App&logo=github)](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest)
 
 ---
 
@@ -61,15 +62,15 @@ Run the full Jarvis stack on your machine:
 
 ### 3. Desktop App
 
-Tauri 2-based desktop shell for macOS, Windows, and Linux.
+Tauri 2-based desktop shell for macOS, Windows, and Linux. It opens the live Jarvis console in a native window — sign in and everything works. Requires an internet connection.
 
-**Download installers from [GitHub Releases](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest):**
+**Download the latest installer from [GitHub Releases](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest):**
 
 | Platform | Format |
 |---|---|
 | **macOS** (Apple Silicon + Intel) | `.dmg` |
 | **Windows** (x64) | `.exe` / `.msi` |
-| **Linux** (x64) | `.AppImage` / `.deb` |
+| **Linux** (x64) | `.AppImage` / `.deb` / `.rpm` |
 
 Or build it yourself (requires the Rust toolchain):
 
