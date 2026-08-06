@@ -124,10 +124,13 @@ jobs:
           prerelease: false
           generate_release_notes: true
           files: |
-            artifacts/jarvis-macos/**
-            artifacts/jarvis-macos-intel/**
-            artifacts/jarvis-linux/**
-            artifacts/jarvis-windows/**
+            artifacts/jarvis-macos/**/*.dmg
+            artifacts/jarvis-macos-intel/**/*.dmg
+            artifacts/jarvis-linux/**/*.AppImage
+            artifacts/jarvis-linux/**/*.deb
+            artifacts/jarvis-linux/**/*.rpm
+            artifacts/jarvis-windows/**/*.exe
+            artifacts/jarvis-windows/**/*.msi
             artifacts/jarvis-cli/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
