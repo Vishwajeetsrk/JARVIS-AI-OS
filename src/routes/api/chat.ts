@@ -110,7 +110,23 @@ export const Route = createFileRoute("/api/chat")({
           if (!Array.isArray(body.messages)) {
             return new Response("messages required", { status: 400 });
           }
-          const requestMessages = body.messages;
+          const requestMessages = body.messages.map((m) => {
+            const anyMsg = m as any;
+            if (anyMsg.parts) return anyMsg as UIMessage;
+            const content = anyMsg.content;
+            const parts = Array.isArray(content)
+              ? content.map((c: any) =>
+                  c?.type === "text"
+                    ? { type: "text" as const, text: c.text ?? "" }
+                    : c?.type === "image"
+                      ? { type: "file" as const, mediaType: c.mediaType ?? "image/png", data: c.data }
+                      : c,
+                )
+              : typeof content === "string"
+                ? [{ type: "text" as const, text: content }]
+                : [];
+            return { ...anyMsg, parts };
+          });
 
           if (requestMessages.length === 0) {
             return new Response("messages must not be empty", { status: 400 });
