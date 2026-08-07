@@ -33,6 +33,7 @@ import {
 import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink } from "lucide-react";
 import { z } from "zod";
 import { VoiceButton } from "@/components/dashboard/voice-button";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const Route = createFileRoute("/_authenticated/console/$threadId")({
   validateSearch: (s) => z.object({ seed: z.string().optional() }).parse(s),
@@ -290,7 +291,8 @@ function ThreadView() {
       </div>
 
       <div className="mx-auto w-full max-w-3xl p-4">
-        <PromptInput onSubmit={handleSubmit} multiple accept="image/*,application/pdf,text/*,.md,.json,.csv">
+        <TooltipProvider>
+          <PromptInput onSubmit={handleSubmit} multiple accept="image/*,application/pdf,text/*,.md,.json,.csv">
           <AttachmentStrip />
           <PromptInputTextarea placeholder="Ask Jarvis…" autoFocus />
           <PromptInputFooter>
@@ -310,6 +312,7 @@ function ThreadView() {
             <PromptInputSubmit status={status} />
           </PromptInputFooter>
         </PromptInput>
+        </TooltipProvider>
       </div>
     </div>
   );
