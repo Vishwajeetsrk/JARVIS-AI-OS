@@ -46,3 +46,6 @@ dev-*.txt
 build-*.log
 
 .vercel
+
+# Third-party design captures (Woblo references — keep local, not committed)
+knowledge/
