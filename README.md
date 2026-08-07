@@ -175,7 +175,7 @@ npx tsx cli/index.ts steering list
 | Page | What it does |
 |---|---|
 | **Dashboard** | Live activity feed, stat cards, quick command + voice, RSS news |
-| **Chat** | Multi-agent chat with tool calling, streaming, memory recall |
+| **Chat** | Multi-agent chat with tool calling, streaming, file attachments, memory recall |
 | **Projects** | Project manager + per-project pages |
 | **Design Systems** | 150 brand design systems + detail pages |
 | **Templates** | Reusable project templates |
@@ -237,9 +237,20 @@ npx tsx cli/index.ts steering list
 
 ---
 
+## Design Language & Motion
+
+Jarvis uses a custom motion language tuned for "snap" — fast acceleration, instant settle, no floaty easing:
+
+- **Motion tokens** — `--ease-snap: cubic-bezier(0.2, 0, 0, 1)` (UI default), `--ease-settle: cubic-bezier(0.16, 1, 0.3, 1)` (entrances), with a quick / base / slow cadence of `160ms / 280ms / 450ms`.
+- **Card choreography** — cards lift 2px with a terracotta border tint on hover, buttons lift + glow, arrows slide 3px, and the hero screenshot slow-zooms (`group-hover:scale-102`).
+- **Status language** — blinking status pips with pulse rings, a scanline sweep while health probes are in flight, and stat counters that slot-settle to their final value.
+- **Accessibility** — a global `prefers-reduced-motion` kill switch disables all animation for users who ask for it, and every interactive element gets a visible `:focus-visible` outline.
+
+---
+
 ## Auth & Security
 
-- **Supabase Auth** — Google OAuth + email/password
+- **Supabase Auth** — Google OAuth + email/password (with a visible show/hide password toggle)
 - **Protected routes** — every `/console/*` page requires login
 - **Server-side JWT verification** — all server functions validate tokens
 - **Row Level Security** — every table has per-user policies
