@@ -184,7 +184,7 @@ function AgentsPage() {
             const running = a.status === "running";
             const runningNow = runningId === a.id;
             return (
-              <div key={a.id} className="rounded-xl border border-border bg-card p-4">
+              <div key={a.id} className="hover-card rounded-xl border border-border bg-card p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg text-lg" style={{ background: `${a.color}20`, color: a.color }}>

@@ -241,3 +241,28 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 .stat-in { animation: stat-in var(--t-base) var(--ease-snap) both; }
+
+/* ── Skeleton loading — shimmer sweep ────────────────── */
+@keyframes skeleton-shift { from { transform: translateX(-100%); } to { transform: translateX(200%); } }
+.skeleton {
+  position: relative; overflow: hidden; border-radius: 6px;
+  background: color-mix(in oklab, var(--color-muted-foreground) 14%, transparent);
+}
+.skeleton::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, white 7%, transparent), transparent);
+  transform: translateX(-100%);
+  animation: skeleton-shift 1.4s var(--ease-snap) infinite;
+}
+
+/* ── Indeterminate progress bar ─────────────────────── */
+@keyframes progress-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+.progress-indeterminate {
+  position: relative; overflow: hidden; height: 3px; border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 15%, transparent);
+}
+.progress-indeterminate::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 33%;
+  border-radius: 999px; background: var(--primary);
+  animation: progress-slide 1.5s var(--ease-snap) infinite;
+}

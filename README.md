@@ -11,7 +11,7 @@
                             |_|
 ```
 
-> **A persistent-memory AI Operating System** — chat, 30+ specialized agents, 150 design systems, voice, and a real-time dashboard. **Runs free** on Google Gemini + Groq cloud models.
+> **A persistent-memory AI Operating System** — chat, 24 specialized agents, 53 design systems, voice, and a real-time dashboard. **Runs free** on Google Gemini + Groq cloud models.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript)](https://www.typescriptlang.org)
@@ -45,7 +45,7 @@ Jarvis is a **persistent-memory AI operating system**: it remembers your decisio
 The full application runs in your browser — no install needed.
 
 - **Live site:** [jarvisaios.vercel.app](https://jarvisaios.vercel.app)
-- Features: Chat with agents, project management, 150 design systems, voice, memory recall, skills, hooks, specs
+- Features: Chat with agents, project management, 53 design systems, voice, memory recall, skills, hooks, specs
 
 ### 2. Local Development Server
 
@@ -177,7 +177,7 @@ npx tsx cli/index.ts steering list
 | **Dashboard** | Live activity feed, stat cards, quick command + voice, RSS news |
 | **Chat** | Multi-agent chat with tool calling, streaming, file attachments, memory recall |
 | **Projects** | Project manager + per-project pages |
-| **Design Systems** | 150 brand design systems + detail pages |
+| **Design Systems** | 53 brand design systems + detail pages |
 | **Templates** | Reusable project templates |
 | **Roadmaps** | 91 developer roadmaps (AI, System Design, DevOps, Web) |
 | **Skills** | Agent skills management — create, enable, disable |
@@ -219,7 +219,7 @@ npx tsx cli/index.ts steering list
 | `src-tauri/` | Desktop app shell (Tauri + Rust) |
 | `supabase/migrations/` | Database schema + RLS policies |
 | `skills/` | 433 agent skill files |
-| `plugins/` | 5 plugin manifests |
+| `plugins/` | 45 plugin manifests |
 | `data/` | 819 design-system manifest files |
 | `Projects/` | 48 project templates |
 | `scripts/` | Install scripts, utilities |

@@ -23,7 +23,7 @@ function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+    <div className="hover-card flex items-center gap-3 rounded-xl border border-border bg-card p-4">
       <span
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-background"
         style={{ color: accent ?? "var(--color-primary, #D97757)" }}

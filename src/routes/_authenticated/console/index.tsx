@@ -191,7 +191,7 @@ function ConsoleDashboard() {
               <button
                 key={action.label}
                 onClick={() => mCreate.mutate(action.seed)}
-                className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-4 text-left transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md active:scale-[0.98]"
+                className="hover-card group flex flex-col gap-3 rounded-xl border border-border bg-card p-4 text-left active:scale-[0.98]"
               >
                 <div
                   className="flex h-9 w-9 items-center justify-center rounded-lg"
@@ -203,7 +203,7 @@ function ConsoleDashboard() {
                   <div className="text-sm font-medium">{action.label}</div>
                   <div className="mt-0.5 text-xs text-muted-foreground leading-relaxed">{action.description}</div>
                 </div>
-                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-primary transition-colors self-end" />
+                <ArrowRight className="arrow-slide h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-primary transition-colors self-end" />
               </button>
             ))}
           </div>

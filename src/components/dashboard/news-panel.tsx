@@ -59,10 +59,10 @@ export function NewsPanel() {
       {loading && items.length === 0 && (
         <div className="space-y-3 py-2">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="animate-pulse space-y-1.5">
-              <div className="h-3 w-3/4 rounded bg-border/60" />
-              <div className="h-2.5 w-full rounded bg-border/40" />
-              <div className="h-2.5 w-1/2 rounded bg-border/40" />
+            <div key={i} className="space-y-1.5">
+              <div className="skeleton h-3 w-3/4" />
+              <div className="skeleton h-2.5 w-full" />
+              <div className="skeleton h-2.5 w-1/2" />
             </div>
           ))}
         </div>
