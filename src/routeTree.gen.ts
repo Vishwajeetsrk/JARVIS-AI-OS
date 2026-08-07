@@ -18,6 +18,7 @@ import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as AuthenticatedConsoleRouteImport } from './routes/_authenticated/console'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiDesignSystemsRouteImport } from './routes/api/design-systems'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as ApiNewsRouteImport } from './routes/api/news'
 import { Route as ApiRoadmapsRouteImport } from './routes/api/roadmaps'
 import { Route as ApiSitemapRouteImport } from './routes/api/sitemap'
@@ -93,6 +94,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
 const ApiDesignSystemsRoute = ApiDesignSystemsRouteImport.update({
   id: '/api/design-systems',
   path: '/api/design-systems',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiNewsRoute = ApiNewsRouteImport.update({
@@ -289,6 +295,7 @@ export interface FileRoutesByFullPath {
   '/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
+  '/api/health': typeof ApiHealthRoute
   '/api/news': typeof ApiNewsRoute
   '/api/roadmaps': typeof ApiRoadmapsRoute
   '/api/sitemap': typeof ApiSitemapRoute
@@ -330,6 +337,7 @@ export interface FileRoutesByTo {
   '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
+  '/api/health': typeof ApiHealthRoute
   '/api/news': typeof ApiNewsRoute
   '/api/roadmaps': typeof ApiRoadmapsRoute
   '/api/sitemap': typeof ApiSitemapRoute
@@ -374,6 +382,7 @@ export interface FileRoutesById {
   '/_authenticated/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
+  '/api/health': typeof ApiHealthRoute
   '/api/news': typeof ApiNewsRoute
   '/api/roadmaps': typeof ApiRoadmapsRoute
   '/api/sitemap': typeof ApiSitemapRoute
@@ -418,6 +427,7 @@ export interface FileRouteTypes {
     | '/console'
     | '/api/chat'
     | '/api/design-systems'
+    | '/api/health'
     | '/api/news'
     | '/api/roadmaps'
     | '/api/sitemap'
@@ -459,6 +469,7 @@ export interface FileRouteTypes {
     | '/skills'
     | '/api/chat'
     | '/api/design-systems'
+    | '/api/health'
     | '/api/news'
     | '/api/roadmaps'
     | '/api/sitemap'
@@ -502,6 +513,7 @@ export interface FileRouteTypes {
     | '/_authenticated/console'
     | '/api/chat'
     | '/api/design-systems'
+    | '/api/health'
     | '/api/news'
     | '/api/roadmaps'
     | '/api/sitemap'
@@ -545,6 +557,7 @@ export interface RootRouteChildren {
   SkillsRoute: typeof SkillsRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiDesignSystemsRoute: typeof ApiDesignSystemsRouteWithChildren
+  ApiHealthRoute: typeof ApiHealthRoute
   ApiNewsRoute: typeof ApiNewsRoute
   ApiRoadmapsRoute: typeof ApiRoadmapsRoute
   ApiSitemapRoute: typeof ApiSitemapRoute
@@ -618,6 +631,13 @@ declare module '@tanstack/react-router' {
       path: '/api/design-systems'
       fullPath: '/api/design-systems'
       preLoaderRoute: typeof ApiDesignSystemsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/news': {
@@ -974,6 +994,7 @@ const rootRouteChildren: RootRouteChildren = {
   SkillsRoute: SkillsRoute,
   ApiChatRoute: ApiChatRoute,
   ApiDesignSystemsRoute: ApiDesignSystemsRouteWithChildren,
+  ApiHealthRoute: ApiHealthRoute,
   ApiNewsRoute: ApiNewsRoute,
   ApiRoadmapsRoute: ApiRoadmapsRoute,
   ApiSitemapRoute: ApiSitemapRoute,

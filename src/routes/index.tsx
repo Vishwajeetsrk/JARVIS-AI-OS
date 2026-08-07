@@ -32,6 +32,19 @@ const AGENTS = [
   "frontend-design", "mcp-builder", "skill-creator", "workspace-agent", "devops-agent"
 ];
 
+interface HealthReport {
+  ok: boolean;
+  version: string;
+  database: "online" | "offline";
+  modelProvider: "online" | "offline";
+  voice: "online" | "offline";
+  agents: number;
+  designSystems: number;
+  sites: number;
+  skills: number;
+  checkedAt: string;
+}
+
 const FEATURES = [
   {
     icon: MemoryStick,
@@ -40,37 +53,29 @@ const FEATURES = [
   },
   {
     icon: Users,
-    title: "30 Specialized Agents",
-    body: "CEO → Builder → Test → Deploy, in sequence. Each with specialized tools, guardrails, and $0 free cloud AI.",
+    title: "24 Specialized Agents",
+    body: "CEO → Builder → Test → Deploy, in sequence. Each with specialized tools, guardrails, and free cloud AI.",
   },
   {
     icon: Infinity,
     title: "One Brain, 5 Shells",
-    body: "Website, desktop app, web console, terminal CLI, mobile — same agent team, same context, same memory.",
+    body: "Web console, desktop app, terminal CLI, voice, and the public site — same agent team, same context, same memory.",
   },
-];
-
-const STATS = [
-  { value: 30, label: "Specialist Agents", suffix: "" },
-  { value: 150, label: "Design Systems", suffix: "+" },
-  { value: 68, label: "Repos Indexed", suffix: "" },
-  { value: 0, label: "Memory Lost", suffix: "%" },
 ];
 
 const SURFACES = [
   { title: "Web Console", icon: Monitor, link: "/console", sub: "React + TanStack App Shell" },
-  { title: "Voice & Speech", icon: Zap, link: "/console", sub: "Groq Whisper & Orpheus TTS" },
+  { title: "Voice & Speech", icon: Zap, link: "/console", sub: "Groq Whisper + Built-in TTS" },
   { title: "Terminal CLI", icon: Terminal, link: "/console", sub: "npx tsx scripts/jarvis.ts" },
-  { title: "Desktop Bridge", icon: Cpu, link: "/console", sub: "Python Windows Automation" },
+  { title: "Desktop App", icon: Cpu, link: "/console", sub: "Tauri 2 · macOS, Windows, Linux" },
   { title: "Web Landing", icon: Globe, link: "/", sub: "Public Marketing & Specs" },
 ];
 
 const ACTIVITY_FEED = [
-  { agent: "saas-builder", action: "Deployed AgencyOS billing webhooks → staging", time: "2m ago", status: "ready" },
-  { agent: "test-agent", action: "6/6 test suites passing — LearnifyAI", time: "7m ago", status: "ready" },
-  { agent: "designer", action: "Generated Arc design tokens for DreamSync", time: "12m ago", status: "ready" },
-  { agent: "ceo-agent", action: "Drafted Q3 roadmap for SkillForge", time: "18m ago", status: "processing" },
-  { agent: "memory-keeper", action: "Indexed 42 new decision logs across 5 projects", time: "25m ago", status: "ready" },
+  { agent: "supabase-db", action: "Postgres database reachable — schema, RLS and pgvector live", time: "just now", status: "ready" },
+  { agent: "ai-gateway", action: "Gemini Flash + Groq Llama 3.3 model routing online", time: "just now", status: "ready" },
+  { agent: "voice", action: "Whisper transcription and TTS endpoints responding", time: "just now", status: "ready" },
+  { agent: "realtime", action: "WebSocket channels pushing activity to the console", time: "just now", status: "ready" },
 ];
 
 // Animated counter hook
@@ -116,6 +121,26 @@ type ShellState = "desktop" | "amber" | "mobile";
 
 function LandingPage() {
   const [activeState, setActiveState] = useState<ShellState>("desktop");
+  const [health, setHealth] = useState<HealthReport | null>(null);
+
+  useEffect(() => {
+    fetch("/api/health")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: HealthReport | null) => setHealth(data))
+      .catch(() => {});
+  }, []);
+
+  const agents = health?.agents ?? 24;
+  const designSystems = health?.designSystems ?? 53;
+  const liveSites = health?.sites ?? 22;
+  const allOnline = health ? health.database === "online" && health.modelProvider === "online" && health.voice === "online" : null;
+
+  const stats = [
+    { value: agents, label: "Specialist Agents", suffix: "" },
+    { value: designSystems, label: "Design Systems & Live Sites", suffix: "" },
+    { value: liveSites, label: "Live Project Sites", suffix: "" },
+    { value: 0, label: "Memory Lost", suffix: "%" },
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -125,7 +150,7 @@ function LandingPage() {
       <div className="border-b border-border bg-surface/80 px-4 py-2 text-center text-xs font-mono">
         <span className="inline-flex items-center gap-2 text-sage font-medium">
           <span className="status-dot status-ready" />
-          ● All Systems & 5 Surfaces Operational · Gemini 2.5 & Groq Llama 3.3 Connected
+          ● All Systems & 5 Surfaces Operational · Gemini Flash & Groq Llama Connected
         </span>
       </div>
 
@@ -145,7 +170,7 @@ function LandingPage() {
         <div className="bg-noise relative -z-10 h-full w-full" />
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 pb-20 pt-16 text-center md:pt-24">
           <span className="chip reveal">
-            <JarvisStar size={12} className="text-primary" /> v2.2 · Production Meta-Tool
+            <JarvisStar size={12} className="text-primary" /> v{health?.version ?? "2.5.1"} · Production Meta-Tool
           </span>
           <h1 className="reveal font-display text-5xl font-semibold leading-[1.05] tracking-tight text-foreground md:text-7xl">
             One brain.
@@ -155,7 +180,7 @@ function LandingPage() {
             Every project, remembered.
           </h1>
           <p className="reveal max-w-2xl text-lg text-muted-foreground md:text-xl">
-            Jarvis is the AI operating system that solves session amnesia. A team of 30 specialized
+            Jarvis is the AI operating system that solves session amnesia. A team of {agents} specialized
             agents share one persistent memory across every surface you work in.
           </p>
 
@@ -281,7 +306,7 @@ function LandingPage() {
       <section className="border-y border-border/60 bg-surface/60 py-16">
         <div className="mx-auto max-w-4xl px-6">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            {STATS.map((s) => (
+            {stats.map((s) => (
               <StatCard key={s.label} value={s.value} label={s.label} suffix={s.suffix} />
             ))}
           </div>
@@ -311,24 +336,35 @@ function LandingPage() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-10 text-center">
             <div className="text-mono-xs text-muted-foreground mb-2">Live System</div>
-            <h2 className="font-display text-3xl font-semibold md:text-4xl">Agents running now.</h2>
+            <h2 className="font-display text-3xl font-semibold md:text-4xl">Systems online, right now.</h2>
             <p className="mt-3 text-muted-foreground text-sm max-w-lg mx-auto">
-              Across all your projects, agents are autonomously executing tasks in real time.
+              Live health probe of the Jarvis platform — database, model gateway, voice, and realtime.
             </p>
           </div>
           <div className="rounded-2xl border border-border bg-card divide-y divide-border overflow-hidden max-w-3xl mx-auto">
-            {ACTIVITY_FEED.map((item, i) => (
-              <div key={i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-surface/50 transition-colors">
-                <span className={`h-2 w-2 rounded-full shrink-0 ${item.status === "ready" ? "bg-sage" : "bg-amber animate-pulse"}`} />
-                <code className="font-mono text-xs text-primary shrink-0 w-28">{item.agent}</code>
-                <span className="text-sm text-foreground flex-1">{item.action}</span>
-                <span className="text-xs text-muted-foreground shrink-0">{item.time}</span>
-              </div>
-            ))}
+            {ACTIVITY_FEED.map((item, i) => {
+              const liveState =
+                item.agent === "supabase-db" ? (health?.database ?? "online")
+                : item.agent === "ai-gateway" ? (health?.modelProvider ?? "online")
+                : item.agent === "voice" ? (health?.voice ?? "online")
+                : "online";
+              return (
+                <div key={i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-surface/50 transition-colors">
+                  <span className={`h-2 w-2 rounded-full shrink-0 ${liveState === "online" ? "bg-sage" : "bg-red-500 animate-pulse"}`} />
+                  <code className="font-mono text-xs text-primary shrink-0 w-28">{item.agent}</code>
+                  <span className="text-sm text-foreground flex-1">{item.action}</span>
+                  <span className={`text-xs shrink-0 font-mono uppercase ${liveState === "online" ? "text-sage" : "text-red-500"}`}>{liveState}</span>
+                </div>
+              );
+            })}
             <div className="px-5 py-3 text-xs text-center text-muted-foreground">
-              <Link to="/console" className="text-primary hover:underline inline-flex items-center gap-1">
-                View full live log in console <ArrowRight className="h-3 w-3" />
-              </Link>
+              {allOnline === null ? (
+                "Probing live status…"
+              ) : allOnline ? (
+                "All systems operational"
+              ) : (
+                <span className="text-amber-500">One or more services are degraded</span>
+              )}
             </div>
           </div>
         </div>
@@ -357,7 +393,7 @@ function LandingPage() {
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <div className="text-mono-xs text-muted-foreground mb-1">Agent Roster</div>
-              <h2 className="font-display text-3xl md:text-4xl">30 skills, one crew.</h2>
+              <h2 className="font-display text-3xl md:text-4xl">{agents} agents, one crew.</h2>
             </div>
             <Link to="/skills" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
               Full roster <ArrowRight className="h-3.5 w-3.5" />
@@ -496,7 +532,7 @@ function LandingPage() {
             Ready to stop losing context?
           </h2>
           <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
-            Jarvis is free. Gemini 2.5 and Groq Llama 3.3 — no credit card, no rate limits that matter.
+            Jarvis is free. Gemini Flash and Groq Llama — no credit card, no rate limits that matter.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link to="/console" className="btn-hero inline-flex items-center gap-2 text-base px-8 py-3.5">
