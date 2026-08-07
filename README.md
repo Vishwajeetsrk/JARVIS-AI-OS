@@ -241,8 +241,9 @@ npx tsx cli/index.ts steering list
 
 Jarvis uses a custom motion language tuned for "snap" — fast acceleration, instant settle, no floaty easing:
 
-- **Motion tokens** — `--ease-snap: cubic-bezier(0.2, 0, 0, 1)` (UI default), `--ease-settle: cubic-bezier(0.16, 1, 0.3, 1)` (entrances), with a quick / base / slow cadence of `160ms / 280ms / 450ms`.
-- **Card choreography** — cards lift 2px with a terracotta border tint on hover, buttons lift + glow, arrows slide 3px, and the hero screenshot slow-zooms (`group-hover:scale-102`).
+- **Motion tokens** — `--ease-snap: cubic-bezier(0.2, 0, 0, 1)` is the global transition default, `--ease-settle: cubic-bezier(0.16, 1, 0.3, 1)` for entrances, with a quick / base / slow cadence of `160ms / 280ms / 450ms`.
+- **Card choreography** — cards lift 2px with a terracotta border tint on hover (landing page + console dashboard stats, quick actions, agent cards), buttons lift + glow, arrows slide 3px, and the hero screenshot slow-zooms (`group-hover:scale-102`).
+- **Loading states** — skeleton shimmer blocks (`.skeleton`) replace static pulse placeholders, and `.progress-indeterminate` shows an animated bar for in-flight work.
 - **Status language** — blinking status pips with pulse rings, a scanline sweep while health probes are in flight, and stat counters that slot-settle to their final value.
 - **Accessibility** — a global `prefers-reduced-motion` kill switch disables all animation for users who ask for it, and every interactive element gets a visible `:focus-visible` outline.
 
