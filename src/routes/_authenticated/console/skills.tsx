@@ -2,11 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getSettings, updateSettings } from "@/lib/threads.functions";
-import { listLearnedSkills, createLearnedSkill, deleteLearnedSkill } from "@/lib/skills.functions";
+import { listLearnedSkills, createLearnedSkill, deleteLearnedSkill, listShippedSkillCatalog } from "@/lib/skills.functions";
 import { SKILLS } from "@/lib/catalog";
 import { PageHeader } from "@/components/jarvis/catalog-grid";
 import { useState } from "react";
-import { Search, CheckCircle2, Circle, Sparkles, BookOpen, Plus, Trash2, X } from "lucide-react";
+import { Search, CheckCircle2, Circle, Sparkles, BookOpen, Plus, Trash2, X, FileCode2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/console/skills")({
@@ -68,6 +68,14 @@ function SkillsPage() {
     queryKey: ["learned-skills"],
     queryFn: () => learnedFn(),
   });
+
+  const shippedFn = useServerFn(listShippedSkillCatalog);
+  const shipped = useQuery({
+    queryKey: ["shipped-skill-catalog"],
+    queryFn: () => shippedFn(),
+  });
+  const personaIds = new Set(SKILLS.map((s) => s.id));
+  const catalogSkills = (shipped.data ?? []).filter((s) => !personaIds.has(s.name));
 
   const createLearned = useMutation({
     mutationFn: (input: { name: string; category: string; description: string; content: string }) =>
@@ -168,6 +176,56 @@ function SkillsPage() {
             No agents match your search.
           </div>
         )}
+
+        {/* Shipped skill catalog (SKILL.md bundles) */}
+        <div className="pt-4">
+          <div>
+            <h2 className="flex items-center gap-2 text-sm font-semibold">
+              <FileCode2 className="h-4 w-4 text-primary" />
+              Skill Catalog
+            </h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              The 17 official Anthropic skills plus Jarvis's own, shipped as SKILL.md bundles. Toggle to arm them for chat.
+            </p>
+          </div>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {catalogSkills.map((s) => {
+              const isOn = enabled.includes(s.name);
+              return (
+                <button
+                  key={s.name}
+                  onClick={() => toggle(s.name, !isOn)}
+                  className={`flex items-start gap-3 rounded-xl border p-3.5 text-left transition-all hover:-translate-y-0.5 ${
+                    isOn ? "border-primary/40 bg-primary/5" : "border-border bg-card hover:border-primary/20"
+                  }`}
+                >
+                  <div className={`shrink-0 rounded-lg p-2 ${isOn ? "bg-primary/10" : "bg-surface"}`}>
+                    <FileCode2 className={`h-4 w-4 ${isOn ? "text-primary" : "text-muted-foreground"}`} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <code className={`font-mono text-[13px] ${isOn ? "text-primary" : "text-foreground"}`}>{s.name}</code>
+                      {isOn ? (
+                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
+                      ) : (
+                        <Circle className="h-3.5 w-3.5 shrink-0 text-muted-foreground/30" />
+                      )}
+                    </div>
+                    <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">{s.description}</p>
+                    <span className="mt-1.5 inline-block rounded-full border border-border/60 bg-surface/60 px-2 py-0.5 text-[10px] text-muted-foreground">
+                      {s.category}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          {catalogSkills.length === 0 && (
+            <div className="mt-3 rounded-xl border border-dashed border-border bg-surface/30 p-6 text-center text-xs text-muted-foreground">
+              Catalog is empty.
+            </div>
+          )}
+        </div>
 
         {/* Learned skills (self-improving) */}
         <div className="pt-4">

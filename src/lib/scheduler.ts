@@ -5,6 +5,7 @@ import cron from "node-cron";
 import type { ScheduledTask } from "node-cron";
 import { generateText } from "ai";
 import { resolveChatModel } from "@/lib/ai-providers";
+import { validateCron } from "@/lib/cron";
 
 const PRESETS: Record<string, string> = {
   hourly: "0 * * * *",
@@ -19,11 +20,7 @@ export function normalizeSchedule(s: string): string {
 }
 
 export function isValidSchedule(s: string): boolean {
-  try {
-    return cron.validate(normalizeSchedule(s));
-  } catch {
-    return false;
-  }
+  return validateCron(normalizeSchedule(s)) === null;
 }
 
 type CronJobRow = {

@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_type: string
+          agent_id: string | null
+          created_at: string
+          details: Json
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          run_id: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_type?: string
+          agent_id?: string | null
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          run_id?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_type?: string
+          agent_id?: string | null
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          run_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_log_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_log_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "heartbeat_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_activity: {
         Row: {
           created_at: string
@@ -55,6 +112,337 @@ export type Database = {
           },
         ]
       }
+      agent_api_keys: {
+        Row: {
+          agent_id: string
+          created_at: string
+          id: string
+          key_hash: string
+          last_used_at: string | null
+          name: string
+          revoked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          id?: string
+          key_hash: string
+          last_used_at?: string | null
+          name?: string
+          revoked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          id?: string
+          key_hash?: string
+          last_used_at?: string | null
+          name?: string
+          revoked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_api_keys_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_runtime_state: {
+        Row: {
+          agent_id: string
+          id: string
+          last_error: string | null
+          last_run_id: string | null
+          last_run_status: string | null
+          session_id: string | null
+          state_json: Json
+          total_cost_cents: number
+          total_input_tokens: number
+          total_output_tokens: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          id?: string
+          last_error?: string | null
+          last_run_id?: string | null
+          last_run_status?: string | null
+          session_id?: string | null
+          state_json?: Json
+          total_cost_cents?: number
+          total_input_tokens?: number
+          total_output_tokens?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          id?: string
+          last_error?: string | null
+          last_run_id?: string | null
+          last_run_status?: string | null
+          session_id?: string | null
+          state_json?: Json
+          total_cost_cents?: number
+          total_input_tokens?: number
+          total_output_tokens?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_runtime_state_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: true
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_runtime_state_last_run_id_fkey"
+            columns: ["last_run_id"]
+            isOneToOne: false
+            referencedRelation: "heartbeat_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agents: {
+        Row: {
+          adapter_config: Json
+          adapter_type: string
+          budget_monthly_cents: number
+          capabilities: Json
+          color: string
+          created_at: string
+          description: string | null
+          error_reason: string | null
+          icon: string | null
+          id: string
+          last_heartbeat_at: string | null
+          name: string
+          pause_reason: string | null
+          paused_at: string | null
+          permissions: Json
+          reports_to: string | null
+          role: string
+          runtime_config: Json
+          spent_monthly_cents: number
+          status: string
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          adapter_config?: Json
+          adapter_type?: string
+          budget_monthly_cents?: number
+          capabilities?: Json
+          color?: string
+          created_at?: string
+          description?: string | null
+          error_reason?: string | null
+          icon?: string | null
+          id?: string
+          last_heartbeat_at?: string | null
+          name: string
+          pause_reason?: string | null
+          paused_at?: string | null
+          permissions?: Json
+          reports_to?: string | null
+          role?: string
+          runtime_config?: Json
+          spent_monthly_cents?: number
+          status?: string
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          adapter_config?: Json
+          adapter_type?: string
+          budget_monthly_cents?: number
+          capabilities?: Json
+          color?: string
+          created_at?: string
+          description?: string | null
+          error_reason?: string | null
+          icon?: string | null
+          id?: string
+          last_heartbeat_at?: string | null
+          name?: string
+          pause_reason?: string | null
+          paused_at?: string | null
+          permissions?: Json
+          reports_to?: string | null
+          role?: string
+          runtime_config?: Json
+          spent_monthly_cents?: number
+          status?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agents_reports_to_fkey"
+            columns: ["reports_to"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      approvals: {
+        Row: {
+          agent_id: string | null
+          created_at: string
+          decided_at: string | null
+          decision_note: string | null
+          id: string
+          payload: Json
+          status: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decision_note?: string | null
+          id?: string
+          payload?: Json
+          status?: string
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decision_note?: string | null
+          id?: string
+          payload?: Json
+          status?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approvals_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_incidents: {
+        Row: {
+          amount_limit: number
+          amount_observed: number
+          created_at: string
+          id: string
+          policy_id: string
+          status: string
+          threshold_type: string
+          user_id: string
+          window_end: string
+          window_start: string
+        }
+        Insert: {
+          amount_limit: number
+          amount_observed: number
+          created_at?: string
+          id?: string
+          policy_id: string
+          status?: string
+          threshold_type: string
+          user_id: string
+          window_end: string
+          window_start: string
+        }
+        Update: {
+          amount_limit?: number
+          amount_observed?: number
+          created_at?: string
+          id?: string
+          policy_id?: string
+          status?: string
+          threshold_type?: string
+          user_id?: string
+          window_end?: string
+          window_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_incidents_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "budget_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_policies: {
+        Row: {
+          amount: number
+          created_at: string
+          hard_stop_enabled: boolean
+          id: string
+          is_active: boolean
+          metric: string
+          notify_enabled: boolean
+          scope_agent_id: string | null
+          scope_type: string
+          user_id: string
+          warn_percent: number
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          hard_stop_enabled?: boolean
+          id?: string
+          is_active?: boolean
+          metric?: string
+          notify_enabled?: boolean
+          scope_agent_id?: string | null
+          scope_type: string
+          user_id: string
+          warn_percent?: number
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          hard_stop_enabled?: boolean
+          id?: string
+          is_active?: boolean
+          metric?: string
+          notify_enabled?: boolean
+          scope_agent_id?: string | null
+          scope_type?: string
+          user_id?: string
+          warn_percent?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_policies_scope_agent_id_fkey"
+            columns: ["scope_agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connections: {
         Row: {
           account_label: string | null
@@ -87,6 +475,73 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      cost_events: {
+        Row: {
+          agent_id: string | null
+          cached_input_tokens: number
+          cost_cents: number
+          id: string
+          input_tokens: number
+          issue_id: string | null
+          model: string
+          occurred_at: string
+          output_tokens: number
+          provider: string | null
+          run_id: string | null
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          cached_input_tokens?: number
+          cost_cents?: number
+          id?: string
+          input_tokens?: number
+          issue_id?: string | null
+          model: string
+          occurred_at?: string
+          output_tokens?: number
+          provider?: string | null
+          run_id?: string | null
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          cached_input_tokens?: number
+          cost_cents?: number
+          id?: string
+          input_tokens?: number
+          issue_id?: string | null
+          model?: string
+          occurred_at?: string
+          output_tokens?: number
+          provider?: string | null
+          run_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_events_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_events_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_events_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "heartbeat_runs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       cron_jobs: {
         Row: {
@@ -128,6 +583,193 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      heartbeat_runs: {
+        Row: {
+          agent_id: string
+          created_at: string
+          error_code: string | null
+          error_detail: string | null
+          exit_code: number | null
+          finished_at: string | null
+          id: string
+          invocation_source: string
+          issue_id: string | null
+          log_text: string | null
+          result_json: Json
+          started_at: string | null
+          status: string
+          usage_json: Json
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          error_code?: string | null
+          error_detail?: string | null
+          exit_code?: number | null
+          finished_at?: string | null
+          id?: string
+          invocation_source?: string
+          issue_id?: string | null
+          log_text?: string | null
+          result_json?: Json
+          started_at?: string | null
+          status?: string
+          usage_json?: Json
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          error_code?: string | null
+          error_detail?: string | null
+          exit_code?: number | null
+          finished_at?: string | null
+          id?: string
+          invocation_source?: string
+          issue_id?: string | null
+          log_text?: string | null
+          result_json?: Json
+          started_at?: string | null
+          status?: string
+          usage_json?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "heartbeat_runs_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "heartbeat_runs_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issue_comments: {
+        Row: {
+          agent_id: string | null
+          body: string
+          created_at: string
+          id: string
+          issue_id: string
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          issue_id: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          issue_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_comments_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issue_comments_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issues: {
+        Row: {
+          assignee_agent_id: string | null
+          checkout_run_id: string | null
+          created_at: string
+          description: string | null
+          goal_ancestry: Json
+          id: string
+          labels: string[]
+          parent_id: string | null
+          priority: string
+          project_id: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+          work_mode: string
+        }
+        Insert: {
+          assignee_agent_id?: string | null
+          checkout_run_id?: string | null
+          created_at?: string
+          description?: string | null
+          goal_ancestry?: Json
+          id?: string
+          labels?: string[]
+          parent_id?: string | null
+          priority?: string
+          project_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          work_mode?: string
+        }
+        Update: {
+          assignee_agent_id?: string | null
+          checkout_run_id?: string | null
+          created_at?: string
+          description?: string | null
+          goal_ancestry?: Json
+          id?: string
+          labels?: string[]
+          parent_id?: string | null
+          priority?: string
+          project_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          work_mode?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issues_assignee_agent_id_fkey"
+            columns: ["assignee_agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issues_checkout_fk"
+            columns: ["checkout_run_id"]
+            isOneToOne: false
+            referencedRelation: "heartbeat_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issues_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
             referencedColumns: ["id"]
           },
         ]

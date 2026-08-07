@@ -1,0 +1,7 @@
+{
+  "name": "gopls-lsp",
+  "description": "Go language server for Claude Code, providing code intelligence, refactoring, and analysis.",
+  "author": {
+    "name": "Anthropic"
+  }
+}

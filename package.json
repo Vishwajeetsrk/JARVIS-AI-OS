@@ -128,6 +128,7 @@
     "concurrently": "^9.1.2",
     "express": "^5.2.1",
     "nitro": "^3.0.260610-beta",
+    "pg": "^8.22.0",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vite-plugin-pwa": "^1.3.0",

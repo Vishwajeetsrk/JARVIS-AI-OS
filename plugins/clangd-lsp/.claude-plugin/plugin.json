@@ -1,0 +1,7 @@
+{
+  "name": "clangd-lsp",
+  "description": "C/C++ language server (clangd) for Claude Code, providing code intelligence, diagnostics, and formatting.",
+  "author": {
+    "name": "Anthropic"
+  }
+}

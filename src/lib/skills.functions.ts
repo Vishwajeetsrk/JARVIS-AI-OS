@@ -10,6 +10,13 @@ export const listLearnedSkills = createServerFn({ method: "GET" })
     return await listSkills();
   });
 
+export const listShippedSkillCatalog = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const { listShippedSkills } = await import("@/lib/skills-catalog");
+    return await listShippedSkills();
+  });
+
 export const createLearnedSkill = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) =>

@@ -1,0 +1,7 @@
+{
+  "name": "receipts",
+  "description": "Generate a personal Claude Code impact report — 'receipts' — from your own",
+  "author": {
+    "name": "Anthropic"
+  }
+}

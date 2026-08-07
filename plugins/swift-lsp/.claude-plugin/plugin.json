@@ -1,0 +1,7 @@
+{
+  "name": "swift-lsp",
+  "description": "Swift language server (SourceKit-LSP) for Claude Code, providing code intelligence for Swift projects.",
+  "author": {
+    "name": "Anthropic"
+  }
+}

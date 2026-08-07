@@ -1,0 +1,7 @@
+{
+  "name": "ruby-lsp",
+  "description": "Ruby language server for Claude Code, providing code intelligence and analysis.",
+  "author": {
+    "name": "Anthropic"
+  }
+}

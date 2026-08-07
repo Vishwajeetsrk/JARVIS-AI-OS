@@ -1,0 +1,7 @@
+{
+  "name": "lua-lsp",
+  "description": "Lua language server for Claude Code, providing code intelligence and diagnostics.",
+  "author": {
+    "name": "Anthropic"
+  }
+}

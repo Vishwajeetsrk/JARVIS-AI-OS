@@ -1,0 +1,7 @@
+{
+  "name": "jdtls-lsp",
+  "description": "Java language server (Eclipse JDT.LS) for Claude Code, providing code intelligence and refactoring.",
+  "author": {
+    "name": "Anthropic"
+  }
+}

@@ -26,12 +26,18 @@ import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 import { Route as ApiVisionRouteImport } from './routes/api/vision'
 import { Route as AuthenticatedConsoleIndexRouteImport } from './routes/_authenticated/console/index'
 import { Route as AuthenticatedConsoleThreadIdRouteImport } from './routes/_authenticated/console/$threadId'
+import { Route as AuthenticatedConsoleActivityRouteImport } from './routes/_authenticated/console/activity'
+import { Route as AuthenticatedConsoleAgentsRouteImport } from './routes/_authenticated/console/agents'
+import { Route as AuthenticatedConsoleApprovalsRouteImport } from './routes/_authenticated/console/approvals'
 import { Route as AuthenticatedConsoleAutomationsRouteImport } from './routes/_authenticated/console/automations'
 import { Route as AuthenticatedConsoleConnectorsRouteImport } from './routes/_authenticated/console/connectors'
+import { Route as AuthenticatedConsoleCostsRouteImport } from './routes/_authenticated/console/costs'
 import { Route as AuthenticatedConsoleDesignRouteImport } from './routes/_authenticated/console/design'
 import { Route as AuthenticatedConsoleGithubRouteImport } from './routes/_authenticated/console/github'
+import { Route as AuthenticatedConsoleIssuesRouteImport } from './routes/_authenticated/console/issues'
 import { Route as AuthenticatedConsolePluginsRouteImport } from './routes/_authenticated/console/plugins'
 import { Route as AuthenticatedConsoleRoadmapsRouteImport } from './routes/_authenticated/console/roadmaps'
+import { Route as AuthenticatedConsoleRunsRouteImport } from './routes/_authenticated/console/runs'
 import { Route as AuthenticatedConsoleSettingsRouteImport } from './routes/_authenticated/console/settings'
 import { Route as AuthenticatedConsoleSkillsRouteImport } from './routes/_authenticated/console/skills'
 import { Route as AuthenticatedConsoleTemplatesRouteImport } from './routes/_authenticated/console/templates'
@@ -131,6 +137,24 @@ const AuthenticatedConsoleThreadIdRoute =
     path: '/$threadId',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
+const AuthenticatedConsoleActivityRoute =
+  AuthenticatedConsoleActivityRouteImport.update({
+    id: '/activity',
+    path: '/activity',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
+const AuthenticatedConsoleAgentsRoute =
+  AuthenticatedConsoleAgentsRouteImport.update({
+    id: '/agents',
+    path: '/agents',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
+const AuthenticatedConsoleApprovalsRoute =
+  AuthenticatedConsoleApprovalsRouteImport.update({
+    id: '/approvals',
+    path: '/approvals',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
 const AuthenticatedConsoleAutomationsRoute =
   AuthenticatedConsoleAutomationsRouteImport.update({
     id: '/automations',
@@ -141,6 +165,12 @@ const AuthenticatedConsoleConnectorsRoute =
   AuthenticatedConsoleConnectorsRouteImport.update({
     id: '/connectors',
     path: '/connectors',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
+const AuthenticatedConsoleCostsRoute =
+  AuthenticatedConsoleCostsRouteImport.update({
+    id: '/costs',
+    path: '/costs',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
 const AuthenticatedConsoleDesignRoute =
@@ -155,6 +185,12 @@ const AuthenticatedConsoleGithubRoute =
     path: '/github',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
+const AuthenticatedConsoleIssuesRoute =
+  AuthenticatedConsoleIssuesRouteImport.update({
+    id: '/issues',
+    path: '/issues',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
 const AuthenticatedConsolePluginsRoute =
   AuthenticatedConsolePluginsRouteImport.update({
     id: '/plugins',
@@ -165,6 +201,12 @@ const AuthenticatedConsoleRoadmapsRoute =
   AuthenticatedConsoleRoadmapsRouteImport.update({
     id: '/roadmaps',
     path: '/roadmaps',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
+const AuthenticatedConsoleRunsRoute =
+  AuthenticatedConsoleRunsRouteImport.update({
+    id: '/runs',
+    path: '/runs',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
 const AuthenticatedConsoleSettingsRoute =
@@ -254,12 +296,18 @@ export interface FileRoutesByFullPath {
   '/api/transcribe': typeof ApiTranscribeRoute
   '/api/vision': typeof ApiVisionRoute
   '/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
+  '/console/activity': typeof AuthenticatedConsoleActivityRoute
+  '/console/agents': typeof AuthenticatedConsoleAgentsRoute
+  '/console/approvals': typeof AuthenticatedConsoleApprovalsRoute
   '/console/automations': typeof AuthenticatedConsoleAutomationsRoute
   '/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
+  '/console/costs': typeof AuthenticatedConsoleCostsRoute
   '/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/console/github': typeof AuthenticatedConsoleGithubRoute
+  '/console/issues': typeof AuthenticatedConsoleIssuesRoute
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
   '/console/roadmaps': typeof AuthenticatedConsoleRoadmapsRoute
+  '/console/runs': typeof AuthenticatedConsoleRunsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/console/skills': typeof AuthenticatedConsoleSkillsRoute
   '/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
@@ -289,12 +337,18 @@ export interface FileRoutesByTo {
   '/api/transcribe': typeof ApiTranscribeRoute
   '/api/vision': typeof ApiVisionRoute
   '/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
+  '/console/activity': typeof AuthenticatedConsoleActivityRoute
+  '/console/agents': typeof AuthenticatedConsoleAgentsRoute
+  '/console/approvals': typeof AuthenticatedConsoleApprovalsRoute
   '/console/automations': typeof AuthenticatedConsoleAutomationsRoute
   '/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
+  '/console/costs': typeof AuthenticatedConsoleCostsRoute
   '/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/console/github': typeof AuthenticatedConsoleGithubRoute
+  '/console/issues': typeof AuthenticatedConsoleIssuesRoute
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
   '/console/roadmaps': typeof AuthenticatedConsoleRoadmapsRoute
+  '/console/runs': typeof AuthenticatedConsoleRunsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/console/skills': typeof AuthenticatedConsoleSkillsRoute
   '/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
@@ -327,12 +381,18 @@ export interface FileRoutesById {
   '/api/transcribe': typeof ApiTranscribeRoute
   '/api/vision': typeof ApiVisionRoute
   '/_authenticated/console/$threadId': typeof AuthenticatedConsoleThreadIdRoute
+  '/_authenticated/console/activity': typeof AuthenticatedConsoleActivityRoute
+  '/_authenticated/console/agents': typeof AuthenticatedConsoleAgentsRoute
+  '/_authenticated/console/approvals': typeof AuthenticatedConsoleApprovalsRoute
   '/_authenticated/console/automations': typeof AuthenticatedConsoleAutomationsRoute
   '/_authenticated/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
+  '/_authenticated/console/costs': typeof AuthenticatedConsoleCostsRoute
   '/_authenticated/console/design': typeof AuthenticatedConsoleDesignRouteWithChildren
   '/_authenticated/console/github': typeof AuthenticatedConsoleGithubRoute
+  '/_authenticated/console/issues': typeof AuthenticatedConsoleIssuesRoute
   '/_authenticated/console/plugins': typeof AuthenticatedConsolePluginsRoute
   '/_authenticated/console/roadmaps': typeof AuthenticatedConsoleRoadmapsRoute
+  '/_authenticated/console/runs': typeof AuthenticatedConsoleRunsRoute
   '/_authenticated/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/_authenticated/console/skills': typeof AuthenticatedConsoleSkillsRoute
   '/_authenticated/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
@@ -365,12 +425,18 @@ export interface FileRouteTypes {
     | '/api/transcribe'
     | '/api/vision'
     | '/console/$threadId'
+    | '/console/activity'
+    | '/console/agents'
+    | '/console/approvals'
     | '/console/automations'
     | '/console/connectors'
+    | '/console/costs'
     | '/console/design'
     | '/console/github'
+    | '/console/issues'
     | '/console/plugins'
     | '/console/roadmaps'
+    | '/console/runs'
     | '/console/settings'
     | '/console/skills'
     | '/console/templates'
@@ -400,12 +466,18 @@ export interface FileRouteTypes {
     | '/api/transcribe'
     | '/api/vision'
     | '/console/$threadId'
+    | '/console/activity'
+    | '/console/agents'
+    | '/console/approvals'
     | '/console/automations'
     | '/console/connectors'
+    | '/console/costs'
     | '/console/design'
     | '/console/github'
+    | '/console/issues'
     | '/console/plugins'
     | '/console/roadmaps'
+    | '/console/runs'
     | '/console/settings'
     | '/console/skills'
     | '/console/templates'
@@ -437,12 +509,18 @@ export interface FileRouteTypes {
     | '/api/transcribe'
     | '/api/vision'
     | '/_authenticated/console/$threadId'
+    | '/_authenticated/console/activity'
+    | '/_authenticated/console/agents'
+    | '/_authenticated/console/approvals'
     | '/_authenticated/console/automations'
     | '/_authenticated/console/connectors'
+    | '/_authenticated/console/costs'
     | '/_authenticated/console/design'
     | '/_authenticated/console/github'
+    | '/_authenticated/console/issues'
     | '/_authenticated/console/plugins'
     | '/_authenticated/console/roadmaps'
+    | '/_authenticated/console/runs'
     | '/_authenticated/console/settings'
     | '/_authenticated/console/skills'
     | '/_authenticated/console/templates'
@@ -598,6 +676,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsoleThreadIdRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
+    '/_authenticated/console/activity': {
+      id: '/_authenticated/console/activity'
+      path: '/activity'
+      fullPath: '/console/activity'
+      preLoaderRoute: typeof AuthenticatedConsoleActivityRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
+    '/_authenticated/console/agents': {
+      id: '/_authenticated/console/agents'
+      path: '/agents'
+      fullPath: '/console/agents'
+      preLoaderRoute: typeof AuthenticatedConsoleAgentsRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
+    '/_authenticated/console/approvals': {
+      id: '/_authenticated/console/approvals'
+      path: '/approvals'
+      fullPath: '/console/approvals'
+      preLoaderRoute: typeof AuthenticatedConsoleApprovalsRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
     '/_authenticated/console/automations': {
       id: '/_authenticated/console/automations'
       path: '/automations'
@@ -610,6 +709,13 @@ declare module '@tanstack/react-router' {
       path: '/connectors'
       fullPath: '/console/connectors'
       preLoaderRoute: typeof AuthenticatedConsoleConnectorsRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
+    '/_authenticated/console/costs': {
+      id: '/_authenticated/console/costs'
+      path: '/costs'
+      fullPath: '/console/costs'
+      preLoaderRoute: typeof AuthenticatedConsoleCostsRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
     '/_authenticated/console/design': {
@@ -626,6 +732,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsoleGithubRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
+    '/_authenticated/console/issues': {
+      id: '/_authenticated/console/issues'
+      path: '/issues'
+      fullPath: '/console/issues'
+      preLoaderRoute: typeof AuthenticatedConsoleIssuesRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
     '/_authenticated/console/plugins': {
       id: '/_authenticated/console/plugins'
       path: '/plugins'
@@ -638,6 +751,13 @@ declare module '@tanstack/react-router' {
       path: '/roadmaps'
       fullPath: '/console/roadmaps'
       preLoaderRoute: typeof AuthenticatedConsoleRoadmapsRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
+    '/_authenticated/console/runs': {
+      id: '/_authenticated/console/runs'
+      path: '/runs'
+      fullPath: '/console/runs'
+      preLoaderRoute: typeof AuthenticatedConsoleRunsRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
     '/_authenticated/console/settings': {
@@ -759,12 +879,18 @@ const AuthenticatedConsoleTemplatesRouteWithChildren =
 
 interface AuthenticatedConsoleRouteChildren {
   AuthenticatedConsoleThreadIdRoute: typeof AuthenticatedConsoleThreadIdRoute
+  AuthenticatedConsoleActivityRoute: typeof AuthenticatedConsoleActivityRoute
+  AuthenticatedConsoleAgentsRoute: typeof AuthenticatedConsoleAgentsRoute
+  AuthenticatedConsoleApprovalsRoute: typeof AuthenticatedConsoleApprovalsRoute
   AuthenticatedConsoleAutomationsRoute: typeof AuthenticatedConsoleAutomationsRoute
   AuthenticatedConsoleConnectorsRoute: typeof AuthenticatedConsoleConnectorsRoute
+  AuthenticatedConsoleCostsRoute: typeof AuthenticatedConsoleCostsRoute
   AuthenticatedConsoleDesignRoute: typeof AuthenticatedConsoleDesignRouteWithChildren
   AuthenticatedConsoleGithubRoute: typeof AuthenticatedConsoleGithubRoute
+  AuthenticatedConsoleIssuesRoute: typeof AuthenticatedConsoleIssuesRoute
   AuthenticatedConsolePluginsRoute: typeof AuthenticatedConsolePluginsRoute
   AuthenticatedConsoleRoadmapsRoute: typeof AuthenticatedConsoleRoadmapsRoute
+  AuthenticatedConsoleRunsRoute: typeof AuthenticatedConsoleRunsRoute
   AuthenticatedConsoleSettingsRoute: typeof AuthenticatedConsoleSettingsRoute
   AuthenticatedConsoleSkillsRoute: typeof AuthenticatedConsoleSkillsRoute
   AuthenticatedConsoleTemplatesRoute: typeof AuthenticatedConsoleTemplatesRouteWithChildren
@@ -775,12 +901,18 @@ interface AuthenticatedConsoleRouteChildren {
 
 const AuthenticatedConsoleRouteChildren: AuthenticatedConsoleRouteChildren = {
   AuthenticatedConsoleThreadIdRoute: AuthenticatedConsoleThreadIdRoute,
+  AuthenticatedConsoleActivityRoute: AuthenticatedConsoleActivityRoute,
+  AuthenticatedConsoleAgentsRoute: AuthenticatedConsoleAgentsRoute,
+  AuthenticatedConsoleApprovalsRoute: AuthenticatedConsoleApprovalsRoute,
   AuthenticatedConsoleAutomationsRoute: AuthenticatedConsoleAutomationsRoute,
   AuthenticatedConsoleConnectorsRoute: AuthenticatedConsoleConnectorsRoute,
+  AuthenticatedConsoleCostsRoute: AuthenticatedConsoleCostsRoute,
   AuthenticatedConsoleDesignRoute: AuthenticatedConsoleDesignRouteWithChildren,
   AuthenticatedConsoleGithubRoute: AuthenticatedConsoleGithubRoute,
+  AuthenticatedConsoleIssuesRoute: AuthenticatedConsoleIssuesRoute,
   AuthenticatedConsolePluginsRoute: AuthenticatedConsolePluginsRoute,
   AuthenticatedConsoleRoadmapsRoute: AuthenticatedConsoleRoadmapsRoute,
+  AuthenticatedConsoleRunsRoute: AuthenticatedConsoleRunsRoute,
   AuthenticatedConsoleSettingsRoute: AuthenticatedConsoleSettingsRoute,
   AuthenticatedConsoleSkillsRoute: AuthenticatedConsoleSkillsRoute,
   AuthenticatedConsoleTemplatesRoute:

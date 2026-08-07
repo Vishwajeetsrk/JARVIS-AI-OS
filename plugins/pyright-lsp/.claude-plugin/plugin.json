@@ -1,0 +1,7 @@
+{
+  "name": "pyright-lsp",
+  "description": "Python language server (Pyright) for Claude Code, providing static type checking and code intelligence.",
+  "author": {
+    "name": "Anthropic"
+  }
+}

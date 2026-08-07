@@ -1,0 +1,7 @@
+{
+  "name": "rust-analyzer-lsp",
+  "description": "Rust language server for Claude Code, providing code intelligence and analysis.",
+  "author": {
+    "name": "Anthropic"
+  }
+}

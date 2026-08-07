@@ -1,0 +1,7 @@
+{
+  "name": "typescript-lsp",
+  "description": "TypeScript/JavaScript language server for Claude Code, providing code intelligence features like go-to-definition, find references, and error checking.",
+  "author": {
+    "name": "Anthropic"
+  }
+}

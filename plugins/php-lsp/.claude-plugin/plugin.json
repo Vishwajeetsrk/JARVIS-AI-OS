@@ -1,0 +1,7 @@
+{
+  "name": "php-lsp",
+  "description": "PHP language server (Intelephense) for Claude Code, providing code intelligence and diagnostics.",
+  "author": {
+    "name": "Anthropic"
+  }
+}
