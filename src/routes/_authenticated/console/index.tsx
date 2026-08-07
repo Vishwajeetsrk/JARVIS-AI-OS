@@ -16,7 +16,7 @@ import { StatCards, type DashboardStats } from "@/components/dashboard/stat-card
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { NewsPanel } from "@/components/dashboard/news-panel";
 import { ProjectCards } from "@/components/dashboard/project-cards";
-import { getDashboardStats } from "@/lib/dashboard.functions";
+import { getDashboardStats, getEngineStatus } from "@/lib/dashboard.functions";
 import { createThread } from "@/lib/threads.functions";
 import { toast } from "sonner";
 
@@ -95,19 +95,19 @@ const QUICK_ACTIONS = [
   },
 ];
 
-// Jarvis engine status (static mock — daemon integration)
+// Jarvis engine status — live from the server (DB probe + provider envs)
 const ENGINE_STATUS = [
-  { label: "Mastra TS Engine", status: "online", value: "v1.0.0" },
-  { label: "Gemini Flash", status: "online", value: "free tier" },
-  { label: "Groq Llama 3.3", status: "online", value: "1K/day free" },
-  { label: "Memory Store", status: "online", value: "Supabase pgvector" },
-  { label: "Supabase DB", status: "online", value: "tupgfxqkefgntrpgakxk" },
+  { label: "Supabase DB", key: "database" },
+  { label: "AI Model Gateway", key: "modelProvider" },
+  { label: "Voice (Whisper + TTS)", key: "voice" },
+  { label: "Realtime WebSockets", key: "websockets" },
 ];
 
 function ConsoleDashboard() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const statsFn = useServerFn(getDashboardStats);
+  const engineFn = useServerFn(getEngineStatus);
   const createFn = useServerFn(createThread);
 
   const { data: stats } = useQuery({
@@ -116,6 +116,15 @@ function ConsoleDashboard() {
     staleTime: 15_000,
     refetchInterval: 30_000,
   });
+
+  const { data: engine } = useQuery({
+    queryKey: ["engineStatus"],
+    queryFn: () => engineFn({}),
+    staleTime: 20_000,
+    refetchInterval: 60_000,
+  });
+
+  const allOnline = engine ? Object.entries(engine).every(([k, v]) => k === "checkedAt" || v === "online") : false;
   const [userLabel, setUserLabel] = useState("Vishwajeet");
   const [now, setNow] = useState(new Date());
 
@@ -153,11 +162,11 @@ function ConsoleDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="hidden items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-muted-foreground sm:flex">
-              <JarvisStar className="h-3.5 w-3.5 text-primary" />
-              System ready
+            <div className={`hidden items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider sm:flex ${allOnline ? "border-sage/30 bg-sage/10 text-sage" : "border-amber-400/30 bg-amber-400/10 text-amber-500"}`}>
+              <JarvisStar className={`h-3.5 w-3.5 ${allOnline ? "text-sage" : "text-amber-500"}`} />
+              {allOnline ? "System ready" : "System degraded"}
             </div>
-            <StatusBadge status="ready" />
+            <StatusBadge status={allOnline ? "ready" : "needs-input"} />
           </div>
         </header>
 
@@ -218,15 +227,21 @@ function ConsoleDashboard() {
                 <Bot className="h-3.5 w-3.5 text-primary" /> Engine Status
               </h2>
               <div className="space-y-2">
-                {ENGINE_STATUS.map((e) => (
-                  <div key={e.label} className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-sage" />
-                      <span className="text-muted-foreground">{e.label}</span>
+                {ENGINE_STATUS.map((e) => {
+                  const state = engine?.[e.key as keyof typeof engine] ?? "offline";
+                  const online = state === "online";
+                  return (
+                    <div key={e.label} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className={`h-1.5 w-1.5 rounded-full ${online ? "bg-sage" : "bg-red-500 animate-pulse"}`} />
+                        <span className="text-muted-foreground">{e.label}</span>
+                      </div>
+                      <span className={`font-mono text-[10px] uppercase ${online ? "text-sage" : "text-red-500"}`}>
+                        {online ? "online" : "offline"}
+                      </span>
                     </div>
-                    <span className="font-mono text-[10px] text-muted-foreground/60">{e.value}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
 

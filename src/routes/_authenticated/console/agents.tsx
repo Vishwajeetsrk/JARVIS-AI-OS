@@ -66,6 +66,7 @@ function AgentsPage() {
       inv();
       toast.success("Crew member updated.");
     },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to update agent"),
   });
 
   const mDelete = useMutation({
@@ -87,7 +88,7 @@ function AgentsPage() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Run failed"),
   });
 
-  const runningId = mRun.variables ?? null;
+  const runningId = mRun.isPending ? (mRun.variables ?? null) : null;
 
   return (
     <div className="h-full overflow-y-auto">

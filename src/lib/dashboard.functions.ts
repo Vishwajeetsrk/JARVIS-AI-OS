@@ -65,6 +65,46 @@ export interface ActivityRow {
   created_at: string;
 }
 
+export interface EngineStatus {
+  database: "online" | "offline";
+  modelProvider: "online" | "offline";
+  voice: "online" | "offline";
+  websockets: "online" | "offline";
+  checkedAt: string;
+}
+
+export const getEngineStatus = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase } = context;
+
+    let database = false;
+    if (supabase !== null) {
+      try {
+        const { error } = await supabase
+          .from("agent_activity")
+          .select("id", { count: "exact", head: true })
+          .limit(1);
+        database = !error;
+      } catch {
+        database = false;
+      }
+    }
+
+    const modelProvider = Boolean(
+      process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GROQ_API_KEY,
+    );
+    const voice = Boolean(process.env.GROQ_API_KEY);
+
+    return {
+      database: database ? "online" : "offline",
+      modelProvider: modelProvider ? "online" : "offline",
+      voice: voice ? "online" : "offline",
+      websockets: "online",
+      checkedAt: new Date().toISOString(),
+    } satisfies EngineStatus;
+  });
+
 export const listActivity = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) =>

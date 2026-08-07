@@ -9,6 +9,12 @@ import type {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rawFiles = import.meta.glob("../../data/**/*", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
 
+// Built static project sites (Projects/ -> public/preset-sites) bundled the same
+// way, so the 22 live sites can be browsed, previewed, and remixed alongside the
+// token design systems.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const siteHtml = import.meta.glob("../../public/preset-sites/*/index.html", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
+
 // import.meta.glob keys are relative to this file: "../../data/<system>/<file>"
 function readFileSafe(id: string, rel: string): string {
   const key = `../../data/${id}/${rel}`;
@@ -116,4 +122,75 @@ export function getDesignSystem(id: string): DesignSystemDetail | null {
   } catch {
     return null;
   }
+}
+
+// -------- Project sites (live static sites served from /preset-sites/<name>/) --------
+
+export interface ProjectSiteDetail extends DesignSystemSummary {
+  kind: "site";
+  previewUrl: string;
+  source: string;
+}
+
+function siteIdFromKey(key: string): string | null {
+  const m = key.match(/^\.\.\/\.\.\/public\/preset-sites\/([^/]+)\/index\.html$/);
+  if (!m || m[1] === "_shared") return null;
+  return m[1];
+}
+
+function siteMeta(html: string, name: string): { title: string; description: string } {
+  const title = html.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim() ?? name;
+  const description =
+    html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1] ??
+    html.match(/<meta\s+name="og:description"\s+content="([^"]*)"/i)?.[1] ??
+    `Live static site for ${name}, built from its project source and served as a ready-to-remix page.`;
+  return { title, description };
+}
+
+function siteCounts(html: string): { tokens: number; components: number } {
+  const tokens = (html.match(/--[\w-]+/g) ?? []).length;
+  const components = (html.match(/<section[\s>]/g) ?? []).length;
+  return { tokens, components };
+}
+
+export function listProjectSites(): DesignSystemSummary[] {
+  const sites: DesignSystemSummary[] = [];
+  for (const key of Object.keys(siteHtml)) {
+    const name = siteIdFromKey(key);
+    if (!name) continue;
+    const html = siteHtml[key] ?? "";
+    const { title, description } = siteMeta(html, name);
+    const { tokens, components } = siteCounts(html);
+    sites.push({
+      id: `site-${name}`,
+      name: title,
+      category: "Project Sites",
+      description,
+      tokenCount: tokens,
+      componentCount: components,
+      kind: "site",
+      previewUrl: `/preset-sites/${name}/`,
+    });
+  }
+  return sites.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export function getProjectSite(id: string): ProjectSiteDetail | null {
+  const name = id.replace(/^site-/, "");
+  const key = `../../public/preset-sites/${name}/index.html`;
+  const html = siteHtml[key];
+  if (!html) return null;
+  const { title, description } = siteMeta(html, name);
+  const { tokens, components } = siteCounts(html);
+  return {
+    id: `site-${name}`,
+    name: title,
+    category: "Project Sites",
+    description,
+    tokenCount: tokens,
+    componentCount: components,
+    kind: "site",
+    previewUrl: `/preset-sites/${name}/`,
+    source: html,
+  };
 }

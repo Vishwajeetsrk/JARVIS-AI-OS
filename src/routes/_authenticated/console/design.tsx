@@ -46,6 +46,7 @@ const CATEGORY_ACCENT: Record<string, string> = {
   "Dark & Edgy": "#71717a",
   "Retro & Vintage": "#fb923c",
   "Playful & Colorful": "#f43f5e",
+  "Project Sites": "#2dd4bf",
 };
 
 function DesignSystemsPage() {
@@ -129,17 +130,31 @@ function DesignSystemsPage() {
                   params={{ systemId: system.id }}
                   className="group flex flex-col rounded-xl border border-border bg-card overflow-hidden transition-all hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-lg"
                 >
-                  {/* Color preview strip */}
-                  <div className={`h-16 bg-gradient-to-br ${gradientClass} relative overflow-hidden flex items-center justify-center`}>
-                    <LayoutDashboard
-                      className="h-6 w-6 opacity-20"
-                      style={{ color: accent }}
-                    />
-                    <div
-                      className="absolute bottom-0 right-0 h-8 w-8 rounded-tl-full opacity-30"
-                      style={{ background: accent }}
-                    />
-                  </div>
+                  {system.kind === "site" && system.previewUrl ? (
+                    <div className="h-32 overflow-hidden relative bg-background border-b border-border">
+                      <iframe
+                        src={system.previewUrl}
+                        title={`${system.name} live preview`}
+                        loading="lazy"
+                        className="pointer-events-none w-full h-full scale-[0.55] origin-top-left border-0"
+                        sandbox="allow-scripts allow-same-origin"
+                      />
+                      <span className="absolute top-2 right-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[10px] font-semibold text-white">
+                        ● Live
+                      </span>
+                    </div>
+                  ) : (
+                    <div className={`h-16 bg-gradient-to-br ${gradientClass} relative overflow-hidden flex items-center justify-center`}>
+                      <LayoutDashboard
+                        className="h-6 w-6 opacity-20"
+                        style={{ color: accent }}
+                      />
+                      <div
+                        className="absolute bottom-0 right-0 h-8 w-8 rounded-tl-full opacity-30"
+                        style={{ background: accent }}
+                      />
+                    </div>
+                  )}
 
                   <div className="p-4 flex-1 flex flex-col">
                     <div className="flex items-start justify-between gap-2 mb-1">
@@ -155,10 +170,14 @@ function DesignSystemsPage() {
                       >
                         {system.category}
                       </span>
-                      <div className="flex gap-2 text-[10px] text-muted-foreground/60 font-mono">
-                        <span>{system.tokenCount}t</span>
-                        <span>{system.componentCount}c</span>
-                      </div>
+                      {system.kind === "site" ? (
+                        <span className="text-[10px] text-muted-foreground/60 font-mono">Live site</span>
+                      ) : (
+                        <div className="flex gap-2 text-[10px] text-muted-foreground/60 font-mono">
+                          <span>{system.tokenCount}t</span>
+                          <span>{system.componentCount}c</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Link>

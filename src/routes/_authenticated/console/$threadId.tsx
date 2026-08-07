@@ -27,13 +27,64 @@ import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Paperclip, X, FileText, Sparkles, Cable, Globe } from "lucide-react";
+import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink } from "lucide-react";
 import { z } from "zod";
+import { VoiceButton } from "@/components/dashboard/voice-button";
 
 export const Route = createFileRoute("/_authenticated/console/$threadId")({
   validateSearch: (s) => z.object({ seed: z.string().optional() }).parse(s),
   component: ThreadView,
 });
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function ToolPartView({ part }: { part: any }) {
+  const [resolved, setResolved] = useState<{
+    kind: "download" | "action";
+    label: string;
+    url?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (part?.state !== "output-available" || !part?.output) return;
+    const out = part.output;
+    if (out?.downloadUrl) {
+      setResolved({
+        kind: "download",
+        label: out.filename ?? "Download file",
+        url: out.downloadUrl,
+      });
+      return;
+    }
+    if (out?.__jarvis_action__) {
+      const a = out.__jarvis_action__;
+      if (a?.type === "openUrl" && a?.url) {
+        window.open(a.url, "_blank", "noopener");
+      }
+      setResolved({ kind: "action", label: out.message ?? "Action executed." });
+    }
+  }, [part?.state, part?.output]);
+
+  if (!resolved) return null;
+  if (resolved.kind === "action") {
+    return (
+      <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-2.5 py-1 text-xs text-foreground">
+        <ExternalLink className="h-3.5 w-3.5 text-primary" />
+        {resolved.label}
+      </div>
+    );
+  }
+  return (
+    <a
+      href={resolved.url}
+      download={resolved.label}
+      className="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-primary/20"
+    >
+      <Download className="h-3.5 w-3.5 text-primary" />
+      {resolved.label}
+      <span className="rounded-full bg-primary/20 px-1.5 py-0.5 text-[10px] font-mono text-primary">download</span>
+    </a>
+  );
+}
 
 function AttachmentStrip() {
   const attach = usePromptInputAttachments();
@@ -93,9 +144,13 @@ function ThreadView() {
           }
           return fetch(url, { ...init, headers });
         },
-        body: () => ({ model, threadId }),
+        body: () => ({
+          model,
+          threadId,
+          enabledSkills: (settings?.enabled_skills as string[] | undefined) ?? [],
+        }),
       }),
-    [model, threadId],
+    [model, threadId, settings?.enabled_skills],
   );
 
   const { messages, sendMessage, status, setMessages } = useChat({
@@ -211,6 +266,9 @@ function ThreadView() {
                         </div>
                       );
                     }
+                    if (p.type.startsWith("tool-")) {
+                      return <ToolPartView key={i} part={p} />;
+                    }
                     return null;
                   })}
                 </MessageContent>
@@ -238,6 +296,7 @@ function ThreadView() {
                 <Paperclip className="h-4 w-4" />
                 <span className="hidden sm:inline">Attach</span>
               </PromptInputActionAddAttachments>
+              <VoiceButton onTranscribed={(t) => t && handleSubmit({ text: t, files: [] })} />
               <ComposerChips />
             </PromptInputTools>
             <PromptInputSubmit status={status} />

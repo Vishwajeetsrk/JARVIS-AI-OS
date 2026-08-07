@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getBudgetSummary, listCostEvents, createBudgetPolicy, resolveBudgetIncident } from "@/lib/agents.functions";
+import { getBudgetSummary, listCostEvents, createBudgetPolicy, resolveBudgetIncident, listAgents } from "@/lib/agents.functions";
 import { PageHeader } from "@/components/jarvis/catalog-grid";
 import { useState } from "react";
 import { CircleDollarSign, Plus, ShieldAlert, CheckCircle2, X, AlertTriangle } from "lucide-react";
@@ -22,6 +22,7 @@ function CostsPage() {
   const costsFn = useServerFn(listCostEvents);
   const createPolicyFn = useServerFn(createBudgetPolicy);
   const resolveFn = useServerFn(resolveBudgetIncident);
+  const agentsFn = useServerFn(listAgents);
 
   const { data: summary } = useQuery({ queryKey: ["budget-summary"], queryFn: () => summaryFn() });
   const { data: events = [] } = useQuery({
@@ -29,9 +30,10 @@ function CostsPage() {
     queryFn: () => costsFn(),
     refetchInterval: 20000,
   });
+  const { data: agents = [] } = useQuery({ queryKey: ["agents-for-policy"], queryFn: () => agentsFn() });
 
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ scope: "user", amount: "1000", warn: "80" });
+  const [form, setForm] = useState({ scope: "user", amount: "1000", warn: "80", agentId: "" });
 
   const mPolicy = useMutation({
     mutationFn: () =>
@@ -40,6 +42,7 @@ function CostsPage() {
           scope_type: form.scope as "user" | "agent",
           amount: parseInt(form.amount, 10) || 1000,
           warn_percent: parseInt(form.warn, 10) || 80,
+          scope_agent_id: form.scope === "agent" && form.agentId ? form.agentId : null,
         },
       }),
     onSuccess: () => {
@@ -47,11 +50,17 @@ function CostsPage() {
       setShowForm(false);
       toast.success("Budget policy created.");
     },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to create policy"),
   });
 
   const mResolve = useMutation({
-    mutationFn: (v: { id: string; status: "resolved" | "dismissed" }) => resolveFn({ data: v }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["budget-summary"] }),
+    mutationFn: (v: { id: string; status: "resolved" | "dismissed" }) =>
+      resolveFn({ data: { incident_id: v.id, status: v.status } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["budget-summary"] });
+      toast.success("Incident updated.");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to update incident"),
   });
 
   const total = summary?.total_cost_cents ?? 0;
@@ -147,9 +156,26 @@ function CostsPage() {
                   className="mt-1 block rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary"
                 >
                   <option value="user">Whole account</option>
-                  <option value="agent">Per agent (uses first agent)</option>
+                  <option value="agent">Per agent</option>
                 </select>
               </label>
+              {form.scope === "agent" && (
+                <label className="text-xs text-muted-foreground">
+                  Agent
+                  <select
+                    value={form.agentId}
+                    onChange={(e) => setForm({ ...form, agentId: e.target.value })}
+                    className="mt-1 block max-w-[200px] rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary"
+                  >
+                    <option value="">Select agent…</option>
+                    {(agents as any[]).map((a) => (
+                      <option key={a.id} value={a.id}>
+                        {a.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
               <label className="text-xs text-muted-foreground">
                 Monthly limit (¢)
                 <input

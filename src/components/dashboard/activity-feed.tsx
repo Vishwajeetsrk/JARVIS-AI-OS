@@ -27,37 +27,10 @@ function iconFor(kind: string) {
   return KIND_ICON[kind as keyof typeof KIND_ICON] ?? KIND_ICON.default;
 }
 
-const INITIAL_SEED_ACTIVITY: FeedItem[] = [
-  {
-    id: "seed-1",
-    thread_id: null,
-    kind: "bot",
-    title: "Mastra TS Engine v1.0.0 Online",
-    detail: "32 specialized agent skills and 10 MCP server connectors initialized.",
-    created_at: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "seed-2",
-    thread_id: null,
-    kind: "tool",
-    title: "31 Design Systems Loaded",
-    detail: "Tokens & components indexed for Apple, Claude, Arc, Linear, Vercel & Stripe.",
-    created_at: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "seed-3",
-    thread_id: null,
-    kind: "default",
-    title: "AI Gateway Connected",
-    detail: "Gemini 2.5 Flash & Groq Llama 3.3 70B active with zero cost limits.",
-    created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
-  },
-];
-
 export function ActivityFeed() {
   const listFn = useServerFn(listActivity);
   const fallbackFn = useServerFn(listMessages);
-  const [items, setItems] = useState<FeedItem[]>(INITIAL_SEED_ACTIVITY);
+  const [items, setItems] = useState<FeedItem[]>([]);
 
   const { data: initial } = useQuery({
     queryKey: ["activity"],
@@ -129,29 +102,41 @@ export function ActivityFeed() {
 
   return (
     <div className="flex flex-col">
-      <ul className="space-y-1">
-        {items.map((item) => {
-          const Icon = iconFor(item.kind);
-          return (
-            <li key={item.id} className="group flex gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface/70">
-              <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground">
-                <Icon className="h-3.5 w-3.5 text-primary" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline justify-between gap-2">
-                  <p className="truncate text-xs font-medium text-foreground">{item.title}</p>
-                  <time className="shrink-0 font-mono text-[10px] uppercase text-muted-foreground/60">
-                    {formatDistanceToNowStrict(new Date(item.created_at), { addSuffix: true })}
-                  </time>
+      {items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 text-center">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface/60">
+            <Sparkles className="h-4 w-4 text-muted-foreground" />
+          </span>
+          <p className="text-xs font-medium text-muted-foreground">No activity yet</p>
+          <p className="max-w-[220px] text-[11px] leading-relaxed text-muted-foreground/60">
+            Ask Jarvis something — every agent run, tool call and reply will stream in here live.
+          </p>
+        </div>
+      ) : (
+        <ul className="space-y-1">
+          {items.map((item) => {
+            const Icon = iconFor(item.kind);
+            return (
+              <li key={item.id} className="group flex gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface/70">
+                <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground">
+                  <Icon className="h-3.5 w-3.5 text-primary" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className="truncate text-xs font-medium text-foreground">{item.title}</p>
+                    <time className="shrink-0 font-mono text-[10px] uppercase text-muted-foreground/60">
+                      {formatDistanceToNowStrict(new Date(item.created_at), { addSuffix: true })}
+                    </time>
+                  </div>
+                  {item.detail ? (
+                    <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{item.detail}</p>
+                  ) : null}
                 </div>
-                {item.detail ? (
-                  <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{item.detail}</p>
-                ) : null}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

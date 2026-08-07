@@ -24,9 +24,12 @@ export interface DesignSystemSummary {
   description: string;
   tokenCount: number;
   componentCount: number;
+  kind?: "system" | "site";
+  previewUrl?: string;
 }
 
 export interface DesignSystemDetail extends DesignSystemSummary {
+  kind?: "system";
   manifest: DesignSystemManifest;
   tokens: string;
   designTokens: Record<string, unknown>;
