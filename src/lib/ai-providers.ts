@@ -131,6 +131,9 @@ function remapGemini(id: string): string {
   const FAST = "gemini-flash-latest";
   if (id === "gemini-2.5-pro" || id === "gemini-1.5-pro") return PRO;
   if (id === "gemini-2.5-flash" || id === "gemini-2.0-flash" || id === "gemini-1.5-flash") return FAST;
+  // Unknown/mistyped gemini ids (e.g. "gemini-flash") would 404 on the API —
+  // pin them to the current fast model instead.
+  if (!GEMINI_IDS.has(id)) return FAST;
   return id;
 }
 
