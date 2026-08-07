@@ -19,6 +19,9 @@ import {
   PromptInputFooter,
   PromptInputSubmit,
   PromptInputTools,
+  PromptInputActionMenu,
+  PromptInputActionMenuTrigger,
+  PromptInputActionMenuContent,
   PromptInputActionAddAttachments,
   usePromptInputAttachments,
 } from "@/components/ai-elements/prompt-input";
@@ -292,10 +295,15 @@ function ThreadView() {
           <PromptInputTextarea placeholder="Ask Jarvis…" autoFocus />
           <PromptInputFooter>
             <PromptInputTools className="flex-wrap gap-1.5">
-              <PromptInputActionAddAttachments>
-                <Paperclip className="h-4 w-4" />
-                <span className="hidden sm:inline">Attach</span>
-              </PromptInputActionAddAttachments>
+              <PromptInputActionMenu>
+                <PromptInputActionMenuTrigger tooltip="Add photos or files">
+                  <Paperclip className="h-4 w-4" />
+                  <span className="hidden sm:inline">Attach</span>
+                </PromptInputActionMenuTrigger>
+                <PromptInputActionMenuContent>
+                  <PromptInputActionAddAttachments label="Add photos or files" />
+                </PromptInputActionMenuContent>
+              </PromptInputActionMenu>
               <VoiceButton onTranscribed={(t) => t && handleSubmit({ text: t, files: [] })} />
               <ComposerChips />
             </PromptInputTools>
