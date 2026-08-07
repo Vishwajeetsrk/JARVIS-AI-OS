@@ -78,7 +78,7 @@ const ACTIVITY_FEED = [
   { agent: "realtime", action: "WebSocket channels pushing activity to the console", time: "just now", status: "ready" },
 ];
 
-// Animated counter hook
+// Animated counter hook — snap settle to final value
 function useCountUp(target: number, duration = 1500) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -92,7 +92,8 @@ function useCountUp(target: number, duration = 1500) {
         const tick = () => {
           const elapsed = Date.now() - start;
           const progress = Math.min(elapsed / duration, 1);
-          setCount(Math.floor(progress * target));
+          const eased = 1 - Math.pow(1 - progress, 4);
+          setCount(Math.floor(eased * target));
           if (progress < 1) requestAnimationFrame(tick);
         };
         requestAnimationFrame(tick);
@@ -109,7 +110,7 @@ function StatCard({ value, label, suffix }: { value: number; label: string; suff
   const { count, ref } = useCountUp(value);
   return (
     <div ref={ref} className="text-center">
-      <div className="font-display text-4xl font-semibold text-foreground md:text-5xl">
+      <div className="stat-in font-display text-4xl font-semibold text-foreground md:text-5xl">
         {count}{suffix}
       </div>
       <div className="mt-1 text-sm text-muted-foreground">{label}</div>
@@ -185,18 +186,18 @@ function LandingPage() {
           </p>
 
           <div className="reveal flex flex-wrap items-center justify-center gap-3">
-            <Link to="/console" className="btn-hero inline-flex items-center gap-2">
-              Open Jarvis Console <span aria-hidden>→</span>
+            <Link to="/console" className="btn-hero group inline-flex items-center gap-2">
+              Open Jarvis Console <span aria-hidden className="arrow-slide">→</span>
             </Link>
             <Link
               to="/auth"
-              className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+              className="snap-colors inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-5 py-3 text-sm font-medium text-primary hover:bg-primary/10"
             >
               <Sparkles className="h-4 w-4" /> Try as Guest
             </Link>
             <Link
               to="/how-it-works"
-              className="rounded-md border border-border bg-card px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+              className="snap-colors rounded-md border border-border bg-card px-5 py-3 text-sm font-medium text-foreground hover:bg-surface"
             >
               How it works
             </Link>
@@ -232,7 +233,7 @@ function LandingPage() {
             </div>
 
             {/* Interactive Preview Container */}
-            <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-elevated)] transition-all">
+            <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-elevated)] transition-all">
               {activeState === "desktop" && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between border-b border-border pb-3 text-xs font-mono">
@@ -246,7 +247,7 @@ function LandingPage() {
                   <img
                     src={heroImg}
                     alt="Jarvis desktop console view"
-                    className="w-full rounded-lg border border-border"
+                    className="w-full rounded-lg border border-border transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                   />
                 </div>
               )}
@@ -319,7 +320,7 @@ function LandingPage() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="rounded-xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
+              className="hover-card rounded-xl border border-border bg-card p-6"
             >
               <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                 <f.icon className="h-5 w-5 text-primary" />
@@ -349,7 +350,7 @@ function LandingPage() {
                 : item.agent === "voice" ? (health?.voice ?? "online")
                 : "online";
               return (
-                <div key={i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-surface/50 transition-colors">
+                <div key={i} className="snap-colors flex items-center gap-4 px-5 py-3.5 hover:bg-surface/50">
                   <span className={`h-2 w-2 rounded-full shrink-0 ${liveState === "online" ? "bg-sage" : "bg-red-500 animate-pulse"}`} />
                   <code className="font-mono text-xs text-primary shrink-0 w-28">{item.agent}</code>
                   <span className="text-sm text-foreground flex-1">{item.action}</span>
@@ -357,7 +358,7 @@ function LandingPage() {
                 </div>
               );
             })}
-            <div className="px-5 py-3 text-xs text-center text-muted-foreground">
+            <div className={`px-5 py-3 text-xs text-center text-muted-foreground ${allOnline === null ? "scan-sweep" : ""}`}>
               {allOnline === null ? (
                 "Probing live status…"
               ) : allOnline ? (
@@ -378,7 +379,7 @@ function LandingPage() {
         </div>
         <div className="grid gap-4 md:grid-cols-5">
           {SURFACES.map((s) => (
-            <div key={s.title} className="rounded-xl border border-border bg-card p-5 text-left transition-all hover:border-primary/50 hover:-translate-y-1">
+            <div key={s.title} className="hover-card rounded-xl border border-border bg-card p-5 text-left">
               <s.icon className="h-6 w-6 text-primary mb-3" />
               <div className="font-display text-lg font-semibold">{s.title}</div>
               <div className="mt-1 font-mono text-[11px] text-muted-foreground">{s.sub}</div>
@@ -395,8 +396,8 @@ function LandingPage() {
               <div className="text-mono-xs text-muted-foreground mb-1">Agent Roster</div>
               <h2 className="font-display text-3xl md:text-4xl">{agents} agents, one crew.</h2>
             </div>
-            <Link to="/skills" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
-              Full roster <ArrowRight className="h-3.5 w-3.5" />
+            <Link to="/skills" className="group text-sm text-primary hover:underline inline-flex items-center gap-1">
+              Full roster <ArrowRight className="arrow-slide h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
@@ -428,7 +429,7 @@ function LandingPage() {
               href="https://jarvisaios.vercel.app/console"
               target="_blank"
               rel="noreferrer"
-              className="group rounded-xl border border-border bg-card p-6 text-left transition-all hover:border-primary/50 hover:-translate-y-1"
+              className="group hover-card rounded-xl border border-border bg-card p-6 text-left"
             >
               <Monitor className="h-6 w-6 text-primary mb-3" />
               <div className="flex items-center gap-2 font-display text-lg font-semibold">
@@ -440,7 +441,7 @@ function LandingPage() {
               href="https://jarvisaios.vercel.app/auth"
               target="_blank"
               rel="noreferrer"
-              className="group rounded-xl border border-border bg-card p-6 text-left transition-all hover:border-primary/50 hover:-translate-y-1"
+              className="group hover-card rounded-xl border border-border bg-card p-6 text-left"
             >
               <Sparkles className="h-6 w-6 text-primary mb-3" />
               <div className="flex items-center gap-2 font-display text-lg font-semibold">
@@ -452,7 +453,7 @@ function LandingPage() {
               href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS"
               target="_blank"
               rel="noreferrer"
-              className="group rounded-xl border border-border bg-card p-6 text-left transition-all hover:border-primary/50 hover:-translate-y-1"
+              className="group hover-card rounded-xl border border-border bg-card p-6 text-left"
             >
               <GitBranch className="h-6 w-6 text-primary mb-3" />
               <div className="flex items-center gap-2 font-display text-lg font-semibold">
@@ -476,7 +477,7 @@ function LandingPage() {
                 href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest"
                 target="_blank"
                 rel="noreferrer"
-                className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center transition-all hover:border-primary/50 hover:-translate-y-1"
+                className="group hover-card flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center"
               >
                 <Apple className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
                 <div className="font-semibold">macOS</div>
@@ -489,7 +490,7 @@ function LandingPage() {
                 href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest"
                 target="_blank"
                 rel="noreferrer"
-                className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center transition-all hover:border-primary/50 hover:-translate-y-1"
+                className="group hover-card flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center"
               >
                 <Monitor className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
                 <div className="font-semibold">Windows</div>
@@ -502,7 +503,7 @@ function LandingPage() {
                 href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest"
                 target="_blank"
                 rel="noreferrer"
-                className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center transition-all hover:border-primary/50 hover:-translate-y-1"
+                className="group hover-card flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center"
               >
                 <Laptop className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
                 <div className="font-semibold">Linux</div>
@@ -535,10 +536,10 @@ function LandingPage() {
             Jarvis is free. Gemini Flash and Groq Llama — no credit card, no rate limits that matter.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link to="/console" className="btn-hero inline-flex items-center gap-2 text-base px-8 py-3.5">
-              Open the Console <ArrowRight className="h-4 w-4" />
+            <Link to="/console" className="btn-hero group inline-flex items-center gap-2 text-base px-8 py-3.5">
+              Open the Console <ArrowRight className="arrow-slide h-4 w-4" />
             </Link>
-            <Link to="/auth" className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-6 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10">
+            <Link to="/auth" className="snap-colors inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-6 py-3.5 text-sm font-medium text-primary hover:bg-primary/10">
               <Sparkles className="h-4 w-4" /> Try as Guest
             </Link>
           </div>

@@ -20,6 +20,10 @@
   --radius-xl: 14px;
   --radius-2xl: 20px;
 
+  /* Global transition default — snap cadence from the reference language */
+  --default-transition-duration: 160ms;
+  --default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
@@ -75,6 +79,13 @@
   --shadow-glow: 0 0 0 1px color-mix(in oklab, var(--primary) 25%, transparent),
                  0 24px 60px -20px color-mix(in oklab, var(--primary) 40%, transparent);
   --shadow-elevated: 0 20px 60px -30px rgba(0,0,0,0.7);
+
+  /* Motion tokens — reference language: snap ease + quick/base/slow cadence */
+  --ease-snap: cubic-bezier(0.2, 0, 0, 1);
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-quick: 160ms;
+  --t-base: 280ms;
+  --t-slow: 450ms;
 }
 
 .dark { color-scheme: dark; }
@@ -90,6 +101,17 @@
   h1, h2, h3, .font-display { font-family: var(--font-serif); letter-spacing: -0.01em; }
   code, kbd, .font-mono { font-family: var(--font-mono); }
   ::selection { background: color-mix(in oklab, var(--primary) 40%, transparent); }
+  :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+}
+
+/* ── Accessibility: kill motion for reduced-motion users ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ── Ambient scenography ─────────────────────────────── */
@@ -136,8 +158,8 @@
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.reveal { animation: reveal-up 220ms ease-out both; }
-.reveal-stagger > * { animation: reveal-up 320ms ease-out both; }
+.reveal { animation: reveal-up var(--t-base) var(--ease-snap) both; }
+.reveal-stagger > * { animation: reveal-up 320ms var(--ease-snap) both; }
 .reveal-stagger > *:nth-child(1) { animation-delay: 40ms; }
 .reveal-stagger > *:nth-child(2) { animation-delay: 100ms; }
 .reveal-stagger > *:nth-child(3) { animation-delay: 160ms; }
@@ -148,12 +170,12 @@
 /* ── Sidebar item hover: slide-in left bar ───────────── */
 .side-item {
   position: relative;
-  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+  transition: background-color var(--t-quick) var(--ease-snap), color var(--t-quick) var(--ease-snap), transform var(--t-quick) var(--ease-snap);
 }
 .side-item::before {
   content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px;
   background: var(--primary); border-radius: 2px;
-  transform: scaleY(0); transform-origin: center; transition: transform 160ms ease;
+  transform: scaleY(0); transform-origin: center; transition: transform var(--t-quick) var(--ease-snap);
 }
 .side-item:hover::before, .side-item[data-active="true"]::before { transform: scaleY(1); }
 .side-item:hover { background: color-mix(in oklab, white 6%, transparent); }
@@ -178,6 +200,44 @@
 .btn-hero {
   background: var(--primary); color: var(--primary-foreground);
   padding: 12px 20px; border-radius: 8px; font-weight: 500;
-  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  transition: transform var(--t-quick) var(--ease-snap), background var(--t-quick) var(--ease-snap), box-shadow var(--t-quick) var(--ease-snap);
 }
 .btn-hero:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+.btn-hero:active { transform: translateY(0); }
+
+/* ── Card choreography: lift + border tint, snap ease ── */
+.hover-card {
+  transition: transform var(--t-quick) var(--ease-snap),
+              border-color var(--t-quick) var(--ease-snap),
+              background-color var(--t-quick) var(--ease-snap),
+              box-shadow var(--t-base) var(--ease-snap);
+}
+.hover-card:hover { transform: translateY(-2px); border-color: color-mix(in oklab, var(--primary) 45%, transparent); }
+.hover-card:active { transform: translateY(0); }
+
+/* ── Icon / arrow slide on hover ─────────────────────── */
+.arrow-slide { transition: transform var(--t-quick) var(--ease-snap), color var(--t-quick) var(--ease-snap); }
+.group:hover .arrow-slide { transform: translateX(3px); }
+
+/* ── Snap color transitions for secondary buttons ────── */
+.snap-colors { transition: color var(--t-quick) var(--ease-snap), background-color var(--t-quick) var(--ease-snap), border-color var(--t-quick) var(--ease-snap); }
+
+/* ── Scanline sweep — OCR runtime pattern ────────────── */
+@keyframes scan-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.scan-sweep { position: relative; overflow: hidden; }
+.scan-sweep::after {
+  content: ""; position: absolute; inset-block: 0; width: 40%;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--primary) 14%, transparent), transparent);
+  animation: scan-sweep 1.6s var(--ease-snap) infinite;
+  pointer-events: none;
+}
+
+/* ── Stat value slot-in — slot-machine settle ────────── */
+@keyframes stat-in {
+  from { opacity: 0; transform: translateY(0.35em); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.stat-in { animation: stat-in var(--t-base) var(--ease-snap) both; }
