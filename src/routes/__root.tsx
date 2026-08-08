@@ -144,8 +144,8 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
         <Scripts />
+        {children}
       </body>
     </html>
   );
