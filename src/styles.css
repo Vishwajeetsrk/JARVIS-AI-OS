@@ -153,6 +153,16 @@
   animation: spin-terracotta 0.8s ease-in-out infinite;
 }
 
+/* ── ECG processing line — OCR runtime heartbeat ─────── */
+@keyframes ecg-dash { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -104; } }
+.ecg-line { overflow: visible; }
+.ecg-line polyline {
+  fill: none; stroke: var(--primary); stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 52 52;
+  animation: ecg-dash 1.4s var(--ease-snap) infinite;
+}
+
 /* ── Reveal on mount ─────────────────────────────────── */
 @keyframes reveal-up {
   from { opacity: 0; transform: translateY(8px); }
