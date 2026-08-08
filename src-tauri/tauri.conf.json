@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://raw.githubusercontent.com/nicokosi/tauri-v2-schema/main/json/tauri-v2.schema.json",
   "productName": "Jarvis AI OS",
   "version": "2.5.2",
