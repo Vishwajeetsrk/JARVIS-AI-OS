@@ -9,14 +9,12 @@ export const Route = createFileRoute("/api/health")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
         let database = "offline";
-        let agents = 24;
         try {
-          const [{ error }, count] = await Promise.all([
-            supabaseAdmin.from("agent_activity").select("id", { count: "exact", head: true }).limit(1),
-            supabaseAdmin.from("agents").select("id", { count: "exact", head: true }).limit(1),
-          ]);
+          const { error } = await supabaseAdmin
+            .from("agent_activity")
+            .select("id")
+            .limit(1);
           if (!error) database = "online";
-          agents = count.count && count.count > 0 ? count.count : agents;
         } catch {
           database = "offline";
         }
@@ -36,7 +34,7 @@ export const Route = createFileRoute("/api/health")({
             database,
             modelProvider: modelProvider ? "online" : "offline",
             voice: voice ? "online" : "offline",
-            agents,
+            agents: 24,
             designSystems: systems.length + sites.length,
             sites: sites.length,
             skills: listShippedSkills().length,

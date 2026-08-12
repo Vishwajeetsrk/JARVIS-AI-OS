@@ -14,8 +14,8 @@ import { getSteeringForContext } from "@/lib/steering";
 
 const DEFAULT_MODEL = "gemini-flash-latest";
 
-// Shipped agent roster (24). The live count is fetched from the agents table
-// at request time; this list only supplies names when the DB is unreachable.
+// The shipped agent roster — the real team. The DB `agents` table holds per-user
+// crew members (not seeded), so the roster below is the single source of truth.
 const AGENT_ROSTER = [
   "ceo-agent", "planner", "saas-builder", "designer", "researcher", "writer",
   "test-agent", "reviewer", "deployer", "sre", "memory-keeper", "governance",
@@ -24,17 +24,7 @@ const AGENT_ROSTER = [
   "workspace-agent", "devops-agent",
 ];
 
-async function loadAgentTeam(): Promise<{ count: number; names: string[] }> {
-  try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error, count } = await supabaseAdmin
-      .from("agents")
-      .select("id", { count: "exact", head: true })
-      .limit(1);
-    if (!error && count) {
-      return { count, names: AGENT_ROSTER.slice(0, count) };
-    }
-  } catch {}
+function loadAgentTeam(): { count: number; names: string[] } {
   return { count: AGENT_ROSTER.length, names: AGENT_ROSTER };
 }
 
@@ -216,7 +206,7 @@ export const Route = createFileRoute("/api/chat")({
           const aiModel = resolved.model;
 
           // Cross-session memory recall: pull relevant past context for this turn.
-          const team = await loadAgentTeam();
+          const team = loadAgentTeam();
           let system = buildBaseSystem(team.names);
           if (userId) {
             const lastUser = [...requestMessages].reverse().find((m) => m.role === "user");
