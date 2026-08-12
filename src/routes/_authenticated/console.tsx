@@ -12,7 +12,7 @@ import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Plus, Trash2, LogOut, MessageSquare, Star, MoreHorizontal, Pencil,
   FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu, Palette, LayoutDashboard,
-  Clock, BookOpen, Users, KanbanSquare, Activity, CircleDollarSign, ShieldCheck, ScrollText, Lock,
+  Clock, BookOpen, Users, KanbanSquare, Activity, CircleDollarSign, ShieldCheck, ScrollText, Lock, ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -220,6 +220,16 @@ function ConsoleShell() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   useEffect(() => { setMobileOpen(false); }, [params.threadId]);
+  const [moreOpen, setMoreOpen] = useState(
+    () => typeof localStorage !== "undefined" && localStorage.getItem("jarvis-nav-more") === "1",
+  );
+  const toggleMore = () => {
+    setMoreOpen((v) => {
+      const next = !v;
+      try { localStorage.setItem("jarvis-nav-more", next ? "1" : "0"); } catch {}
+      return next;
+    });
+  };
 
   const sidebarBody = (
     <>
@@ -240,19 +250,31 @@ function ConsoleShell() {
           <NavLink to="/console" icon={LayoutDashboard} label="Dashboard" />
           <NavLink to="/console/agents" icon={Users} label="Crew" />
           <NavLink to="/console/issues" icon={KanbanSquare} label="Issues" />
-          <NavLink to="/console/runs" icon={Activity} label="Runs" />
-          <NavLink to="/console/costs" icon={CircleDollarSign} label="Costs & Budgets" />
-          <NavLink to="/console/approvals" icon={ShieldCheck} label="Approvals" />
-          <NavLink to="/console/activity" icon={ScrollText} label="Activity" />
           <NavLink to="/console/tools" icon={Wrench} label="Tools" />
           <NavLink to="/console/connectors" icon={Cable} label="Connectors" />
           <NavLink to="/console/plugins" icon={Puzzle} label="Plugins" />
           <NavLink to="/console/skills" icon={Sparkles} label="Skills" />
           <NavLink to="/console/roadmaps" icon={BookOpen} label="Roadmaps & Learnify" />
-          <NavLink to="/console/automations" icon={Clock} label="Automations" />
           <NavLink to="/console/design" icon={Palette} label="Design Systems" />
           <NavLink to="/console/github" icon={GitBranch} label="GitHub" />
           <NavLink to="/console/settings" icon={Settings} label="Settings" />
+          <button
+            onClick={toggleMore}
+            aria-expanded={moreOpen}
+            className="side-item flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+          >
+            <MoreHorizontal className="h-3.5 w-3.5" /> More
+            <ChevronDown className={`ml-auto h-3.5 w-3.5 transition-transform duration-200 ${moreOpen ? "rotate-180" : ""}`} />
+          </button>
+          {moreOpen && (
+            <div className="reveal-stagger space-y-0.5 pb-0.5">
+              <NavLink to="/console/runs" icon={Activity} label="Runs" />
+              <NavLink to="/console/approvals" icon={ShieldCheck} label="Approvals" />
+              <NavLink to="/console/automations" icon={Clock} label="Automations" />
+              <NavLink to="/console/costs" icon={CircleDollarSign} label="Costs & Budgets" />
+              <NavLink to="/console/activity" icon={ScrollText} label="Activity" />
+            </div>
+          )}
         </div>
 
         <div>

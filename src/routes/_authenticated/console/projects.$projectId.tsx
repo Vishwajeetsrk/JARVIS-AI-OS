@@ -1,11 +1,16 @@
 import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listProjects, deleteProject, listThreads, createThread, listWorkspaceProjects } from "@/lib/threads.functions";
+import { useState } from "react";
+import { listProjects, deleteProject, renameProject, listThreads, createThread, listWorkspaceProjects } from "@/lib/threads.functions";
 import { PageHeader } from "@/components/jarvis/catalog-grid";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, FileText, Palette, Link2, ExternalLink, Play } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Plus, Trash2, FileText, Palette, Link2, ExternalLink, Play, Pencil } from "lucide-react";
 import { toast } from "sonner";
+
+const COLORS = ["#D97757", "#E69D45", "#58A65C", "#6A9BCC", "#A855F7", "#EC4899"];
 
 export const Route = createFileRoute("/_authenticated/console/projects/$projectId")({
   component: ProjectPage,
@@ -18,6 +23,7 @@ function ProjectPage() {
   const qc = useQueryClient();
   const listP = useServerFn(listProjects);
   const delP = useServerFn(deleteProject);
+  const renameP = useServerFn(renameProject);
   const listT = useServerFn(listThreads);
   const createT = useServerFn(createThread);
   const listW = useServerFn(listWorkspaceProjects);
@@ -33,13 +39,21 @@ function ProjectPage() {
 
   const projectThreads = (threads as any[]).filter((t: any) => t.project_id === projectId);
 
-  const mDel = useMutation({
+const mDel = useMutation({
     mutationFn: () => delP({ data: { id: projectId } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["projects"] });
       qc.invalidateQueries({ queryKey: ["threads"] });
       toast.success("Project deleted.");
-      nav({ to: "/console" });
+      nav({ to: "/console/projects" });
+    },
+  });
+  const mRename = useMutation({
+    mutationFn: (v: { name: string; description?: string; color?: string }) =>
+      renameP({ data: { id: projectId, ...v } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      toast.success("Project updated.");
     },
   });
   const mNew = useMutation({
@@ -47,9 +61,21 @@ function ProjectPage() {
     onSuccess: (t) => nav({ to: "/console/$threadId", params: { threadId: t.id } }),
   });
 
+  const [editOpen, setEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editDesc, setEditDesc] = useState("");
+  const [editColor, setEditColor] = useState(COLORS[0]);
+
   const display = project ?? wsProject;
 
   if (!display) return <div className="p-8 text-sm text-muted-foreground">Project not found.</div>;
+
+  const openEdit = () => {
+    setEditName(display.name);
+    setEditDesc(display.description ?? "");
+    setEditColor(display.color || COLORS[0]);
+    setEditOpen(true);
+  };
 
   return (
     <div className="h-full overflow-y-auto p-8">
@@ -70,6 +96,7 @@ function ProjectPage() {
           {!isWorkspace && (
             <>
               <Button onClick={() => mNew.mutate()}><Plus className="mr-2 h-4 w-4" /> New chat</Button>
+              <Button variant="outline" onClick={openEdit}><Pencil className="mr-2 h-4 w-4" /> Edit</Button>
               <Button variant="ghost" onClick={() => mDel.mutate()}><Trash2 className="mr-2 h-4 w-4" /> Delete</Button>
             </>
           )}
@@ -132,6 +159,36 @@ function ProjectPage() {
           <SidebarCard icon={Link2} title="References" hint="URLs, repos, Figma files." />
         </aside>
       </div>
+
+      {/* Edit dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Edit project</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Project name" autoFocus />
+            <Input value={editDesc} onChange={(e) => setEditDesc(e.target.value)} placeholder="Description (optional)" />
+            <div className="flex items-center gap-2">
+              {COLORS.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setEditColor(c)}
+                  aria-label={`Color ${c}`}
+                  className={`h-7 w-7 rounded-full transition-transform hover:scale-110 ${editColor === c ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : ""}`}
+                  style={{ background: c }}
+                />
+              ))}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditOpen(false)}>Cancel</Button>
+            <Button onClick={() => {
+              if (!editName.trim()) return;
+              mRename.mutate({ name: editName.trim(), description: editDesc.trim(), color: editColor });
+              setEditOpen(false);
+            }}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

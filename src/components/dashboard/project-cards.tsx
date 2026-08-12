@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { formatDistanceToNowStrict } from "date-fns";
-import { FolderPlus, FolderOpen } from "lucide-react";
+import { FolderPlus, FolderOpen, ArrowRight } from "lucide-react";
 import { listProjects, listWorkspaceProjects } from "@/lib/threads.functions";
 
 export function ProjectCards({ onNewProject }: { onNewProject?: () => void }) {
@@ -71,8 +71,9 @@ export function ProjectCards({ onNewProject }: { onNewProject?: () => void }) {
       ))}
       {all.length > 6 && (
         <div className="col-span-full text-center">
-          <Link to="/console/projects/$projectId" params={{ projectId: all[0].id }} className="text-xs text-muted-foreground hover:text-foreground">
-            +{all.length - 6} more projects in the sidebar
+          <Link to="/console/projects" className="group inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+            View all {all.length} projects
+            <ArrowRight className="arrow-slide h-3 w-3" />
           </Link>
         </div>
       )}

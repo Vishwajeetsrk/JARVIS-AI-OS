@@ -37,6 +37,7 @@ import { Route as AuthenticatedConsoleDesignRouteImport } from './routes/_authen
 import { Route as AuthenticatedConsoleGithubRouteImport } from './routes/_authenticated/console/github'
 import { Route as AuthenticatedConsoleIssuesRouteImport } from './routes/_authenticated/console/issues'
 import { Route as AuthenticatedConsolePluginsRouteImport } from './routes/_authenticated/console/plugins'
+import { Route as AuthenticatedConsoleProjectsRouteImport } from './routes/_authenticated/console/projects'
 import { Route as AuthenticatedConsoleRoadmapsRouteImport } from './routes/_authenticated/console/roadmaps'
 import { Route as AuthenticatedConsoleRunsRouteImport } from './routes/_authenticated/console/runs'
 import { Route as AuthenticatedConsoleSettingsRouteImport } from './routes/_authenticated/console/settings'
@@ -203,6 +204,12 @@ const AuthenticatedConsolePluginsRoute =
     path: '/plugins',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
+const AuthenticatedConsoleProjectsRoute =
+  AuthenticatedConsoleProjectsRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => AuthenticatedConsoleRoute,
+  } as any)
 const AuthenticatedConsoleRoadmapsRoute =
   AuthenticatedConsoleRoadmapsRouteImport.update({
     id: '/roadmaps',
@@ -257,9 +264,9 @@ const AuthenticatedConsoleDesignSystemIdRoute =
   } as any)
 const AuthenticatedConsoleProjectsProjectIdRoute =
   AuthenticatedConsoleProjectsProjectIdRouteImport.update({
-    id: '/projects/$projectId',
-    path: '/projects/$projectId',
-    getParentRoute: () => AuthenticatedConsoleRoute,
+    id: '/$projectId',
+    path: '/$projectId',
+    getParentRoute: () => AuthenticatedConsoleProjectsRoute,
   } as any)
 const AuthenticatedConsoleTemplatesSystemIdRoute =
   AuthenticatedConsoleTemplatesSystemIdRouteImport.update({
@@ -313,6 +320,7 @@ export interface FileRoutesByFullPath {
   '/console/github': typeof AuthenticatedConsoleGithubRoute
   '/console/issues': typeof AuthenticatedConsoleIssuesRoute
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
+  '/console/projects': typeof AuthenticatedConsoleProjectsRouteWithChildren
   '/console/roadmaps': typeof AuthenticatedConsoleRoadmapsRoute
   '/console/runs': typeof AuthenticatedConsoleRunsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
@@ -355,6 +363,7 @@ export interface FileRoutesByTo {
   '/console/github': typeof AuthenticatedConsoleGithubRoute
   '/console/issues': typeof AuthenticatedConsoleIssuesRoute
   '/console/plugins': typeof AuthenticatedConsolePluginsRoute
+  '/console/projects': typeof AuthenticatedConsoleProjectsRouteWithChildren
   '/console/roadmaps': typeof AuthenticatedConsoleRoadmapsRoute
   '/console/runs': typeof AuthenticatedConsoleRunsRoute
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
@@ -400,6 +409,7 @@ export interface FileRoutesById {
   '/_authenticated/console/github': typeof AuthenticatedConsoleGithubRoute
   '/_authenticated/console/issues': typeof AuthenticatedConsoleIssuesRoute
   '/_authenticated/console/plugins': typeof AuthenticatedConsolePluginsRoute
+  '/_authenticated/console/projects': typeof AuthenticatedConsoleProjectsRouteWithChildren
   '/_authenticated/console/roadmaps': typeof AuthenticatedConsoleRoadmapsRoute
   '/_authenticated/console/runs': typeof AuthenticatedConsoleRunsRoute
   '/_authenticated/console/settings': typeof AuthenticatedConsoleSettingsRoute
@@ -445,6 +455,7 @@ export interface FileRouteTypes {
     | '/console/github'
     | '/console/issues'
     | '/console/plugins'
+    | '/console/projects'
     | '/console/roadmaps'
     | '/console/runs'
     | '/console/settings'
@@ -487,6 +498,7 @@ export interface FileRouteTypes {
     | '/console/github'
     | '/console/issues'
     | '/console/plugins'
+    | '/console/projects'
     | '/console/roadmaps'
     | '/console/runs'
     | '/console/settings'
@@ -531,6 +543,7 @@ export interface FileRouteTypes {
     | '/_authenticated/console/github'
     | '/_authenticated/console/issues'
     | '/_authenticated/console/plugins'
+    | '/_authenticated/console/projects'
     | '/_authenticated/console/roadmaps'
     | '/_authenticated/console/runs'
     | '/_authenticated/console/settings'
@@ -766,6 +779,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsolePluginsRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
+    '/_authenticated/console/projects': {
+      id: '/_authenticated/console/projects'
+      path: '/projects'
+      fullPath: '/console/projects'
+      preLoaderRoute: typeof AuthenticatedConsoleProjectsRouteImport
+      parentRoute: typeof AuthenticatedConsoleRoute
+    }
     '/_authenticated/console/roadmaps': {
       id: '/_authenticated/console/roadmaps'
       path: '/roadmaps'
@@ -831,10 +851,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/console/projects/$projectId': {
       id: '/_authenticated/console/projects/$projectId'
-      path: '/projects/$projectId'
+      path: '/$projectId'
       fullPath: '/console/projects/$projectId'
       preLoaderRoute: typeof AuthenticatedConsoleProjectsProjectIdRouteImport
-      parentRoute: typeof AuthenticatedConsoleRoute
+      parentRoute: typeof AuthenticatedConsoleProjectsRoute
     }
     '/_authenticated/console/templates/$systemId': {
       id: '/_authenticated/console/templates/$systemId'
@@ -882,6 +902,21 @@ const AuthenticatedConsoleDesignRouteWithChildren =
     AuthenticatedConsoleDesignRouteChildren,
   )
 
+interface AuthenticatedConsoleProjectsRouteChildren {
+  AuthenticatedConsoleProjectsProjectIdRoute: typeof AuthenticatedConsoleProjectsProjectIdRoute
+}
+
+const AuthenticatedConsoleProjectsRouteChildren: AuthenticatedConsoleProjectsRouteChildren =
+  {
+    AuthenticatedConsoleProjectsProjectIdRoute:
+      AuthenticatedConsoleProjectsProjectIdRoute,
+  }
+
+const AuthenticatedConsoleProjectsRouteWithChildren =
+  AuthenticatedConsoleProjectsRoute._addFileChildren(
+    AuthenticatedConsoleProjectsRouteChildren,
+  )
+
 interface AuthenticatedConsoleTemplatesRouteChildren {
   AuthenticatedConsoleTemplatesSystemIdRoute: typeof AuthenticatedConsoleTemplatesSystemIdRoute
 }
@@ -909,6 +944,7 @@ interface AuthenticatedConsoleRouteChildren {
   AuthenticatedConsoleGithubRoute: typeof AuthenticatedConsoleGithubRoute
   AuthenticatedConsoleIssuesRoute: typeof AuthenticatedConsoleIssuesRoute
   AuthenticatedConsolePluginsRoute: typeof AuthenticatedConsolePluginsRoute
+  AuthenticatedConsoleProjectsRoute: typeof AuthenticatedConsoleProjectsRouteWithChildren
   AuthenticatedConsoleRoadmapsRoute: typeof AuthenticatedConsoleRoadmapsRoute
   AuthenticatedConsoleRunsRoute: typeof AuthenticatedConsoleRunsRoute
   AuthenticatedConsoleSettingsRoute: typeof AuthenticatedConsoleSettingsRoute
@@ -916,7 +952,6 @@ interface AuthenticatedConsoleRouteChildren {
   AuthenticatedConsoleTemplatesRoute: typeof AuthenticatedConsoleTemplatesRouteWithChildren
   AuthenticatedConsoleToolsRoute: typeof AuthenticatedConsoleToolsRoute
   AuthenticatedConsoleIndexRoute: typeof AuthenticatedConsoleIndexRoute
-  AuthenticatedConsoleProjectsProjectIdRoute: typeof AuthenticatedConsoleProjectsProjectIdRoute
 }
 
 const AuthenticatedConsoleRouteChildren: AuthenticatedConsoleRouteChildren = {
@@ -931,6 +966,8 @@ const AuthenticatedConsoleRouteChildren: AuthenticatedConsoleRouteChildren = {
   AuthenticatedConsoleGithubRoute: AuthenticatedConsoleGithubRoute,
   AuthenticatedConsoleIssuesRoute: AuthenticatedConsoleIssuesRoute,
   AuthenticatedConsolePluginsRoute: AuthenticatedConsolePluginsRoute,
+  AuthenticatedConsoleProjectsRoute:
+    AuthenticatedConsoleProjectsRouteWithChildren,
   AuthenticatedConsoleRoadmapsRoute: AuthenticatedConsoleRoadmapsRoute,
   AuthenticatedConsoleRunsRoute: AuthenticatedConsoleRunsRoute,
   AuthenticatedConsoleSettingsRoute: AuthenticatedConsoleSettingsRoute,
@@ -939,8 +976,6 @@ const AuthenticatedConsoleRouteChildren: AuthenticatedConsoleRouteChildren = {
     AuthenticatedConsoleTemplatesRouteWithChildren,
   AuthenticatedConsoleToolsRoute: AuthenticatedConsoleToolsRoute,
   AuthenticatedConsoleIndexRoute: AuthenticatedConsoleIndexRoute,
-  AuthenticatedConsoleProjectsProjectIdRoute:
-    AuthenticatedConsoleProjectsProjectIdRoute,
 }
 
 const AuthenticatedConsoleRouteWithChildren =
