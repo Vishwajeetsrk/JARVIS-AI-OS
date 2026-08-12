@@ -285,6 +285,21 @@ Jarvis uses a custom motion language tuned for "snap" — fast acceleration, ins
 
 ---
 
+## Changelog
+
+**v2.5.4** (Aug 2026) — UI/UX motion overhaul
+
+- **Chat fix** — tool calls now continue to the final answer (multi-step tool loop); previously the stream ended right after a tool call with no reply text
+- **News tool** — Jarvis fetches real top news (Hacker News / TechCrunch / The Verge) on demand
+- **Crew page** — default 24-agent core team roster; hired agents take over when you create them
+- **Projects** — rename/delete from the sidebar, workspace templates marked read-only, dashboard count now matches the sidebar
+- **Motion** — stat count-ups, staggered card reveals, shine sweeps, breathing status dots, live feed entrance animation with duplicate suppression, shimmer headline, drifting ambient glow
+- **Desktop Agent** — merged open-source Brahma AI Lite assistant as `desktop/` with optional Supabase cloud sync (memories, daily thread mirror, settings pull)
+
+**v2.5.3** — chat news flow + crew roster fixes
+
+---
+
 ## Auth & Security
 
 - **Supabase Auth** — Google OAuth + email/password (with a visible show/hide password toggle)
