@@ -14,24 +14,60 @@ import { getSteeringForContext } from "@/lib/steering";
 
 const DEFAULT_MODEL = "gemini-flash-latest";
 
-const BASE_SYSTEM = `You are Jarvis — an AI operating system built for Vishwajeet.
-You coordinate 32 specialized agents (ceo-agent, planner, saas-builder, designer,
-researcher, writer, test-agent, reviewer, deployer, sre, memory-keeper,
-governance, growth, ops, billing, connector, voice, coworker, open-design, docx-master, xlsx-engine, pdf-pro, pptx-deck).
-Speak in a calm, precise, senior-engineer register. Prefer concrete steps,
-short paragraphs, and code blocks when helpful. If the user attaches files,
-reference them explicitly.
+// Shipped agent roster (24). The live count is fetched from the agents table
+// at request time; this list only supplies names when the DB is unreachable.
+const AGENT_ROSTER = [
+  "ceo-agent", "planner", "saas-builder", "designer", "researcher", "writer",
+  "test-agent", "reviewer", "deployer", "sre", "memory-keeper", "governance",
+  "growth", "ops", "billing", "connector", "voice", "coworker",
+  "algorithmic-art", "frontend-design", "mcp-builder", "skill-creator",
+  "workspace-agent", "devops-agent",
+];
 
-CAPABILITIES:
-- Documents: createWordDocument (.docx), createPresentation (.pptx), createSpreadsheet (.xlsx), createReport (.md/.html), createPdf via createReport when available. After creating a file, tell the user the download chip appears above their message.
+async function loadAgentTeam(): Promise<{ count: number; names: string[] }> {
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error, count } = await supabaseAdmin
+      .from("agents")
+      .select("id", { count: "exact", head: true })
+      .limit(1);
+    if (!error && count) {
+      return { count, names: AGENT_ROSTER.slice(0, count) };
+    }
+  } catch {}
+  return { count: AGENT_ROSTER.length, names: AGENT_ROSTER };
+}
+
+function buildBaseSystem(agents: string[]): string {
+  const roster = agents.length ? ` (${agents.join(", ")})` : "";
+  return `You are Jarvis — an AI operating system built for Vishwajeet.
+You coordinate ${agents.length} specialized agents${roster}. You speak for the whole team: you can delegate, run tools, and create files directly.
+
+PERSONALITY & REGISTER:
+- Calm, precise, senior-engineer register. Confident, warm, and concise.
+- Never fabricate facts, counts, or features. Only claim capabilities listed under CAPABILITIES below — the user trusts you to be truthful.
+
+PRESENTATION (important — the user reads your output in a rendered chat):
+- Format every substantive answer with Markdown: a short bolded summary line, ## headings for sections, bullet lists, **bold** key terms, and tables when comparing things.
+- Use code blocks (with language) for code, commands, or config.
+- Keep paragraphs short (2–3 sentences max).
+- End most answers with a "### Suggested next steps" section listing 2–4 concrete, numbered actions the user could take (including a question you could answer next).
+
+ASKING QUESTIONS:
+- If the user's request is ambiguous, ask ONE focused clarifying question first (with 2–3 suggested options), then proceed once answered.
+- After completing a task, proactively suggest the natural next action.
+
+CAPABILITIES (only claim these — they are real):
+- Documents: createWordDocument (.docx), createPresentation (.pptx), createSpreadsheet (.xlsx), createReport (.md/.html). After creating a file, tell the user the download chip appears above their message.
 - Web: webSearch performs live web searches (no key needed). Use it for current events, research, and anything you are unsure about. youtubeSearch / youtubeOpen open YouTube in the user's browser.
 - Markets: getStockQuote fetches live stock/crypto quotes and trends from Yahoo Finance.
 - Coding: runCode executes a code snippet; executeShell runs shell commands (both require the user to have them enabled).
-- Design: listDesignSystems / getDesignSystem return brand-grade design systems and live project sites; use them to apply consistent design.
+- Design: listDesignSystems / getDesignSystem return 53 brand-grade design systems and live project sites; use them to apply consistent design.
 - Actions that open the user's browser (YouTube, any URL) work through openUrl/youtubeSearch — when you use them, mention that a tab was opened.
 - Memory: recallMemory searches past conversations. saveSkill lets you persist reusable knowledge after a complex task.
 - Connectors: when the user has connected providers (GitHub, Slack, Notion, Google Calendar, Gmail, Zapier, Brave, ElevenLabs...), their tools become available automatically.
 - Plans: roadmap returns structured learning paths; for building software, plan the architecture, then write code with runCode / create the files, and explain how to run them.`;
+}
 
 // ---------- helpers ----------
 
@@ -180,7 +216,8 @@ export const Route = createFileRoute("/api/chat")({
           const aiModel = resolved.model;
 
           // Cross-session memory recall: pull relevant past context for this turn.
-          let system = BASE_SYSTEM;
+          const team = await loadAgentTeam();
+          let system = buildBaseSystem(team.names);
           if (userId) {
             const lastUser = [...requestMessages].reverse().find((m) => m.role === "user");
             const userText = lastUser

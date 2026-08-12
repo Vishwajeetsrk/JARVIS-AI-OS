@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Jarvis AI Operating System: persistent memory, 30 specialized agents, one team across web, desktop, terminal, and mobile.",
+          "Jarvis AI Operating System: persistent memory, 24 specialized agents, one team across web, desktop, terminal, and mobile.",
       },
     ],
   }),
@@ -171,7 +171,7 @@ function LandingPage() {
         <div className="bg-noise relative -z-10 h-full w-full" />
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 pb-20 pt-16 text-center md:pt-24">
           <span className="chip reveal">
-            <JarvisStar size={12} className="text-primary" /> v{health?.version ?? "2.5.1"} · Production Meta-Tool
+            <JarvisStar size={12} className="text-primary" /> v{health?.version ?? "2.5.2"} · Production Meta-Tool
           </span>
           <h1 className="reveal font-display text-5xl font-semibold leading-[1.05] tracking-tight text-foreground md:text-7xl">
             One brain.

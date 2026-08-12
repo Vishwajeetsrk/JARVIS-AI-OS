@@ -12,8 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DesignRouteImport } from './routes/design'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
-import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as AuthenticatedConsoleRouteImport } from './routes/_authenticated/console'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
@@ -66,14 +66,14 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DesignRoute = DesignRouteImport.update({
+  id: '/design',
+  path: '/design',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProjectsRoute = ProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SkillsRoute = SkillsRouteImport.update({
@@ -289,8 +289,8 @@ const ApiDesignSystemsIdTemplatesFileRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/design': typeof DesignRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/projects': typeof ProjectsRoute
   '/skills': typeof SkillsRoute
   '/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
@@ -332,8 +332,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/design': typeof DesignRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/projects': typeof ProjectsRoute
   '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/design-systems': typeof ApiDesignSystemsRouteWithChildren
@@ -376,8 +376,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/design': typeof DesignRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/projects': typeof ProjectsRoute
   '/skills': typeof SkillsRoute
   '/_authenticated/console': typeof AuthenticatedConsoleRouteWithChildren
   '/api/chat': typeof ApiChatRoute
@@ -421,8 +421,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/design'
     | '/how-it-works'
-    | '/projects'
     | '/skills'
     | '/console'
     | '/api/chat'
@@ -464,8 +464,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/design'
     | '/how-it-works'
-    | '/projects'
     | '/skills'
     | '/api/chat'
     | '/api/design-systems'
@@ -507,8 +507,8 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/design'
     | '/how-it-works'
-    | '/projects'
     | '/skills'
     | '/_authenticated/console'
     | '/api/chat'
@@ -552,8 +552,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DesignRoute: typeof DesignRoute
   HowItWorksRoute: typeof HowItWorksRoute
-  ProjectsRoute: typeof ProjectsRoute
   SkillsRoute: typeof SkillsRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiDesignSystemsRoute: typeof ApiDesignSystemsRouteWithChildren
@@ -591,18 +591,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/design': {
+      id: '/design'
+      path: '/design'
+      fullPath: '/design'
+      preLoaderRoute: typeof DesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/how-it-works': {
       id: '/how-it-works'
       path: '/how-it-works'
       fullPath: '/how-it-works'
       preLoaderRoute: typeof HowItWorksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects': {
-      id: '/projects'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/skills': {
@@ -989,8 +989,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  DesignRoute: DesignRoute,
   HowItWorksRoute: HowItWorksRoute,
-  ProjectsRoute: ProjectsRoute,
   SkillsRoute: SkillsRoute,
   ApiChatRoute: ApiChatRoute,
   ApiDesignSystemsRoute: ApiDesignSystemsRouteWithChildren,

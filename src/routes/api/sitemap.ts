@@ -9,7 +9,7 @@ export const Route = createFileRoute("/api/sitemap")({
           { loc: "/auth", priority: "0.5" },
           { loc: "/how-it-works", priority: "0.8" },
           { loc: "/skills", priority: "0.8" },
-          { loc: "/projects", priority: "0.7" },
+          { loc: "/design", priority: "0.7" },
           { loc: "/console", priority: "0.3" },
         ];
 

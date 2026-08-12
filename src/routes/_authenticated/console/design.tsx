@@ -59,6 +59,9 @@ function DesignSystemsPage() {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
 
+  const siteCount = systems.filter((s) => s.kind === "site").length;
+  const systemCount = systems.length - siteCount;
+
   const categories = ["All", ...Array.from(new Set(systems.map((s) => s.category))).sort()];
 
   const filtered = systems.filter((s) => {
@@ -76,11 +79,11 @@ function DesignSystemsPage() {
         <div className="flex items-start justify-between gap-4 mb-4">
           <PageHeader
             title="Design Systems"
-            subtitle={`Browse ${systems.length} brand-grade design systems with tokens, components, and usage guides.`}
+            subtitle={`${systemCount} brand-grade design systems with tokens, components, and usage guides — plus ${siteCount} live project sites to preview and remix.`}
           />
           <div className="flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-2 py-1.5 text-xs font-medium shrink-0">
             <Palette className="h-3.5 w-3.5 text-primary" />
-            <span>{systems.length} systems</span>
+            <span>{systemCount} systems · {siteCount} live</span>
           </div>
         </div>
 

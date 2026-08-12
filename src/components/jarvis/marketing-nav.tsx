@@ -15,8 +15,8 @@ export function MarketingNav() {
           <Link to="/skills" className="transition-colors hover:text-foreground">
             Skills
           </Link>
-          <Link to="/projects" className="transition-colors hover:text-foreground">
-            Projects
+          <Link to="/design" className="transition-colors hover:text-foreground">
+            Design Systems
           </Link>
         </nav>
         <Link
@@ -44,7 +44,7 @@ export function MarketingFooter() {
         <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
           <Link to="/how-it-works" className="hover:text-foreground">Docs</Link>
           <Link to="/skills" className="hover:text-foreground">Skills</Link>
-          <Link to="/projects" className="hover:text-foreground">Projects</Link>
+          <Link to="/design" className="hover:text-foreground">Design Systems</Link>
           <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase">
             <span className="status-dot status-ready" /> Memory synced
           </span>

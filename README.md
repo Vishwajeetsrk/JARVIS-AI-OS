@@ -176,10 +176,10 @@ npx tsx cli/index.ts steering list
 |---|---|
 | **Dashboard** | Live activity feed, stat cards, quick command + voice, RSS news |
 | **Chat** | Multi-agent chat with tool calling, streaming, file attachments, memory recall |
-| **Projects** | Project manager + per-project pages |
-| **Design Systems** | 53 brand design systems + detail pages |
+| **Design Systems** | 53 design systems (31 brand-grade systems + 22 live project sites) with tokens, live previews, copy + download + remix |
+| **Roadmaps & Learnify** | 91 learning tracks from roadmap.sh — pick a track to start a study chat with the AI agent team |
 | **Templates** | Reusable project templates |
-| **Roadmaps** | 91 developer roadmaps (AI, System Design, DevOps, Web) |
+| **Projects** | Project manager + per-project pages |
 | **Skills** | Agent skills management — create, enable, disable |
 | **Plugins** | Plugin marketplace — browse, install, configure |
 | **Hooks** | Workflow automation — register hooks on file changes |
@@ -187,6 +187,15 @@ npx tsx cli/index.ts steering list
 | **Steering** | Project guidance files injected into AI context |
 | **Connectors** | Slack, Figma, Gmail, Notion, GitHub integrations |
 | **Settings** | Profile, memory, model preferences |
+
+### Public Pages
+
+| Page | What it does |
+|---|---|
+| `/` | Landing — live health probe, agent roster, downloads |
+| `/design` | Public gallery of all 53 design systems + live project site previews (links into the console for copy/remix) |
+| `/skills` | Full agent roster |
+| `/how-it-works` | Docs |
 
 ### API Routes
 
@@ -220,8 +229,8 @@ npx tsx cli/index.ts steering list
 | `supabase/migrations/` | Database schema + RLS policies |
 | `skills/` | 433 agent skill files |
 | `plugins/` | 45 plugin manifests |
-| `data/` | 819 design-system manifest files |
-| `Projects/` | 48 project templates |
+| `data/` | 819 design-system manifest files (31 brand-grade design systems) |
+| `Projects/` | 48 project templates — 22 built and published as live preset sites |
 | `scripts/` | Install scripts, utilities |
 
 ---

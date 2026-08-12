@@ -52,7 +52,8 @@ export function RoadmapsPage() {
               </Badge>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Interactive learning paths, technical modules, and AI agent tutoring powered by roadmap.sh.
+              {roadmaps.length} learning tracks from roadmap.sh. Pick a track to start a study chat — Jarvis's
+              agent team tutors you module by module and adapts the path to your level.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -121,7 +122,7 @@ export function RoadmapsPage() {
                   search={{ seed: `Tutorial on ${item.name} roadmap and key learning steps.` }}
                   className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                 >
-                  Study track <ArrowRight className="h-3 w-3" />
+                  Study with AI tutor <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
             </div>

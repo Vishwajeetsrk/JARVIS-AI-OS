@@ -45,6 +45,52 @@ function DesignSystemDetailPage() {
     return <ProjectSiteDetailPage data={data} />;
   }
 
+  const copyTokens = async () => {
+    try {
+      await navigator.clipboard.writeText(data.tokens);
+      toast.success("Tokens copied to clipboard.");
+    } catch {
+      toast.error("Could not copy — select the text manually.");
+    }
+  };
+
+  const copyComponents = async () => {
+    try {
+      await navigator.clipboard.writeText(data.components);
+      toast.success("Component HTML copied to clipboard.");
+    } catch {
+      toast.error("Could not copy — select the text manually.");
+    }
+  };
+
+  const downloadKit = () => {
+    const doc = data.components.toLowerCase().includes("<!doctype html>") ||
+      data.components.toLowerCase().includes("<html")
+      ? data.components
+      : `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    ${data.tokens}
+    body { background: var(--bg, #0f172a); color: var(--fg, #f8fafc); font-family: var(--font-body, system-ui); padding: 2rem; margin: 0; }
+  </style>
+</head>
+<body>
+  ${data.components}
+</body>
+</html>`;
+    const blob = new Blob([doc], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${data.id}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Downloaded ${data.id}.html`);
+  };
+
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <header className="flex items-center gap-3 border-b border-border px-6 py-3.5 bg-surface/40">
@@ -61,6 +107,15 @@ function DesignSystemDetailPage() {
         <div className="flex items-center gap-3 text-xs text-muted-foreground font-mono shrink-0">
           <span className="flex items-center gap-1 rounded-md bg-background border border-border px-2.5 py-1"><Palette className="h-3.5 w-3.5 text-primary" />{data.tokenCount} tokens</span>
           <span className="flex items-center gap-1 rounded-md bg-background border border-border px-2.5 py-1"><Layers className="h-3.5 w-3.5 text-primary" />{data.componentCount} components</span>
+          <button onClick={copyTokens} className="flex items-center gap-1 rounded-md bg-background border border-border px-2.5 py-1 text-muted-foreground hover:text-foreground transition-colors">
+            <Copy className="h-3.5 w-3.5 text-primary" /> Copy tokens
+          </button>
+          <button onClick={copyComponents} className="flex items-center gap-1 rounded-md bg-background border border-border px-2.5 py-1 text-muted-foreground hover:text-foreground transition-colors">
+            <Copy className="h-3.5 w-3.5 text-primary" /> Copy HTML
+          </button>
+          <button onClick={downloadKit} className="flex items-center gap-1 rounded-md bg-primary px-2.5 py-1 font-medium text-primary-foreground hover:opacity-90 transition-opacity">
+            <Download className="h-3.5 w-3.5" /> Download kit
+          </button>
         </div>
       </header>
 
