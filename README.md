@@ -80,6 +80,33 @@ npm run tauri:build
 
 See [Tauri setup docs](https://v2.tauri.app/start/prerequisites/) for Rust installation.
 
+### 4. Desktop Agent (Python) — local voice + automation
+
+The `desktop/` folder is a full Windows desktop companion (formerly the open-source "Brahma AI - Lite" project by Suryaansh Tiwari, renamed and reworked for Jarvis — attribution preserved in `desktop/LICENSE` and `desktop/TRADEMARK.md`). It gives Jarvis hands on your PC:
+
+- **Voice**: Gemini Live real-time duplex audio (mic + speaker), wake word, idle prompts, Edge-TTS alerts
+- **Agent loop**: plan → execute → LLM-judged error recovery → replan (planner/executor/task-queue/error-handler)
+- **Automation**: open apps, control the desktop, browser automation (Playwright), file system, reminders, WhatsApp/Telegram DMs, YouTube, PC settings
+- **Office**: PowerPoint/Word/Excel/PDF generation, website & landing-page builder, dev agent (write → run → fix)
+- **Steam/Epic game updater**, **flight finder**, **screen vision**, **meeting assistant**, **notification attention monitor**
+- **Smart home**: Atomberg fans + TP-Link Kasa devices (real API integrations only)
+- **Phone dashboard**: FastAPI control plane with QR pairing and encrypted commands
+- **Plugins**: drop a `.py` in `desktop/plugins/` to add hooks
+
+**Syncs with the web brain (optional):** set `desktop/config/jarvis_cloud.json` with your Supabase URL, anon key, and Jarvis login to share memory (`public.memories`), mirror desktop conversations into web chat threads, register the desktop as a crew member (`desktop-agent`), and honor the web's voice/wake-word/auto-learn toggles.
+
+```powershell
+cd desktop
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+playwright install
+# create config/api_keys.json with your Gemini (+ OpenRouter) keys — see README.md inside desktop/
+python main.py
+```
+
+Requires Python 3.11–3.12 on Windows 10/11.
+
 ---
 
 ## Quick Start — Run Locally
