@@ -1,0 +1,8 @@
+{
+  "name": "AI Talk Radio",
+  "description": "Generate complete radio shows from simple prompts, featuring dynamic background music, realistic speech, and rich visuals using the new Antigravity agent.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

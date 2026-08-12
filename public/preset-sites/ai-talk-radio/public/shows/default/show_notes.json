@@ -1,0 +1,78 @@
+{
+  "show_title": "The Jagged Frontier: Vibe Coding and Valve's Open Windows",
+  "show_duration": "05:01",
+  "two_sentence_summary": "Jordan leads a discussion on the rise of 'vibe coding' and the potential for agentic engineering to disrupt traditional software quality standards. The episode also covers Valve's decision to open-source Steam Controller hardware files and the endorsement of SQLite by the Library of Congress.",
+  "date_of_generation": "2026-05-07",
+  "timecoded_transcript": [
+    {
+      "timecode": "00:00",
+      "speaker": "Jordan",
+      "text": "If you can go from writing two hundred lines of code a day to two thousand with an AI agent, are you actually a better engineer? Or are you just... vibing?"
+    },
+    {
+      "timecode": "00:13",
+      "speaker": "Jordan",
+      "text": "Good afternoon. I\u2019m Jordan, broadcasting from our London studio. Today we\u2019re diving into the \"jagged frontier\" of vibe coding, Valve\u2019s surprising move into open hardware files, and the Library of Congress\u2019s favorite database. We start with the debate that\u2019s set Hacker News ablaze: the rise of Agentic Engineering. Our first caller is Marcus from San Francisco."
+    },
+    {
+      "timecode": "00:40",
+      "speaker": "Marcus",
+      "text": "Hey Jordan! Look, I... I think people are being way too precious about this. Like, Simon Willison\u2019s point about \"vibe coding\" is spot on. If I\u2019ve been writing Perl for thirty years and I just want to, you know, whip up a little JavaScript app for my wife... who cares if the internal design is \"perfect\"? My wife doesn't care about lines of code. If the AI can \"vibe\" that into existence... man, let it. It\u2019s about the result, not the ritual."
+    },
+    {
+      "timecode": "01:13",
+      "speaker": "Jordan",
+      "text": "An interesting take on utility. But what about the technical debt? Elena is calling from Berlin."
+    },
+    {
+      "timecode": "01:24",
+      "speaker": "Elena",
+      "text": "Marcus is describing... uh... the normalization of deviance. It is dangerous. When you produce two thousand lines a day, the review burden doesn't disappear, it... it multiplies. These AIs, they get ninety percent there, but that last ten percent? It\u2019s full of subtle edge cases. If the code compiles, people just... they just shrug and ship it. It\u2019s not engineering anymore. It\u2019s just... generating future disasters."
+    },
+    {
+      "timecode": "02:01",
+      "speaker": "Jordan",
+      "text": "The \"jagged frontier\" indeed. Moving from the software we write to the hardware we hold\u2014Valve has released the CAD files for the Steam Controller under a Creative Commons license. Chloe is on the line from Seattle."
+    },
+    {
+      "timecode": "02:19",
+      "speaker": "Chloe",
+      "text": "This is a huge win! I mean, finally. I\u2019ve got a 3D printer and my back panel broke\u2014the battery cover thing? Now I can just... print a new one. And for the accessibility community? It\u2019s massive. You can design custom \"puck\" holders or, like, \"controller sweaters\" for people with different grip needs. It\u2019s Valve being the good guys again."
+    },
+    {
+      "timecode": "02:41",
+      "speaker": "Jordan",
+      "text": "A win for the right-to-repair, certainly. But our next caller, Raj from Bangalore, has some reservations about the fine print."
+    },
+    {
+      "timecode": "02:51",
+      "speaker": "Raj",
+      "text": "I mean... yeah, it\u2019s \"friendly,\" but look at the license. It\u2019s CC BY-NC-SA. That \"Non-Commercial\" clause is... uh... it\u2019s a bit of a joke in the open-source world. You can\u2019t really build a business helping people with these parts. And the controller itself? It still won't work on a desktop OS without Steam running. It\u2019s a very... uh... comfortable walled garden, but it\u2019s still a wall, you know?"
+    },
+    {
+      "timecode": "03:22",
+      "speaker": "Jordan",
+      "text": "A \"walled garden\" with open windows, perhaps. Finally, a nod to the classics. SQLite has officially been recommended by the Library of Congress for digital preservation. We have Sam calling from Chicago."
+    },
+    {
+      "timecode": "03:37",
+      "speaker": "Sam",
+      "text": "It\u2019s about time! SQLite is... it\u2019s basically the gold standard for \"it just works.\" No server, no complex setup. If I want my data to be readable in fifty years, I\u2019m not putting it in some... proprietary cloud mess. I\u2019m putting it in an .sqlite file. It\u2019s readable, it\u2019s OS-independent... it\u2019s just solid engineering."
+    },
+    {
+      "timecode": "04:03",
+      "speaker": "Jordan",
+      "text": "Solid for history, but maybe not for the modern server room? We finish with Sarah in Austin."
+    },
+    {
+      "timecode": "04:10",
+      "speaker": "Sarah",
+      "text": "Look, I love SQLite for a local cache, but... ugh. In a corporate environment? It\u2019s a nightmare. It makes it way too easy for some dev to, like, spin up a database that\u2019s just a file on their laptop. Then that file gets copied to a thumb drive or... or Slack. If there\u2019s PII\u2014personal data\u2014in there? You\u2019ve just lost control of your security perimeter. It\u2019s too portable for its own good."
+    },
+    {
+      "timecode": "04:43",
+      "speaker": "Jordan",
+      "text": "From the longevity of our archives to the \"vibes\" of our IDEs, the tools are changing faster than our habits. I\u2019d like to thank Marcus, Elena, Chloe, Raj, Sam, and Sarah for joining the conversation. I\u2019m Jordan, and this is AI Radio. Stay curious, stay skeptical. Good night."
+    }
+  ]
+}

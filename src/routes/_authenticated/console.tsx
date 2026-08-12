@@ -5,14 +5,14 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import {
   listThreads, createThread, deleteThread, renameThread, updateThread,
-  listProjects, createProject, listWorkspaceProjects, deleteProject, renameProject,
+  listProjects, createProject, deleteProject, renameProject,
 } from "@/lib/threads.functions";
 import { JarvisWordmark } from "@/components/jarvis/logo";
 import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Plus, Trash2, LogOut, MessageSquare, Star, MoreHorizontal, Pencil,
   FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu, Palette, LayoutDashboard,
-  Clock, BookOpen, Users, KanbanSquare, Activity, CircleDollarSign, ShieldCheck, ScrollText, Lock, ChevronDown,
+  Clock, BookOpen, Users, KanbanSquare, Activity, CircleDollarSign, ShieldCheck, ScrollText, ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -53,10 +53,8 @@ function ConsoleShell() {
   const renameProjFn = useServerFn(renameProject);
   const { data: threads = [] } = useQuery({ queryKey: ["threads"], queryFn: () => listFn({}) });
   const { data: projects = [] } = useQuery({ queryKey: ["projects"], queryFn: () => listProjFn({}) });
-  const listWorkspaceFn = useServerFn(listWorkspaceProjects);
-  const { data: wsProjects = [] } = useQuery({ queryKey: ["wsProjects"], queryFn: () => listWorkspaceFn({}) });
 
-  const allProjects = [...projects, ...wsProjects];
+  const allProjects = projects;
 
   const inv = () => qc.invalidateQueries({ queryKey: ["threads"] });
   const invP = () => qc.invalidateQueries({ queryKey: ["projects"] });
@@ -293,42 +291,38 @@ function ConsoleShell() {
               <li className="px-3 py-1 text-xs text-muted-foreground/70">No projects yet</li>
             )}
             {allProjects.map((p) => {
-              const ws = (p as any).isWorkspace === true;
               const active = params.projectId === p.id;
               return (
                 <li key={p.id} className="group flex items-center gap-1">
                   <Link
                     to="/console/projects/$projectId"
                     params={{ projectId: p.id }}
-                    title={ws ? "Bundled workspace template — read-only" : p.name}
+                    title={p.name}
                     className={`flex flex-1 items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-sm transition-colors ${
                       active ? "bg-primary/10 text-foreground" : "text-muted-foreground hover:bg-background hover:text-foreground"
                     }`}
                   >
                     <span className="h-2 w-2 rounded-full shrink-0" style={{ background: (p as any).color }} />
                     <span className="truncate">{p.name}</span>
-                    {ws && <Lock className="h-3 w-3 shrink-0 opacity-40" aria-label="Read-only workspace template" />}
                   </Link>
-                  {!ws && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          className="rounded p-1 opacity-0 hover:bg-background group-hover:opacity-100"
-                          aria-label={`Actions for ${p.name}`}
-                        >
-                          <MoreHorizontal className="h-3.5 w-3.5" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem onClick={() => { setRenameProjectId(p.id); setRenameProjectValue((p as any).name); }}>
-                          <Pencil className="mr-2 h-3.5 w-3.5" /> Rename
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setDeleteProjectId(p.id)} className="text-destructive focus:text-destructive">
-                          <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete project
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="rounded p-1 opacity-0 hover:bg-background group-hover:opacity-100"
+                        aria-label={`Actions for ${p.name}`}
+                      >
+                        <MoreHorizontal className="h-3.5 w-3.5" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={() => { setRenameProjectId(p.id); setRenameProjectValue((p as any).name); }}>
+                        <Pencil className="mr-2 h-3.5 w-3.5" /> Rename
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setDeleteProjectId(p.id)} className="text-destructive focus:text-destructive">
+                        <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete project
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </li>
               );
             })}

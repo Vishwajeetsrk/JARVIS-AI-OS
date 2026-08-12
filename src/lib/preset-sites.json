@@ -1,5 +1,23 @@
 [
   {
+    "name": "ai-data-analyst",
+    "path": "/preset-sites/ai-data-analyst/",
+    "hasSource": true,
+    "fileCount": 15
+  },
+  {
+    "name": "ai-talk-radio",
+    "path": "/preset-sites/ai-talk-radio/",
+    "hasSource": true,
+    "fileCount": 15
+  },
+  {
+    "name": "anywhere",
+    "path": "/preset-sites/anywhere/",
+    "hasSource": true,
+    "fileCount": 10
+  },
+  {
     "name": "axion-studio",
     "path": "/preset-sites/axion-studio/",
     "hasSource": true,
@@ -48,6 +66,12 @@
     "fileCount": 9
   },
   {
+    "name": "image-to-voxel-art",
+    "path": "/preset-sites/image-to-voxel-art/",
+    "hasSource": true,
+    "fileCount": 9
+  },
+  {
     "name": "linkflow",
     "path": "/preset-sites/linkflow/",
     "hasSource": true,
@@ -70,6 +94,12 @@
     "path": "/preset-sites/micro-organized/",
     "hasSource": true,
     "fileCount": 3
+  },
+  {
+    "name": "omni-product-studio",
+    "path": "/preset-sites/omni-product-studio/",
+    "hasSource": true,
+    "fileCount": 8
   },
   {
     "name": "power-ai",

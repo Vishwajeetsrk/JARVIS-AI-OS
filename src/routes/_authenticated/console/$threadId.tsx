@@ -30,7 +30,7 @@ import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink } from "lucide-react";
+import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink, Wrench, ChevronDown } from "lucide-react";
 import { z } from "zod";
 import { VoiceButton } from "@/components/dashboard/voice-button";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -42,6 +42,7 @@ export const Route = createFileRoute("/_authenticated/console/$threadId")({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ToolPartView({ part }: { part: any }) {
+  const [expanded, setExpanded] = useState(false);
   const [resolved, setResolved] = useState<{
     kind: "download" | "action";
     label: string;
@@ -52,24 +53,36 @@ function ToolPartView({ part }: { part: any }) {
     if (part?.state !== "output-available" || !part?.output) return;
     const out = part.output;
     if (out?.downloadUrl) {
-      setResolved({
-        kind: "download",
-        label: out.filename ?? "Download file",
-        url: out.downloadUrl,
-      });
+      setResolved({ kind: "download", label: out.filename ?? "Download file", url: out.downloadUrl });
       return;
     }
     if (out?.__jarvis_action__) {
       const a = out.__jarvis_action__;
-      if (a?.type === "openUrl" && a?.url) {
-        window.open(a.url, "_blank", "noopener");
-      }
+      if (a?.type === "openUrl" && a?.url) window.open(a.url, "_blank", "noopener");
       setResolved({ kind: "action", label: out.message ?? "Action executed." });
     }
   }, [part?.state, part?.output]);
 
-  if (!resolved) return null;
-  if (resolved.kind === "action") {
+  const name = part?.toolName ?? "tool";
+
+  if (part?.state !== "output-available") {
+    const running = part?.state === "input-available";
+    return (
+      <div className={`feed-in mt-2 inline-flex items-center gap-2 rounded-md border px-2.5 py-1.5 text-xs ${
+        running ? "border-primary/30 bg-primary/5" : "border-border bg-background"
+      }`}>
+        <span
+          className={`h-3 w-3 shrink-0 rounded-full border-2 ${running ? "animate-spin border-primary border-t-transparent" : "border-border"}`}
+          aria-hidden
+        />
+        <Wrench className={`h-3.5 w-3.5 ${running ? "text-primary" : "text-muted-foreground"}`} />
+        <span className="font-medium text-foreground">{name}</span>
+        <span className="text-muted-foreground">{running ? "running…" : "preparing…"}</span>
+      </div>
+    );
+  }
+
+  if (resolved?.kind === "action") {
     return (
       <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-2.5 py-1 text-xs text-foreground">
         <ExternalLink className="h-3.5 w-3.5 text-primary" />
@@ -77,16 +90,40 @@ function ToolPartView({ part }: { part: any }) {
       </div>
     );
   }
+
+  if (resolved?.kind === "download") {
+    return (
+      <a
+        href={resolved.url}
+        download={resolved.label}
+        className="shine mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-primary/20"
+      >
+        <Download className="h-3.5 w-3.5 text-primary" />
+        {resolved.label}
+        <span className="rounded-full bg-primary/20 px-1.5 py-0.5 text-[10px] font-mono text-primary">download</span>
+      </a>
+    );
+  }
+
+  const outputText =
+    typeof part?.output === "string"
+      ? part.output
+      : part?.output && typeof part.output === "object"
+        ? JSON.stringify(part.output)
+        : "";
+
   return (
-    <a
-      href={resolved.url}
-      download={resolved.label}
-      className="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-primary/20"
-    >
-      <Download className="h-3.5 w-3.5 text-primary" />
-      {resolved.label}
-      <span className="rounded-full bg-primary/20 px-1.5 py-0.5 text-[10px] font-mono text-primary">download</span>
-    </a>
+    <details className="group mt-2 rounded-lg border border-border bg-background/60 open:bg-background/80">
+      <summary className="flex cursor-pointer select-none items-center gap-2 px-3 py-2 text-xs hover:bg-surface/60">
+        <Wrench className="h-3.5 w-3.5 text-primary" />
+        <span className="font-medium text-foreground">{name}</span>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">tool result</span>
+        <ChevronDown className="ml-auto h-3 w-3 text-muted-foreground transition-transform group-open:rotate-180" />
+      </summary>
+      <pre className="max-h-56 overflow-auto border-t border-border/60 px-3 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground whitespace-pre-wrap">
+        {outputText || "No output"}
+      </pre>
+    </details>
   );
 }
 
@@ -270,7 +307,7 @@ function ThreadView() {
                         </div>
                       );
                     }
-                    if (p.type.startsWith("tool-")) {
+                    if (p.type === "tool-invocation" || p.type.startsWith("tool-")) {
                       return <ToolPartView key={i} part={p} />;
                     }
                     return null;
@@ -288,6 +325,15 @@ function ThreadView() {
           </ConversationContent>
           <ConversationScrollButton />
         </Conversation>
+        {/* Live working indicator — visible while the agent streams or runs tools */}
+        {busy && (
+          <div className="mx-auto w-full max-w-3xl px-4 pt-2">
+            <div className="progress-indeterminate" />
+            <p className="mt-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
+              {status === "streaming" ? "streaming reply…" : "agents working…"}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="mx-auto w-full max-w-3xl p-4">

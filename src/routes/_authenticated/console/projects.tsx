@@ -4,10 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
 import {
-  FolderOpen, Plus, Lock, Trash2, Pencil, MoreHorizontal, ExternalLink, MessageSquare,
+  FolderOpen, Plus, Trash2, Pencil, MoreHorizontal, MessageSquare,
 } from "lucide-react";
 import {
-  listProjects, createProject, deleteProject, renameProject, listThreads, listWorkspaceProjects,
+  listProjects, createProject, deleteProject, renameProject, listThreads,
 } from "@/lib/threads.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,8 +28,6 @@ interface Pd {
   description?: string | null;
   color: string;
   updated_at?: string | null;
-  isWorkspace?: boolean;
-  previewUrl?: string;
   threads?: number;
 }
 
@@ -37,14 +35,12 @@ function ProjectsIndex() {
   const nav = useNavigate();
   const qc = useQueryClient();
   const listP = useServerFn(listProjects);
-  const wsFn = useServerFn(listWorkspaceProjects);
   const listT = useServerFn(listThreads);
   const createP = useServerFn(createProject);
   const renameP = useServerFn(renameProject);
   const delP = useServerFn(deleteProject);
 
   const { data: db = [] } = useQuery({ queryKey: ["projects"], queryFn: () => listP({}) });
-  const { data: ws = [] } = useQuery({ queryKey: ["wsProjects"], queryFn: () => wsFn({}) });
   const { data: threads = [] } = useQuery({ queryKey: ["threads"], queryFn: () => listT({}) });
 
   const threadCounts = (threads as any[]).reduce<Record<string, number>>((acc, t) => {
@@ -52,16 +48,10 @@ function ProjectsIndex() {
     return acc;
   }, {});
 
-  const all: Pd[] = [
-    ...(db as any[]).map((p) => ({
-      id: p.id, name: p.name, description: p.description, color: p.color,
-      updated_at: p.updated_at, threads: threadCounts[p.id] ?? 0,
-    })),
-    ...(ws as any[]).map((p) => ({
-      id: p.id, name: p.name, color: p.color, isWorkspace: true,
-      previewUrl: p.previewUrl, threads: threadCounts[p.id] ?? 0,
-    })),
-  ];
+  const all: Pd[] = (db as any[]).map((p) => ({
+    id: p.id, name: p.name, description: p.description, color: p.color,
+    updated_at: p.updated_at, threads: threadCounts[p.id] ?? 0,
+  }));
 
   const [newOpen, setNewOpen] = useState(false);
   const [newName, setNewName] = useState("");
@@ -73,7 +63,6 @@ function ProjectsIndex() {
 
   const inv = () => {
     qc.invalidateQueries({ queryKey: ["projects"] });
-    qc.invalidateQueries({ queryKey: ["wsProjects"] });
     qc.invalidateQueries({ queryKey: ["threads"] });
   };
 
@@ -99,9 +88,9 @@ function ProjectsIndex() {
       <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="text-mono-xs text-muted-foreground mb-1">Projects</div>
-          <h1 className="font-display text-3xl font-semibold">{all.length} workspaces</h1>
+          <h1 className="font-display text-3xl font-semibold">{all.length} {all.length === 1 ? "project" : "projects"}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Create your own, rename and restyle them, or browse the bundled live sites.
+            Create your own, rename and restyle them, and group chats by project.
           </p>
         </div>
         <Button onClick={() => setNewOpen(true)}>
@@ -128,35 +117,29 @@ function ProjectsIndex() {
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-medium text-foreground">{p.name}</span>
                     <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">
-                      {p.isWorkspace ? "Workspace template" : p.updated_at ? `Updated ${formatDistanceToNowStrict(new Date(p.updated_at!), { addSuffix: true })}` : "—"}
+                      {p.updated_at ? `Updated ${formatDistanceToNowStrict(new Date(p.updated_at!), { addSuffix: true })}` : "—"}
                     </span>
                   </span>
                 </button>
-                {p.isWorkspace ? (
-                  <Lock className="h-3.5 w-3.5 shrink-0 opacity-40" aria-label="Read-only workspace template" />
-                ) : (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-background hover:text-foreground group-hover:opacity-100" aria-label={`Actions for ${p.name}`}>
-                        <MoreHorizontal className="h-4 w-4" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onClick={() => openEdit(p)}>
-                        <Pencil className="mr-2 h-3.5 w-3.5" /> Rename / restyle
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setDel(p)} className="text-destructive focus:text-destructive">
-                        <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete project
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-background hover:text-foreground group-hover:opacity-100" aria-label={`Actions for ${p.name}`}>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem onClick={() => openEdit(p)}>
+                      <Pencil className="mr-2 h-3.5 w-3.5" /> Rename / restyle
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setDel(p)} className="text-destructive focus:text-destructive">
+                      <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete project
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <p className="mt-3 line-clamp-2 flex-1 text-xs leading-relaxed text-muted-foreground">
-                {p.isWorkspace
-                  ? `Bundled live site${p.previewUrl ? ` at ${p.previewUrl}` : ""} — preview it and remix in the console.`
-                  : (p.description ?? "No description yet.")}
+                {p.description ?? "No description yet."}
               </p>
 
               <div className="mt-4 flex items-center justify-between">
@@ -168,7 +151,7 @@ function ProjectsIndex() {
                   params={{ projectId: p.id }}
                   className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                 >
-                  {p.isWorkspace && <ExternalLink className="h-3 w-3" />} Open
+                  Open
                 </Link>
               </div>
             </div>

@@ -1,0 +1,416 @@
+Here is a complete, single-page HTML file containing the Three.js code to render a beautiful voxel art scene inspired by your image.
+
+It uses `InstancedMesh` for high performance, includes a procedural generation system for the island and tree, and adds animated elements like a flowing waterfall and falling cherry blossom petals.
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floating Voxel Sakura Island</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #ffebd0; }
+        canvas { display: block; }
+        #loading {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-family: monospace; color: #886666; font-size: 24px; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Generating Voxel World...</div>
+    
+    <!-- Import Three.js as a module -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { SimplexNoise } from 'three/addons/math/SimplexNoise.js';
+
+        // --- Configuration ---
+        const VOXEL_SIZE = 1;
+        const ISLAND_RADIUS = 18;
+        const ISLAND_DEPTH = 14;
+        const TREE_HEIGHT = 16;
+        
+        // Palette based on the image
+        const PALETTE = {
+            GRASS_TOP: 0x6a8d46,
+            GRASS_SIDE: 0x567238,
+            DIRT: 0x5c4033,
+            STONE_LIGHT: 0x7a7a7a,
+            STONE_DARK: 0x555555,
+            TRUNK: 0x3e2723,
+            LEAVES_1: 0xffb7c5, // Light pink
+            LEAVES_2: 0xffc0cb, // Pink
+            LEAVES_3: 0xff69b4, // Hot pink (shadows)
+            WATER: 0xaaddff,
+            WATER_FOAM: 0xffffff
+        };
+
+        // --- Setup Scene ---
+        const scene = new THREE.Scene();
+        // Warm, cloudy background color
+        scene.background = new THREE.Color(0xffeedd);
+        // Fog to simulate clouds/atmosphere
+        scene.fog = new THREE.FogExp2(0xffeedd, 0.015);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(60, 30, 60);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.SoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+
+        // --- Lighting ---
+        const ambientLight = new THREE.AmbientLight(0xffcccc, 0.6);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xfffaed, 1.5);
+        sunLight.position.set(50, 80, 30);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        sunLight.shadow.camera.near = 0.5;
+        sunLight.shadow.camera.far = 200;
+        sunLight.shadow.camera.left = -50;
+        sunLight.shadow.camera.right = 50;
+        sunLight.shadow.camera.top = 50;
+        sunLight.shadow.camera.bottom = -50;
+        scene.add(sunLight);
+
+        // Backlight for softness
+        const backLight = new THREE.DirectionalLight(0xaaccff, 0.4);
+        backLight.position.set(-30, 20, -30);
+        scene.add(backLight);
+
+        // --- Voxel Logic ---
+        const voxels = []; // Stores {x, y, z, color}
+
+        function addVoxel(x, y, z, color) {
+            voxels.push({ x, y, z, color });
+        }
+
+        // Helper for distance
+        const dist = (x1, z1, x2, z2) => Math.sqrt((x2-x1)**2 + (z2-z1)**2);
+
+        // --- Procedural Generation ---
+
+        // 1. The Island (Inverted Cone with noise)
+        const simplex = new SimplexNoise();
+        
+        for (let x = -ISLAND_RADIUS; x <= ISLAND_RADIUS; x++) {
+            for (let z = -ISLAND_RADIUS; z <= ISLAND_RADIUS; z++) {
+                const d = dist(0, 0, x, z);
+                
+                // Define the shape of the island
+                if (d < ISLAND_RADIUS - 1) {
+                    // Surface noise
+                    const surfaceHeight = Math.floor(simplex.noise(x * 0.1, z * 0.1) * 2);
+                    
+                    // Bottom tapering logic
+                    let depth = Math.floor((ISLAND_RADIUS - d) * 1.2); // Cone shape
+                    depth += Math.floor(simplex.noise(x * 0.2, z * 0.2) * 4); // Jagged bottom
+                    
+                    // Carve out for waterfall riverbed
+                    let isRiver = false;
+                    if (x > 2 && x < 6 && z > 0) {
+                        depth -= 1; // Make island thinner under river
+                        isRiver = true;
+                    }
+
+                    // Build the column
+                    for (let y = surfaceHeight; y >= surfaceHeight - depth; y--) {
+                        let color;
+                        
+                        // River channel logic
+                        if (isRiver && y === surfaceHeight) {
+                            continue; // Empty space for water later
+                        } else if (isRiver && y === surfaceHeight - 1) {
+                            color = PALETTE.STONE_DARK; // River bed
+                        } 
+                        // Normal terrain
+                        else if (y === surfaceHeight) {
+                            color = (Math.random() > 0.8) ? PALETTE.GRASS_TOP : 0x7a9e55;
+                            // Randomly add a stone on top
+                            if(Math.random() > 0.98) addVoxel(x, y+1, z, PALETTE.STONE_LIGHT);
+                        } else if (y > surfaceHeight - 3) {
+                            color = PALETTE.DIRT;
+                        } else {
+                            color = (Math.random() > 0.5) ? PALETTE.STONE_LIGHT : PALETTE.STONE_DARK;
+                        }
+
+                        // Don't place block if it's where the waterfall falls
+                        if (x > 2 && x < 6 && z > ISLAND_RADIUS - 3) {
+                            // Gap for waterfall edge
+                        } else {
+                            addVoxel(x, y, z, color);
+                        }
+                    }
+                }
+            }
+        }
+
+        // 2. The Tree (Twisting Trunk + Canopy)
+        const trunkX = -4;
+        const trunkZ = -2;
+        
+        // Trunk
+        for (let y = 0; y < TREE_HEIGHT; y++) {
+            // Add some "wiggle" to the trunk
+            let offX = Math.sin(y * 0.3) * 2;
+            let offZ = Math.cos(y * 0.2) * 2;
+            
+            let thickness = (y < 4) ? 2 : 1; // Thicker base
+            
+            for(let tx = -thickness; tx <= thickness; tx++) {
+                for(let tz = -thickness; tz <= thickness; tz++) {
+                    if(tx*tx + tz*tz <= thickness*thickness + 0.5) {
+                        addVoxel(trunkX + offX + tx, y + 1, trunkZ + offZ + tz, PALETTE.TRUNK);
+                    }
+                }
+            }
+
+            // Branches
+            if (y > 6 && y % 3 === 0) {
+                let branchLen = 4 + Math.random() * 4;
+                let dirX = (Math.random() - 0.5);
+                let dirZ = (Math.random() - 0.5);
+                for(let b=1; b<branchLen; b++) {
+                    addVoxel(trunkX + offX + dirX*b*2, y + 1 + b, trunkZ + offZ + dirZ*b*2, PALETTE.TRUNK);
+                }
+            }
+        }
+
+        // Canopy (Cherry Blossoms)
+        // Create several spheres of leaves
+        const canopyCenters = [
+            {x: trunkX, y: TREE_HEIGHT + 2, z: trunkZ, r: 8},
+            {x: trunkX + 5, y: TREE_HEIGHT - 2, z: trunkZ + 2, r: 6},
+            {x: trunkX - 5, y: TREE_HEIGHT - 1, z: trunkZ - 2, r: 6},
+            {x: trunkX, y: TREE_HEIGHT + 4, z: trunkZ - 4, r: 5},
+            {x: trunkX + 2, y: TREE_HEIGHT, z: trunkZ + 5, r: 6},
+        ];
+
+        canopyCenters.forEach(sphere => {
+            for (let x = -sphere.r; x <= sphere.r; x++) {
+                for (let y = -sphere.r; y <= sphere.r; y++) {
+                    for (let z = -sphere.r; z <= sphere.r; z++) {
+                        if (x*x + y*y + z*z <= sphere.r*sphere.r) {
+                            // Noise to make it fluffy not perfect sphere
+                            if (Math.random() > 0.4) {
+                                const worldX = sphere.x + x;
+                                const worldY = sphere.y + y;
+                                const worldZ = sphere.z + z;
+                                
+                                // Color variation
+                                const rand = Math.random();
+                                let col = PALETTE.LEAVES_1;
+                                if (rand < 0.33) col = PALETTE.LEAVES_2;
+                                else if (rand < 0.66) col = PALETTE.LEAVES_3;
+                                
+                                addVoxel(worldX, worldY, worldZ, col);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 3. Floating Rocks
+        const floatingRocks = [
+            {x: 15, y: -5, z: 10, s: 2},
+            {x: -18, y: -2, z: 5, s: 1.5},
+            {x: 5, y: -15, z: -10, s: 3},
+        ];
+
+        floatingRocks.forEach(rock => {
+            for(let x=-rock.s; x<=rock.s; x++) {
+                for(let y=-rock.s; y<=rock.s; y++) {
+                    for(let z=-rock.s; z<=rock.s; z++) {
+                         if (x*x + y*y + z*z <= rock.s*rock.s + Math.random()) {
+                             addVoxel(rock.x+x, rock.y+y, rock.z+z, PALETTE.STONE_DARK);
+                         }
+                    }
+                }
+            }
+        });
+
+
+        // --- Rendering the Static Voxels ---
+        const geometry = new THREE.BoxGeometry(VOXEL_SIZE, VOXEL_SIZE, VOXEL_SIZE);
+        // Standard material for nice lighting
+        const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8, metalness: 0.1 });
+        
+        const instancedMesh = new THREE.InstancedMesh(geometry, material, voxels.length);
+        instancedMesh.castShadow = true;
+        instancedMesh.receiveShadow = true;
+
+        const dummy = new THREE.Object3D();
+        const color = new THREE.Color();
+
+        voxels.forEach((voxel, i) => {
+            dummy.position.set(voxel.x, voxel.y, voxel.z);
+            dummy.updateMatrix();
+            instancedMesh.setMatrixAt(i, dummy.matrix);
+            instancedMesh.setColorAt(i, color.setHex(voxel.color));
+        });
+
+        scene.add(instancedMesh);
+        document.getElementById('loading').style.display = 'none';
+
+        // --- Animated Elements ---
+
+        // 1. Waterfall
+        // We create a separate instanced mesh for water chunks to animate them
+        const waterCount = 150;
+        const waterGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+        const waterMat = new THREE.MeshStandardMaterial({ 
+            color: PALETTE.WATER, 
+            transparent: true, 
+            opacity: 0.8,
+            roughness: 0.1
+        });
+        const waterfallMesh = new THREE.InstancedMesh(waterGeo, waterMat, waterCount);
+        scene.add(waterfallMesh);
+
+        const waterParticles = [];
+        for(let i=0; i<waterCount; i++) {
+            waterParticles.push({
+                x: 3 + Math.random() * 3, // River width area
+                y: 0 + Math.random(),     // Start at top
+                z: 10 + Math.random() * 5, // Edge of island area
+                speed: 0.1 + Math.random() * 0.2,
+                offset: Math.random() * 100,
+                state: 'river' // river, falling, pool
+            });
+        }
+
+        // 2. Falling Petals
+        const petalCount = 200;
+        const petalGeo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+        const petalMat = new THREE.MeshBasicMaterial({ color: PALETTE.LEAVES_1 });
+        const petalMesh = new THREE.InstancedMesh(petalGeo, petalMat, petalCount);
+        scene.add(petalMesh);
+        
+        const petals = [];
+        for(let i=0; i<petalCount; i++) {
+            petals.push({
+                x: (Math.random() - 0.5) * 40,
+                y: 10 + Math.random() * 20,
+                z: (Math.random() - 0.5) * 40,
+                speedY: 0.05 + Math.random() * 0.05,
+                speedX: (Math.random() - 0.5) * 0.05,
+                speedZ: (Math.random() - 0.5) * 0.05,
+                rotSpeed: (Math.random() - 0.5) * 0.1
+            });
+        }
+
+        // --- Animation Loop ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = clock.getElapsedTime();
+            const delta = clock.getDelta();
+
+            controls.update();
+
+            // 1. Animate Island Floating
+            instancedMesh.position.y = Math.sin(time * 0.5) * 0.5;
+            waterfallMesh.position.y = instancedMesh.position.y; // Sync water with island
+
+            // 2. Animate Waterfall
+            const islandEdgeZ = Math.sqrt(ISLAND_RADIUS*ISLAND_RADIUS - 4*4); // Approx edge at x=4
+            
+            waterParticles.forEach((p, i) => {
+                // Logic: Flow along X/Z until edge, then fall Y
+                
+                // Hardcoded river path for visual simplicity
+                // Start: x=3..6, z=0. Flow towards z+
+                
+                if (p.state === 'river') {
+                    p.z += p.speed;
+                    p.y = 0; // Surface level
+                    // Wobble
+                    p.y += Math.sin(time * 5 + p.offset) * 0.1;
+                    
+                    // Check if fell off edge (approx Z=13 for X around 4)
+                    if (p.z > 13) {
+                        p.state = 'falling';
+                    }
+                } else if (p.state === 'falling') {
+                    p.y -= 0.4; // Gravity
+                    p.z += 0.05; // Slight forward momentum
+                    
+                    if (p.y < -25) {
+                        // Reset
+                        p.state = 'river';
+                        p.z = 0;
+                        p.x = 3 + Math.random() * 3;
+                        p.y = 0;
+                    }
+                }
+
+                dummy.position.set(p.x, p.y, p.z);
+                dummy.scale.setScalar(1);
+                // Stretch falling water
+                if (p.state === 'falling') dummy.scale.y = 2;
+                
+                dummy.updateMatrix();
+                waterfallMesh.setMatrixAt(i, dummy.matrix);
+            });
+            waterfallMesh.instanceMatrix.needsUpdate = true;
+
+            // 3. Animate Petals
+            petals.forEach((p, i) => {
+                p.y -= p.speedY;
+                p.x += p.speedX + Math.sin(time + p.y)*0.02; // Wind
+                p.z += p.speedZ + Math.cos(time + p.y)*0.02;
+
+                if (p.y < -30) {
+                    p.y = 25;
+                    p.x = (Math.random() - 0.5) * 30;
+                    p.z = (Math.random() - 0.5) * 30;
+                }
+
+                dummy.position.set(p.x, p.y, p.z);
+                dummy.rotation.set(time * p.rotSpeed, time * p.rotSpeed, time * p.rotSpeed);
+                dummy.scale.setScalar(1);
+                dummy.updateMatrix();
+                petalMesh.setMatrixAt(i, dummy.matrix);
+            });
+            petalMesh.instanceMatrix.needsUpdate = true;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>

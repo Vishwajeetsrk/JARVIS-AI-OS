@@ -1,0 +1,6 @@
+{
+  "name": "Image to Voxel Art",
+  "description": "Create voxel art scenes inspired by any image.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

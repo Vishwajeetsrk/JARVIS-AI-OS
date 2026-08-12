@@ -1,0 +1,10 @@
+{
+  "name": "Anywhere",
+  "description": "An interactive 3D spherical gallery of images using WebGL. Features free drag-to-rotate interaction, momentum scrolling, and deep zoom camera penetration inside the sphere.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

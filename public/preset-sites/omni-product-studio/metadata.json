@@ -1,0 +1,8 @@
+{
+  "name": "Omni Product Studio",
+  "description": "Turn product photos into cinematic vibe reels with Gemini Omni Flash and Nano Banana Flash Lite. ",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

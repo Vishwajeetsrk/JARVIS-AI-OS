@@ -3,30 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { formatDistanceToNowStrict } from "date-fns";
 import { FolderPlus, FolderOpen, ArrowRight } from "lucide-react";
-import { listProjects, listWorkspaceProjects } from "@/lib/threads.functions";
+import { listProjects } from "@/lib/threads.functions";
 
 export function ProjectCards({ onNewProject }: { onNewProject?: () => void }) {
   const listFn = useServerFn(listProjects);
-  const wsFn = useServerFn(listWorkspaceProjects);
   const { data: projects = [] } = useQuery({ queryKey: ["projects"], queryFn: () => listFn({}) });
-  const { data: ws = [] } = useQuery({ queryKey: ["wsProjects"], queryFn: () => wsFn({}) });
 
-  const all = [
-    ...projects.map((p: any) => ({
-      id: p.id as string,
-      name: p.name as string,
-      color: (p.color as string) ?? "#D97757",
-      updated_at: p.updated_at as string | null,
-      isWorkspace: false,
-    })),
-    ...ws.map((p: any) => ({
-      id: p.id as string,
-      name: p.name as string,
-      color: (p.color as string) ?? "#D97757",
-      updated_at: null,
-      isWorkspace: true,
-    })),
-  ];
+  const all = projects.map((p: any) => ({
+    id: p.id as string,
+    name: p.name as string,
+    color: (p.color as string) ?? "#D97757",
+    updated_at: p.updated_at as string | null,
+  }));
 
   if (all.length === 0) {
     return (
@@ -60,11 +48,9 @@ export function ProjectCards({ onNewProject }: { onNewProject?: () => void }) {
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-foreground">{p.name}</p>
             <p className="mt-0.5 font-mono text-[10px] uppercase text-muted-foreground/60">
-              {p.isWorkspace
-                ? "Workspace"
-                : p.updated_at
-                  ? formatDistanceToNowStrict(new Date(p.updated_at), { addSuffix: true })
-                  : "—"}
+              {p.updated_at
+                ? formatDistanceToNowStrict(new Date(p.updated_at), { addSuffix: true })
+                : "—"}
             </p>
           </div>
         </Link>
