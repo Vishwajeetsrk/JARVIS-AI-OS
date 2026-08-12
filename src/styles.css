@@ -176,6 +176,8 @@
 .reveal-stagger > *:nth-child(4) { animation-delay: 220ms; }
 .reveal-stagger > *:nth-child(5) { animation-delay: 280ms; }
 .reveal-stagger > *:nth-child(6) { animation-delay: 340ms; }
+.reveal-stagger > *:nth-child(7) { animation-delay: 400ms; }
+.reveal-stagger > *:nth-child(8) { animation-delay: 460ms; }
 
 /* ── Sidebar item hover: slide-in left bar ───────────── */
 .side-item {
@@ -187,9 +189,9 @@
   background: var(--primary); border-radius: 2px;
   transform: scaleY(0); transform-origin: center; transition: transform var(--t-quick) var(--ease-snap);
 }
-.side-item:hover::before, .side-item[data-active="true"]::before { transform: scaleY(1); }
+.side-item:hover::before, .side-item[data-active="true"]::before, .side-item[aria-current="page"]::before { transform: scaleY(1); }
 .side-item:hover { background: color-mix(in oklab, white 6%, transparent); }
-.side-item[data-active="true"] {
+.side-item[data-active="true"], .side-item[aria-current="page"] {
   background: color-mix(in oklab, var(--primary) 12%, transparent);
   color: var(--foreground);
 }
@@ -276,3 +278,62 @@
   border-radius: 999px; background: var(--primary);
   animation: progress-slide 1.5s var(--ease-snap) infinite;
 }
+
+/* ── Live feed item entrance — slide-down settle ────── */
+@keyframes feed-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.feed-in { animation: feed-in 280ms var(--ease-snap) both; }
+
+/* ── Gentle breathing for online indicators ─────────── */
+@keyframes breathe {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+.breathe { animation: breathe 2.6s ease-in-out infinite; }
+
+/* ── Quick-action shine sweep on hover ──────────────── */
+@keyframes shine-x {
+  from { transform: translateX(-160%) skewX(-18deg); }
+  to   { transform: translateX(320%) skewX(-18deg); }
+}
+.shine { position: relative; overflow: hidden; }
+.shine::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%;
+  background: linear-gradient(100deg, transparent, color-mix(in oklab, white 10%, transparent), transparent);
+  transform: translateX(-160%) skewX(-18deg);
+  pointer-events: none;
+}
+.shine:hover::after { animation: shine-x 0.7s var(--ease-snap); }
+
+/* ── Respect reduced-motion preferences ─────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Gradient headline shimmer ──────────────────────── */
+@keyframes text-shimmer {
+  from { background-position: 0% 50%; }
+  to   { background-position: 200% 50%; }
+}
+.text-shimmer {
+  background: linear-gradient(100deg, var(--color-primary), hsl(28 90% 72%), var(--color-primary));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: text-shimmer 6s linear infinite;
+}
+
+/* ── Ambient hero glow drift ────────────────────────── */
+@keyframes orb-drift {
+  0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+  50%      { transform: translateX(-38%) translateY(14%) scale(1.18); }
+}
+.orb-drift { animation: orb-drift 14s ease-in-out infinite; }

@@ -5,14 +5,14 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import {
   listThreads, createThread, deleteThread, renameThread, updateThread,
-  listProjects, createProject, listWorkspaceProjects,
+  listProjects, createProject, listWorkspaceProjects, deleteProject, renameProject,
 } from "@/lib/threads.functions";
 import { JarvisWordmark } from "@/components/jarvis/logo";
 import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Plus, Trash2, LogOut, MessageSquare, Star, MoreHorizontal, Pencil,
   FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu, Palette, LayoutDashboard,
-  Clock, BookOpen, Users, KanbanSquare, Activity, CircleDollarSign, ShieldCheck, ScrollText,
+  Clock, BookOpen, Users, KanbanSquare, Activity, CircleDollarSign, ShieldCheck, ScrollText, Lock,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_authenticated/console")({
 function ConsoleShell() {
   const navigate = useNavigate();
   const router = useRouter();
-  const params = useParams({ strict: false }) as { threadId?: string };
+  const params = useParams({ strict: false }) as { threadId?: string; projectId?: string };
   const qc = useQueryClient();
   const listFn = useServerFn(listThreads);
   const createFn = useServerFn(createThread);
@@ -49,6 +49,8 @@ function ConsoleShell() {
   const updateFn = useServerFn(updateThread);
   const listProjFn = useServerFn(listProjects);
   const createProjFn = useServerFn(createProject);
+  const deleteProjFn = useServerFn(deleteProject);
+  const renameProjFn = useServerFn(renameProject);
   const { data: threads = [] } = useQuery({ queryKey: ["threads"], queryFn: () => listFn({}) });
   const { data: projects = [] } = useQuery({ queryKey: ["projects"], queryFn: () => listProjFn({}) });
   const listWorkspaceFn = useServerFn(listWorkspaceProjects);
@@ -107,11 +109,26 @@ function ConsoleShell() {
     mutationFn: (name: string) => createProjFn({ data: { name } }),
     onSuccess: () => { invP(); toast.success("Project created."); },
   });
+  const mDeleteProject = useMutation({
+    mutationFn: (id: string) => deleteProjFn({ data: { id } }),
+    onSuccess: () => {
+      invP();
+      toast.success("Project deleted.");
+      if (params.projectId?.startsWith("local-") === false && params.projectId) navigate({ to: "/console" });
+    },
+  });
+  const mRenameProject = useMutation({
+    mutationFn: (v: { id: string; name: string }) => renameProjFn({ data: v }),
+    onSuccess: () => { invP(); toast.success("Project renamed."); },
+  });
 
   const [renameId, setRenameId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [newProjOpen, setNewProjOpen] = useState(false);
   const [newProjName, setNewProjName] = useState("");
+  const [renameProjectId, setRenameProjectId] = useState<string | null>(null);
+  const [renameProjectValue, setRenameProjectValue] = useState("");
+  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
 
   const signOut = async () => {
     localStorage.removeItem("jarvis-guest-mode");
@@ -127,7 +144,7 @@ function ConsoleShell() {
   const NavLink = ({ to, icon: Icon, label }: { to: string; icon: typeof Wrench; label: string }) => (
     <Link
       to={to}
-      className="flex items-center gap-2 rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:bg-background hover:text-foreground"
+      className="side-item flex items-center gap-2 rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
       activeProps={{ className: "bg-primary/10 text-foreground" }}
     >
       <Icon className="h-3.5 w-3.5" /> {label}
@@ -212,7 +229,7 @@ function ConsoleShell() {
       </div>
       <button
         onClick={() => mCreate.mutate(undefined)}
-        className="m-3 flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90 active:scale-[0.98]"
+        className="shine m-3 flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90 active:scale-[0.98]"
       >
         <Plus className="h-4 w-4" /> New chat
         <kbd className="ml-auto hidden rounded bg-primary-foreground/20 px-1.5 text-[10px] font-mono sm:block">⌘N</kbd>
@@ -253,19 +270,46 @@ function ConsoleShell() {
             {allProjects.length === 0 && (
               <li className="px-3 py-1 text-xs text-muted-foreground/70">No projects yet</li>
             )}
-            {allProjects.map((p) => (
-              <li key={p.id}>
-                <Link
-                  to="/console/projects/$projectId"
-                  params={{ projectId: p.id }}
-                  className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:bg-background hover:text-foreground"
-                  activeProps={{ className: "bg-primary/10 text-foreground" }}
-                >
-                  <span className="h-2 w-2 rounded-full shrink-0" style={{ background: p.color }} />
-                  <span className="truncate">{p.name}</span>
-                </Link>
-              </li>
-            ))}
+            {allProjects.map((p) => {
+              const ws = (p as any).isWorkspace === true;
+              const active = params.projectId === p.id;
+              return (
+                <li key={p.id} className="group flex items-center gap-1">
+                  <Link
+                    to="/console/projects/$projectId"
+                    params={{ projectId: p.id }}
+                    title={ws ? "Bundled workspace template — read-only" : p.name}
+                    className={`flex flex-1 items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-sm transition-colors ${
+                      active ? "bg-primary/10 text-foreground" : "text-muted-foreground hover:bg-background hover:text-foreground"
+                    }`}
+                  >
+                    <span className="h-2 w-2 rounded-full shrink-0" style={{ background: (p as any).color }} />
+                    <span className="truncate">{p.name}</span>
+                    {ws && <Lock className="h-3 w-3 shrink-0 opacity-40" aria-label="Read-only workspace template" />}
+                  </Link>
+                  {!ws && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="rounded p-1 opacity-0 hover:bg-background group-hover:opacity-100"
+                          aria-label={`Actions for ${p.name}`}
+                        >
+                          <MoreHorizontal className="h-3.5 w-3.5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem onClick={() => { setRenameProjectId(p.id); setRenameProjectValue((p as any).name); }}>
+                          <Pencil className="mr-2 h-3.5 w-3.5" /> Rename
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setDeleteProjectId(p.id)} className="text-destructive focus:text-destructive">
+                          <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete project
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -375,6 +419,54 @@ function ConsoleShell() {
               mCreateProject.mutate(newProjName.trim());
               setNewProjName(""); setNewProjOpen(false);
             }}>Create</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Rename project dialog */}
+      <Dialog open={!!renameProjectId} onOpenChange={(o) => !o && setRenameProjectId(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Rename project</DialogTitle></DialogHeader>
+          <Input
+            value={renameProjectValue}
+            onChange={(e) => setRenameProjectValue(e.target.value)}
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && renameProjectValue.trim()) {
+                mRenameProject.mutate({ id: renameProjectId!, name: renameProjectValue.trim() });
+                setRenameProjectId(null);
+              }
+            }}
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setRenameProjectId(null)}>Cancel</Button>
+            <Button onClick={() => {
+              if (!renameProjectId || !renameProjectValue.trim()) return;
+              mRenameProject.mutate({ id: renameProjectId, name: renameProjectValue.trim() });
+              setRenameProjectId(null);
+            }}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete project confirm */}
+      <Dialog open={!!deleteProjectId} onOpenChange={(o) => !o && setDeleteProjectId(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Delete project?</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            This removes the project from the sidebar. Its chats are kept.
+          </p>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteProjectId(null)}>Cancel</Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (deleteProjectId) mDeleteProject.mutate(deleteProjectId);
+                setDeleteProjectId(null);
+              }}
+            >
+              <Trash2 className="mr-2 h-4 w-4" /> Delete
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

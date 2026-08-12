@@ -162,21 +162,21 @@ function LandingPage() {
           style={{ backgroundImage: "var(--gradient-hero)" }}
         />
         {/* Animated ambient glow */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <div
-            className="absolute left-1/3 top-0 h-[400px] w-[600px] -translate-x-1/2 rounded-full opacity-[0.07] blur-3xl"
+            className="orb-drift absolute left-1/3 top-0 h-[400px] w-[600px] rounded-full opacity-[0.07] blur-3xl"
             style={{ background: "radial-gradient(ellipse, var(--color-primary), transparent)" }}
           />
         </div>
         <div className="bg-noise relative -z-10 h-full w-full" />
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 pb-20 pt-16 text-center md:pt-24">
           <span className="chip reveal">
-            <JarvisStar size={12} className="text-primary" /> v{health?.version ?? "2.5.2"} · Production Meta-Tool
+            <JarvisStar size={12} className="text-primary" /> v{health?.version ?? "2.5.3"} · Production Meta-Tool
           </span>
           <h1 className="reveal font-display text-5xl font-semibold leading-[1.05] tracking-tight text-foreground md:text-7xl">
             One brain.
             <br />
-            <span className="text-primary">Many shells.</span>
+            <span className="text-shimmer">Many shells.</span>
             <br />
             Every project, remembered.
           </h1>
@@ -186,7 +186,7 @@ function LandingPage() {
           </p>
 
           <div className="reveal flex flex-wrap items-center justify-center gap-3">
-            <Link to="/console" className="btn-hero group inline-flex items-center gap-2">
+            <Link to="/console" className="btn-hero shine group inline-flex items-center gap-2">
               Open Jarvis Console <span aria-hidden className="arrow-slide">→</span>
             </Link>
             <Link
@@ -350,8 +350,12 @@ function LandingPage() {
                 : item.agent === "voice" ? (health?.voice ?? "online")
                 : "online";
               return (
-                <div key={i} className="snap-colors flex items-center gap-4 px-5 py-3.5 hover:bg-surface/50">
-                  <span className={`h-2 w-2 rounded-full shrink-0 ${liveState === "online" ? "bg-sage" : "bg-red-500 animate-pulse"}`} />
+                <div
+                  key={i}
+                  className="reveal snap-colors flex items-center gap-4 px-5 py-3.5 hover:bg-surface/50"
+                  style={{ animationDelay: `${i * 70}ms` }}
+                >
+                  <span className={`h-2 w-2 rounded-full shrink-0 ${liveState === "online" ? "bg-sage breathe" : "bg-red-500 animate-pulse"}`} />
                   <code className="font-mono text-xs text-primary shrink-0 w-28">{item.agent}</code>
                   <span className="text-sm text-foreground flex-1">{item.action}</span>
                   <span className={`text-xs shrink-0 font-mono uppercase ${liveState === "online" ? "text-sage" : "text-red-500"}`}>{liveState}</span>
@@ -377,7 +381,7 @@ function LandingPage() {
           <div className="text-mono-xs text-muted-foreground mb-2">Multi-Surface Architecture</div>
           <h2 className="font-display text-3xl md:text-5xl font-semibold">5 Front Doors. One Agent Brain.</h2>
         </div>
-        <div className="grid gap-4 md:grid-cols-5">
+        <div className="reveal-stagger grid gap-4 md:grid-cols-5">
           {SURFACES.map((s) => (
             <div key={s.title} className="hover-card rounded-xl border border-border bg-card p-5 text-left">
               <s.icon className="h-6 w-6 text-primary mb-3" />
@@ -536,7 +540,7 @@ function LandingPage() {
             Jarvis is free. Gemini Flash and Groq Llama — no credit card, no rate limits that matter.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link to="/console" className="btn-hero group inline-flex items-center gap-2 text-base px-8 py-3.5">
+            <Link to="/console" className="btn-hero shine group inline-flex items-center gap-2 text-base px-8 py-3.5">
               Open the Console <ArrowRight className="arrow-slide h-4 w-4" />
             </Link>
             <Link to="/auth" className="snap-colors inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-6 py-3.5 text-sm font-medium text-primary hover:bg-primary/10">

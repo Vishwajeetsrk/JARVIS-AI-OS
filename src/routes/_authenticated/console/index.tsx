@@ -186,15 +186,15 @@ function ConsoleDashboard() {
           <h2 className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             <Zap className="h-3.5 w-3.5 text-primary" /> Quick Actions
           </h2>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="reveal-stagger grid grid-cols-2 gap-3 lg:grid-cols-4">
             {QUICK_ACTIONS.map((action) => (
               <button
                 key={action.label}
                 onClick={() => mCreate.mutate(action.seed)}
-                className="hover-card group flex flex-col gap-3 rounded-xl border border-border bg-card p-4 text-left active:scale-[0.98]"
+                className="shine hover-card group flex flex-col gap-3 rounded-xl border border-border bg-card p-4 text-left active:scale-[0.98]"
               >
                 <div
-                  className="flex h-9 w-9 items-center justify-center rounded-lg"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg transition-transform duration-300 ease-out group-hover:rotate-6 group-hover:scale-110"
                   style={{ background: `${action.accent}15`, color: action.accent }}
                 >
                   <action.icon className="h-4 w-4" />
@@ -233,7 +233,7 @@ function ConsoleDashboard() {
                   return (
                     <div key={e.label} className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
-                        <span className={`h-1.5 w-1.5 rounded-full ${online ? "bg-sage" : "bg-red-500 animate-pulse"}`} />
+                        <span className={`h-1.5 w-1.5 rounded-full ${online ? "bg-sage breathe" : "bg-red-500 animate-pulse"}`} />
                         <span className="text-muted-foreground">{e.label}</span>
                       </div>
                       <span className={`font-mono text-[10px] uppercase ${online ? "text-sage" : "text-red-500"}`}>

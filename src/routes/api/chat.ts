@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import { convertToModelMessages, isStepCount, streamText, type UIMessage } from "ai";
 import { resolveChatModel } from "@/lib/ai-providers";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
@@ -694,6 +694,10 @@ export const Route = createFileRoute("/api/chat")({
             messages: await convertToModelMessages(requestMessages),
             tools: tools as any,
             toolChoice: "auto",
+            // Allow tool → answer round trips (default stopWhen is 1 step,
+            // which ends the stream right after the first tool call with no
+            // final answer).
+            stopWhen: isStepCount(5),
           });
 
           const streamResponse = result.toUIMessageStreamResponse({

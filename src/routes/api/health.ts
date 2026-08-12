@@ -30,7 +30,7 @@ export const Route = createFileRoute("/api/health")({
         return new Response(
           JSON.stringify({
             ok: database === "online" && modelProvider,
-            version: "2.5.3",
+            version: "2.5.4",
             database,
             modelProvider: modelProvider ? "online" : "offline",
             voice: voice ? "online" : "offline",

@@ -180,6 +180,32 @@ export const createProject = createServerFn({ method: "POST" })
     return row!;
   });
 
+export const renameProject = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) =>
+    z.object({
+      id: z.string().uuid(),
+      name: z.string().min(1).max(120),
+      description: z.string().max(500).optional(),
+      color: z.string().optional(),
+    }).parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: row, error } = await context.supabase
+      .from("projects")
+      .update({
+        name: data.name,
+        description: data.description ?? null,
+        color: data.color ?? "#D97757",
+      })
+      .eq("id", data.id)
+      .eq("user_id", context.userId)
+      .select("id, name, description, color, updated_at")
+      .single();
+    if (error) throw new Error(error.message);
+    return row!;
+  });
+
 export const deleteProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))

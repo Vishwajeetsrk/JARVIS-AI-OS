@@ -13,6 +13,7 @@ interface FeedItem {
   title: string;
   detail: string | null;
   created_at: string;
+  live?: boolean;
 }
 
 const KIND_ICON = {
@@ -88,7 +89,16 @@ export function ActivityFeed() {
           (payload) => {
             const row = payload.new as FeedItem;
             if (!mounted || !row?.id) return;
-            setItems((prev) => [row, ...prev.filter((i) => i.id !== row.id)].slice(0, 60));
+            setItems((prev) => {
+              // Suppress duplicate live rows (the same event re-logged with a
+              // new id) so the feed doesn't repeat a message 5× over.
+              const recent = prev.slice(0, 10);
+              const dup = recent.some(
+                (i) => i.kind === row.kind && i.title === row.title && i.detail === row.detail,
+              );
+              if (dup) return prev;
+              return [{ ...row, live: true }, ...prev.filter((i) => i.id !== row.id)].slice(0, 60);
+            });
           },
         )
         .subscribe();
@@ -117,7 +127,7 @@ export function ActivityFeed() {
           {items.map((item) => {
             const Icon = iconFor(item.kind);
             return (
-              <li key={item.id} className="group flex gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface/70">
+              <li key={item.id} className={`group flex gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface/70 ${item.live ? "feed-in" : ""}`}>
                 <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground">
                   <Icon className="h-3.5 w-3.5 text-primary" />
                 </span>

@@ -26,6 +26,10 @@ export const getDashboardStats = createServerFn({ method: "GET" })
           .maybeSingle(),
       ]);
 
+      // Workspace templates (bundled preset sites) appear in the sidebar
+      // alongside DB projects, so count them together for an honest "Projects" stat.
+      const workspaceCount = ((await import("@/lib/preset-sites.desc")).PRESET_SITES ?? []).length;
+
       const enabledSkills = (settings?.data?.enabled_skills as string[] | undefined);
       const enabledConnectors = (settings?.data?.enabled_connectors as string[] | undefined);
       const enabledPlugins = (settings?.data?.enabled_plugins as string[] | undefined);
@@ -34,7 +38,7 @@ export const getDashboardStats = createServerFn({ method: "GET" })
       return {
         threads: threads?.count ?? 0,
         messages: messages?.count ?? 0,
-        projects: projects?.count ?? 0,
+        projects: (projects?.count ?? 0) + workspaceCount,
         activityToday: activity?.count ?? 0,
         skills: enabledSkills ? enabledSkills.length : 0,
         connectors: enabledConnectors ? enabledConnectors.length : 0,
