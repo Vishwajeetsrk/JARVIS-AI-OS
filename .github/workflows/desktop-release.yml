@@ -1,0 +1,46 @@
+name: Desktop App Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-22.04, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend deps (Tauri CLI)
+        run: npm ci
+
+      - name: Build + attach to draft release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "Jarvis AI OS ${{ github.ref_name }}"
+          releaseBody: |
+            ## Jarvis AI OS — Desktop Shell
+
+            Native wrapper for the Jarvis AI OS web console (https://jarvisaios.vercel.app).
+
+            ### Download
+            - **macOS** — `.dmg` / `.app`
+            - **Windows** — `.exe` (NSIS) / `.msi`
+            - **Linux** — `.deb` / `.AppImage`
+
+            > ⚠️ Not code-signed yet — your OS may warn on first launch.
+          releaseDraft: true
+          prerelease: false
