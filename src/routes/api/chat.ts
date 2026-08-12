@@ -49,7 +49,7 @@ ASKING QUESTIONS:
 
 CAPABILITIES (only claim these — they are real):
 - Documents: createWordDocument (.docx), createPresentation (.pptx), createSpreadsheet (.xlsx), createReport (.md/.html). After creating a file, tell the user the download chip appears above their message.
-- Web: webSearch performs live web searches (no key needed). Use it for current events, research, and anything you are unsure about. youtubeSearch / youtubeOpen open YouTube in the user's browser.
+- Web: webSearch performs live web searches (no key needed). Use it for current events, research, and anything you are unsure about. getTopNews fetches today's top tech news (Hacker News, TechCrunch, The Verge) — use it directly for any news request instead of repeating the user's question. youtubeSearch / youtubeOpen open YouTube in the user's browser.
 - Markets: getStockQuote fetches live stock/crypto quotes and trends from Yahoo Finance.
 - Coding: runCode executes a code snippet; executeShell runs shell commands (both require the user to have them enabled).
 - Design: listDesignSystems / getDesignSystem return 53 brand-grade design systems and live project sites; use them to apply consistent design.
@@ -381,6 +381,65 @@ export const Route = createFileRoute("/api/chat")({
                   return { query, count: results.length, results };
                 } catch (e) {
                   return { error: e instanceof Error ? e.message : "Search failed" };
+                }
+              },
+            },
+            getTopNews: {
+              description:
+                "Fetch today's top tech news (Hacker News, TechCrunch, The Verge). Use when the user asks for news, top stories, or 'what happened today'.",
+              parameters: z.object({ limit: z.number().min(1).max(18).optional() }),
+              execute: async ({ limit }: { limit?: number }) => {
+                try {
+                  const feeds = [
+                    { id: "hackernews", name: "Hacker News", url: "https://news.ycombinator.com/rss" },
+                    { id: "techcrunch", name: "TechCrunch", url: "https://techcrunch.com/feed/" },
+                    { id: "theverge", name: "The Verge", url: "https://www.theverge.com/rss/index.xml" },
+                  ];
+                  const decoded = (s: string) =>
+                    s
+                      .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+                      .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+                      .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+                      .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+                      .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)));
+                  const strip = (s: string) => s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+                  const settled = await Promise.allSettled(
+                    feeds.map(async (f) => {
+                      const ctrl = new AbortController();
+                      const t = setTimeout(() => ctrl.abort(), 6000);
+                      try {
+                        const res = await fetch(f.url, {
+                          headers: { "User-Agent": "Jarvis-AI-OS/2.0" },
+                          signal: ctrl.signal,
+                        });
+                        if (!res.ok) return [];
+                        const xml = await res.text();
+                        const items: Array<{ title: string; link: string; source: string; publishedAt: string | null; snippet?: string }> = [];
+                        for (const m of xml.matchAll(/<(?:item|entry)\b[^>]*>([\s\S]*?)<\/(?:item|entry)>/gi)) {
+                          const block = m[1];
+                          const get = (tag: string) => {
+                            const r = new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i").exec(block);
+                            return r ? decoded(r[1]).trim() : "";
+                          };
+                          const title = strip(get("title"));
+                          const link = get("link").trim() || get("guid").trim();
+                          const publishedAt = get("pubDate") || get("published") || get("updated");
+                          const snippet = strip(get("description") || get("content") || get("summary")).slice(0, 220);
+                          if (title && link) items.push({ title, link, source: f.name, publishedAt: publishedAt || null, snippet });
+                        }
+                        return items;
+                      } finally {
+                        clearTimeout(t);
+                      }
+                    }),
+                  );
+                  const items = settled.flatMap((r) => (r.status === "fulfilled" ? r.value : []))
+                    .sort((a, b) => new Date(b.publishedAt ?? 0).getTime() - new Date(a.publishedAt ?? 0).getTime())
+                    .slice(0, limit ?? 10);
+                  if (items.length === 0) return { error: "News feeds unreachable right now — try again shortly." };
+                  return { count: items.length, items };
+                } catch (e) {
+                  return { error: e instanceof Error ? e.message : "News fetch failed" };
                 }
               },
             },
