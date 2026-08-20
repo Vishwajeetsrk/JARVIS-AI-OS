@@ -272,7 +272,8 @@ class DesktopVoiceAssistant:
             return ""
 
     def query_ai_reasoning(self, prompt_text):
-        """Query LLM (Groq LLaMA 3.3 or Gemini) for smart conversational responses"""
+        """Query LLM (Groq LLaMA 3.3, Gemini 2.0 Flash, or Local Ollama) for smart reasoning responses"""
+        # 1. Try Groq Llama 3.3 70B
         groq_key = get_api_key("GROQ_API_KEY")
         if groq_key:
             try:
@@ -283,36 +284,55 @@ class DesktopVoiceAssistant:
                         {
                             "role": "system",
                             "content": (
-                                f"You are {self.name}, the intelligent autonomous personal AI OS assistant for Vishwajeet. "
-                                "Give concise, direct, helpful, and sophisticated answers in 1 to 2 sentences max. "
-                                "Be proactive and ready to research or create files."
+                                f"You are {self.name}, Vishwajeet's personal autonomous AI operating system assistant. "
+                                "Give sharp, intelligent, actionable, and structured responses. If code is requested, provide concise, high-quality code. "
+                                "Never repeat known mistakes. Keep tone warm, loyal, sophisticated, and direct."
                             ),
                         },
                         {"role": "user", "content": prompt_text},
                     ],
                     "temperature": 0.6,
-                    "max_tokens": 150,
+                    "max_tokens": 600,
                 }
-                res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=8)
+                res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=12)
                 if res.ok:
                     return res.json()["choices"][0]["message"]["content"].strip()
             except Exception:
                 pass
 
+        # 2. Try Gemini 2.0 Flash
         gemini_key = get_api_key("GEMINI_API_KEY")
         if gemini_key:
             try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gemini_key}"
                 payload = {
-                    "contents": [{"parts": [{"text": f"You are {self.name}, an AI assistant. Answer in 2 short sentences: {prompt_text}"}]}]
+                    "contents": [{
+                        "parts": [{"text": f"You are {self.name}, Vishwajeet's autonomous AI assistant. Provide a helpful, intelligent response to: {prompt_text}"}]
+                    }]
                 }
-                res = requests.post(url, json=payload, timeout=8)
+                res = requests.post(url, json=payload, timeout=12)
                 if res.ok:
                     return res.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
             except Exception:
                 pass
 
-        return f"I have processed your request for '{prompt_text}', sir. Task matrices and memory are synchronized."
+        # 3. Try Local Offline Ollama (Llama 3)
+        try:
+            req_data = json.dumps({
+                "model": "llama3",
+                "prompt": f"You are {self.name}, Vishwajeet's personal AI OS assistant.\n\nUser: {prompt_text}\nResponse:",
+                "stream": False
+            }).encode("utf-8")
+            req = urllib.request.Request("http://localhost:11434/api/generate", data=req_data, headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                ans = data.get("response", "").strip()
+                if ans:
+                    return ans
+        except Exception:
+            pass
+
+        return f"I have processed your query: '{prompt_text[:60]}...', sir. All task matrices and memory streams are synchronized."
 
     def display_hud_banner(self):
         os.system("cls" if os.name == "nt" else "clear")
@@ -811,13 +831,58 @@ export function CyberAnimatedCard() {
             self.voice.speak("Audio toggled.", self)
             return
 
-        # 9. Conversational & General AI Query Handling (e.g. "ok please new AI")
+        # 9. Conversational & General AI Query Handling
         ai_response = self.query_ai_reasoning(query)
+        print(f"\n{CYAN}┌── [{self.name} // Cognitive Response] ────────────────────────────────────{RESET}")
+        for line in ai_response.splitlines():
+            print(f"{CYAN}│{RESET} {line}")
+        print(f"{CYAN}└─────────────────────────────────────────────────────────────────────────────┘{RESET}\n")
         self.voice.speak(ai_response, self)
+
+    def run_keyboard_listener(self):
+        """Allows typing single or multi-line questions directly in the terminal!"""
+        time.sleep(1.5)
+        print(f"\n{CYAN}{BOLD}💡 [TERMINAL INPUT]: You can also TYPE any question or paste multi-line prompts below!{RESET}")
+        while self.is_running:
+            try:
+                print(f"{CYAN}{BOLD}You ❯ {RESET}", end="", flush=True)
+                line = sys.stdin.readline()
+                if not line:
+                    time.sleep(0.4)
+                    continue
+
+                line_clean = line.rstrip("\r\n")
+                if not line_clean.strip():
+                    continue
+
+                lines = [line_clean]
+                # If starts with multi-line marker or user wants multi-line
+                if line_clean.strip().startswith('"""') or line_clean.strip().startswith('```'):
+                    print(f"{DIM}│ [Multi-line prompt mode: finish by typing closing delimiter or pressing Enter on empty line]{RESET}")
+                    while True:
+                        print(f"{CYAN}│ {RESET}", end="", flush=True)
+                        next_l = sys.stdin.readline()
+                        if not next_l:
+                            break
+                        next_clean = next_l.rstrip("\r\n")
+                        lines.append(next_clean)
+                        if next_clean.strip() in ['"""', '```'] or (len(lines) > 2 and next_clean.strip() == ""):
+                            break
+
+                full_prompt = "\n".join(lines).strip().strip('"""').strip('```').strip()
+                if full_prompt:
+                    print(f"\n{GREEN}{BOLD}[⌨️ Processing Typed Command/Prompt]:{RESET} \"{full_prompt[:80]}{'...' if len(full_prompt) > 80 else ''}\"")
+                    self.process_command(full_prompt)
+            except Exception:
+                time.sleep(0.5)
 
     def run_voice_loop(self):
         self.display_hud_banner()
         self.display_tasks_matrix()
+
+        # Start keyboard listener thread
+        kb_thread = threading.Thread(target=self.run_keyboard_listener, daemon=True)
+        kb_thread.start()
 
         if self.config.get("auto_briefing_on_start", True):
             self.voice.speak(f"Greetings, sir. {self.name} is online and listening on your laptop.", self)
