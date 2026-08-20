@@ -625,6 +625,94 @@ Keep it structured, thorough, professional, and directly actionable."""
         self.voice.speak(f"I have compiled the full PRD, architecture, and UI/UX design specifications into docs/{doc_file.name} and opened it in your editor, sir.", self)
         return str(doc_file)
 
+    def generate_wardelio_improvement_prompts(self):
+        """Generates comprehensive, high-leverage prompts for improving the Wardelio mobile app!"""
+        print(f"\n{YELLOW}╔══════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{YELLOW}║   👗 JARVIS MASTER PROMPT ENGINE — WARDELIO AI APP UPGRADE       ║{RESET}")
+        print(f"{YELLOW}╚══════════════════════════════════════════════════════════════════╝{RESET}\n")
+
+        self.voice.speak("Generating 4 master engineering prompts to upgrade Wardelio's 3D try-on, AI stylist, 60fps haptic animations, and luxury design tokens, sir.", self)
+
+        prompts_doc = """# 👗 WARDELIO — Master AI Improvement Prompts & Engineering Blueprints
+
+Use these targeted, production-ready prompts in Antigravity, Cursor, or Claude to upgrade Wardelio into a luxury AI fashion platform.
+
+---
+
+### 🌟 PROMPT 1: 3D Virtual Try-On 360° & Cloth Physics Engine
+```markdown
+You are a Principal 3D Graphics Engineer. Upgrade Wardelio's Virtual Try-On screen (`src/screens/S100_VirtualTryOn360.tsx`) using Three.js and Framer Motion:
+1. Implement a 360-degree interactive orbital turntable with touch rotation gestures and spring inertia damping.
+2. Add dynamic realistic fabric shaders (silk sheen, denim texture, leather specular highlights) using Three.js MeshStandardMaterial.
+3. Integrate smooth zoom controls, lighting angle toggles (Studio Warm, Sunset Golden, Cyber Neon), and a before/after split slider.
+4. Ensure 60 FPS performance on iOS and Android devices with WebGL context recycling and low power draw.
+```
+
+---
+
+### 🧠 PROMPT 2: AI Stylist & Real-Time Weather-Adaptive Wardrobe Matrix
+```markdown
+You are an AI Systems Architect. Upgrade Wardelio's AI Stylist (`src/screens/S80_OutfitAssistant.tsx` & `src/screens/S03_AIStylist.tsx`):
+1. Connect Google Gemini 2.0 Flash / Generative AI to analyze user garments from camera photos (`S46_AddGarment.tsx`) and auto-tag color palette, fabric, fit, and seasonality.
+2. Integrate local weather (temperature, precipitation, UV index) via Capacitor Geolocation & Weather API to dynamically suggest optimal 3-piece outfits.
+3. Provide an interactive "Style DNA Breakdown" radar chart showing Casual, Formal, Streetwear, and Avant-Garde percentages.
+4. Implement a 1-tap "Swap Item" smart reroll button with instant spring swap animation.
+```
+
+---
+
+### ⚡ PROMPT 3: 60 FPS Native Haptic Fluid Gesture Navigation & 3D Buttons
+```markdown
+You are a Lead Mobile UI/UX Designer. Refactor Wardelio's navigation and interactive feedback across all 27 screens:
+1. Replace all standard buttons with `<Mobile3DButton>` featuring tactile 3D spring press physics, glossy bevel lighting, and device vibration haptics via `@capacitor/device` & `navigator.vibrate(12)`.
+2. Add pull-to-refresh with luxury golden spinner and smooth edge-swiping tab transitions (`framer-motion` layout animations).
+3. Wrap all primary cards with `<LuxuryGlassCard>` featuring subtle 3D tilt perspective and amber ambient rim glow.
+4. Implement fluid bottom sheets with velocity-based fling dismiss and gesture tracking.
+```
+
+---
+
+### 👑 PROMPT 4: VIP Gold Membership, Gamified Closet & Privacy Center
+```markdown
+You are a Full-Stack Product Architect. Implement Wardelio's VIP Monetization & Privacy Vault (`src/screens/S50_Settings.tsx` & `src/screens/S131_PrivacyCenter.tsx`):
+1. Create a luxury tiered VIP membership modal with animated gold holographic cards (Free Closet, Stylist Pro, Haute Couture VIP).
+2. Add a Gamified "Closet Utilization Score" (% of wardrobe worn this month, cost-per-wear metrics, sustainability rating).
+3. Implement biometric lock (Face ID / Fingerprint via Capacitor) for the Virtual Try-On photo vault.
+4. Add 1-click cloud sync with Supabase and encrypted local SQLite offline mode.
+```
+"""
+
+        # Save to Wardelio .artifacts and docs/
+        wardelio_artifacts = Path(r"C:\Users\vishw\OneDrive\Desktop\Wardelio\.artifacts")
+        wardelio_artifacts.mkdir(parents=True, exist_ok=True)
+        w_prompts_file = wardelio_artifacts / "IMPROVEMENT_PROMPTS.md"
+        w_prompts_file.write_text(prompts_doc, encoding="utf-8")
+
+        docs_dir = WORKSPACE_ROOT / "docs"
+        docs_dir.mkdir(parents=True, exist_ok=True)
+        doc_file = docs_dir / "WARDELIO_IMPROVEMENT_PROMPTS.md"
+        doc_file.write_text(prompts_doc, encoding="utf-8")
+
+        try:
+            subprocess.Popen(["code", str(w_prompts_file)], shell=True)
+        except Exception:
+            pass
+
+        print(f"{CYAN}┌── [{self.name} // 4 Master Prompts Ready] ──────────────────────────────────────────{RESET}")
+        print(f"{CYAN}│{RESET} 1. 🌟 3D Virtual Try-On 360° & Cloth Physics Engine")
+        print(f"{CYAN}│{RESET} 2. 🧠 AI Stylist & Real-Time Weather-Adaptive Wardrobe Matrix")
+        print(f"{CYAN}│{RESET} 3. ⚡ 60 FPS Native Haptic Fluid Gesture Navigation & 3D Buttons")
+        print(f"{CYAN}│{RESET} 4. 👑 VIP Gold Membership, Gamified Closet & Privacy Vault")
+        print(f"{CYAN}│")
+        print(f"{CYAN}│ ... [Saved to Wardelio/.artifacts/IMPROVEMENT_PROMPTS.md & Opened in VS Code] ...{RESET}")
+        print(f"{CYAN}└─────────────────────────────────────────────────────────────────────────────┘{RESET}\n")
+
+        self.voice.speak(
+            "I have generated 4 master AI improvement prompts for Wardelio and opened them in VS Code, sir. They cover 3D Try-On, AI Stylist, 60fps haptics, and VIP monetization.",
+            self
+        )
+        return str(w_prompts_file)
+
     def process_command(self, query):
         q = query.lower().strip()
         print(f"\n{GREEN}[⚡ Processing Command Intent]:{RESET} '{BOLD}{query}{RESET}'")
@@ -675,7 +763,12 @@ Keep it structured, thorough, professional, and directly actionable."""
             self.generate_app_prd_and_architecture(query)
             return
 
-        # 4. Autonomous Wardelio Mobile App Refactoring & File Operations
+        # 4. Wardelio Master Prompt Generator
+        if "wardelio" in q and ("prompt" in q or "improve" in q or "idea" in q or "blueprint" in q or "suggestion" in q):
+            self.generate_wardelio_improvement_prompts()
+            return
+
+        # 5. Autonomous Wardelio Mobile App Refactoring & File Operations
         if "wardelio" in q and ("upgrade" in q or "button" in q or "setting" in q or "edit" in q or "fix" in q or "create" in q or "build" in q or "flow" in q):
             self.voice.speak("Upgrading Wardelio mobile app on your Desktop, creating luxury 3D tactile buttons, luxury glass cards, and enhancing settings flow, sir.", self)
             try:
@@ -801,15 +894,12 @@ Keep it structured, thorough, professional, and directly actionable."""
         # 7. Wardelio App Management
         if "wardelio" in q:
             wardelio_path = r"C:\Users\vishw\OneDrive\Desktop\Wardelio"
-            if "open" in q or "code" in q or "launch" in q:
+            if "open" in q or "code" in q or "launch" in q or "show" in q:
                 self.voice.speak(f"Opening Wardelio mobile app project in VS Code, sir.", self)
                 subprocess.Popen(["code", wardelio_path], shell=True)
                 return
             else:
-                self.voice.speak(
-                    f"Wardelio Android and iOS app is tracked under your personal projects. Current focus is high-tier UI/UX, 3D interactive buttons, smooth 60fps animations, and settings flow.",
-                    self
-                )
+                self.generate_wardelio_improvement_prompts()
                 return
 
         # 8. Salesforce & Razorpay Daily Office Workflow
