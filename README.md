@@ -188,7 +188,7 @@ JARVIS comes with a built-in command-line interface:
 
 Once your voice assistant is running, say:
 
-* 🗣️ *"Hey Nisha"* / *"Hey Jarvis"* ➔ Wakes up assistant
+* 🗣️ *"Hey UserName"* / *"Hey Jarvis"* ➔ Wakes up assistant
 * 💼 *"Jarvis, let's work"* ➔ Activates Salesforce & Razorpay Work Mode
 * 🚀 *"Jarvis, let's build"* ➔ Activates Builder Mode for Wardelio / JARVIS
 * 🏋️ *"Jarvis, gym mode"* ➔ Activates Gym & Workout tracking
