@@ -33,6 +33,10 @@ Thumbs.db
 __pycache__/
 *.pyc
 
+# Temporary skills downloads
+data/temp_skills/
+temp_skills/
+
 # Nested third-party repos & projects
 GitHub Repo/
 Projects/

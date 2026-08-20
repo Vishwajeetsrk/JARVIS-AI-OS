@@ -3,8 +3,13 @@ node_modules
 dist
 src-tauri/target
 projects
+Projects
 DELETE
 .git
 .env
 .env.*
 !.env.example
+data/temp_skills
+temp_skills
+knowledge
+GitHub Repo

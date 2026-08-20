@@ -100,9 +100,12 @@ export class SkillInstallerEngine {
         fs.cpSync(tempDir, targetFolder, { recursive: true });
       }
 
-      // Clean up temp
+      // Clean up entire temp_skills root
       try {
-        fs.rmSync(tempDir, { recursive: true, force: true });
+        const tempRoot = path.join(process.cwd(), "data", "temp_skills");
+        if (fs.existsSync(tempRoot)) {
+          fs.rmSync(tempRoot, { recursive: true, force: true });
+        }
       } catch {}
 
       return {
