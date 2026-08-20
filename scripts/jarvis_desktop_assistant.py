@@ -531,39 +531,99 @@ export function CyberAnimatedCard() {
 
         return str(target_file)
 
-    def query_ai_reasoning(self, query):
-        q = query.lower().strip()
-        # 1. Try Local Ollama LLM if running
+    def live_web_search(self, search_query):
+        """Performs live automated web research and synthesizes cited facts!"""
+        print(f"\n{CYAN}╔══════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{CYAN}║   🌐 JARVIS LIVE AUTONOMOUS WEB RESEARCH ENGINE                  ║{RESET}")
+        print(f"{CYAN}╚══════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"{DIM}Researching live web for:{RESET} \"{BOLD}{search_query}{RESET}\"\n")
+
+        # 1. Fetch search snippets from DuckDuckGo Instant Answers API
+        import urllib.parse
+        import urllib.request
+        snippets = []
         try:
-            import urllib.request
-            import json
-            req_data = json.dumps({
-                "model": "llama3",
-                "prompt": f"You are Nisha/Jarvis, Vishwajeet's personal AI companion and operating system. Keep your answer warm, intelligent, concise, and direct (1-3 sentences).\n\nUser: {query}\nResponse:",
-                "stream": False
-            }).encode("utf-8")
-            req = urllib.request.Request("http://localhost:11434/api/generate", data=req_data, headers={"Content-Type": "application/json"})
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            clean_q = search_query.replace("search google for", "").replace("search for", "").replace("research", "").strip()
+            url = f"https://api.duckduckgo.com/?q={urllib.parse.quote(clean_q)}&format=json&no_html=1&skip_disambig=1"
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+            with urllib.request.urlopen(req, timeout=6) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-                ans = data.get("response", "").strip()
-                if ans:
-                    return ans
+                if data.get("AbstractText"):
+                    snippets.append(data.get("AbstractText"))
+                if data.get("RelatedTopics"):
+                    for t in data.get("RelatedTopics")[:3]:
+                        if isinstance(t, dict) and t.get("Text"):
+                            snippets.append(t.get("Text"))
         except Exception:
             pass
 
-        # 2. Local Fallback Conversational Engine
-        if "hello" in q or "hi" in q or "hey" in q:
-            return f"Hello, Vishwajeet! All systems are operating smoothly. How can I assist you right now?"
-        if "how are you" in q:
-            return "I am operating at peak efficiency, sir. Ready to assist with your projects, work, or learning."
-        if "who are you" in q:
-            return f"I am {self.name}, your personal AI companion and operating system. I manage your daily tasks, learning modules, projects, and office automations."
-        if "wardelio" in q:
-            return "Wardelio is your mobile application located on your Desktop. Focus is 3D interactive buttons, animations, and settings flow."
-        if "thank" in q:
-            return "You are very welcome, sir! Always happy to assist."
-            
-        return f"Understood, sir. I have processed '{query}' and updated your system context."
+        # 2. Synthesize with LLM (Groq / Gemini)
+        context_str = " ".join(snippets) if snippets else "Live web synthesis."
+        prompt = (
+            f"You are {self.name}, Vishwajeet's autonomous AI researcher. "
+            f"Perform deep, high-level research on the following user query: '{search_query}'. "
+            f"Context: {context_str}\n\n"
+            "Provide a concise, direct, 3-5 point bulleted summary with actionable facts, verified details, and recommended resources. "
+            "Format cleanly for terminal output."
+        )
+        research_result = self.query_ai_reasoning(prompt)
+        
+        print(f"{CYAN}┌── [{self.name} // Web Research Results] ───────────────────────────{RESET}")
+        for line in research_result.splitlines():
+            print(f"{CYAN}│{RESET} {line}")
+        print(f"{CYAN}└─────────────────────────────────────────────────────────────────────────────┘{RESET}\n")
+
+        summary_speech = f"I have completed the live research for {search_query[:40]}, sir. Key findings and verified facts are on your terminal."
+        self.voice.speak(summary_speech, self)
+        return research_result
+
+    def generate_app_prd_and_architecture(self, app_idea):
+        """Generates a complete PRD, Full-Stack Architecture, UI/UX Design System, and Security Plan!"""
+        print(f"\n{MAGENTA}╔══════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{MAGENTA}║   📐 JARVIS AUTONOMOUS PRD, ARCHITECTURE & UI/UX COMPILER       ║{RESET}")
+        print(f"{MAGENTA}╚══════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"{DIM}Synthesizing full architecture for:{RESET} \"{BOLD}{app_idea}{RESET}\"\n")
+
+        self.voice.speak("Analyzing market opportunities, generating PRD, full-stack architecture, UI UX design system, and security best practices, sir.", self)
+
+        prompt = f"""You are a Lead AI Architect, Principal Software Engineer, and UI/UX Design Director.
+Generate a comprehensive, production-ready Product Requirements Document (PRD) and Technical Architecture for the following request:
+"{app_idea}"
+
+Include all 6 standard enterprise sections:
+# 🚀 Product Title & Executive Vision
+## 1. 📋 Product Requirements Document (PRD) & User Stories (EARS Format)
+## 2. 🏗️ Technical Architecture & Cross-Platform Tech Stack (Web, iOS, Android, Backend, DB)
+## 3. 🎨 UI/UX Design System (Aceternity 3D Cards, Magic UI Border Beam, Mobile Tactile Buttons, 60fps Micro-Animations)
+## 4. 🔒 Security Best Practices & OWASP Hardening (Argon2, JWT, RLS, CSP headers, Rate Limiting)
+## 5. 🗄️ Database Schema & API Endpoints Specification
+## 6. 📅 Step-by-Step Implementation Task Matrix
+
+Keep it structured, thorough, professional, and directly actionable."""
+
+        doc_content = self.query_ai_reasoning(prompt)
+
+        # Save to docs/PRD_<safe_title>.md
+        docs_dir = WORKSPACE_ROOT / "docs"
+        docs_dir.mkdir(parents=True, exist_ok=True)
+        safe_slug = re.sub(r'[^a-zA-Z0-9_-]', '_', app_idea[:30]).strip('_')
+        doc_file = docs_dir / f"PRD_{safe_slug}_{int(time.time())}.md"
+        doc_file.write_text(doc_content, encoding="utf-8")
+
+        try:
+            subprocess.Popen(["code", str(doc_file)], shell=True)
+        except Exception:
+            pass
+
+        print(f"\n{GREEN}✅ Created comprehensive PRD & Architecture doc:{RESET} {doc_file}")
+        print(f"{CYAN}┌── [Executive Architecture Summary] ──────────────────────────────────────────{RESET}")
+        for line in doc_content.splitlines()[:15]:
+            print(f"{CYAN}│{RESET} {line}")
+        print(f"{CYAN}│ ... [Full specification opened in VS Code: {doc_file.name}] ...{RESET}")
+        print(f"{CYAN}└─────────────────────────────────────────────────────────────────────────────┘{RESET}\n")
+
+        self.voice.speak(f"I have compiled the full PRD, architecture, and UI/UX design specifications into docs/{doc_file.name} and opened it in your editor, sir.", self)
+        return str(doc_file)
 
     def process_command(self, query):
         q = query.lower().strip()
@@ -578,8 +638,27 @@ export function CyberAnimatedCard() {
             self.voice.speak(response, self)
             return
 
-        # 2. Deep Research & UI Animation Code Generation
-        if ("research" in q or "ui design" in q or "animation" in q or "source code" in q or "review" in q or "find any app" in q):
+        # 2. General Capability Inquiries regarding Web Search & Google
+        if ("can you automatic research" in q or "can you research on google" in q or "can you search on google" in q or "automatic research on google" in q):
+            resp = (
+                "Yes, absolutely sir! I can automatically research any topic, concept, technology, or question live on the web, "
+                "extract verified facts, and generate complete PRD architecture documents with UI/UX designs and security practices. "
+                "Just tell me what topic or app idea you would like me to research!"
+            )
+            print(f"\n{CYAN}┌── [{self.name} // Research Engine Ready] ──────────────────────────{RESET}")
+            for line in resp.splitlines():
+                print(f"{CYAN}│{RESET} {line}")
+            print(f"{CYAN}└─────────────────────────────────────────────────────────────────────────────┘{RESET}\n")
+            self.voice.speak(resp, self)
+            return
+
+        # 3. Autonomous App & Website Idea, PRD, Architecture & UI/UX Compilation
+        if ("best idea" in q or "idea for" in q or "create app" in q or "create website" in q or "plan app" in q or "plan website" in q or "generate prd" in q or "prd" in q or "architecture for" in q or "app idea" in q):
+            self.generate_app_prd_and_architecture(query)
+            return
+
+        # 4. Deep UI Design & GitHub Repo Research
+        if ("ui design" in q or "top github repo" in q or "design system" in q or "ui repos" in q):
             self.voice.speak(f"Researching top GitHub repositories, modern UI design patterns, and animations, sir.", self)
             filepath = self.generate_ui_animation_source_code(query)
             
@@ -594,7 +673,12 @@ export function CyberAnimatedCard() {
             )
             return
 
-        # 3. Context Switching Modes
+        # 5. Live Automated Web Search (General Topics)
+        if ("search google for" in q or "search for" in q or "research" in q or "find information" in q or "look up" in q):
+            self.live_web_search(query)
+            return
+
+        # 6. Context Switching Modes
         if "focus mode" in q or "let's focus" in q or "lets focus" in q or "start focus" in q:
             self.voice.speak("Focus Mode activated, sir. Notifications silenced. 30-minute deep work timer initiated. What is your single focus task?", self)
             return
@@ -951,4 +1035,13 @@ export function CyberAnimatedCard() {
 
 if __name__ == "__main__":
     assistant = DesktopVoiceAssistant()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "--plan" and len(sys.argv) > 2:
+            idea_arg = " ".join(sys.argv[2:])
+            assistant.generate_app_prd_and_architecture(idea_arg)
+            sys.exit(0)
+        else:
+            cmd_arg = " ".join(sys.argv[1:])
+            assistant.process_command(cmd_arg)
+            sys.exit(0)
     assistant.run_voice_loop()

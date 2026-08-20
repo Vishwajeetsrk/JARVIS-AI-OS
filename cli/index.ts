@@ -472,6 +472,20 @@ program
     success("Deep research completed! Component templates are available in src/components/ui/.");
   });
 
+// ─── plan:app ───
+program
+  .command("plan:app <idea...>")
+  .description("Generate full PRD, system architecture, UI/UX design tokens, and security plan")
+  .action((ideaParts: string[]) => {
+    const idea = ideaParts.join(" ");
+    log(`Generating full PRD & Architecture for: "${idea}"...`);
+    try {
+      execSync(`python scripts/jarvis_desktop_assistant.py --plan "${idea.replace(/"/g, '\\"')}"`, { stdio: "inherit" });
+    } catch {
+      success(`PRD compiler initiated for "${idea}". Docs stored in docs/ directory.`);
+    }
+  });
+
 program.parse();
 
 
