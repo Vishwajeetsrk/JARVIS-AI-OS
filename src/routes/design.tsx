@@ -63,18 +63,67 @@ export function DesignGallery() {
       <main className="mx-auto max-w-7xl px-6 py-16">
         {/* Hero */}
         <div className="reveal">
-          <div className="text-mono-xs text-muted-foreground mb-2 flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary breathe" />
-            Design Language Library
+          <div className="text-mono-xs text-cyan-400 font-mono mb-2 flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 breathe" />
+            Design Systems & Component Suite
           </div>
           <h1 className="font-display text-4xl font-semibold md:text-5xl">
-            {items ? `${items.length} design systems, one memory.` : "Design Systems"}
+            {items ? `${items.length} design systems, one memory.` : "Design Systems & Component Suite"}
           </h1>
           <p className="mt-3 max-w-2xl text-muted-foreground">
-            {systems.length} brand-grade design systems with tokens, components, and usage guides — plus{" "}
-            {sites.length} live project sites you can preview and remix. Open the console to copy, download,
-            and remix any of them.
+            53 brand-grade design systems plus trending component primitives from <strong>Shadcn UI</strong>, <strong>Aceternity UI</strong>, <strong>Magic UI</strong>, and <strong>Mobile 3D Tactile Buttons</strong> ready for Web, Desktop, Android, and iOS apps.
           </p>
+        </div>
+
+        {/* Featured Next-Gen UI Component Suite Showcase */}
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="group relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-slate-950/80 p-6 backdrop-blur-xl shadow-xl transition-all duration-300 hover:border-cyan-400 hover:shadow-cyan-500/20">
+            <div className="flex items-center justify-between">
+              <span className="rounded-full bg-cyan-500/10 px-3 py-1 font-mono text-xs font-semibold text-cyan-400 border border-cyan-500/30">
+                Aceternity 3D Card
+              </span>
+              <span className="text-[10px] font-mono text-slate-500">src/components/ui/</span>
+            </div>
+            <h3 className="mt-4 font-display text-lg font-bold text-white">Cursor Perspective Tilt</h3>
+            <p className="mt-2 text-xs text-slate-400 leading-relaxed">
+              Reactive 3D transform with dynamic colored radial glow and spring physics dampening.
+            </p>
+            <div className="mt-4 rounded-xl border border-white/5 bg-slate-900/60 p-3 font-mono text-[11px] text-cyan-300">
+              <code>&lt;Cyber3DCard glowColor="cyan" /&gt;</code>
+            </div>
+          </div>
+
+          <div className="group relative overflow-hidden rounded-2xl border border-purple-500/30 bg-slate-950/80 p-6 backdrop-blur-xl shadow-xl transition-all duration-300 hover:border-purple-400 hover:shadow-purple-500/20">
+            <div className="flex items-center justify-between">
+              <span className="rounded-full bg-purple-500/10 px-3 py-1 font-mono text-xs font-semibold text-purple-400 border border-purple-500/30">
+                Magic UI Border Beam
+              </span>
+              <span className="text-[10px] font-mono text-slate-500">Hardware Accelerated</span>
+            </div>
+            <h3 className="mt-4 font-display text-lg font-bold text-white">Animated Light Beam</h3>
+            <p className="mt-2 text-xs text-slate-400 leading-relaxed">
+              Pulsing continuous CSS offset-path gradient ray circulating around component borders.
+            </p>
+            <div className="mt-4 rounded-xl border border-white/5 bg-slate-900/60 p-3 font-mono text-[11px] text-purple-300">
+              <code>&lt;BorderBeam size={'{200}'} duration={'{15}'} /&gt;</code>
+            </div>
+          </div>
+
+          <div className="group relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-slate-950/80 p-6 backdrop-blur-xl shadow-xl transition-all duration-300 hover:border-emerald-400 hover:shadow-emerald-500/20">
+            <div className="flex items-center justify-between">
+              <span className="rounded-full bg-emerald-500/10 px-3 py-1 font-mono text-xs font-semibold text-emerald-400 border border-emerald-500/30">
+                Mobile 3D Tactile
+              </span>
+              <span className="text-[10px] font-mono text-slate-500">Android & iOS</span>
+            </div>
+            <h3 className="mt-4 font-display text-lg font-bold text-white">Tactile Haptic Button</h3>
+            <p className="mt-2 text-xs text-slate-400 leading-relaxed">
+              Physical 3D press depth with device vibration haptic feedback for Wardelio & mobile apps.
+            </p>
+            <div className="mt-4 rounded-xl border border-white/5 bg-slate-900/60 p-3 font-mono text-[11px] text-emerald-300">
+              <code>&lt;Mobile3DButton variant="primary" /&gt;</code>
+            </div>
+          </div>
         </div>
 
         {/* Search + filters */}
