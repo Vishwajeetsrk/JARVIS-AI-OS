@@ -595,7 +595,38 @@ export function CyberAnimatedCard() {
             except Exception:
                 pass
 
-        # 3. Try Local Ollama if running
+        # 3. Try OpenRouter AI (Free Tier Models)
+        openrouter_key = os.environ.get("OPENROUTER_API_KEY")
+        if openrouter_key:
+            for model_id in ["liquid/lfm-2.5-2.6b:free", "nvidia/nemotron-3.5-lightning:free", "z-ai/glm-5.2:free"]:
+                try:
+                    import urllib.request
+                    import json
+                    url = "https://openrouter.ai/api/v1/chat/completions"
+                    req_data = json.dumps({
+                        "model": model_id,
+                        "messages": [
+                            {"role": "system", "content": f"You are {self.name}, Vishwajeet's personal AI operating system. Provide a brilliant, direct, and concise answer (1-3 sentences)."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        "temperature": 0.4,
+                        "max_tokens": 1000
+                    }).encode("utf-8")
+                    req = urllib.request.Request(url, data=req_data, headers={
+                        "Content-Type": "application/json",
+                        "Authorization": f"Bearer {openrouter_key}",
+                        "HTTP-Referer": "https://jarvisaios.vercel.app",
+                        "X-Title": "JARVIS AI OS"
+                    })
+                    with urllib.request.urlopen(req, timeout=8) as resp:
+                        data = json.loads(resp.read().decode("utf-8"))
+                        ans = data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+                        if ans:
+                            return ans
+                except Exception:
+                    pass
+
+        # 4. Try Local Ollama if running
         try:
             import urllib.request
             import json
