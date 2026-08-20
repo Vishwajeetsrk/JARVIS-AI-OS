@@ -14,11 +14,9 @@ export function CyberAnimatedCard() {
       onMouseLeave={() => setIsHovered(false)}
       className="relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-slate-950/80 p-6 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:border-cyan-400 hover:shadow-cyan-500/20"
     >
-      {/* Dynamic Cybernetic Energy Waveform Background */}
       <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-500/10 blur-3xl transition-opacity group-hover:opacity-100" />
       <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-purple-500/10 blur-3xl transition-opacity group-hover:opacity-100" />
 
-      {/* Header Badge */}
       <div className="flex items-center justify-between">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-3 py-1 font-mono text-xs font-semibold text-cyan-300">
           <Sparkles className="h-3.5 w-3.5 animate-spin" style={{ animationDuration: "6s" }} />
@@ -29,7 +27,6 @@ export function CyberAnimatedCard() {
         </span>
       </div>
 
-      {/* Title & Body */}
       <h3 className="mt-4 font-display text-xl font-bold tracking-tight text-white">
         Cybernetic Autonomous AI Interface
       </h3>
@@ -37,7 +34,6 @@ export function CyberAnimatedCard() {
         Engineered with smooth 60fps micro-animations, glassmorphism elevation, and responsive haptic audio feedback.
       </p>
 
-      {/* Interactive Feature Pills */}
       <div className="mt-5 grid grid-cols-2 gap-2 text-xs">
         <div className="flex items-center gap-2 rounded-lg border border-white/5 bg-white/5 p-2 text-slate-300">
           <Zap className="h-4 w-4 text-cyan-400" /> 0ms Latency
@@ -47,7 +43,6 @@ export function CyberAnimatedCard() {
         </div>
       </div>
 
-      {/* Action CTA */}
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}

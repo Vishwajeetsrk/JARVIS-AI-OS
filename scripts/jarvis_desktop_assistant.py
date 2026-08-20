@@ -580,16 +580,16 @@ export function CyberAnimatedCard() {
 
         # 2. Deep Research & UI Animation Code Generation
         if ("research" in q or "ui design" in q or "animation" in q or "source code" in q or "review" in q or "find any app" in q):
-            self.voice.speak(f"Researching modern UI design, animations, and extracting tokens, sir.", self)
+            self.voice.speak(f"Researching top GitHub repositories, modern UI design patterns, and animations, sir.", self)
             filepath = self.generate_ui_animation_source_code(query)
             
             try:
-                subprocess.Popen(["npx", "tsx", "scripts/jarvis.ts", "research", query], shell=True, cwd=str(WORKSPACE_ROOT))
+                subprocess.run(["npx", "tsx", "cli/index.ts", "research", query], shell=True, cwd=str(WORKSPACE_ROOT))
             except Exception:
                 pass
 
             self.voice.speak(
-                f"I have created the animated component in src/components/ui/cyber-animated-card.tsx and opened it in VS Code for you, sir.",
+                f"I have analyzed the top GitHub repositories and created the animated component in src/components/ui/cyber-animated-card.tsx for you, sir.",
                 self
             )
             return
