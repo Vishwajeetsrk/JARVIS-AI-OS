@@ -1,334 +1,228 @@
-# JARVIS AI OS — One Brain. Many Shells.
+<div align="center">
 
-```
-       _____                      _                   _____   ____
-      |  __ \                    | |                 / ____| / __ \
-      | |__) |__ _ __ ___  _ __  | |_  ___  _ __    | |  __ | |  | |
-      |  ___// _ \ '__/ __|| '_ \ | __|/ _ \| '_ \   | | |_ || |  | |
-      | |   |  __/ |  \__ \| |_) || |_|  __/| | | |  | |__| || |__| |
-      |_|    \___|_|  |___/| .__/  \__|\___||_| |_|   \_____| \____/
-                            | |
-                            |_|
-```
+# ⚡ JARVIS AI OS — Personal Intelligence Operating System
+### *One Brain. Many Shells. Persistent Autonomous Personal AI.*
 
-> **A persistent-memory AI Operating System** — chat, 24 specialized agents, 53 design systems, voice, and a real-time dashboard. **Runs free** on Google Gemini + Groq cloud models.
+![JARVIS AI OS Hero Banner](public/jarvis-hero-banner.svg)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript)](https://www.typescriptlang.org)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
-[![Vercel](https://img.shields.io/badge/Live%20Demo-Vercel-black.svg)](https://jarvisaios.vercel.app)
-[![Supabase](https://img.shields.io/badge/Supabase-BaaS-3FCF8E?logo=supabase)](https://supabase.com)
-[![Release](https://img.shields.io/github/v/release/Vishwajeetsrk/JARVIS-AI-OS?label=Desktop%20App&logo=github)](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg?style=for-the-badge)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
+[![Three.js](https://img.shields.io/badge/Three.js-3D_VRM-black?style=for-the-badge&logo=three.js)](https://threejs.org)
+[![Supabase](https://img.shields.io/badge/Supabase-pgvector-3FCF8E?style=for-the-badge&logo=supabase)](https://supabase.com)
+[![Capacitor](https://img.shields.io/badge/Capacitor-Android_&_iOS-119EFF?style=for-the-badge&logo=capacitor)](https://capacitorjs.com)
+[![GitHub Stars](https://img.shields.io/github/stars/Vishwajeetsrk/JARVIS-AI-OS?style=for-the-badge&logo=github)](https://github.com/Vishwajeetsrk/JARVIS-AI-OS)
 
 ---
 
-## Live Demo
+### [🌐 Live Web Console](http://localhost:8080/console) • [💻 Desktop App](#-laptop--desktop-installation) • [📱 Mobile Android Companion](#-mobile-android-companion) • [🎙️ Voice Loop](#-voice-commands--desktop-assistant)
 
-**Try Jarvis now — no install required:** [jarvisaios.vercel.app](https://jarvisaios.vercel.app)
-
-Sign in with Google or email/password (free Supabase auth). All features work in the browser.
+</div>
 
 ---
 
-## What is JARVIS AI OS?
+## 🌌 What is JARVIS AI OS?
 
-Normal AI chatbots **forget everything** when the chat ends. Jarvis doesn't.
+Traditional AI chatbots **forget everything** the moment you close the tab. **JARVIS AI OS** does not.
 
-Jarvis is a **persistent-memory AI operating system**: it remembers your decisions, mistakes, and architecture choices in a permanent memory bank, so every conversation starts where the last one ended. One brain, many front doors — **Web Console**, **Voice**, and a **Local CLI** all talk to the same brain.
+**JARVIS AI OS** is a **persistent, intelligent, emotionally aware, voice-first personal operating system** running locally on your laptop and syncing across your mobile devices. It connects your **work, full-stack learning, personal projects, fitness routines, YouTube channels, and business side income** into **one coherent intelligence**.
 
----
-
-## Available Interfaces
-
-### 1. Web Console (Live)
-
-The full application runs in your browser — no install needed.
-
-- **Live site:** [jarvisaios.vercel.app](https://jarvisaios.vercel.app)
-- Features: Chat with agents, project management, 53 design systems, voice, memory recall, skills, hooks, specs
-
-### 2. Local Development Server
-
-Run the full Jarvis stack on your machine:
-
-| Tool | Command | What it does |
-|---|---|---|
-| **Web Console** | `npm run dev` | Website at http://localhost:8080 |
-| **AI Agents** | `npm run dev:mastra` | Mastra multi-agent engine with 19+ tools |
-| **Daemon** | `npm run daemon` | Design-systems server on port 7456 |
-| **All at once** | `npm run dev:all` | Website + agents + daemon |
-| **CLI** | `npm run jarvis` | System status, hardware detect, memory bank |
-| **Voice Bridge** | `npm run bridge` | Desktop system info, screenshots, app launching |
-
-### 3. Desktop App
-
-Tauri 2-based desktop shell for macOS, Windows, and Linux. It opens the live Jarvis console in a native window — sign in and everything works. Requires an internet connection.
-
-**Download the latest installer from [GitHub Releases](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases/latest):**
-
-| Platform | Format |
-|---|---|
-| **macOS** (Apple Silicon + Intel) | `.dmg` |
-| **Windows** (x64) | `.exe` / `.msi` |
-| **Linux** (x64) | `.AppImage` / `.deb` / `.rpm` |
-
-Or build it yourself (requires the Rust toolchain):
-
-```bash
-npm run tauri:build
+```
+                           +----------------------------------------+
+                           |          YOU (VISHWAJEET)              |
+                           +----------------------------------------+
+                                         |         ^
+                          "Hey Jarvis"   |         | Voice Feedback
+                          "Let's Work"   |         | & 3D Expressions
+                                         v         |
+                     +----------------------------------------------------+
+                     |           JARVIS BRAIN ORCHESTRATOR                |
+                     |   (Unified Multi-Tier Memory & Context Modes)      |
+                     +----------------------------------------------------+
+                                 /         |         \
+                                /          |          \
+                               v           v           v
+                    +------------+  +------------+  +-------------------+
+                    | 3D AVATAR  |  | HYBRID AI  |  | AUTOMATION & WORK |
+                    | (Lumi/VRM) |  | Cloud + LLM|  | Salesforce, Excel |
+                    +------------+  +------------+  +-------------------+
+                               |           |                  |
+                               +-----------+------------------+
+                                           |
+                                           v
+                    +----------------------------------------------------+
+                    |  5 PILLARS: Work • Learn • Project • Gym • Income  |
+                    +----------------------------------------------------+
 ```
 
-See [Tauri setup docs](https://v2.tauri.app/start/prerequisites/) for Rust installation.
+---
 
-### 4. Desktop Agent (Python) — local voice + automation
+## ✨ Key Features & Capabilities
 
-The `desktop/` folder is a full Windows desktop companion (formerly the open-source "Brahma AI - Lite" project by Suryaansh Tiwari, renamed and reworked for Jarvis — attribution preserved in `desktop/LICENSE` and `desktop/TRADEMARK.md`). It gives Jarvis hands on your PC:
+### 🌸 1. 3D AI Companion Avatar (Lumi × Lyra Hybrid & VRoid Studio VRM)
+* **Living Holographic Character**: Features anime-inspired realism combined with a gentle, comforting presence.
+* **Eye & Head Tracking**: Pupils and head smoothly follow your mouse cursor across the screen.
+* **Organic Blinking & Breathing**: 60fps subtle chest oscillation and randomized eyelid blinks.
+* **Viseme Lip-Syncing**: Dynamic mouth shapes (`aa`, `ih`, `ou`, `ee`, `oh`) synced in real-time to speech audio.
+* **3-Way View Switcher**: Instantly switch between **Lumi/Lyra Hybrid**, **3D VRoid Studio VRM**, and **Arc Reactor Holographic HUD**.
+* **Drag-and-Drop Custom Models**: Drop any `.vrm` 3D character file onto the dashboard to customize your assistant!
 
-- **Voice**: Gemini Live real-time duplex audio (mic + speaker), wake word, idle prompts, Edge-TTS alerts
-- **Agent loop**: plan → execute → LLM-judged error recovery → replan (planner/executor/task-queue/error-handler)
-- **Automation**: open apps, control the desktop, browser automation (Playwright), file system, reminders, WhatsApp/Telegram DMs, YouTube, PC settings
-- **Office**: PowerPoint/Word/Excel/PDF generation, website & landing-page builder, dev agent (write → run → fix)
-- **Steam/Epic game updater**, **flight finder**, **screen vision**, **meeting assistant**, **notification attention monitor**
-- **Smart home**: Atomberg fans + TP-Link Kasa devices (real API integrations only)
-- **Phone dashboard**: FastAPI control plane with QR pairing and encrypted commands
-- **Plugins**: drop a `.py` in `desktop/plugins/` to add hooks
+### 🎙️ 2. Native Desktop Voice Assistant (Echo Guard & Wake Words)
+* **Wake Words**: Say *"Hey Nisha"*, *"Nisha"*, *"Hey Jarvis"*, or *"Jarvis"*.
+* **Echo Guard Technology**: Automatically mutes the microphone while speaking so Jarvis **never hears or loops its own voice**.
+* **Speech Stitcher**: Intelligently stitches natural pauses together before executing commands.
+* **Low Latency**: Sub-50ms instant response execution on your laptop.
 
-**Syncs with the web brain (optional):** set `desktop/config/jarvis_cloud.json` with your Supabase URL, anon key, and Jarvis login to share memory (`public.memories`), mirror desktop conversations into web chat threads, register the desktop as a crew member (`desktop-agent`), and honor the web's voice/wake-word/auto-learn toggles.
+### 🎯 3. 7 Dynamic Context Switching Modes
+Say the command or click a button to instantly switch workspace state:
+1. 🧠 **Focus Mode** (`"Jarvis, let's focus"`): Silences clutter and starts a 30-minute deep work timer.
+2. 💼 **Work Mode** (`"Jarvis, let's work"`): Loads Salesforce, Excel, Data Loader, and Razorpay reconciliation workspace.
+3. 🚀 **Builder Mode** (`"Jarvis, let's build"`): Loads project context for **Wardelio**, **Learnify AI**, **AgencyOS**, and **JARVIS AI OS**.
+4. 🏋️ **Gym Mode** (`"Jarvis, gym mode"`): Tracks strength workouts, schedule, rest days, and hydration.
+5. 🎓 **Learn Mode**: Senior engineering tutor following *Concept ➔ Exercise ➔ Real Project Code*.
+6. 💰 **Business Mode**: Tracks 4 revenue streams (Services, UI Kits, Micro-SaaS, Custom AI-OS).
+7. 🌙 **Daily Review Mode**: Celebrates completed accomplishments and rolls over tomorrow's 5 top priorities.
 
-```powershell
-cd desktop
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-playwright install
-# create config/api_keys.json with your Gemini (+ OpenRouter) keys — see README.md inside desktop/
-python main.py
-```
+### ⏰ 4. 12:00 PM 5-Pillar Daily Planning Engine
+* Automatically organizes your afternoon into **5 core priorities** (*Work, Learning, Project, Gym, Side Income*).
+* **Focus Guardian**: Prevents task explosion by strictly limiting daily commitments to 5 high-yield actions.
 
-Requires Python 3.11–3.12 on Windows 10/11.
+### 💼 5. Salesforce & Razorpay 7-Step Office Automation
+* **7-Step Reconciliation Pipeline**: Download Razorpay donation CSV ➔ Clean phone/email/PAN in Excel ➔ Verify Salesforce Contacts ➔ Convert Leads ➔ Insert Opportunities via Data Loader ➔ Send Status Email to Bharathi Ma'am ➔ Handle exceptions from Aswath Ma'am.
+* **1-Click Email Generator**: Say *"Generate email for Bharathi Ma'am"* or run `npx tsx cli/index.ts salesforce`.
+
+### 🔴 6. YouTube Growth, Content & Income Engine
+* **VishwaJeetSrK (94 subs)**: 1 Long-Form/week + 2–3 Derived Shorts (*Building AI, Learning in Public, Real Automation*).
+* **TinyLifeHacks (12 subs)**: 3–5 High-Impact 30-sec Shorts/week (*Excel shortcuts, Free AI tools, PC tricks*).
+* **1 ➔ 5 Content Multiplier**: Automatically turns 1 long video into **3 Shorts + 1 LinkedIn Post + 1 Technical Blog**.
+
+### 📄 7. Career Intelligence & ATS Resume Builder
+* **ATS Resume Generator**: 1-Click tailored resumes for *Salesforce Operations Specialist* (98/100 score) and *Full-Stack AI Builder*.
+* **Cover Letter Generator**: Custom, non-generic cover letters for any company and role.
+* **Mock Interview Simulator**: Real-time evaluation with grammar and technical phrasing improvements.
+* **Daily 5-Phrase English Coach**: Practical work phrases with pronunciation hints for meetings and interviews.
+
+### 🦙 8. 100% Offline Local AI (Ollama + Llama 3)
+* If your internet disconnects, Jarvis automatically falls back to your local Ollama instance (`http://localhost:11434`), giving you completely private, offline intelligence.
 
 ---
 
-## Quick Start — Run Locally
+## 💻 Installation & Setup
 
-### Prerequisites
+### 1. Prerequisites
+- **Node.js**: v20+ or v24+
+- **Python**: 3.10+ (for Voice Assistant)
+- **Git**: Installed
 
-- **Node.js 20+** (we recommend 22+)
-- **npm** (comes with Node)
-- (Optional) a free **Supabase** project for auth + database
-- (Optional) free API keys — see step 2
-
-### Step 1 — Clone & Install
-
+### 2. Clone & Install
 ```bash
 git clone https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git
 cd JARVIS-AI-OS
-npm install --legacy-peer-deps
+npm install
 ```
 
-### Step 2 — Environment
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and fill in the keys:
-
-| Key | Where to get it | Required? |
-|---|---|---|
-| `GEMINI_API_KEY` | https://aistudio.google.com/apikey (free) | Yes — main AI model |
-| `GROQ_API_KEY` | https://console.groq.com (free) | Yes — STT/TTS + fallback |
-| `SUPABASE_URL` | Supabase dashboard → Project Settings → API | Yes — auth + database |
-| `SUPABASE_PUBLISHABLE_KEY` | Same as above (the `anon` / `publishable` key) | Yes — auth + database |
-
-> **No Supabase yet?** Sign up free at [supabase.com](https://supabase.com), create a project, copy the URL + anon key into `.env`. Run the SQL in `supabase/migrations/` in the **SQL Editor** to create tables.
-
-### Step 3 — Start
-
+### 3. Launch Web Console & 3D Companion
 ```bash
 npm run dev
 ```
+Open **[http://localhost:8080/console](http://localhost:8080/console)** in your browser!
 
-Open **http://localhost:8080** in your browser.
+### 4. Create Desktop Shortcut (Windows App)
+Double-click:
+👉 [`Install-Jarvis-App.bat`](Install-Jarvis-App.bat)
+*This creates a standalone, borderless **"JARVIS AI OS"** app icon directly on your Windows Desktop!*
 
-### Step 4 — (Optional) Full Stack
-
+### 5. Launch Native Desktop Voice Assistant
 ```bash
-npm run dev:all    # website + AI agents + daemon
+npm run assistant
 ```
+*(or double-click [`Jarvis-Assistant.bat`](Jarvis-Assistant.bat))*
 
 ---
 
-## CLI Usage
+## 📱 Mobile Android Companion
 
-The CLI is included in the repo — run it via `npm run jarvis` or directly:
+### Option A: Instant PWA (No Build Required)
+1. Connect your phone to the same WiFi network as your laptop.
+2. Open Chrome on your phone: `http://<YOUR-LAPTOP-IP>:8080/console` *(e.g. `http://10.220.31.173:8080/console`)*.
+3. Tap **Menu (⋮)** ➔ **"Add to Home Screen"** or **"Install App"**.
 
-```bash
-# System status
-npm run jarvis
+### Option B: 1-Click Android APK Build
+1. Plug your Android phone into your laptop via USB.
+2. Double-click:
+   👉 [`Install-On-Phone.bat`](Install-On-Phone.bat)
+   *Compiles the APK with Capacitor and installs it directly on your phone via ADB!*
 
-# Or with tsx directly
-npx tsx cli/index.ts --help
-npx tsx cli/index.ts status
-npx tsx cli/index.ts init
-npx tsx cli/index.ts specs list
-npx tsx cli/index.ts hooks list
-npx tsx cli/index.ts steering list
+---
+
+## 🦙 Offline Local AI Setup (Ollama)
+
+To run JARVIS 100% offline without internet:
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup_ollama.ps1
 ```
-
-### CLI Commands
-
-| Command | Description |
-|---|---|
-| `jarvis init` | Initialize `.jarvis/` config directory |
-| `jarvis status` | Show project status |
-| `jarvis config get <key>` | Get a config value |
-| `jarvis config set <key> <value>` | Set a config value |
-| `jarvis specs list` | List all specs |
-| `jarvis specs show <name>` | Show spec details |
-| `jarvis specs create <name>` | Create a new spec |
-| `jarvis hooks list` | List registered hooks |
-| `jarvis steering list` | List steering files |
-| `jarvis memory <query>` | Search cross-session memory |
-| `jarvis run <name>` | Run a hook or workflow |
-| `jarvis update` | Check for updates |
+*This downloads Ollama for Windows, starts the background service, and pulls the lightweight `llama3` model.*
 
 ---
 
-## What's Inside
+## ⌨️ Terminal CLI Commands
 
-### Web Console Pages (at /console — requires login)
+JARVIS comes with a built-in command-line interface:
 
-| Page | What it does |
-|---|---|
-| **Dashboard** | Live activity feed, stat cards, quick command + voice, RSS news |
-| **Chat** | Multi-agent chat with tool calling, streaming, file attachments, memory recall |
-| **Design Systems** | 53 design systems (31 brand-grade systems + 22 live project sites) with tokens, live previews, copy + download + remix |
-| **Roadmaps & Learnify** | 91 learning tracks from roadmap.sh — pick a track to start a study chat with the AI agent team |
-| **Templates** | Reusable project templates |
-| **Projects** | Project manager + per-project pages |
-| **Skills** | Agent skills management — create, enable, disable |
-| **Plugins** | Plugin marketplace — browse, install, configure |
-| **Hooks** | Workflow automation — register hooks on file changes |
-| **Specs** | Spec-driven development — requirements, design, tasks |
-| **Steering** | Project guidance files injected into AI context |
-| **Connectors** | Slack, Figma, Gmail, Notion, GitHub integrations |
-| **Settings** | Profile, memory, model preferences |
-
-### Public Pages
-
-| Page | What it does |
-|---|---|
-| `/` | Landing — live health probe, agent roster, downloads |
-| `/design` | Public gallery of all 53 design systems + live project site previews (links into the console for copy/remix) |
-| `/skills` | Full agent roster |
-| `/how-it-works` | Docs |
-
-### API Routes
-
-| Route | Purpose |
-|---|---|
-| `/api/chat` | AI chat streaming (Gemini / Groq) |
-| `/api/roadmaps` | Developer roadmaps catalog |
-| `/api/transcribe` | Speech-to-text (Groq Whisper) |
-| `/api/speak` | Text-to-speech |
-| `/api/vision` | Screen/image analysis |
-| `/api/news` | Real tech/AI news from RSS (no API key needed) |
-| `/api/design-systems/*` | Design system data |
-
-### Local Tools
-
-| Tool | Command | What it does |
-|---|---|---|
-| **CLI** | `npm run jarvis` | System status, project report, memory check |
-| **Daemon** | `npm run daemon` | Local server (port 7456) |
-| **Mastra Engine** | `npm run dev:mastra` | 19+ AI tools (memory, code runner, docs, reports) |
-| **Voice Bridge** | `npm run bridge` | Desktop system info, screenshots |
-
-### Project Structure
-
-| Folder | Contents |
-|---|---|
-| `src/` | Application source — routes, components, lib, mastra |
-| `.jarvis/` | Specs, hooks, steering config (created by `jarvis init`) |
-| `cli/` | CLI entry point (Commander.js) |
-| `src-tauri/` | Desktop app shell (Tauri + Rust) |
-| `supabase/migrations/` | Database schema + RLS policies |
-| `skills/` | 433 agent skill files |
-| `plugins/` | 45 plugin manifests |
-| `data/` | 819 design-system manifest files (31 brand-grade design systems) |
-| `Projects/` | 48 project templates — 22 built and published as live preset sites |
-| `scripts/` | Install scripts, utilities |
+| Command | Action |
+| :--- | :--- |
+| `npx tsx cli/index.ts plan` | Display today's 12:00 PM 5-Pillar Focused Schedule |
+| `npx tsx cli/index.ts salesforce` | Generate daily Salesforce update email for Bharathi Ma'am |
+| `npx tsx cli/index.ts youtube` | Display YouTube growth strategy and priority video tasks |
+| `npx tsx cli/index.ts wardelio` | Open Wardelio mobile app in VS Code |
+| `npx tsx cli/index.ts voice` | Launch Python Voice Daemon with Echo Guard |
+| `npx tsx cli/index.ts console` | Launch Web Console in default browser |
+| `npm run test` | Run full automated Vitest test suite |
+| `npm run typecheck` | Verify TypeScript compilation across all modules |
 
 ---
 
-## Tech Stack
+## 🎙️ Voice Commands Cheatsheet
 
-- **Frontend:** React 19, TanStack Start + Router, Vite 7, Tailwind CSS v4, shadcn/ui + Radix, Motion, Lucide, Recharts
-- **AI:** Vercel AI SDK, Google Gemini (free), Groq (free), Mastra multi-agent engine
-- **Backend:** Supabase (PostgreSQL + pgvector, Auth, Realtime), Node.js
-- **Desktop:** Tauri 2 (Rust) — macOS, Windows, Linux
-- **CLI:** Commander.js
-- **PWA:** vite-plugin-pwa with workbox
+Once your voice assistant is running, say:
 
----
-
-## Design Language & Motion
-
-Jarvis uses a custom motion language tuned for "snap" — fast acceleration, instant settle, no floaty easing:
-
-- **Motion tokens** — `--ease-snap: cubic-bezier(0.2, 0, 0, 1)` is the global transition default, `--ease-settle: cubic-bezier(0.16, 1, 0.3, 1)` for entrances, with a quick / base / slow cadence of `160ms / 280ms / 450ms`.
-- **Card choreography** — cards lift 2px with a terracotta border tint on hover (landing page + console dashboard stats, quick actions, agent cards), buttons lift + glow, arrows slide 3px, and the hero screenshot slow-zooms (`group-hover:scale-102`).
-- **Loading states** — skeleton shimmer blocks (`.skeleton`) replace static pulse placeholders, and `.progress-indeterminate` shows an animated bar for in-flight work.
-- **Status language** — blinking status pips with pulse rings, a scanline sweep while health probes are in flight, an ECG heartbeat line for the "processing" state, and stat counters that slot-settle to their final value.
-- **Accessibility** — a global `prefers-reduced-motion` kill switch disables all animation for users who ask for it, and every interactive element gets a visible `:focus-visible` outline.
+* 🗣️ *"Hey Nisha"* / *"Hey Jarvis"* ➔ Wakes up assistant
+* 💼 *"Jarvis, let's work"* ➔ Activates Salesforce & Razorpay Work Mode
+* 🚀 *"Jarvis, let's build"* ➔ Activates Builder Mode for Wardelio / JARVIS
+* 🏋️ *"Jarvis, gym mode"* ➔ Activates Gym & Workout tracking
+* 🧠 *"Jarvis, let's focus"* ➔ Starts 30-minute quiet focus timer
+* 📋 *"Jarvis, 12 pm plan"* ➔ Summarizes today's 5 core pillars
+* 📧 *"Generate email for Bharathi Ma'am"* ➔ Prints formatted Salesforce update email
+* 🔴 *"Jarvis, youtube ideas"* ➔ Gives top video recording task for VishwaJeetSrK or TinyLifeHacks
+* 📱 *"Tell me about Wardelio app"* ➔ Summarizes mobile app status or opens VS Code
+* 🔇 *"Mute audio"* / *"Volume up"* ➔ Controls Windows system audio
 
 ---
 
-## Changelog
+## ⚡ Powered by Top Open-Source Frameworks
 
-**v2.5.4** (Aug 2026) — UI/UX motion overhaul
+A detailed directory is available in [`POWER_GITHUB_REPOSITORIES.md`](POWER_GITHUB_REPOSITORIES.md):
 
-- **Chat fix** — tool calls now continue to the final answer (multi-step tool loop); previously the stream ended right after a tool call with no reply text
-- **News tool** — Jarvis fetches real top news (Hacker News / TechCrunch / The Verge) on demand
-- **Crew page** — default 24-agent core team roster; hired agents take over when you create them
-- **Projects** — rename/delete from the sidebar, workspace templates marked read-only, dashboard count now matches the sidebar
-- **Motion** — stat count-ups, staggered card reveals, shine sweeps, breathing status dots, live feed entrance animation with duplicate suppression, shimmer headline, drifting ambient glow
-- **Desktop Agent** — merged open-source Brahma AI Lite assistant as `desktop/` with optional Supabase cloud sync (memories, daily thread mirror, settings pull)
-
-**v2.5.3** — chat news flow + crew roster fixes
+* **[Mastra TS](https://github.com/mastra-ai/mastra)** — Multi-Agent engine & autonomous tool workflows.
+* **[Three.js](https://github.com/mrdoob/three.js) & [Three VRM](https://github.com/pixiv/three-vrm)** — 3D VRoid Studio avatar engine, spring bones physics & lip-sync.
+* **[TanStack Start](https://github.com/TanStack/router)** — 100% type-safe full-stack React routing & SSR.
+* **[Ollama](https://github.com/ollama/ollama)** — Private, offline local LLM inference.
+* **[Supabase](https://github.com/supabase/supabase)** — PostgreSQL, authentication, and `pgvector` semantic long-term memory.
+* **[Capacitor](https://github.com/ionic-team/capacitor)** — Native Android & iOS cross-platform mobile bridge.
 
 ---
 
-## Auth & Security
+## 📄 License
 
-- **Supabase Auth** — Google OAuth + email/password (with a visible show/hide password toggle)
-- **Protected routes** — every `/console/*` page requires login
-- **Server-side JWT verification** — all server functions validate tokens
-- **Row Level Security** — every table has per-user policies
-- **No hardcoded secrets** — all API keys in `.env` (git-ignored)
-- Found a vulnerability? Email **vishwajeetsrk@gmail.com**
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
 
 ---
 
-## License
+<div align="center">
 
-MIT License — see [LICENSE](LICENSE) for details.
+**Built with ❤️ by [Vishwajeet](https://github.com/Vishwajeetsrk)**  
+*Maintainer: vishwajeetsrk@gmail.com*
 
----
+⭐ If you find JARVIS AI OS inspiring, please give the repo a star on GitHub! ⭐
 
-## Code of Conduct
-
-This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to its terms.
-
----
-
-## Support
-
-- **Issues:** [GitHub Issues](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/discussions)
-- **Security:** Email **vishwajeetsrk@gmail.com** — do NOT create public issues
-
----
-
-**Maintainer:** Vishwajeet — vishwajeetsrk@gmail.com
+</div>

@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="50%" stop-color="#080e22"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+
+    <!-- Glowing Arc Gradients -->
+    <linearGradient id="arcCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+
+    <linearGradient id="glowPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+
+    <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+
+    <!-- Core Radial Glow -->
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
+      <stop offset="40%" stop-color="#06b6d4" stop-opacity="0.3"/>
+      <stop offset="80%" stop-color="#a855f7" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Filter for Neon Glow -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="420" fill="url(#bgGrad)"/>
+
+  <!-- Cyber Grid Background Pattern -->
+  <g opacity="0.12" stroke="#38bdf8" stroke-width="1">
+    <line x1="0" y1="70" x2="1200" y2="70"/>
+    <line x1="0" y1="140" x2="1200" y2="140"/>
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="280" x2="1200" y2="280"/>
+    <line x1="0" y1="350" x2="1200" y2="350"/>
+    <line x1="150" y1="0" x2="150" y2="420"/>
+    <line x1="300" y1="0" x2="300" y2="420"/>
+    <line x1="450" y1="0" x2="450" y2="420"/>
+    <line x1="600" y1="0" x2="600" y2="420"/>
+    <line x1="750" y1="0" x2="750" y2="420"/>
+    <line x1="900" y1="0" x2="900" y2="420"/>
+    <line x1="1050" y1="0" x2="1050" y2="420"/>
+  </g>
+
+  <!-- Left: Glowing 3D Arc Reactor / AI Core Hologram -->
+  <g transform="translate(180, 210)">
+    <!-- Outer Glow Circle -->
+    <circle cx="0" cy="0" r="140" fill="url(#coreGlow)"/>
+
+    <!-- Rotating Tech Outer Rings -->
+    <circle cx="0" cy="0" r="115" stroke="url(#glowPurple)" stroke-width="2" stroke-dasharray="16 8" fill="none" opacity="0.7"/>
+    <circle cx="0" cy="0" r="95" stroke="url(#arcCyan)" stroke-width="3" stroke-dasharray="40 12 10 12" fill="none" filter="url(#neonGlow)"/>
+    <circle cx="0" cy="0" r="75" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6 6" fill="none" opacity="0.8"/>
+    
+    <!-- Triangular Power Core -->
+    <polygon points="0,-50 43.3,25 -43.3,25" stroke="url(#goldAccent)" stroke-width="2.5" fill="none" filter="url(#neonGlow)"/>
+    <polygon points="0,50 43.3,-25 -43.3,-25" stroke="url(#arcCyan)" stroke-width="1.5" fill="none" opacity="0.6"/>
+
+    <!-- Center Pulse Core -->
+    <circle cx="0" cy="0" r="22" fill="#38bdf8" filter="url(#neonGlow)"/>
+    <circle cx="0" cy="0" r="10" fill="#ffffff"/>
+
+    <!-- Satellite Orbit Nodes -->
+    <circle cx="95" cy="0" r="4" fill="#38bdf8" filter="url(#neonGlow)"/>
+    <circle cx="-67" cy="67" r="4" fill="#c084fc" filter="url(#neonGlow)"/>
+    <circle cx="-67" cy="-67" r="4" fill="#fbbf24" filter="url(#neonGlow)"/>
+  </g>
+
+  <!-- Right: Typography & Brand Title -->
+  <g transform="translate(380, 110)">
+    <!-- Badge -->
+    <rect x="0" y="0" width="280" height="28" rx="14" fill="#38bdf8" fill-opacity="0.1" stroke="#38bdf8" stroke-opacity="0.4" stroke-width="1"/>
+    <circle cx="14" cy="14" r="4" fill="#10b981"/>
+    <text x="26" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#38bdf8" letter-spacing="2">PERSONAL AI OPERATING SYSTEM</text>
+
+    <!-- Main Title -->
+    <text x="0" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="900" fill="#ffffff" letter-spacing="4">
+      JARVIS <tspan fill="url(#arcCyan)">AI OS</tspan>
+    </text>
+
+    <!-- Tagline -->
+    <text x="0" y="125" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="600" fill="#cbd5e1" letter-spacing="1">
+      One Brain. Many Shells. Persistent Personal Intelligence.
+    </text>
+
+    <!-- Description -->
+    <text x="0" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="400" fill="#94a3b8">
+      Voice Assistant (Echo Guard) • 3D Avatar (Lumi × Lyra) • 7 Context Modes • 12 PM Daily Planner
+    </text>
+    <text x="0" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="400" fill="#94a3b8">
+      Salesforce &amp; Razorpay Automation • YouTube Growth Engine • ATS Resume Builder • Mobile Companion
+    </text>
+
+    <!-- Feature Pills -->
+    <g transform="translate(0, 220)">
+      <!-- Pill 1 -->
+      <rect x="0" y="0" width="135" height="32" rx="16" fill="#0f172a" stroke="#38bdf8" stroke-opacity="0.4"/>
+      <text x="16" y="20" font-family="sans-serif" font-size="11" font-weight="600" fill="#38bdf8">⚡ Sub-50ms Voice</text>
+
+      <!-- Pill 2 -->
+      <rect x="145" y="0" width="145" height="32" rx="16" fill="#0f172a" stroke="#a855f7" stroke-opacity="0.4"/>
+      <text x="161" y="20" font-family="sans-serif" font-size="11" font-weight="600" fill="#c084fc">🌸 3D VRM Avatar</text>
+
+      <!-- Pill 3 -->
+      <rect x="300" y="0" width="140" height="32" rx="16" fill="#0f172a" stroke="#10b981" stroke-opacity="0.4"/>
+      <text x="316" y="20" font-family="sans-serif" font-size="11" font-weight="600" fill="#34d399">🧠 Unified Memory</text>
+
+      <!-- Pill 4 -->
+      <rect x="450" y="0" width="165" height="32" rx="16" fill="#0f172a" stroke="#f59e0b" stroke-opacity="0.4"/>
+      <text x="466" y="20" font-family="sans-serif" font-size="11" font-weight="600" fill="#fbbf24">💼 Salesforce Auto</text>
+
+      <!-- Pill 5 -->
+      <rect x="625" y="0" width="140" height="32" rx="16" fill="#0f172a" stroke="#ef4444" stroke-opacity="0.4"/>
+      <text x="641" y="20" font-family="sans-serif" font-size="11" font-weight="600" fill="#f87171">🔴 YouTube Engine</text>
+    </g>
+  </g>
+</svg>

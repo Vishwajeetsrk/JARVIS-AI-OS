@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicokosi/tauri-v2-schema/main/json/tauri-v2.schema.json",
   "productName": "Jarvis AI OS",
-  "version": "2.5.4",
+  "version": "2.5.6",
   "identifier": "com.jarvisaios.app",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -53,6 +53,24 @@
   "plugins": {
     "shell": {
       "open": true
+    },
+    "deep-link": {
+      "mobile": [
+        { "host": "jarvisaios.app", "pathPrefix": ["/"] }
+      ],
+      "desktop": {
+        "schemes": ["jarvis"]
+      }
+    },
+    "notification": {
+      "enabled": true
     }
+  },
+  "android": {
+    "minSdkVersion": 24,
+    "targets": ["aarch64", "armv7", "x86_64"]
+  },
+  "ios": {
+    "minimumSystemVersion": "15.0"
   }
 }

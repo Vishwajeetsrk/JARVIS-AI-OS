@@ -1,0 +1,13 @@
+{
+  "name": "Nisha",
+  "wake_words": [
+    "hey nisha",
+    "nisha",
+    "hey jarvis",
+    "jarvis"
+  ],
+  "voice_rate": 165,
+  "voice_volume": 1.0,
+  "voice_gender": "female",
+  "auto_briefing_on_start": true
+}

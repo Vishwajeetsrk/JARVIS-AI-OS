@@ -4,6 +4,7 @@ import { JarvisStar, JarvisWordmark } from "@/components/jarvis/logo";
 import { MarketingNav, MarketingFooter } from "@/components/jarvis/marketing-nav";
 import heroImg from "@/assets/console-hero.jpg";
 import { StatusBadge } from "@/components/jarvis/status-badge";
+import { ArcReactorHud } from "@/components/jarvis/arc-reactor-hud";
 import {
   CheckCircle2, ShieldCheck, Zap, Globe, Cpu, Smartphone, Monitor, Terminal,
   Radio, TrendingUp, Users, MemoryStick, Sparkles, ArrowRight, GitBranch,
@@ -169,9 +170,15 @@ function LandingPage() {
           />
         </div>
         <div className="bg-noise relative -z-10 h-full w-full" />
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 pb-20 pt-16 text-center md:pt-24">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 pb-20 pt-16 text-center md:pt-20">
+          <div className="reveal cursor-pointer transition-transform hover:scale-105">
+            <Link to="/console" title="Click to Launch JARVIS Command Console">
+              <ArcReactorHud size={190} state="listening" audioLevel={0.4} statusText="JARVIS CORE // MK-85" />
+            </Link>
+          </div>
+
           <span className="chip reveal">
-            <JarvisStar size={12} className="text-primary" /> v{health?.version ?? "2.5.3"} · Production Meta-Tool
+            <JarvisStar size={12} className="text-primary" /> v{health?.version ?? "2.5.6"} · Autonomous AI-OS
           </span>
           <h1 className="reveal font-display text-5xl font-semibold leading-[1.05] tracking-tight text-foreground md:text-7xl">
             One brain.

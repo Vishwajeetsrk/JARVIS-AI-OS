@@ -11,10 +11,12 @@ import { processAgencyOSBillingWebhook } from './tools/agencyos-billing-webhook.
 import { auditPullRequestSecurity } from './tools/test-agent-pr-gate.js';
 import { generateSeoMetadata } from './tools/seo-generator.js';
 import { evaluateAgentFrameworks } from './tools/framework-evaluator.js';
+import { readFile, writeFile, copyFile, deleteFile, renameFile, scanDirectory, searchFiles, runAutomatedTest } from './tools/file-operations.js';
+import { executeDeepResearch } from './tools/research-engine.js';
 
 export const mastraAIOS = {
   name: "Vishwajeet AI Operating System (AI-OS)",
-  version: "2.2.0-Governance-Complete",
+  version: "2.5.6-Autonomous-Full",
   agents: agentRegistry,
   workflows: {
     runGoldenFlow
@@ -31,7 +33,16 @@ export const mastraAIOS = {
     processAgencyOSBillingWebhook,
     auditPullRequestSecurity,
     generateSeoMetadata,
-    evaluateAgentFrameworks
+    evaluateAgentFrameworks,
+    readFile,
+    writeFile,
+    copyFile,
+    deleteFile,
+    renameFile,
+    scanDirectory,
+    searchFiles,
+    runAutomatedTest,
+    executeDeepResearch,
   }
 };
 

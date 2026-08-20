@@ -11,6 +11,18 @@ import { createReport } from "@/mastra/tools/report-creator";
 import { executeCode } from "@/mastra/tools/code-runner";
 import { listDesignSystems, getDesignSystem, getProjectSite, listProjectSites } from "@/lib/design-systems";
 import { getSteeringForContext } from "@/lib/steering";
+import { unifiedMemory } from "@/lib/orchestrator/unified-memory";
+import {
+  readFile,
+  writeFile,
+  copyFile,
+  deleteFile,
+  renameFile,
+  scanDirectory,
+  searchFiles,
+  runAutomatedTest,
+} from "@/mastra/tools/file-operations";
+import { executeDeepResearch } from "@/mastra/tools/research-engine";
 
 const DEFAULT_MODEL = "gemini-flash-latest";
 
@@ -30,12 +42,16 @@ function loadAgentTeam(): { count: number; names: string[] } {
 
 function buildBaseSystem(agents: string[]): string {
   const roster = agents.length ? ` (${agents.join(", ")})` : "";
-  return `You are Jarvis — an AI operating system built for Vishwajeet.
+  const masterContext = unifiedMemory.assembleContextForPrompt("");
+  
+  return `${masterContext}
+
 You coordinate ${agents.length} specialized agents${roster}. You speak for the whole team: you can delegate, run tools, and create files directly.
 
 PERSONALITY & REGISTER:
-- Calm, precise, senior-engineer register. Confident, warm, and concise.
+- Calm, precise, intelligent, warm, sweet, and confident.
 - Never fabricate facts, counts, or features. Only claim capabilities listed under CAPABILITIES below — the user trusts you to be truthful.
+- Act as Vishwajeet's Focus Guardian: help prioritize the smallest valuable MVP (Phase 1) and avoid feature explosion.
 
 PRESENTATION (important — the user reads your output in a rendered chat):
 - Format every substantive answer with Markdown: a short bolded summary line, ## headings for sections, bullet lists, **bold** key terms, and tables when comparing things.
@@ -48,6 +64,8 @@ ASKING QUESTIONS:
 - After completing a task, proactively suggest the natural next action.
 
 CAPABILITIES (only claim these — they are real):
+- Autonomous File & Workspace Operations: readFile, writeFile, copyFile, deleteFile, renameFile, scanDirectory, searchFiles, runAutomatedTest. You can read, inspect, modify, create, test, and scan workspace files autonomously.
+- Deep Research & Skill Generation: deepResearch executes multi-source research before designing websites, posters, or architectures, selects tokens from 53 design systems, and generates persistent skills (.skill / SKILL.md) in the skills/ library and memory bank.
 - Documents: createWordDocument (.docx), createPresentation (.pptx), createSpreadsheet (.xlsx), createReport (.md/.html). After creating a file, tell the user the download chip appears above their message.
 - Web: webSearch performs live web searches (no key needed). Use it for current events, research, and anything you are unsure about. getTopNews fetches today's top tech news (Hacker News, TechCrunch, The Verge) — use it directly for any news request instead of repeating the user's question. youtubeSearch / youtubeOpen open YouTube in the user's browser.
 - Markets: getStockQuote fetches live stock/crypto quotes and trends from Yahoo Finance.
@@ -670,6 +688,113 @@ export const Route = createFileRoute("/api/chat")({
                     timeZone: timeZone || "UTC",
                   }).format(now),
                 };
+              },
+            },
+
+            // ----- Autonomous File & Project Operations -----
+            readFile: {
+              description:
+                "Read the contents of any file in the workspace. Supports startLine and endLine slice options.",
+              parameters: z.object({
+                filePath: z.string().describe("Relative or absolute path to the file"),
+                startLine: z.number().optional().describe("1-indexed starting line"),
+                endLine: z.number().optional().describe("1-indexed ending line"),
+              }),
+              execute: async (args: { filePath: string; startLine?: number; endLine?: number }) => {
+                return await readFile(args.filePath, args.startLine, args.endLine);
+              },
+            },
+            writeFile: {
+              description:
+                "Create a new file or overwrite an existing file with provided code or text content. Automatically creates parent directories.",
+              parameters: z.object({
+                filePath: z.string().describe("Path to the file to create or update"),
+                content: z.string().describe("Complete text or code content"),
+                append: z.boolean().optional().describe("Append instead of overwrite"),
+              }),
+              execute: async (args: { filePath: string; content: string; append?: boolean }) => {
+                return await writeFile(args.filePath, args.content, args.append);
+              },
+            },
+            copyFile: {
+              description: "Copy a file or directory from source to destination.",
+              parameters: z.object({
+                sourcePath: z.string().describe("Source file or directory path"),
+                targetPath: z.string().describe("Destination path"),
+              }),
+              execute: async (args: { sourcePath: string; targetPath: string }) => {
+                return await copyFile(args.sourcePath, args.targetPath);
+              },
+            },
+            renameFile: {
+              description: "Rename or move a file or directory.",
+              parameters: z.object({
+                oldPath: z.string().describe("Existing path"),
+                newPath: z.string().describe("New destination path or name"),
+              }),
+              execute: async (args: { oldPath: string; newPath: string }) => {
+                return await renameFile(args.oldPath, args.newPath);
+              },
+            },
+            deleteFile: {
+              description: "Delete a file or directory. Use carefully.",
+              parameters: z.object({
+                targetPath: z.string().describe("File or directory path to remove"),
+                recursive: z.boolean().optional().describe("Delete directory recursively"),
+              }),
+              execute: async (args: { targetPath: string; recursive?: boolean }) => {
+                return await deleteFile(args.targetPath, args.recursive);
+              },
+            },
+            scanDirectory: {
+              description:
+                "Recursively scan a directory tree to inspect files, subfolders, sizes, and file extensions.",
+              parameters: z.object({
+                dirPath: z.string().optional().describe("Directory path to scan (defaults to root)"),
+                maxDepth: z.number().min(1).max(6).optional().describe("Max recursion depth (default 3)"),
+              }),
+              execute: async (args: { dirPath?: string; maxDepth?: number }) => {
+                return await scanDirectory(args.dirPath ?? ".", args.maxDepth ?? 3);
+              },
+            },
+            searchFiles: {
+              description: "Search workspace files for matching regex or string queries.",
+              parameters: z.object({
+                query: z.string().describe("Text or regex search term"),
+                searchDir: z.string().optional().describe("Directory to search within"),
+                extensions: z.array(z.string()).optional().describe("Optional list of file extensions (e.g. ['ts', 'tsx', 'py'])"),
+              }),
+              execute: async (args: { query: string; searchDir?: string; extensions?: string[] }) => {
+                return await searchFiles(args.query, args.searchDir ?? ".", args.extensions);
+              },
+            },
+            runAutomatedTest: {
+              description:
+                "Run automated Vitest test suite, TypeScript typecheck, or custom test command.",
+              parameters: z.object({
+                testType: z.enum(["vitest", "typecheck", "lint", "custom"]),
+                customCommand: z.string().optional(),
+              }),
+              execute: async (args: { testType: "vitest" | "typecheck" | "lint" | "custom"; customCommand?: string }) => {
+                return await runAutomatedTest(args.testType, args.customCommand);
+              },
+            },
+            deepResearch: {
+              description:
+                "Perform deep research on a topic, discover optimal design systems/tokens, and automatically author a reusable skill (.skill / SKILL.md) persisted to memory.",
+              parameters: z.object({
+                topic: z.string().describe("Topic, website concept, poster theme, or architectural problem"),
+                category: z.enum(["web-design", "poster", "architecture", "ai-agent", "security", "general"]).optional(),
+                targetFormat: z.enum(["website", "poster", "app", "document", "code"]).optional(),
+                extraContext: z.string().optional(),
+              }),
+              execute: async (args: {
+                topic: string;
+                category?: "web-design" | "poster" | "architecture" | "ai-agent" | "security" | "general";
+                targetFormat?: "website" | "poster" | "app" | "document" | "code";
+                extraContext?: string;
+              }) => {
+                return await executeDeepResearch(args);
               },
             },
           };

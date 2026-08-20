@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 import { execSync } from "node:child_process";
 
-const pkg = JSON.parse(readFileSync(join(import.meta.dirname, "../../package.json"), "utf-8"));
+const pkg = JSON.parse(readFileSync(join(import.meta.dirname, "../package.json"), "utf-8"));
 
 const program = new Command();
 program
@@ -131,7 +131,7 @@ specsCmd
   .action(() => {
     const specsDir = join(JARVIS_DIR, "specs");
     if (!existsSync(specsDir)) { log("No specs directory found."); return; }
-    const { readdirSync } = require("node:fs");
+
     const entries = readdirSync(specsDir, { withFileTypes: true }).filter(
       (e: any) => e.isDirectory() && !e.name.startsWith("_"),
     );
@@ -186,7 +186,7 @@ hooksCmd
   .action(() => {
     const hooksDir = join(JARVIS_DIR, "hooks");
     if (!existsSync(hooksDir)) { log("No hooks directory found."); return; }
-    const { readdirSync } = require("node:fs");
+
     const entries = readdirSync(hooksDir, { withFileTypes: true }).filter(
       (e: any) => e.name.endsWith(".json"),
     );
@@ -210,7 +210,7 @@ steeringCmd
   .action(() => {
     const steerDir = join(JARVIS_DIR, "steering");
     if (!existsSync(steerDir)) { log("No steering directory found."); return; }
-    const { readdirSync } = require("node:fs");
+
     const entries = readdirSync(steerDir, { withFileTypes: true }).filter(
       (e: any) => e.name.endsWith(".md"),
     );
@@ -244,28 +244,79 @@ program
     log("Run 'npm update -g @vishwajeet/jarvis' to update.");
   });
 
-// ─── run ───
+// ─── voice ───
 program
-  .command("run")
-  .description("Run a hook or workflow")
-  .argument("<name>", "Hook or workflow name")
-  .action((name: string) => {
-    log(`Running "${name}"...`);
-    const hooksDir = join(JARVIS_DIR, "hooks");
-    const hookFile = join(hooksDir, `${name}.json`);
-    if (existsSync(hookFile)) {
-      const hook = JSON.parse(readFileSync(hookFile, "utf-8"));
-      if (hook.command) {
-        try {
-          execSync(hook.command, { stdio: "inherit" });
-          success(`Hook "${name}" completed.`);
-        } catch (e) {
-          error(`Hook "${name}" failed.`);
-        }
-      }
-    } else {
-      error(`Hook or workflow "${name}" not found.`);
+  .command("voice")
+  .description("Launch Python Desktop Voice Assistant (Echo Guard & Wake-word loop)")
+  .action(() => {
+    log("Starting JARVIS Python Voice Assistant daemon...");
+    try {
+      execSync("python scripts/jarvis_desktop_assistant.py", { stdio: "inherit" });
+    } catch {
+      error("Voice assistant terminated.");
     }
   });
 
+// ─── plan ───
+program
+  .command("plan")
+  .description("Show 12:00 PM 5-Pillar Daily Focused Schedule")
+  .action(() => {
+    console.log("\n\x1b[1m\x1b[36m=== TODAY'S 12:00 PM FOCUSED SCHEDULE (5 PILLARS) ===\x1b[0m");
+    console.log("─".repeat(55));
+    console.log("1. \x1b[33m[Work]\x1b[0m 7-Step Salesforce & Razorpay donation reconciliation");
+    console.log("2. \x1b[34m[Learning]\x1b[0m PostgreSQL Vector embeddings & indexing (45 min)");
+    console.log("3. \x1b[35m[Project]\x1b[0m Wardelio App: 3D interactive buttons & animations (1 hr)");
+    console.log("4. \x1b[32m[Gym]\x1b[0m Strength workout & hydration routine (1 hr)");
+    console.log("5. \x1b[36m[Side Income]\x1b[0m Package AgencyOS Razorpay sync workflow demo (30 min)");
+    console.log("─".repeat(55));
+    console.log("\x1b[90mFocus Rule: Maximum 5 core tasks today. Zero multitasking.\x1b[0m\n");
+  });
+
+// ─── salesforce ───
+program
+  .command("salesforce")
+  .description("Generate daily Salesforce update email for Bharathi Ma'am")
+  .action(() => {
+    try {
+      execSync("python scripts/salesforce_sync_helper.py", { stdio: "inherit" });
+    } catch (e: any) {
+      error(`Salesforce helper failed: ${e.message}`);
+    }
+  });
+
+// ─── wardelio ───
+program
+  .command("wardelio")
+  .description("Open Wardelio mobile app in VS Code")
+  .action(() => {
+    log("Opening Wardelio mobile app project...");
+    try {
+      execSync("code C:\\Users\\vishw\\OneDrive\\Desktop\\Wardelio", { stdio: "inherit" });
+      success("Wardelio opened in VS Code.");
+    } catch (e: any) {
+      error(`Could not open Wardelio: ${e.message}`);
+    }
+  });
+
+// ─── youtube ───
+program
+  .command("youtube")
+  .description("Show YouTube Growth Strategy for VishwaJeetSrK & TinyLifeHacks")
+  .action(() => {
+    console.log("\n\x1b[1m\x1b[31m=== YOUTUBE GROWTH & CONTENT ENGINE ===\x1b[0m");
+    console.log("─".repeat(60));
+    console.log("🔴 \x1b[1mVishwaJeetSrK\x1b[0m (94 subs) — AI, JARVIS OS & Tech Journey");
+    console.log("   • Cadence: 1 Long-Form/week + 2-3 Derived Shorts");
+    console.log("   • Priority Video: 'I Built My Own JARVIS AI Assistant with 3D Avatar'");
+    console.log();
+    console.log("⚡ \x1b[1mTinyLifeHacks\x1b[0m (12 subs) — Fast Productivity & Tech Shortcuts");
+    console.log("   • Cadence: 3-5 High-Impact 30-sec Shorts/week");
+    console.log("   • Priority Video: 'Stop Fixing Messy Names in Excel! Press Ctrl + E'");
+    console.log("─".repeat(60));
+    console.log("\x1b[90mMultiplication Rule: 1 Long Video ➔ 3 Shorts + 1 LinkedIn Post + 1 Blog\x1b[0m\n");
+  });
+
 program.parse();
+
+

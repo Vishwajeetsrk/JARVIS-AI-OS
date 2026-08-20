@@ -44,6 +44,7 @@ import { Route as AuthenticatedConsoleSettingsRouteImport } from './routes/_auth
 import { Route as AuthenticatedConsoleSkillsRouteImport } from './routes/_authenticated/console/skills'
 import { Route as AuthenticatedConsoleTemplatesRouteImport } from './routes/_authenticated/console/templates'
 import { Route as AuthenticatedConsoleToolsRouteImport } from './routes/_authenticated/console/tools'
+import { Route as ApiDesktopActionRouteImport } from './routes/api/desktop/action'
 import { Route as ApiDesktopScreenshotRouteImport } from './routes/api/desktop/screenshot'
 import { Route as ApiDesktopSystemRouteImport } from './routes/api/desktop/system'
 import { Route as AuthenticatedConsoleDesignSystemIdRouteImport } from './routes/_authenticated/console/design.$systemId'
@@ -246,6 +247,11 @@ const AuthenticatedConsoleToolsRoute =
     path: '/tools',
     getParentRoute: () => AuthenticatedConsoleRoute,
   } as any)
+const ApiDesktopActionRoute = ApiDesktopActionRouteImport.update({
+  id: '/api/desktop/action',
+  path: '/api/desktop/action',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiDesktopScreenshotRoute = ApiDesktopScreenshotRouteImport.update({
   id: '/api/desktop/screenshot',
   path: '/api/desktop/screenshot',
@@ -327,6 +333,7 @@ export interface FileRoutesByFullPath {
   '/console/skills': typeof AuthenticatedConsoleSkillsRoute
   '/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
   '/console/tools': typeof AuthenticatedConsoleToolsRoute
+  '/api/desktop/action': typeof ApiDesktopActionRoute
   '/api/desktop/screenshot': typeof ApiDesktopScreenshotRoute
   '/api/desktop/system': typeof ApiDesktopSystemRoute
   '/console/': typeof AuthenticatedConsoleIndexRoute
@@ -370,6 +377,7 @@ export interface FileRoutesByTo {
   '/console/skills': typeof AuthenticatedConsoleSkillsRoute
   '/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
   '/console/tools': typeof AuthenticatedConsoleToolsRoute
+  '/api/desktop/action': typeof ApiDesktopActionRoute
   '/api/desktop/screenshot': typeof ApiDesktopScreenshotRoute
   '/api/desktop/system': typeof ApiDesktopSystemRoute
   '/console': typeof AuthenticatedConsoleIndexRoute
@@ -416,6 +424,7 @@ export interface FileRoutesById {
   '/_authenticated/console/skills': typeof AuthenticatedConsoleSkillsRoute
   '/_authenticated/console/templates': typeof AuthenticatedConsoleTemplatesRouteWithChildren
   '/_authenticated/console/tools': typeof AuthenticatedConsoleToolsRoute
+  '/api/desktop/action': typeof ApiDesktopActionRoute
   '/api/desktop/screenshot': typeof ApiDesktopScreenshotRoute
   '/api/desktop/system': typeof ApiDesktopSystemRoute
   '/_authenticated/console/': typeof AuthenticatedConsoleIndexRoute
@@ -462,6 +471,7 @@ export interface FileRouteTypes {
     | '/console/skills'
     | '/console/templates'
     | '/console/tools'
+    | '/api/desktop/action'
     | '/api/desktop/screenshot'
     | '/api/desktop/system'
     | '/console/'
@@ -505,6 +515,7 @@ export interface FileRouteTypes {
     | '/console/skills'
     | '/console/templates'
     | '/console/tools'
+    | '/api/desktop/action'
     | '/api/desktop/screenshot'
     | '/api/desktop/system'
     | '/console'
@@ -550,6 +561,7 @@ export interface FileRouteTypes {
     | '/_authenticated/console/skills'
     | '/_authenticated/console/templates'
     | '/_authenticated/console/tools'
+    | '/api/desktop/action'
     | '/api/desktop/screenshot'
     | '/api/desktop/system'
     | '/_authenticated/console/'
@@ -577,6 +589,7 @@ export interface RootRouteChildren {
   ApiSpeakRoute: typeof ApiSpeakRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
   ApiVisionRoute: typeof ApiVisionRoute
+  ApiDesktopActionRoute: typeof ApiDesktopActionRoute
   ApiDesktopScreenshotRoute: typeof ApiDesktopScreenshotRoute
   ApiDesktopSystemRoute: typeof ApiDesktopSystemRoute
 }
@@ -828,6 +841,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsoleToolsRouteImport
       parentRoute: typeof AuthenticatedConsoleRoute
     }
+    '/api/desktop/action': {
+      id: '/api/desktop/action'
+      path: '/api/desktop/action'
+      fullPath: '/api/desktop/action'
+      preLoaderRoute: typeof ApiDesktopActionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/desktop/screenshot': {
       id: '/api/desktop/screenshot'
       path: '/api/desktop/screenshot'
@@ -1036,6 +1056,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSpeakRoute: ApiSpeakRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
   ApiVisionRoute: ApiVisionRoute,
+  ApiDesktopActionRoute: ApiDesktopActionRoute,
   ApiDesktopScreenshotRoute: ApiDesktopScreenshotRoute,
   ApiDesktopSystemRoute: ApiDesktopSystemRoute,
 }

@@ -36,7 +36,7 @@ export default defineConfig({
       }),
     ],
     server: {
-      host: "localhost",
+      host: "0.0.0.0",
       hmr: {
         timeout: 120_000,
       },

@@ -16,6 +16,15 @@ import { StatCards, type DashboardStats } from "@/components/dashboard/stat-card
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { NewsPanel } from "@/components/dashboard/news-panel";
 import { ProjectCards } from "@/components/dashboard/project-cards";
+import { JarvisHUD } from "@/components/jarvis/jarvis-hud";
+import { AICompanionAvatar } from "@/components/jarvis/ai-companion-avatar";
+import { VRMAvatarViewer } from "@/components/jarvis/vrm-avatar-viewer";
+import { TaskProcessCenter } from "@/components/dashboard/task-process-center";
+import { WeatherLearningHub } from "@/components/dashboard/weather-learning-hub";
+import { DailyContextHub } from "@/components/dashboard/daily-context-hub";
+import { YouTubeGrowthHub } from "@/components/dashboard/youtube-growth-hub";
+import { CareerLearningCenter } from "@/components/dashboard/career-learning-center";
+import { PrivacyControls } from "@/components/dashboard/privacy-controls";
 import { getDashboardStats, getEngineStatus } from "@/lib/dashboard.functions";
 import { createThread } from "@/lib/threads.functions";
 import { toast } from "sonner";
@@ -127,6 +136,7 @@ function ConsoleDashboard() {
   const allOnline = engine ? Object.entries(engine).every(([k, v]) => k === "checkedAt" || v === "online") : false;
   const [userLabel, setUserLabel] = useState("Vishwajeet");
   const [now, setNow] = useState(new Date());
+  const [companionView, setCompanionView] = useState<"avatar" | "vrm" | "arc_hud">("avatar");
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -162,13 +172,40 @@ function ConsoleDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className={`hidden items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider sm:flex ${allOnline ? "border-sage/30 bg-sage/10 text-sage" : "border-amber-400/30 bg-amber-400/10 text-amber-500"}`}>
-              <JarvisStar className={`h-3.5 w-3.5 ${allOnline ? "text-sage" : "text-amber-500"}`} />
-              {allOnline ? "System ready" : "System degraded"}
+            <div className="flex items-center gap-1 rounded-full border border-border bg-card p-1 text-xs">
+              <button
+                onClick={() => setCompanionView("avatar")}
+                className={`rounded-full px-2.5 py-1 transition-all ${companionView === "avatar" ? "bg-primary text-primary-foreground font-semibold" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                🌸 Lumi/Lyra
+              </button>
+              <button
+                onClick={() => setCompanionView("vrm")}
+                className={`rounded-full px-2.5 py-1 transition-all ${companionView === "vrm" ? "bg-cyan-500 text-slate-950 font-bold" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                👗 3D VRoid VRM
+              </button>
+              <button
+                onClick={() => setCompanionView("arc_hud")}
+                className={`rounded-full px-2.5 py-1 transition-all ${companionView === "arc_hud" ? "bg-amber-500 text-slate-950 font-bold" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                ⚡ Arc HUD
+              </button>
             </div>
             <StatusBadge status={allOnline ? "ready" : "needs-input"} />
           </div>
         </header>
+
+        {/* 3D AI Companion (Lumi / Lyra Hybrid), Full 3D VRM Avatar, or Arc Reactor HUD */}
+        {companionView === "avatar" && (
+          <AICompanionAvatar onToggleMode={() => setCompanionView("vrm")} />
+        )}
+        {companionView === "vrm" && (
+          <VRMAvatarViewer onClose={() => setCompanionView("arc_hud")} />
+        )}
+        {companionView === "arc_hud" && (
+          <JarvisHUD onSendMessage={(msg) => mCreate.mutate(msg)} />
+        )}
 
         {/* Quick command */}
         <div className="rounded-2xl border border-border bg-card p-3 shadow-sm">
@@ -263,6 +300,24 @@ function ConsoleDashboard() {
             </SectionCard>
           </div>
         </div>
+
+        {/* Live Weather, Clock, Full Stack Master Track & Side Income Blueprint */}
+        <WeatherLearningHub />
+
+        {/* Dynamic Context Switching & 12 PM 5-Pillar Daily Planning Engine */}
+        <DailyContextHub />
+
+        {/* Live Project Process, Daily Tasks CRUD & Advance Tools Matrix */}
+        <TaskProcessCenter />
+
+        {/* YouTube Growth, Content & Income Engine (VishwaJeetSrK + TinyLifeHacks) */}
+        <YouTubeGrowthHub />
+
+        {/* Career Intelligence, ATS Resume, Mock Interviews & English Coach */}
+        <CareerLearningCenter />
+
+        {/* Explicit Privacy, Permissions & Memory Governance */}
+        <PrivacyControls />
       </div>
     </div>
   );

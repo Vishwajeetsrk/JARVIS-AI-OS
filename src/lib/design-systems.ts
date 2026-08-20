@@ -6,19 +6,31 @@ import type {
   DesignSystemSummary,
 } from "./design-system-types";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const rawFiles = import.meta.glob("../../data/**/*", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
+import * as fs from "node:fs";
+import * as path from "node:path";
 
-// Built static project sites (Projects/ -> public/preset-sites) bundled the same
-// way, so the 22 live sites can be browsed, previewed, and remixed alongside the
-// token design systems.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const siteHtml = import.meta.glob("../../public/preset-sites/*/index.html", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
+const hasGlob = typeof (import.meta as any).glob === "function";
+const rawFiles: Record<string, string> = hasGlob
+  ? (import.meta as any).glob("../../data/**/*", { query: "?raw", import: "default", eager: true })
+  : {};
 
-// import.meta.glob keys are relative to this file: "../../data/<system>/<file>"
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const siteHtml: Record<string, string> = hasGlob
+  ? (import.meta as any).glob("../../public/preset-sites/*/index.html", { query: "?raw", import: "default", eager: true })
+  : {};
+
 function readFileSafe(id: string, rel: string): string {
   const key = `../../data/${id}/${rel}`;
-  return rawFiles[key] ?? "";
+  if (rawFiles[key]) return rawFiles[key];
+
+  try {
+    const filePath = path.resolve(process.cwd(), "data", id, rel);
+    if (fs.existsSync(filePath)) {
+      return fs.readFileSync(filePath, "utf-8");
+    }
+  } catch {}
+  return "";
 }
 
 /** Read a design-system file by id + relative path (for templates/preview routes). */
@@ -40,6 +52,19 @@ function systemIds(): string[] {
   for (const key of Object.keys(rawFiles)) {
     const m = key.match(/^\.\.\/\.\.\/data\/([^/]+)\/manifest\.json$/);
     if (m) ids.add(m[1]);
+  }
+  if (ids.size === 0) {
+    try {
+      const dataDir = path.resolve(process.cwd(), "data");
+      if (fs.existsSync(dataDir)) {
+        const entries = fs.readdirSync(dataDir, { withFileTypes: true });
+        for (const entry of entries) {
+          if (entry.isDirectory() && fs.existsSync(path.join(dataDir, entry.name, "manifest.json"))) {
+            ids.add(entry.name);
+          }
+        }
+      }
+    } catch {}
   }
   return [...ids];
 }
