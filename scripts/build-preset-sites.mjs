@@ -15,6 +15,9 @@ const STATIC_EXTS = new Set([
   ".mp4", ".webm", ".mp3", ".wav", ".ogg", ".pdf", ".txt", ".xml",
 ]);
 
+// Projects to skip (non-website projects, e.g. mobile apps).
+const EXCLUDE_DIRS = new Set(["wardelio"]);
+
 const EXCLUDE_FILES = new Set([
   "index.source.html", "package-lock.json", "package.json", "pnpm-lock.yaml",
   "yarn.lock", "tsconfig.json", "tsconfig.node.json", "tsconfig.app.json",
@@ -52,6 +55,10 @@ async function main() {
   let totalBytes = 0;
 
   for (const name of projectDirs) {
+    if (EXCLUDE_DIRS.has(name)) {
+      console.log(`SKIP ${name}: excluded project`);
+      continue;
+    }
     // A project may live at Projects/<name>/<name>/... (double nested) or directly.
     const rootCandidates = [
       join(PROJECTS, name),

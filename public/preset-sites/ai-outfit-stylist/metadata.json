@@ -1,0 +1,7 @@
+{
+  "name": "ai-outfit-stylist",
+  "description": "AI-powered outfit stylist with animated 5-step processing pipeline, circular progress ring, and marketing feature panel.",
+  "category": "AI",
+  "tags": ["fashion", "AI", "outfit", "stylist", "pipeline", "animation"],
+  "version": "1.0.0"
+}
