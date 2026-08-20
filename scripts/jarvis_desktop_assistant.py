@@ -613,19 +613,33 @@ export function CyberAnimatedCard() {
         except Exception:
             pass
 
-        # 4. Live Real-Time Web Knowledge & Encyclopedia Engine
+        # 4. Live Real-Time Web Knowledge & Encyclopedia Engine (Wikipedia + DuckDuckGo)
         try:
             import urllib.parse
             import urllib.request
             import json
-            clean_q = prompt.lower().replace("explain", "").replace("what is", "").replace("who is", "").replace("how does", "").replace("in 2 simple sentences", "").replace("simple sentences", "").strip()
+            clean_q = prompt.lower().replace("explain", "").replace("what is", "").replace("who is", "").replace("how does", "").replace("tell me about", "").replace("in 2 simple sentences", "").replace("simple sentences", "").strip()
+            
+            # A. Try Wikipedia Summary API
+            try:
+                wiki_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(clean_q.title())}"
+                req = urllib.request.Request(wiki_url, headers={"User-Agent": "JarvisAIOS/2.6 (contact@jarvis.ai)"})
+                with urllib.request.urlopen(req, timeout=5) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                    extract = data.get("extract", "").strip()
+                    if extract:
+                        sentences = [s.strip() for s in extract.split(". ") if s.strip()]
+                        return ". ".join(sentences[:2]) + "."
+            except Exception:
+                pass
+
+            # B. Try DuckDuckGo Instant Answers
             ddg_url = f"https://api.duckduckgo.com/?q={urllib.parse.quote(clean_q)}&format=json&no_html=1&skip_disambig=1"
             req = urllib.request.Request(ddg_url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=6) as resp:
+            with urllib.request.urlopen(req, timeout=5) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 abstract = data.get("AbstractText", "").strip()
                 if abstract:
-                    # Return first 2-3 clean sentences
                     sentences = [s.strip() for s in abstract.split(". ") if s.strip()]
                     return ". ".join(sentences[:2]) + "."
         except Exception:
@@ -643,6 +657,55 @@ export function CyberAnimatedCard() {
             return "You are very welcome, sir! Always happy to assist."
 
         return f"Understood, sir. I have processed '{prompt}' through cognitive gateways and updated your system context."
+
+    def get_live_top_news(self, count=10):
+        """Fetches and formats real-time top breaking news headlines from live RSS feeds!"""
+        print(f"\n{CYAN}╔══════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{CYAN}║   📰 JARVIS LIVE REAL-TIME BREAKING NEWS FEED                   ║{RESET}")
+        print(f"{CYAN}╚══════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"{DIM}Connecting to live RSS broadcast streams...{RESET}\n")
+
+        self.voice.speak("Fetching today's top breaking news headlines from live news streams, sir.", self)
+
+        news_items = []
+        try:
+            import urllib.request
+            import xml.etree.ElementTree as ET
+            url = "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+            with urllib.request.urlopen(req, timeout=8) as resp:
+                root = ET.fromstring(resp.read())
+                items = root.findall(".//item")[:count]
+                for item in items:
+                    title = item.find("title").text if item.find("title") is not None else "No Title"
+                    source = item.find("source").text if item.find("source") is not None else "Google News"
+                    # Clean title if source is repeated at the end
+                    clean_title = title.split(" - ")[0].strip()
+                    news_items.append({"title": clean_title, "source": source})
+        except Exception as e:
+            print(f"{RED}[!] News stream error: {e}{RESET}")
+
+        if not news_items:
+            fallback = "Unable to reach live news feeds at this moment. Please verify your internet connection."
+            print(f"{YELLOW}{fallback}{RESET}")
+            self.voice.speak(fallback, self)
+            return
+
+        print(f"{CYAN}┌── [Top 10 Live Headlines Today] ─────────────────────────────────────────────{RESET}")
+        for i, n in enumerate(news_items, 1):
+            print(f"{CYAN}│{RESET} {BOLD}{i}.{RESET} [{MAGENTA}{n['source']}{RESET}] {n['title']}")
+        print(f"{CYAN}└─────────────────────────────────────────────────────────────────────────────┘{RESET}\n")
+
+        # Speak top 3 highlights
+        top3_summary = (
+            f"Here are today's top headlines, sir: "
+            f"First: {news_items[0]['title']}. "
+            f"Second: {news_items[1]['title'] if len(news_items) > 1 else ''}. "
+            f"Third: {news_items[2]['title'] if len(news_items) > 2 else ''}. "
+            f"All {len(news_items)} live stories are displayed on your terminal screen."
+        )
+        self.voice.speak(top3_summary, self)
+        return news_items
 
     def live_web_search(self, search_query):
         """Performs live automated web research and synthesizes cited facts!"""
@@ -871,7 +934,12 @@ You are a Full-Stack Product Architect. Implement Wardelio's VIP Monetization & 
             self.voice.speak(resp, self)
             return
 
-        # 3. Autonomous App & Website Idea, PRD, Architecture & UI/UX Compilation
+        # 3. Live Real-Time News & Headlines Stream
+        if ("news" in q or "headline" in q or "what happened today" in q or "what is happening today" in q or "top stories" in q):
+            self.get_live_top_news(10)
+            return
+
+        # 4. Autonomous App & Website Idea, PRD, Architecture & UI/UX Compilation
         if ("best idea" in q or "idea for" in q or "create app" in q or "create website" in q or "plan app" in q or "plan website" in q or "generate prd" in q or "prd" in q or "architecture for" in q or "app idea" in q):
             self.generate_app_prd_and_architecture(query)
             return
