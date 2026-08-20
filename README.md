@@ -203,22 +203,37 @@ Once your voice assistant is running, say:
 
 ---
 
-## ⚡ Powered by Top Open-Source Frameworks
+## 🌍 Universal Cross-Platform Support
 
-A detailed directory is available in [`POWER_GITHUB_REPOSITORIES.md`](POWER_GITHUB_REPOSITORIES.md):
+JARVIS AI OS runs seamlessly across every device and operating system:
 
-* **[Mastra TS](https://github.com/mastra-ai/mastra)** — Multi-Agent engine & autonomous tool workflows.
-* **[Three.js](https://github.com/mrdoob/three.js) & [Three VRM](https://github.com/pixiv/three-vrm)** — 3D VRoid Studio avatar engine, spring bones physics & lip-sync.
-* **[TanStack Start](https://github.com/TanStack/router)** — 100% type-safe full-stack React routing & SSR.
-* **[Ollama](https://github.com/ollama/ollama)** — Private, offline local LLM inference.
-* **[Supabase](https://github.com/supabase/supabase)** — PostgreSQL, authentication, and `pgvector` semantic long-term memory.
-* **[Capacitor](https://github.com/ionic-team/capacitor)** — Native Android & iOS cross-platform mobile bridge.
+| Platform | Interface | Execution Method | Capabilities |
+| :--- | :--- | :--- | :--- |
+| **Windows Laptop / PC** | 🖥️ Native Desktop + Daemon | Double-click `AutoStart-Setup.bat` | 3D VRoid Avatar, Web Console, Auto-Start on Boot, Python Voice Assistant with Echo Guard |
+| **MacBook / macOS** | 🍎 Native Terminal + Web App | `npm run dev` / `npx tsx cli/index.ts` | 60 FPS Web Console, Full Screen Recording Studio, Terminal CLI Suite, 69 Skills |
+| **Linux (Ubuntu/Arch)** | 🐧 Terminal + Browser Shell | `git clone` & `npm run dev` | Headless & GUI agent orchestration, Mastra TS workflows, Ollama offline inference |
+| **Android Phone / Tablet** | 📱 Capacitor Native APK / PWA | Double-click `Install-On-Phone.bat` | Portable companion, WiFi remote control, live task matrix & voice command bridge |
+| **iPhone / iPad (iOS)** | 🍏 Safari PWA / Local Network | Open `http://<LAPTOP-IP>:8080/console` | 3D Arc Reactor HUD, mobile context switcher, responsive task management |
+| **Terminal / SSH** | ⌨️ Global Command-Line Suite | `npx tsx cli/index.ts [cmd]` | 12+ headless power commands: `plan`, `scan`, `record`, `lessons`, `skill:install` |
+| **Cloud Web Console** | 🌐 Browser PWA | [jarvisaios.vercel.app](https://jarvisaios.vercel.app) | Public specs, 53 design system kits, and live demo sandbox |
 
 ---
 
-## 📄 License
+## ⚡ 1-Click Windows Auto-Start (Runs on Open Laptop)
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+To have JARVIS start automatically every time you power on or open your laptop:
+1. Double-click: 👉 [`AutoStart-Setup.bat`](AutoStart-Setup.bat)
+2. That's it! Windows will register the silent VBS launcher (`scripts/jarvis_startup_service.vbs`) in your startup folder and registry.
+3. Every time you log in, JARVIS boots silently in the background, spins up your local web server, and starts your voice assistant with Echo Guard!
+
+---
+
+## 📜 Community & Governance
+
+* 🤝 **[Code of Conduct](CODE_OF_CONDUCT.md)** — Our community participation and inclusivity guidelines.
+* 🛠️ **[Contributing Guide](CONTRIBUTING.md)** — Steps to fork, submit PRs, add skills, and run tests.
+* 🛡️ **[Security Policy](SECURITY.md)** — Vulnerability reporting and our local-first privacy architecture.
+* 📄 **[MIT License](LICENSE)** — Free for personal and commercial exploration.
 
 ---
 
