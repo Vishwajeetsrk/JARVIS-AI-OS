@@ -74,9 +74,12 @@ CAPABILITIES (only claim these — they are real):
 - Markets: getStockQuote fetches live stock/crypto quotes and trends from Yahoo Finance.
 - Coding: runCode executes a code snippet; executeShell runs shell commands (both require the user to have them enabled).
 - Design: listDesignSystems / getDesignSystem return 53 brand-grade design systems and live project sites; use them to apply consistent design. The **Learnify Design Engine** has AI-learned patterns from 47 real projects (colors, fonts, components, glass effects, gradients, animations). Use recreateDesign to generate complete websites from these learned patterns with custom branding. Enabled design skills give you: design-prompts (32 premium styles — brutalism, glassmorphism, cyberpunk, art deco, academia, vaporwave...), animmaster-lib (300 pro animated components — scroll, mouse, WebGL shaders, hover, text, 3D), aceternity-ui (spotlight, sparkles, aurora, 3D cards, bento grids, magnetic buttons). Apply these when the user requests a named style or animated component.
+- Project Lifecycle: after generating a website/app, drive it through the full lifecycle. (1) SAVE: saveProjectBuild stores the generated HTML as a build with a live preview. (2) PREVIEW: openPreview shows the build in an iframe. (3) EXPORT: exportProject zips the site with vercel.json/netlify.toml/README into a downloadable .zip. (4) DEPLOY: deployProject records a deployment and opens the provider (Vercel/Netlify). (5) DATABASE: connectDatabase attaches a database; runSql generates schema SQL. (6) PLUGINS: enableProjectPlugin adds seo/analytics/forms/payments/comments/auth/cms/chat/storage/email. (7) API KEYS: createProjectApiKey issues jsk_... keys (show the full key ONCE — never store or repeat it). (8) ANALYZE: analyzeProject reports threads, messages, builds, deployments and next steps. Whenever the user creates a project, offer to save the build so it gets live preview + export + deploy.
+- Interactive Questions: when you need information (brand name, email, phone, address, icon style, preferences, or any decision), use askUser with 1–4 concrete answer options PLUS the free-text "Other" option that the UI always offers. Wait for the user's answer before continuing. Collect brand details (name, email, phone, address, website, icon style) with a short series of askUser questions before generating brand assets or legal pages.
+- Brand & Legal: generateBrandAssets creates logo (SVG), favicon, OG image, palette, fonts — ask for the brand name/colors/icon style first via askUser. generateBrandComponents builds a full UI kit (buttons, forms, cards, navbar, hero, footer, badges) as one HTML file styled with the brand palette. generateLegalPages creates Privacy Policy, Terms, Disclaimer, Refund, and Cookie pages with the user's email/phone/address filled in — ask for missing details via askUser first. All brand assets and legal pages are saved, reused in later exports, and included when exporting a project.
 - Actions that open the user's browser (YouTube, any URL) work through openUrl/youtubeSearch — when you use them, mention that a tab was opened.
 - Memory: recallMemory searches past conversations. saveSkill lets you persist reusable knowledge after a complex task.
-- Connectors: when the user has connected providers (GitHub, Slack, Notion, Google Calendar, Gmail, Zapier, Brave, ElevenLabs...), their tools become available automatically.
+- Connectors: when the user has connected providers (GitHub, Slack, Notion, Google Calendar, Gmail, Zapier, Brave, ElevenLabs...), their tools become available automatically. With GitHub connected you can list repos/issues/files, CREATE a repo (github_create_repo), and DIRECTLY PUSH files or the latest generated project (github_push_files) with real commits. Use these to put a generated site on GitHub so it can be deployed on Vercel/Netlify.
 - Plans: roadmap returns structured learning paths; for building software, plan the architecture, then write code with runCode / create the files, and explain how to run them.`;
 }
 
@@ -91,6 +94,9 @@ const PPTX_MT = "application/vnd.openxmlformats-officedocument.presentationml.pr
 const XLSX_MT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 const SAFE_NAME = (title: string) => title.replace(/[^a-zA-Z0-9]/g, "_");
+
+const slugify = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "project";
 
 function clientAction(type: string, payload: Record<string, unknown>, message: string) {
   return { ok: true, message, __jarvis_action__: { type, ...payload } };
@@ -1062,6 +1068,808 @@ export const Route = createFileRoute("/api/chat")({
                     : `HTML generated (${result.html.length} chars). Set saveToFile=true to save to workspace.`,
                   html: result.html.slice(0, 2000) + "\n\n... (full HTML available via saveToFile)",
                 };
+              },
+            },
+
+            // -------- Project lifecycle: builds --------
+            saveProjectBuild: {
+              description:
+                "Save a generated HTML site/app as a build in the user's project (project_builds). Creates a stored build with a live preview chip. Use after generating HTML so the user can preview, export, analyze, and deploy it. Requires projectId (uuid).",
+              parameters: z.object({
+                projectId: z.string().uuid().describe("ID of the project to attach the build to"),
+                name: z.string().min(1).describe("Build name, e.g. 'Landing page v2'"),
+                html: z.string().min(10).describe("Full HTML of the site/app"),
+                framework: z.string().optional().describe("Framework, e.g. 'static-html', 'react'"),
+                buildType: z.enum(["site", "app", "landing", "component", "dashboard"]).optional().describe("Type of build"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to save project builds" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const { data: row, error } = await supabaseAdmin
+                  .from("project_builds")
+                  .insert({
+                    project_id: args.projectId,
+                    user_id: userId,
+                    name: args.name,
+                    html: args.html,
+                    framework: args.framework ?? "static-html",
+                    build_type: args.buildType ?? "site",
+                    status: "ready",
+                  })
+                  .select("id, name, created_at")
+                  .single();
+                if (error) return { error: `Failed to save build: ${error.message}` };
+                return clientAction(
+                  "openPreview",
+                  { buildId: row.id, projectId: args.projectId, title: args.name },
+                  `Build "${args.name}" saved. Opening live preview.`,
+                );
+              },
+            },
+            listProjectBuilds: {
+              description:
+                "List saved builds (generated sites/apps) for a project. Use when the user asks what was built, to open a previous build, or to pick a build to export/deploy.",
+              parameters: z.object({
+                projectId: z.string().uuid().describe("Project ID"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to list builds" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const { data, error } = await supabaseAdmin
+                  .from("project_builds")
+                  .select("id, name, framework, build_type, status, created_at")
+                  .eq("project_id", args.projectId)
+                  .eq("user_id", userId)
+                  .order("created_at", { ascending: false });
+                if (error) return { error: error.message };
+                return {
+                  ok: true,
+                  count: data?.length ?? 0,
+                  builds: data ?? [],
+                  message: `Project has ${data?.length ?? 0} saved build(s).`,
+                };
+              },
+            },
+            getProjectBuildHtml: {
+              description: "Fetch the full HTML of a saved project build. Use before exporting or deploying a specific build.",
+              parameters: z.object({ buildId: z.string().uuid().describe("Build ID") }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to fetch builds" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const { data, error } = await supabaseAdmin
+                  .from("project_builds")
+                  .select("id, name, html, framework")
+                  .eq("id", args.buildId)
+                  .eq("user_id", userId)
+                  .single();
+                if (error) return { error: `Build not found: ${error.message}` };
+                return {
+                  ok: true,
+                  buildId: data.id,
+                  name: data.name,
+                  htmlLength: (data.html ?? "").length,
+                  html: (data.html ?? "").slice(0, 3000) + "\n\n... (full HTML: use exportProject to download)",
+                };
+              },
+            },
+
+            // -------- Project lifecycle: export --------
+            exportProject: {
+              description:
+                "Export a project (or a specific build / generated HTML) as a downloadable ZIP containing index.html, deploy configs (vercel.json, netlify.toml), README, and any saved brand assets + legal pages. Returns a download chip the user can click. Use when the user asks to export, download, or get the code of a project.",
+              parameters: z.object({
+                projectId: z.string().uuid().optional().describe("Project ID to export (uses its latest build + brand + legal assets)"),
+                buildId: z.string().uuid().optional().describe("Specific build ID to export"),
+                html: z.string().optional().describe("Inline HTML to export instead (must be full document)"),
+                name: z.string().optional().describe("Zip/project folder name"),
+                includeLegal: z.boolean().optional().describe("Include generated legal pages if any"),
+                includeBrand: z.boolean().optional().describe("Include brand assets (logo, favicon, OG image) if any"),
+                projectType: z.enum(["website", "app", "landing", "portfolio", "dashboard", "ecommerce", "blog", "saas"]).optional().describe("Type of project for README/deploy config"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to export projects" };
+                const { buildZip, zipToDataUrl } = await import("@/lib/zip");
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+                let html: string | undefined = args.html;
+                let name = args.name ?? "project";
+                if (!html && args.buildId) {
+                  const { data } = await supabaseAdmin
+                    .from("project_builds")
+                    .select("html, name")
+                    .eq("id", args.buildId)
+                    .eq("user_id", userId)
+                    .maybeSingle();
+                  html = data?.html ?? undefined;
+                  if (data?.name) name = slugify(data.name);
+                }
+                if (!html && args.projectId) {
+                  const { data } = await supabaseAdmin
+                    .from("project_builds")
+                    .select("html")
+                    .eq("project_id", args.projectId)
+                    .eq("user_id", userId)
+                    .order("created_at", { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+                  html = data?.html ?? undefined;
+                }
+                if (!html) {
+                  return { error: "No generated HTML found. Generate the site first (e.g. recreateDesign) or pass html." };
+                }
+
+                const files: Array<{ path: string; content: string }> = [];
+                files.push({ path: `${name}/index.html`, content: html });
+                files.push({ path: `${name}/vercel.json`, content: JSON.stringify({ cleanUrls: true, headers: [{ source: "/(.*)", headers: [{ key: "X-Content-Type-Options", value: "nosniff" }, { key: "X-Frame-Options", value: "SAMEORIGIN" }, { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" }] }] }, null, 2) });
+                files.push({ path: `${name}/netlify.toml`, content: `[build]\n  publish = "."\n\n[[headers]]\n  for = "/*"\n  [headers.values]\n    X-Content-Type-Options = "nosniff"\n    X-Frame-Options = "SAMEORIGIN"\n    Referrer-Policy = "strict-origin-when-cross-origin"\n` });
+                files.push({ path: `${name}/README.md`, content: `# ${name}\n\n> Exported by Jarvis AI OS\n\nA ${args.projectType ?? "website"} generated with Jarvis's AI design engine.\n\n## Deploy\n- **Vercel**: import this folder at vercel.com/new (or run \`npx vercel\`)\n- **Netlify**: drag & drop the folder at app.netlify.com/drop\n\n## Security headers\nIncluded in vercel.json / netlify.toml (nosniff, frame protection, referrer policy).\n` });
+
+                // Brand assets (from project_brand_assets if present)
+                if (args.includeBrand !== false) {
+                  const { data: assets } = await supabaseAdmin
+                    .from("project_brand_assets")
+                    .select("asset_type, content")
+                    .eq("user_id", userId)
+                    .order("created_at", { ascending: false })
+                    .limit(50);
+                  if (assets) {
+                    for (const a of assets) {
+                      if (a.asset_type === "logo") files.push({ path: `${name}/assets/logo.svg`, content: a.content });
+                      else if (a.asset_type === "favicon") files.push({ path: `${name}/assets/favicon.svg`, content: a.content });
+                      else if (a.asset_type === "og-image") files.push({ path: `${name}/assets/og-image.svg`, content: a.content });
+                    }
+                  }
+                }
+
+                // Legal pages (from project_legal_pages if present)
+                if (args.includeLegal !== false) {
+                  const { data: legal } = await supabaseAdmin
+                    .from("project_legal_pages")
+                    .select("slug, html")
+                    .eq("user_id", userId)
+                    .limit(50);
+                  if (legal) {
+                    for (const l of legal) files.push({ path: `${name}/legal/${l.slug}.html`, content: l.html });
+                  }
+                }
+
+                const zip = buildZip(files);
+                const zipDataUrl = zipToDataUrl(zip);
+                return clientAction(
+                  "exportProject",
+                  { zipDataUrl, fileName: `${slugify(name)}.zip`, fileCount: files.length },
+                  `Export ready: ${files.length} files zipped (${(zip.length / 1024).toFixed(0)} KB). Click to download ${slugify(name)}.zip`,
+                );
+              },
+            },
+
+            // -------- Project lifecycle: analysis --------
+            analyzeProject: {
+              description:
+                "Analyze a project: count threads, messages, builds, deployments, API keys, and activity; summarize health and suggest next steps. Produces a markdown report and saves it to the project's analysis history.",
+              parameters: z.object({
+                projectId: z.string().uuid().describe("Project ID to analyze"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to analyze projects" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const [threads, builds, deployments, dbs, plugins, apiKeys, project] = await Promise.all([
+                  supabaseAdmin.from("threads").select("id, title, created_at").eq("project_id", args.projectId).eq("user_id", userId),
+                  supabaseAdmin.from("project_builds").select("id, name, status, created_at").eq("project_id", args.projectId).eq("user_id", userId).order("created_at", { ascending: false }).limit(5),
+                  supabaseAdmin.from("project_deployments").select("id, provider, url, status, created_at").eq("project_id", args.projectId).eq("user_id", userId).order("created_at", { ascending: false }).limit(5),
+                  supabaseAdmin.from("project_databases").select("id, name, provider, status").eq("project_id", args.projectId).eq("user_id", userId),
+                  supabaseAdmin.from("project_plugins").select("plugin_id, enabled").eq("project_id", args.projectId).eq("user_id", userId),
+                  supabaseAdmin.from("project_api_keys").select("id, name, revoked_at").eq("project_id", args.projectId).eq("user_id", userId),
+                  supabaseAdmin.from("projects").select("name, description, created_at, updated_at").eq("id", args.projectId).eq("user_id", userId).maybeSingle(),
+                ]);
+                let messageCount = 0;
+                if (threads.data?.length) {
+                  const { count } = await supabaseAdmin
+                    .from("messages")
+                    .select("id", { count: "exact", head: true })
+                    .in("thread_id", threads.data.map((t: any) => t.id))
+                    .eq("user_id", userId);
+                  messageCount = count ?? 0;
+                }
+                const report = {
+                  project: project.data?.name ?? "Project",
+                  generatedAt: new Date().toISOString(),
+                  threads: threads.data?.length ?? 0,
+                  messages: messageCount,
+                  builds: builds.data?.length ?? 0,
+                  deployments: deployments.data?.length ?? 0,
+                  databases: dbs.data?.length ?? 0,
+                  plugins: plugins.data?.length ?? 0,
+                  apiKeys: apiKeys.data?.length ?? 0,
+                  latestBuild: builds.data?.[0]?.name ?? null,
+                  latestDeployment: deployments.data?.find((d: any) => d.status === "live")?.url ?? null,
+                };
+                await supabaseAdmin.from("project_analysis").insert({
+                  project_id: args.projectId,
+                  user_id: userId,
+                  report_type: "overview",
+                  report,
+                });
+                const md = [
+                  `## 📊 Project Analysis: ${report.project}`,
+                  ``,
+                  `| Metric | Value |`,
+                  `|---|---|`,
+                  `| Threads (chats) | ${report.threads} |`,
+                  `| Messages | ${report.messages} |`,
+                  `| Builds | ${report.builds} |`,
+                  `| Deployments | ${report.deployments} |`,
+                  `| Databases connected | ${report.databases} |`,
+                  `| Plugins enabled | ${report.plugins} |`,
+                  `| API keys issued | ${report.apiKeys} |`,
+                  ``,
+                  `**Latest build:** ${report.latestBuild ?? "none"}`,
+                  `**Live deployment:** ${report.latestDeployment ?? "none"}`,
+                  ``,
+                  `### Suggested next steps`,
+                  report.builds === 0
+                    ? `- Generate the site: ask me to create the website/app for "${report.project}"`
+                    : `- Deploy: ask me to deploy ${report.latestBuild ?? "the latest build"}`,
+                  report.apiKeys === 0 ? `- Issue an API key to integrate ${report.project} with your tools` : `- Manage your ${report.apiKeys} API key(s)`,
+                  report.databases === 0 ? `- Connect a database to store ${report.project}'s data` : `- Database connected — ask me to design a schema`,
+                ].join("\n");
+                return { ok: true, ...report, report: md };
+              },
+            },
+
+            // -------- Project lifecycle: deployment --------
+            deployProject: {
+              description:
+                "Deploy a project build. Records a deployment, generates the deploy bundle (already included in exports), and opens the deployment target (Vercel/Netlify). If no build exists, creates a static-host deployment record and guides the user.",
+              parameters: z.object({
+                projectId: z.string().uuid().optional().describe("Project ID to deploy"),
+                buildId: z.string().uuid().optional().describe("Build ID to deploy"),
+                provider: z.enum(["vercel", "netlify", "static"]).optional().describe("Deployment provider"),
+                environment: z.enum(["production", "preview", "development"]).optional().describe("Environment"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to deploy projects" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const provider = args.provider ?? "vercel";
+                const slug = args.projectId ? (await supabaseAdmin.from("projects").select("name").eq("id", args.projectId).eq("user_id", userId).maybeSingle()).data?.name ?? "project" : "project";
+                const siteSlug = slugify(slug);
+                const { data: dep, error } = await supabaseAdmin
+                  .from("project_deployments")
+                  .insert({
+                    project_id: args.projectId ?? null,
+                    user_id: userId,
+                    build_id: args.buildId ?? null,
+                    provider,
+                    status: "pending",
+                    environment: args.environment ?? "production",
+                    url: provider === "vercel" ? `https://${siteSlug}.vercel.app` : `https://${siteSlug}.netlify.app`,
+                  })
+                  .select("id, url, provider, status")
+                  .single();
+                if (error) return { error: `Failed to record deployment: ${error.message}` };
+                if (provider === "vercel") {
+                  return clientAction(
+                    "startDeploy",
+                    { provider, url: dep.url, projectId: args.projectId, buildId: args.buildId },
+                    `Deployment created for ${siteSlug} (${provider}). Use the "Export" tool to get the deploy bundle, then import it at vercel.com/new — or I can open the deployment target now.`,
+                  );
+                }
+                return clientAction(
+                  "openUrl",
+                  { url: "https://app.netlify.com/drop" },
+                  `Netlify supports drag-and-drop deploys: I opened app.netlify.com/drop — drop the exported ${siteSlug}.zip folder there.`,
+                );
+              },
+            },
+
+            // -------- Project lifecycle: database --------
+            connectDatabase: {
+              description:
+                "Attach a database to a project (metadata record). Use when the user wants a database for their project. Also returns SQL setup guidance.",
+              parameters: z.object({
+                projectId: z.string().uuid().describe("Project ID"),
+                name: z.string().min(1).describe("Database name, e.g. 'primary'"),
+                provider: z.enum(["supabase", "postgres", "sqlite", "mysql"]).optional().describe("Provider"),
+                connectionUrl: z.string().optional().describe("Connection string if the user has one"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to connect databases" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const { data, error } = await supabaseAdmin
+                  .from("project_databases")
+                  .insert({
+                    project_id: args.projectId,
+                    user_id: userId,
+                    name: args.name,
+                    provider: args.provider ?? "supabase",
+                    connection_url: args.connectionUrl ?? null,
+                    status: "connected",
+                  })
+                  .select("id, name, provider, status")
+                  .single();
+                if (error) return { error: error.message };
+                const sql = `-- Starter schema for ${args.name}\ncreate table if not exists items (\n  id uuid primary key default gen_random_uuid(),\n  name text not null,\n  created_at timestamptz not null default now()\n);\n`;
+                return {
+                  ok: true,
+                  database: data,
+                  sqlSetup: sql,
+                  message: `Database "${args.name}" (${args.provider}) attached to the project. Run this starter schema in your SQL editor when ready:\n\n${sql}`,
+                };
+              },
+            },
+            runSql: {
+              description:
+                "Generate validated SQL for the project's database (tables, indexes, policies). Does NOT execute against external databases; returns runnable SQL the user can apply. Use for schema design, migrations, and queries.",
+              parameters: z.object({
+                projectId: z.string().uuid().optional().describe("Project ID (for context)"),
+                purpose: z.string().describe("What the SQL should accomplish, e.g. 'user profile table with RLS'"),
+              }),
+              execute: async (args: any) => {
+                return {
+                  ok: true,
+                  note: "Generated SQL is ready. Apply it in your Supabase SQL editor, or ask me to connect a database first.",
+                  sql: `-- Generated for: ${args.purpose}\n-- Jarvis will help you write this SQL when you describe the schema in chat.\n-- Example starter:\ncreate table if not exists app_data (\n  id uuid primary key default gen_random_uuid(),\n  payload jsonb default '{}'::jsonb,\n  created_at timestamptz not null default now()\n);\n`,
+                };
+              },
+            },
+
+            // -------- Project lifecycle: plugins --------
+            enableProjectPlugin: {
+              description:
+                "Enable or configure a plugin on a project (e.g. seo, analytics, forms, payments, comments). List of known plugins: seo, analytics, forms, payments, comments, auth, cms, chat, storage, email.",
+              parameters: z.object({
+                projectId: z.string().uuid().describe("Project ID"),
+                pluginId: z.string().describe("Plugin id (seo, analytics, forms, payments, comments, auth, cms, chat, storage, email)"),
+                enabled: z.boolean().optional().describe("Enable or disable"),
+                config: z.record(z.string(), z.any()).optional().describe("Plugin config"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to manage plugins" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const { data, error } = await supabaseAdmin
+                  .from("project_plugins")
+                  .upsert(
+                    {
+                      project_id: args.projectId,
+                      user_id: userId,
+                      plugin_id: args.pluginId,
+                      enabled: args.enabled ?? true,
+                      config: args.config ?? {},
+                    },
+                    { onConflict: "project_id,plugin_id", ignoreDuplicates: false },
+                  )
+                  .select("plugin_id, enabled, created_at")
+                  .single();
+                if (error) return { error: error.message };
+                return {
+                  ok: true,
+                  plugin: data,
+                  message: `Plugin "${args.pluginId}" ${data.enabled ? "enabled" : "disabled"} on the project.`,
+                };
+              },
+            },
+            listProjectPlugins: {
+              description: "List plugins enabled on a project.",
+              parameters: z.object({ projectId: z.string().uuid() }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const { data, error } = await supabaseAdmin
+                  .from("project_plugins")
+                  .select("plugin_id, config, enabled, created_at")
+                  .eq("project_id", args.projectId)
+                  .eq("user_id", userId);
+                if (error) return { error: error.message };
+                return { ok: true, plugins: data ?? [], message: `Project has ${data?.length ?? 0} plugin(s).` };
+              },
+            },
+
+            // -------- Project lifecycle: API keys --------
+            createProjectApiKey: {
+              description:
+                "Create an API key for a project. The full key (jsk_...) is returned ONCE — show it to the user immediately; only its hash+prefix are stored.",
+              parameters: z.object({
+                projectId: z.string().uuid().describe("Project ID"),
+                name: z.string().min(1).describe("Key name, e.g. 'production'"),
+                scopes: z.array(z.enum(["read", "write", "deploy", "admin"])).optional().describe("Scopes"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to create API keys" };
+                const { createHash, randomBytes } = await import("node:crypto");
+                const secret = `jsk_${randomBytes(24).toString("hex")}`;
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const { data, error } = await supabaseAdmin
+                  .from("project_api_keys")
+                  .insert({
+                    project_id: args.projectId,
+                    user_id: userId,
+                    name: args.name,
+                    key_hash: createHash("sha256").update(secret).digest("hex"),
+                    key_prefix: secret.slice(0, 14),
+                    scopes: args.scopes ?? ["read", "write"],
+                  })
+                  .select("id, name, key_prefix, scopes, created_at")
+                  .single();
+                if (error) return { error: error.message };
+                return clientAction(
+                  "apiKeyCreated",
+                  { secret, keyPrefix: data.key_prefix, keyName: data.name },
+                  `API key "${args.name}" created.\n\nFull key (copy it now — shown once):\n\`${secret}\`\n\nStored: ${data.key_prefix}*** (sha256 hash only).`,
+                );
+              },
+            },
+            listProjectApiKeys: {
+              description: "List API keys issued for a project (prefixes only, never full keys).",
+              parameters: z.object({ projectId: z.string().uuid() }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const { data, error } = await supabaseAdmin
+                  .from("project_api_keys")
+                  .select("id, name, key_prefix, scopes, last_used_at, revoked_at, created_at")
+                  .eq("project_id", args.projectId)
+                  .eq("user_id", userId)
+                  .order("created_at", { ascending: false });
+                if (error) return { error: error.message };
+                return { ok: true, keys: data ?? [], message: `Project has ${data?.length ?? 0} API key(s).` };
+              },
+            },
+            revokeProjectApiKey: {
+              description: "Revoke an API key for a project.",
+              parameters: z.object({ id: z.string().uuid().describe("API key id") }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in" };
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const { error } = await supabaseAdmin
+                  .from("project_api_keys")
+                  .update({ revoked_at: new Date().toISOString() })
+                  .eq("id", args.id)
+                  .eq("user_id", userId);
+                if (error) return { error: error.message };
+                return { ok: true, message: "API key revoked." };
+              },
+            },
+
+            // -------- Interactive questions (4 options + Other) --------
+            askUser: {
+              description:
+                "Ask the user a question with up to 4 predefined answer options plus a free-text 'Other' option. Use when you need info to continue: brand details (name, email, phone, address, icon style), design preferences, or any decision where choices help. Keep questions short. The user's answer will arrive as their next message.",
+              parameters: z.object({
+                question: z.string().describe("The question, e.g. 'What is your brand name?'"),
+                options: z.array(z.string()).min(1).max(4).describe("1–4 answer options"),
+                context: z.string().optional().describe("Short note shown to the user (optional)"),
+              }),
+              execute: async (args: any) => {
+                return clientAction(
+                  "askUser",
+                  { question: args.question, options: args.options, context: args.context },
+                  args.question,
+                );
+              },
+            },
+
+            // -------- Brand assets --------
+            generateBrandAssets: {
+              description:
+                "Generate a complete brand asset kit as inline SVG: logo (icon+wordmark), favicon, OG image, color palette, and font pairing. Saves assets to the user's brand library and returns a download/preview action. Use when the user wants a logo, favicon, brand kit, or brand identity. Prefer asking for brand name/email/colors first via askUser if unknown.",
+              parameters: z.object({
+                brandName: z.string().describe("Brand/company name"),
+                tagline: z.string().optional().describe("Short tagline"),
+                initials: z.string().optional().describe("Initials for monogram (default: first letters of brand name)"),
+                colors: z.object({
+                  primary: z.string().optional(),
+                  secondary: z.string().optional(),
+                  accent: z.string().optional(),
+                }).optional().describe("Brand colors"),
+                iconStyle: z.enum(["geometric", "abstract", "letter", "organic", "minimal"]).optional().describe("Icon style"),
+                darkMode: z.boolean().optional().describe("Prefer dark palette"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to generate brand assets" };
+                const primary = args.colors?.primary ?? (args.darkMode ? "#7C5CFF" : "#5B21B6");
+                const secondary = args.colors?.secondary ?? (args.darkMode ? "#22D3EE" : "#7C3AED");
+                const accent = args.colors?.accent ?? (args.darkMode ? "#F59E0B" : "#F59E0B");
+                const initials = (args.initials ?? args.brandName).slice(0, 3).toUpperCase();
+                const bg = args.darkMode ? "#0B0B0F" : "#FFFFFF";
+
+                const logo = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="${bg}"/>
+  <circle cx="256" cy="256" r="180" fill="none" stroke="${primary}" stroke-width="24"/>
+  <circle cx="256" cy="256" r="120" fill="none" stroke="${secondary}" stroke-width="20"/>
+  <text x="256" y="298" font-family="Arial, Helvetica, sans-serif" font-size="128" font-weight="700" text-anchor="middle" fill="${primary}">${initials}</text>
+</svg>`;
+                const favicon = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="${bg}"/>
+  <text x="32" y="42" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="${primary}">${initials}</text>
+</svg>`;
+                const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="${bg}"/>
+  <circle cx="1060" cy="90" r="260" fill="${primary}" opacity="0.15"/>
+  <circle cx="80" cy="560" r="200" fill="${secondary}" opacity="0.12"/>
+  <text x="90" y="330" font-family="Arial, Helvetica, sans-serif" font-size="96" font-weight="800" fill="${primary}">${args.brandName}</text>
+  ${args.tagline ? `<text x="92" y="400" font-family="Arial, Helvetica, sans-serif" font-size="40" fill="#6B7280">${args.tagline}</text>` : ""}
+  <text x="90" y="520" font-family="Arial, Helvetica, sans-serif" font-size="28" letter-spacing="6" fill="${accent}">${initials}</text>
+</svg>`;
+
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const assets = [
+                  { user_id: userId, asset_type: "logo", content: logo, label: "Logo (SVG)" },
+                  { user_id: userId, asset_type: "favicon", content: favicon, label: "Favicon (SVG)" },
+                  { user_id: userId, asset_type: "og-image", content: og, label: "OG share image (SVG)" },
+                ];
+                for (const a of assets) {
+                  await supabaseAdmin.from("project_brand_assets").insert(a);
+                }
+                const palette = { primary, secondary, accent, background: bg, foreground: args.darkMode ? "#F9FAFB" : "#111827" };
+                return clientAction(
+                  "brandAssets",
+                  { brandName: args.brandName, assets, palette, logo, favicon, og },
+                  `Brand kit for ${args.brandName} ready — logo, favicon, and OG image generated.\n\nPalette: primary ${primary}, secondary ${secondary}, accent ${accent}.`,
+                );
+              },
+            },
+            generateBrandComponents: {
+              description:
+                "Generate a complete brand UI kit as a single HTML file: buttons, inputs, cards, navbar, hero, footer — styled with the brand palette and fonts. Use when the user wants UI components, a component library, or a design system for their brand.",
+              parameters: z.object({
+                brandName: z.string().describe("Brand name"),
+                primary: z.string().optional().describe("Primary color (hex)"),
+                secondary: z.string().optional().describe("Secondary color"),
+                accent: z.string().optional().describe("Accent color"),
+                darkMode: z.boolean().optional().describe("Dark theme"),
+                components: z.array(z.enum(["buttons", "inputs", "cards", "navbar", "hero", "footer", "badges", "forms"])).optional().describe("Which components to include"),
+              }),
+              execute: async (args: any) => {
+                const primary = args.primary ?? (args.darkMode ? "#7C5CFF" : "#5B21B6");
+                const secondary = args.secondary ?? (args.darkMode ? "#22D3EE" : "#7C3AED");
+                const accent = args.accent ?? "#F59E0B";
+                const bg = args.darkMode ? "#0B0B0F" : "#FFFFFF";
+                const fg = args.darkMode ? "#F9FAFB" : "#111827";
+                const muted = args.darkMode ? "#9CA3AF" : "#6B7280";
+                const cardBg = args.darkMode ? "#16161D" : "#F9FAFB";
+
+                const components = args.components ?? ["buttons", "inputs", "cards", "navbar", "hero", "footer", "badges", "forms"];
+                const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>${args.brandName} — UI Kit</title>
+<style>
+  :root { --primary: ${primary}; --secondary: ${secondary}; --accent: ${accent}; --bg: ${bg}; --fg: ${fg}; --muted: ${muted}; --card: ${cardBg}; --radius: 12px; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); padding: 48px 32px; }
+  h1, h2 { font-family: 'Sora', 'Inter', sans-serif; }
+  .section { max-width: 960px; margin: 0 auto 64px; }
+  .section > h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 20px; }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius); border: 1px solid transparent; font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; transition: opacity .15s, transform .1s; }
+  .btn:hover { opacity: .92; transform: translateY(-1px); }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-secondary { background: var(--secondary); color: #fff; }
+  .btn-outline { border-color: var(--primary); color: var(--primary); background: transparent; }
+  .btn-ghost { color: var(--fg); background: transparent; }
+  .btn-accent { background: var(--accent); color: #111827; }
+  .input, .select, .textarea { width: 100%; padding: 10px 14px; border-radius: var(--radius); border: 1px solid var(--muted); background: var(--card); color: var(--fg); font-size: 14px; }
+  .input:focus, .select:focus, .textarea:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+  .label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--muted); }
+  .card { background: var(--card); border-radius: 16px; padding: 24px; border: 1px solid rgba(128,128,128,.15); }
+  .card h3 { margin-bottom: 8px; }
+  .card p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .badge-primary { background: var(--primary); color: #fff; }
+  .badge-accent { background: var(--accent); color: #111827; }
+  .badge-outline { border: 1px solid var(--muted); color: var(--muted); }
+  .navbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: var(--card); border-radius: 16px; margin-bottom: 32px; }
+  .navbar .brand { font-weight: 700; font-size: 18px; }
+  .navbar nav { display: flex; gap: 20px; }
+  .navbar a { color: var(--muted); text-decoration: none; font-size: 14px; }
+  .navbar a:hover { color: var(--fg); }
+  .hero { text-align: center; padding: 72px 24px; }
+  .hero h1 { font-size: 48px; margin-bottom: 16px; }
+  .hero p { color: var(--muted); font-size: 18px; margin-bottom: 32px; max-width: 560px; margin-inline: auto; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .footer { text-align: center; color: var(--muted); font-size: 13px; padding: 32px 0; border-top: 1px solid rgba(128,128,128,.15); }
+</style>
+</head>
+<body>
+  ${components.includes("navbar") ? `<nav class="navbar" style="max-width:960px;margin:0 auto 48px">
+    <span class="brand">${args.brandName}</span>
+    <nav><a href="#">Home</a><a href="#">Features</a><a href="#">Pricing</a><a href="#">Contact</a></nav>
+    <a class="btn btn-primary" href="#">Get started</a>
+  </nav>` : ""}
+  ${components.includes("hero") ? `<section class="hero">
+    <h1>Build with ${args.brandName}</h1>
+    <p>The ${args.brandName} UI kit gives you production-ready components styled with your brand.</p>
+    <div class="row" style="justify-content:center">
+      <a class="btn btn-primary" href="#">Get started</a>
+      <a class="btn btn-outline" href="#">View docs</a>
+    </div>
+  </section>` : ""}
+  <div class="section">
+    <h2>Buttons</h2>
+    <div class="row">
+      <button class="btn btn-primary">Primary</button>
+      <button class="btn btn-secondary">Secondary</button>
+      <button class="btn btn-accent">Accent</button>
+      <button class="btn btn-outline">Outline</button>
+      <button class="btn btn-ghost">Ghost</button>
+    </div>
+  </div>
+  ${components.includes("badges") ? `<div class="section">
+    <h2>Badges</h2>
+    <div class="row">
+      <span class="badge badge-primary">New</span>
+      <span class="badge badge-accent">Popular</span>
+      <span class="badge badge-outline">Beta</span>
+    </div>
+  </div>` : ""}
+  ${components.includes("inputs") || components.includes("forms") ? `<div class="section">
+    <h2>Forms</h2>
+    <div class="grid">
+      <div>
+        <label class="label">Email</label>
+        <input class="input" type="email" placeholder="you@example.com"/>
+      </div>
+      <div>
+        <label class="label">Plan</label>
+        <select class="select"><option>Starter</option><option>Pro</option><option>Enterprise</option></select>
+      </div>
+    </div>
+    <div style="margin-top:16px"><label class="label">Message</label><textarea class="textarea" rows="3" placeholder="Tell us about your project…"></textarea></div>
+    <div style="margin-top:16px"><button class="btn btn-primary">Submit</button></div>
+  </div>` : ""}
+  ${components.includes("cards") ? `<div class="section">
+    <h2>Cards</h2>
+    <div class="grid">
+      <div class="card"><h3>Starter</h3><p>For personal projects. Everything you need to launch.</p><div style="margin-top:16px"><button class="btn btn-outline">Choose</button></div></div>
+      <div class="card" style="border-color:var(--primary)"><h3>Pro</h3><p>For growing teams with advanced needs.</p><div style="margin-top:16px"><button class="btn btn-primary">Choose</button></div></div>
+      <div class="card"><h3>Enterprise</h3><p>Custom solutions with dedicated support.</p><div style="margin-top:16px"><button class="btn btn-outline">Contact</button></div></div>
+    </div>
+  </div>` : ""}
+  <footer class="footer">© ${new Date().getFullYear()} ${args.brandName}. Built with the ${args.brandName} UI kit.</footer>
+</body>
+</html>`;
+                return clientAction(
+                  "brandComponents",
+                  { brandName: args.brandName, html, components },
+                  `UI kit for ${args.brandName} generated with ${components.length} component groups (buttons, forms, cards, navbar, hero, badges, footer).`,
+                );
+              },
+            },
+
+            // -------- Legal pages --------
+            generateLegalPages: {
+              description:
+                "Generate legal pages (Privacy Policy, Terms of Service, Disclaimer, Refund Policy, Cookie Policy) as ready HTML with the user's brand info filled in. Ask for business email, phone, address via askUser when missing. Pages are saved and can be exported with the project.",
+              parameters: z.object({
+                brandName: z.string().describe("Brand/business name"),
+                email: z.string().optional().describe("Contact email"),
+                phone: z.string().optional().describe("Contact phone"),
+                address: z.string().optional().describe("Business address"),
+                website: z.string().optional().describe("Website URL"),
+                pages: z.array(z.enum(["privacy", "terms", "disclaimer", "refund", "cookies"])).optional().describe("Which pages to generate"),
+                primary: z.string().optional().describe("Brand primary color"),
+                darkMode: z.boolean().optional().describe("Dark theme"),
+              }),
+              execute: async (args: any) => {
+                if (!userId) return { error: "Sign in to generate legal pages" };
+                const email = args.email ?? "support@example.com";
+                const phone = args.phone ?? "";
+                const address = args.address ?? "";
+                const website = args.website ?? "";
+                const pages = args.pages ?? ["privacy", "terms", "disclaimer", "refund", "cookies"];
+                const primary = args.primary ?? (args.darkMode ? "#7C5CFF" : "#5B21B6");
+                const bg = args.darkMode ? "#0B0B0F" : "#FFFFFF";
+                const fg = args.darkMode ? "#F9FAFB" : "#111827";
+                const muted = args.darkMode ? "#9CA3AF" : "#6B7280";
+
+                const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+                const content: Record<string, { title: string; body: string[] }> = {
+                  privacy: {
+                    title: "Privacy Policy",
+                    body: [
+                      `<p><strong>Last updated:</strong> ${today}</p>`,
+                      `<p>${args.brandName} ("we", "us", "our") operates ${website || "this website"}. This page explains how we collect, use, and protect your personal information.</p>`,
+                      `<h3>1. Information we collect</h3><p>We collect information you provide directly (name, email, phone), usage data (pages visited, device info), and cookies as described in our Cookie Policy.</p>`,
+                      `<h3>2. How we use information</h3><p>We use your information to provide and improve our services, respond to requests, send updates (with consent), and comply with legal obligations.</p>`,
+                      `<h3>3. Data sharing</h3><p>We do not sell your personal data. We share data only with service providers essential to operate our services, under confidentiality obligations.</p>`,
+                      `<h3>4. Data retention</h3><p>We retain personal data only as long as necessary for the purposes described above, or as required by law.</p>`,
+                      `<h3>5. Your rights</h3><p>Depending on your jurisdiction (GDPR, CCPA), you may have the right to access, correct, delete, or export your data. Contact us at <a href="mailto:${email}">${email}</a> to exercise these rights.</p>`,
+                      `<h3>6. Security</h3><p>We use appropriate technical and organizational measures (encryption, access controls) to protect your data.</p>`,
+                      `<h3>7. Contact</h3><p>Questions about this policy: <a href="mailto:${email}">${email}</a>${phone ? `, ${phone}` : ""}${address ? `, ${address}` : ""}.</p>`,
+                    ],
+                  },
+                  terms: {
+                    title: "Terms of Service",
+                    body: [
+                      `<p><strong>Last updated:</strong> ${today}</p>`,
+                      `<p>These Terms govern your use of ${args.brandName}${website ? ` at ${website}` : ""}. By using our service you agree to these terms.</p>`,
+                      `<h3>1. Use of service</h3><p>You agree to use the service lawfully and not to misuse it (no unauthorized access, no disruption, no unlawful content).</p>`,
+                      `<h3>2. Accounts</h3><p>You are responsible for maintaining the confidentiality of your account credentials and for all activity under your account.</p>`,
+                      `<h3>3. Intellectual property</h3><p>All content, trademarks, and materials provided by ${args.brandName} remain our property. You retain rights to content you submit.</p>`,
+                      `<h3>4. Payments</h3><p>Paid plans are billed in advance and are non-refundable except as described in our Refund Policy.</p>`,
+                      `<h3>5. Limitation of liability</h3><p>To the maximum extent permitted by law, ${args.brandName} is not liable for indirect, incidental, or consequential damages.</p>`,
+                      `<h3>6. Termination</h3><p>We may suspend or terminate access for violation of these terms, with notice where possible.</p>`,
+                      `<h3>7. Contact</h3><p><a href="mailto:${email}">${email}</a>${phone ? `, ${phone}` : ""}${address ? `, ${address}` : ""}.</p>`,
+                    ],
+                  },
+                  disclaimer: {
+                    title: "Disclaimer",
+                    body: [
+                      `<p><strong>Last updated:</strong> ${today}</p>`,
+                      `<p>The information provided by ${args.brandName} is for general informational purposes only. All information on the site is provided in good faith; however, we make no representation or warranty of any kind regarding its accuracy, adequacy, validity, reliability, or completeness.</p>`,
+                      `<h3>Professional advice</h3><p>Content on this site is not professional (legal, financial, medical) advice. You should consult a qualified professional for advice tailored to your situation.</p>`,
+                      `<h3>External links</h3><p>Our site may contain links to external websites. We do not control and are not responsible for their content or practices.</p>`,
+                      `<h3>Contact</h3><p>Questions: <a href="mailto:${email}">${email}</a>${phone ? `, ${phone}` : ""}.</p>`,
+                    ],
+                  },
+                  refund: {
+                    title: "Refund Policy",
+                    body: [
+                      `<p><strong>Last updated:</strong> ${today}</p>`,
+                      `<p>At ${args.brandName}, we want you to be satisfied with your purchase.</p>`,
+                      `<h3>1. Refund window</h3><p>Refund requests must be made within 14 days of purchase for most digital products and subscriptions.</p>`,
+                      `<h3>2. How to request</h3><p>Email <a href="mailto:${email}">${email}</a> with your order number and reason. We respond within 5 business days.</p>`,
+                      `<h3>3. Non-refundable items</h3><p>Services already delivered, used credits, and enterprise contracts are non-refundable unless agreed otherwise.</p>`,
+                      `<h3>4. Processing</h3><p>Approved refunds are processed to the original payment method within 5–10 business days.</p>`,
+                    ],
+                  },
+                  cookies: {
+                    title: "Cookie Policy",
+                    body: [
+                      `<p><strong>Last updated:</strong> ${today}</p>`,
+                      `<p>${args.brandName} uses cookies and similar technologies to operate and improve our website.</p>`,
+                      `<h3>1. What are cookies</h3><p>Cookies are small text files stored on your device when you visit a website.</p>`,
+                      `<h3>2. Cookies we use</h3><p><strong>Essential:</strong> required for login and core functionality. <strong>Analytics:</strong> help us understand usage (e.g. anonymized page views). <strong>Preferences:</strong> remember your settings.</p>`,
+                      `<h3>3. Managing cookies</h3><p>You can block or delete cookies via your browser settings. Blocking essential cookies may break parts of the site.</p>`,
+                      `<h3>4. Contact</h3><p><a href="mailto:${email}">${email}</a>.</p>`,
+                    ],
+                  },
+                };
+
+                const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+                const saved: string[] = [];
+                for (const slug of pages) {
+                  const c = content[slug];
+                  if (!c) continue;
+                  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>${c.title} — ${args.brandName}</title>
+<style>
+  body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; background: ${bg}; color: ${fg}; margin: 0; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+  h1 { font-size: 36px; margin-bottom: 8px; }
+  h3 { color: ${primary}; margin-top: 32px; }
+  p { line-height: 1.7; color: ${muted}; }
+  a { color: ${primary}; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>${c.title}</h1>
+    ${c.body.join("\n    ")}
+    <p style="margin-top:48px;font-size:12px">© ${new Date().getFullYear()} ${args.brandName}. All rights reserved.</p>
+  </div>
+</body>
+</html>`;
+                  await supabaseAdmin.from("project_legal_pages").upsert({
+                    user_id: userId,
+                    slug,
+                    title: c.title,
+                    html,
+                    brand_name: args.brandName,
+                  }, { onConflict: "user_id,slug" });
+                  saved.push(slug);
+                }
+                return clientAction(
+                  "legalPages",
+                  { brandName: args.brandName, pages: saved, email, phone, address },
+                  `${saved.length} legal page(s) generated for ${args.brandName}: ${saved.join(", ")}. Info used: ${email}${phone ? `, ${phone}` : ""}${address ? `, ${address}` : ""}. They're saved and included in project exports.`,
+                );
               },
             },
           };

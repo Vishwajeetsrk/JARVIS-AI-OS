@@ -1,12 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { GitBranch, CheckCircle2, ExternalLink, Star, CircleDot, GitPullRequest, ShieldCheck } from "lucide-react";
+import { GitBranch, CheckCircle2, ExternalLink, Star, CircleDot, GitPullRequest, ShieldCheck, KeyRound, RefreshCw, LogOut, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/jarvis/catalog-grid";
 import { Button } from "@/components/ui/button";
-import { githubOverview } from "@/lib/connections.functions";
-import { Link as RouterLink } from "@tanstack/react-router";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { githubOverview, disconnectProvider } from "@/lib/connections.functions";
+import { githubSignInStart, githubSignInPoll, githubCreateRepo, githubPushProject } from "@/lib/github-actions.functions";
 
 export const Route = createFileRoute("/_authenticated/console/github")({
   component: GithubPage,
@@ -14,14 +17,105 @@ export const Route = createFileRoute("/_authenticated/console/github")({
 });
 
 function GithubPage() {
+  const qc = useQueryClient();
   const fn = useServerFn(githubOverview);
-  const { data, isLoading } = useQuery({ queryKey: ["githubOverview"], queryFn: () => fn({}) });
+  const { data, isLoading, refetch } = useQuery({ queryKey: ["githubOverview"], queryFn: () => fn({}) });
+
+  // Device-flow sign in
+  const [signIn, setSignIn] = useState<{ userCode: string; verificationUri: string; deviceCode: string } | null>(null);
+  const [polling, setPolling] = useState(false);
+  const startFn = useServerFn(githubSignInStart);
+  const pollFn = useServerFn(githubSignInPoll);
+  const disconnectFn = useServerFn(disconnectProvider);
+
+  const mSignIn = useMutation({
+    mutationFn: () => startFn({}),
+    onSuccess: async (r: any) => {
+      if (!r?.ok) {
+        toast.error(r?.error ?? "Sign-in unavailable");
+        return;
+      }
+      setSignIn({ userCode: r.userCode, verificationUri: r.verificationUri, deviceCode: r.deviceCode });
+      setPolling(true);
+      window.open(r.verificationUri, "_blank", "noopener");
+      const interval = Math.max(r.interval ?? 5, 5);
+      const deadline = Date.now() + (r.expiresIn ?? 900) * 1000;
+      const timer = setInterval(async () => {
+        if (Date.now() > deadline) {
+          clearInterval(timer);
+          setPolling(false);
+          setSignIn(null);
+          toast.error("Sign-in code expired. Try again.");
+          return;
+        }
+        const res: any = await pollFn({ data: { deviceCode: r.deviceCode } }).catch(() => null);
+        if (!res) return;
+        if (res.ok === true) {
+          clearInterval(timer);
+          setPolling(false);
+          setSignIn(null);
+          toast.success(`GitHub connected · ${res.login ?? ""}`);
+          qc.invalidateQueries({ queryKey: ["githubOverview"] });
+        } else if (res.ok === false) {
+          clearInterval(timer);
+          setPolling(false);
+          setSignIn(null);
+          toast.error(res.error ?? "Sign-in failed");
+        }
+      }, interval * 1000);
+    },
+  });
+
+  const mDisconnect = useMutation({
+    mutationFn: () => disconnectFn({ data: { provider: "github" } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["githubOverview"] });
+      toast.success("GitHub disconnected.");
+    },
+  });
+
+  // Create repo dialog
+  const [createOpen, setCreateOpen] = useState(false);
+  const [repoName, setRepoName] = useState("");
+  const [repoDesc, setRepoDesc] = useState("");
+  const [repoPrivate, setRepoPrivate] = useState(false);
+  const createFn = useServerFn(githubCreateRepo);
+  const mCreate = useMutation({
+    mutationFn: (v: { name: string; description: string; private: boolean }) => createFn({ data: v }),
+    onSuccess: (r: any) => {
+      if (r?.ok) {
+        toast.success(`Repo created: ${r.fullName}`);
+        setCreateOpen(false);
+        setRepoName("");
+        setRepoDesc("");
+        qc.invalidateQueries({ queryKey: ["githubOverview"] });
+        window.open(r.url, "_blank", "noopener");
+      } else toast.error(r?.error ?? "Create failed");
+    },
+  });
+
+  // Push project dialog
+  const [pushOpen, setPushOpen] = useState(false);
+  const [pushRepo, setPushRepo] = useState("");
+  const [pushMsg, setPushMsg] = useState("Ship site via Jarvis AI OS");
+  const pushFn = useServerFn(githubPushProject);
+  const mPush = useMutation({
+    mutationFn: (v: { repoName: string; commitMessage: string }) => pushFn({ data: { repoName: v.repoName, commitMessage: v.commitMessage, private: false } }),
+    onSuccess: (r: any) => {
+      if (r?.ok) {
+        toast.success(r.created ? `Repo created + pushed (${r.fileCount} files)` : `Pushed ${r.fileCount} files to ${r.repo}`);
+        setPushOpen(false);
+        setPushRepo("");
+        window.open(r.url, "_blank", "noopener");
+      } else toast.error(r?.error ?? "Push failed");
+    },
+  });
 
   if (isLoading) {
     return (
       <div className="h-full overflow-y-auto">
         <div className="mx-auto max-w-5xl p-8 space-y-6">
-          <PageHeader title="GitHub" subtitle="Repos Jarvis can read, review, and ship." />
+          <PageHeader title="GitHub" subtitle="Repos, direct push, and one-click sign-in." />
           <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
             Loading GitHub data…
           </div>
@@ -50,7 +144,7 @@ function GithubPage() {
       <div className="mx-auto max-w-5xl p-8 space-y-8">
         <PageHeader
           title="GitHub"
-          subtitle="Repos Jarvis can read, review, and ship."
+          subtitle="Sign in, create repos, and push projects directly."
         />
 
         {/* Connection Banner */}
@@ -64,23 +158,49 @@ function GithubPage() {
             </div>
             <div className="text-xs text-muted-foreground mt-0.5">
               {connected
-                ? `${repos.length} repos synced · PRs, issues, and commits indexed`
-                : "Connect GitHub to sync repos, PRs, issues, and run automated checks."}
+                ? `${repos.length} repos synced · create repos · direct push projects`
+                : "Sign in with GitHub, or add a personal access token in Connectors."}
             </div>
           </div>
           {connected ? (
-            <div className="flex items-center gap-1.5 text-xs font-medium text-sage">
-              <CheckCircle2 className="h-4 w-4" /> Active
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 text-xs font-medium text-sage">
+                <CheckCircle2 className="h-4 w-4" /> Active
+              </span>
+              <Button variant="ghost" size="sm" onClick={() => mDisconnect.mutate()}>
+                <LogOut className="mr-1.5 h-3.5 w-3.5" /> Disconnect
+              </Button>
             </div>
           ) : (
-            <RouterLink
-              to="/console/connectors"
-              className="shrink-0 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              Connect GitHub
-            </RouterLink>
+            <div className="flex items-center gap-2">
+              <Button onClick={() => mSignIn.mutate()} disabled={mSignIn.isPending || polling}>
+                {polling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GitBranch className="mr-2 h-4 w-4" />}
+                {polling ? "Waiting for approval…" : "Sign in with GitHub"}
+              </Button>
+              <RouterLink
+                to="/console/connectors"
+                className="shrink-0 inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40"
+              >
+                <KeyRound className="mr-2 h-3.5 w-3.5" /> Use token
+              </RouterLink>
+            </div>
           )}
         </div>
+
+        {/* Quick actions */}
+        {connected && (
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={() => setCreateOpen(true)}>
+              <GitBranch className="mr-1.5 h-3.5 w-3.5" /> New repository
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setPushOpen(true)}>
+              <GitPullRequest className="mr-1.5 h-3.5 w-3.5" /> Push project (latest build)
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => void refetch()}>
+              <RefreshCw className="mr-1.5 h-3.5 w-3.5" /> Refresh
+            </Button>
+          </div>
+        )}
 
         {/* Repos Grid */}
         {repos.length > 0 && (
@@ -134,13 +254,76 @@ function GithubPage() {
           <div className="rounded-xl border border-dashed border-border bg-card/50 p-8 text-center">
             <ShieldCheck className="mx-auto h-8 w-8 text-muted-foreground/40" />
             <p className="mt-3 text-sm text-muted-foreground">
-              No GitHub connection yet. Add a GitHub token in{" "}
-              <RouterLink to="/console/connectors" className="text-primary hover:underline">Connectors</RouterLink>{" "}
-              to see your repositories here.
+              No GitHub connection yet. Sign in with GitHub above, or add a token in{" "}
+              <RouterLink to="/console/connectors" className="text-primary hover:underline">Connectors</RouterLink>.
             </p>
           </div>
         )}
       </div>
+
+      {/* Sign-in code dialog */}
+      <Dialog open={signIn !== null} onOpenChange={(o) => !o && (setSignIn(null), setPolling(false))}>
+        <DialogContent className="max-w-md">
+          <DialogHeader><DialogTitle>Sign in with GitHub</DialogTitle></DialogHeader>
+          {signIn && (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                I opened <a href={signIn.verificationUri} target="_blank" rel="noreferrer" className="text-primary hover:underline">{signIn.verificationUri}</a>. Enter this code to authorize Jarvis:
+              </p>
+              <div className="rounded-xl border border-primary/30 bg-primary/5 p-6 text-center">
+                <code className="font-mono text-4xl font-bold tracking-[0.3em] text-primary">{signIn.userCode}</code>
+              </div>
+              <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                Waiting for you to approve… (this dialog closes automatically)
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Create repo dialog */}
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>New repository</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <Input value={repoName} onChange={(e) => setRepoName(e.target.value)} placeholder="Repo name (e.g. my-awesome-site)" autoFocus />
+            <Input value={repoDesc} onChange={(e) => setRepoDesc(e.target.value)} placeholder="Description (optional)" />
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={repoPrivate} onChange={(e) => setRepoPrivate(e.target.checked)} className="h-4 w-4" />
+              Private repository
+            </label>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setCreateOpen(false)}>Cancel</Button>
+            <Button disabled={!repoName.trim() || mCreate.isPending} onClick={() => mCreate.mutate({ name: repoName.trim(), description: repoDesc.trim(), private: repoPrivate })}>
+              {mCreate.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Create repo
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Push project dialog */}
+      <Dialog open={pushOpen} onOpenChange={setPushOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Push project to GitHub</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <Input value={pushRepo} onChange={(e) => setPushRepo(e.target.value)} placeholder="Repo name (new) or owner/existing-repo" autoFocus />
+            <Input value={pushMsg} onChange={(e) => setPushMsg(e.target.value)} placeholder="Commit message" />
+            <p className="text-xs text-muted-foreground">
+              Pushes the latest saved build (index.html, vercel.json, netlify.toml, README, brand assets, legal pages) as a real commit. Creates the repo if it doesn't exist.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setPushOpen(false)}>Cancel</Button>
+            <Button disabled={!pushRepo.trim() || mPush.isPending} onClick={() => mPush.mutate({ repoName: pushRepo.trim(), commitMessage: pushMsg.trim() })}>
+              {mPush.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GitPullRequest className="mr-2 h-4 w-4" />}
+              Push project
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

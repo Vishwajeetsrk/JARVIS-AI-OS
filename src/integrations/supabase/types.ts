@@ -812,6 +812,349 @@ export type Database = {
           },
         ]
       }
+      project_analysis: {
+        Row: {
+          created_at: string
+          id: string
+          project_id: string
+          report: Json
+          report_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          project_id: string
+          report: Json
+          report_type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          project_id?: string
+          report?: Json
+          report_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_analysis_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_api_keys: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          project_id: string
+          revoked_at: string | null
+          scopes: string[]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name?: string
+          project_id: string
+          revoked_at?: string | null
+          scopes?: string[]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          project_id?: string
+          revoked_at?: string | null
+          scopes?: string[]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_api_keys_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_brand_assets: {
+        Row: {
+          asset_type: string
+          content: string
+          created_at: string
+          id: string
+          label: string | null
+          user_id: string
+        }
+        Insert: {
+          asset_type: string
+          content: string
+          created_at?: string
+          id?: string
+          label?: string | null
+          user_id: string
+        }
+        Update: {
+          asset_type?: string
+          content?: string
+          created_at?: string
+          id?: string
+          label?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      project_builds: {
+        Row: {
+          build_type: string
+          created_at: string
+          deploy_url: string | null
+          framework: string
+          html: string | null
+          id: string
+          meta: Json
+          name: string
+          preview_url: string | null
+          project_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          build_type?: string
+          created_at?: string
+          deploy_url?: string | null
+          framework?: string
+          html?: string | null
+          id?: string
+          meta?: Json
+          name?: string
+          preview_url?: string | null
+          project_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          build_type?: string
+          created_at?: string
+          deploy_url?: string | null
+          framework?: string
+          html?: string | null
+          id?: string
+          meta?: Json
+          name?: string
+          preview_url?: string | null
+          project_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_builds_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_databases: {
+        Row: {
+          connection_url: string | null
+          created_at: string
+          id: string
+          meta: Json
+          name: string
+          project_id: string
+          provider: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connection_url?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          name?: string
+          project_id: string
+          provider?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connection_url?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          name?: string
+          project_id?: string
+          provider?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_databases_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_deployments: {
+        Row: {
+          build_id: string | null
+          created_at: string
+          environment: string
+          id: string
+          meta: Json
+          project_id: string | null
+          provider: string
+          status: string
+          updated_at: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          build_id?: string | null
+          created_at?: string
+          environment?: string
+          id?: string
+          meta?: Json
+          project_id?: string | null
+          provider?: string
+          status?: string
+          updated_at?: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          build_id?: string | null
+          created_at?: string
+          environment?: string
+          id?: string
+          meta?: Json
+          project_id?: string | null
+          provider?: string
+          status?: string
+          updated_at?: string
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_deployments_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "project_builds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_deployments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_legal_pages: {
+        Row: {
+          brand_name: string | null
+          created_at: string
+          html: string
+          id: string
+          slug: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brand_name?: string | null
+          created_at?: string
+          html: string
+          id?: string
+          slug: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brand_name?: string | null
+          created_at?: string
+          html?: string
+          id?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      project_plugins: {
+        Row: {
+          config: Json
+          created_at: string
+          enabled: boolean
+          id: string
+          plugin_id: string
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          plugin_id: string
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          plugin_id?: string
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_plugins_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           brand_style: Json

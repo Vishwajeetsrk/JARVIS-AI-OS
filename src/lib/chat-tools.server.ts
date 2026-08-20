@@ -134,6 +134,69 @@ export function buildTools(creds: Creds, opts: { webSearch?: boolean } = {}): To
         }
       },
     });
+    tools.github_create_repo = tool({
+      description: "Create a new GitHub repository (public or private) under the user's account.",
+      inputSchema: z.object({
+        name: z.string().describe("Repo name (letters, numbers, _ . -)"),
+        description: z.string().optional(),
+        private: z.boolean().default(false),
+      }),
+      execute: async ({ name, description, private: isPrivate }) => {
+        try {
+          const repo = await githubFetch<{ full_name: string; html_url: string; default_branch: string }>(gh, "/user/repos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, description: description ?? "", private: isPrivate, auto_init: true }),
+          });
+          return { ok: true, repo: repo.full_name, url: repo.html_url, branch: repo.default_branch };
+        } catch (e) {
+          return { error: e instanceof Error ? e.message : "GitHub failed" };
+        }
+      },
+    });
+    tools.github_push_files = tool({
+      description: "Directly push/commit files to an existing GitHub repo (owner/name) with a real commit via the Git Data API. Creates or updates the files in the repo's current branch.",
+      inputSchema: z.object({
+        repo: z.string().describe("owner/name of the existing repo"),
+        files: z.array(z.object({ path: z.string().describe("File path inside the repo, e.g. 'index.html' or 'assets/logo.svg'"), content: z.string() })).min(1).max(200),
+        message: z.string().default("Update via Jarvis AI OS"),
+        branch: z.string().default("main"),
+      }),
+      execute: async ({ repo, files, message, branch }) => {
+        try {
+          const blobs: Array<{ sha: string }> = [];
+          for (const f of files) {
+            blobs.push(await githubFetch<{ sha: string }>(gh, `/repos/${repo}/git/blobs`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ content: f.content, encoding: "utf-8" }),
+            }));
+          }
+          const head = await githubFetch<{ object: { sha: string } }>(gh, `/repos/${repo}/git/ref/heads/${branch}`);
+          const tree = await githubFetch<{ sha: string }>(gh, `/repos/${repo}/git/trees`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              base_tree: head.object.sha,
+              tree: files.map((f, i) => ({ path: f.path, mode: "100644", type: "blob", sha: blobs[i].sha })),
+            }),
+          });
+          const commit = await githubFetch<{ sha: string }>(gh, `/repos/${repo}/git/commits`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message, tree: tree.sha, parents: [head.object.sha] }),
+          });
+          await githubFetch(gh, `/repos/${repo}/git/refs/heads/${branch}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sha: commit.sha }),
+          });
+          return { ok: true, repo, branch, commit: commit.sha.slice(0, 7), fileCount: files.length, url: `https://github.com/${repo}/tree/${branch}` };
+        } catch (e) {
+          return { error: e instanceof Error ? e.message : "GitHub push failed" };
+        }
+      },
+    });
   }
 
   if (creds.slack) {

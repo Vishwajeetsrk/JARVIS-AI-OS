@@ -27,11 +27,11 @@ export type ProviderDef = {
 export const PROVIDERS: ProviderDef[] = [
   // ── Connectors ────────────────────────────────────────────────────────
   {
-    id: "github", name: "GitHub", description: "Repos, issues, PRs, actions.",
+    id: "github", name: "GitHub", description: "Sign in, create repos, direct push.",
     icon: SiGithub, kind: "connector", auth: "token",
     credentialLabel: "Personal access token (classic or fine-grained)",
     helpUrl: "https://github.com/settings/tokens",
-    helpText: "Needs at least the repo and read:user scopes.",
+    helpText: "Needs at least the repo and read:user scopes. You can also sign in with GitHub on the GitHub page.",
   },
   {
     id: "slack", name: "Slack", description: "Channels, DMs, workflows.",

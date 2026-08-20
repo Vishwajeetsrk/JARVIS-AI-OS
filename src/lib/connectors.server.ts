@@ -115,11 +115,20 @@ export type GithubRepo = {
   updated_at: string;
 };
 
-export async function githubFetch<T>(token: string, path: string): Promise<T> {
+export async function githubFetch<T>(token: string, path: string, init?: RequestInit): Promise<T> {
   const r = await fetch(`https://api.github.com${path}`, {
-    headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "User-Agent": "jarvis" },
+    ...init,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "User-Agent": "jarvis",
+      ...(init?.headers as Record<string, string> | undefined),
+    },
   });
-  if (!r.ok) throw new Error(`GitHub ${path} failed (${r.status})`);
+  if (!r.ok) {
+    const body = await r.text().catch(() => "");
+    throw new Error(`GitHub ${path} failed (${r.status}): ${body.slice(0, 200)}`);
+  }
   return (await r.json()) as T;
 }
 

@@ -31,10 +31,20 @@ import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink, Wrench, ChevronDown } from "lucide-react";
+import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink, Wrench, ChevronDown, Copy, Check } from "lucide-react";
 import { z } from "zod";
 import { VoiceButton } from "@/components/dashboard/voice-button";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { getProjectBuild } from "@/lib/project-lifecycle.functions";
+
+/** Answer bus: lets tool cards (askUser) submit a reply into the active thread. */
+let answerBus: ((text: string) => void) | null = null;
+export function registerAnswerBus(fn: ((text: string) => void) | null) {
+  answerBus = fn;
+}
 
 export const Route = createFileRoute("/_authenticated/console/$threadId")({
   validateSearch: (s) => z.object({ seed: z.string().optional() }).parse(s),
@@ -44,11 +54,22 @@ export const Route = createFileRoute("/_authenticated/console/$threadId")({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ToolPartView({ part }: { part: any }) {
   const [expanded, setExpanded] = useState(false);
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [otherAnswer, setOtherAnswer] = useState("");
+  const [question, setQuestion] = useState<{ question: string; options: string[]; context?: string } | null>(null);
+  const [secret, setSecret] = useState<string | null>(null);
+  const getBuildFn = useServerFn(getProjectBuild);
   const [resolved, setResolved] = useState<{
     kind: "download" | "action";
     label: string;
     url?: string;
   } | null>(null);
+
+  const sendAnswer = (text: string) => {
+    setQuestion(null);
+    answerBus?.(text);
+  };
 
   useEffect(() => {
     if (part?.state !== "output-available" || !part?.output) return;
@@ -115,11 +136,49 @@ function ToolPartView({ part }: { part: any }) {
           if (ok) setResolved({ kind: "action", label: `Deleted "${a.path}"` });
         });
       }
+      else if (a?.type === "exportProject" && typeof a?.zipDataUrl === "string" && typeof a?.fileName === "string") {
+        setResolved({ kind: "download", label: a.fileName, url: a.zipDataUrl });
+      }
+      else if (a?.type === "openPreview" && typeof a?.buildId === "string") {
+        void getBuildFn({ data: { buildId: a.buildId } })
+          .then((b: any) => setPreviewHtml(b?.html ?? null))
+          .catch(() => setPreviewHtml(null));
+      }
+      else if (a?.type === "startDeploy") {
+        window.open("https://vercel.com/new", "_blank", "noopener");
+        setResolved({ kind: "action", label: `Deployment recorded (${a.provider ?? "vercel"}). Opened vercel.com/new — import the exported folder to go live.` });
+      }
+      else if (a?.type === "apiKeyCreated" && typeof a?.secret === "string") {
+        setSecret(a.secret);
+      }
+      else if (a?.type === "askUser" && typeof a?.question === "string") {
+        setQuestion({ question: a.question, options: Array.isArray(a.options) ? a.options : [], context: a.context });
+      }
+      else if (a?.type === "brandAssets") {
+        const svgData = (svg: string) => `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+        const name = (a?.brandName ?? "brand").toLowerCase().replace(/\s+/g, "-");
+        const downloads = [
+          { label: "logo.svg", url: svgData(String(a?.logo ?? "")) },
+          { label: "favicon.svg", url: svgData(String(a?.favicon ?? "")) },
+          { label: "og-image.svg", url: svgData(String(a?.og ?? "")) },
+        ].filter((d) => d.url.length > 50);
+        setResolved({ kind: "action", label: `${downloads.length} brand assets ready — click each chip below to download.` });
+        setDownloadChips(downloads);
+      }
+      else if (a?.type === "brandComponents" && typeof a?.html === "string") {
+        setPreviewHtml(a.html);
+      }
+      else if (a?.type === "legalPages") {
+        setResolved({ kind: "action", label: `${(a?.pages ?? []).length} legal pages generated: ${(a?.pages ?? []).join(", ")}. Saved — they're included in project exports.` });
+      }
       else {
         setResolved({ kind: "action", label: out.message ?? "Action executed." });
       }
     }
   }, [part?.state, part?.output]);
+
+  // Extra download chips (brand assets) rendered above the normal output.
+  const [downloadChips, setDownloadChips] = useState<Array<{ label: string; url: string }>>([]);
 
   const name = part?.toolName ?? "tool";
 
@@ -140,26 +199,120 @@ function ToolPartView({ part }: { part: any }) {
     );
   }
 
+  // Interactive question card (4 options + Other)
+  if (question) {
+    return (
+      <div className="feed-in mt-2 w-full max-w-md rounded-xl border border-primary/30 bg-primary/5 p-4">
+        {question.context && <p className="mb-2 text-mono-xs text-muted-foreground">{question.context}</p>}
+        <p className="mb-3 text-sm font-medium text-foreground">{question.question}</p>
+        <div className="flex flex-wrap gap-2">
+          {question.options.map((opt) => (
+            <button
+              key={opt}
+              onClick={() => sendAnswer(opt)}
+              className="rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary/50 hover:bg-primary/10"
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <Input
+            value={otherAnswer}
+            onChange={(e) => setOtherAnswer(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && otherAnswer.trim()) sendAnswer(otherAnswer.trim());
+            }}
+            placeholder="Other (type your answer)…"
+            className="h-8 text-xs"
+          />
+          <Button size="sm" className="h-8" onClick={() => otherAnswer.trim() && sendAnswer(otherAnswer.trim())}>
+            Send
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // API key secret reveal (shown once)
+  if (secret) {
+    return (
+      <div className="feed-in mt-2 w-full max-w-md rounded-xl border border-amber-500/40 bg-amber-500/10 p-4">
+        <p className="mb-2 text-xs font-semibold text-foreground">API key created — copy it now, it's shown once:</p>
+        <div className="flex items-center gap-2">
+          <code className="flex-1 truncate rounded-md bg-background px-2 py-1.5 text-xs text-foreground">{secret}</code>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8"
+            onClick={() => {
+              void navigator.clipboard.writeText(secret);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            }}
+          >
+            {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? "Copied" : "Copy"}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (resolved?.kind === "action") {
     return (
-      <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-2.5 py-1 text-xs text-foreground">
-        <ExternalLink className="h-3.5 w-3.5 text-primary" />
-        {resolved.label}
+      <div className="mt-2 space-y-2">
+        {downloadChips.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {downloadChips.map((c) => (
+              <a
+                key={c.label}
+                href={c.url}
+                download={c.label}
+                className="shine inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-primary/20"
+              >
+                <Download className="h-3.5 w-3.5 text-primary" />
+                {c.label}
+              </a>
+            ))}
+          </div>
+        )}
+        <div className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-2.5 py-1 text-xs text-foreground">
+          <ExternalLink className="h-3.5 w-3.5 text-primary" />
+          {resolved.label}
+        </div>
       </div>
     );
   }
 
   if (resolved?.kind === "download") {
     return (
-      <a
-        href={resolved.url}
-        download={resolved.label}
-        className="shine mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-primary/20"
-      >
-        <Download className="h-3.5 w-3.5 text-primary" />
-        {resolved.label}
-        <span className="rounded-full bg-primary/20 px-1.5 py-0.5 text-[10px] font-mono text-primary">download</span>
-      </a>
+      <div className="mt-2 space-y-2">
+        {downloadChips.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {downloadChips.map((c) => (
+              <a
+                key={c.label}
+                href={c.url}
+                download={c.label}
+                className="shine inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-primary/20"
+              >
+                <Download className="h-3.5 w-3.5 text-primary" />
+                {c.label}
+              </a>
+            ))}
+          </div>
+        )}
+        <a
+          href={resolved.url}
+          download={resolved.label}
+          className="shine mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-primary/20"
+        >
+          <Download className="h-3.5 w-3.5 text-primary" />
+          {resolved.label}
+          <span className="rounded-full bg-primary/20 px-1.5 py-0.5 text-[10px] font-mono text-primary">download</span>
+        </a>
+      </div>
     );
   }
 
@@ -171,17 +324,36 @@ function ToolPartView({ part }: { part: any }) {
         : "";
 
   return (
-    <details className="group mt-2 rounded-lg border border-border bg-background/60 open:bg-background/80">
-      <summary className="flex cursor-pointer select-none items-center gap-2 px-3 py-2 text-xs hover:bg-surface/60">
-        <Wrench className="h-3.5 w-3.5 text-primary" />
-        <span className="font-medium text-foreground">{name}</span>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">tool result</span>
-        <ChevronDown className="ml-auto h-3 w-3 text-muted-foreground transition-transform group-open:rotate-180" />
-      </summary>
-      <pre className="max-h-56 overflow-auto border-t border-border/60 px-3 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground whitespace-pre-wrap">
-        {outputText || "No output"}
-      </pre>
-    </details>
+    <div className="mt-2 space-y-2">
+      <details className="group rounded-lg border border-border bg-background/60 open:bg-background/80">
+        <summary className="flex cursor-pointer select-none items-center gap-2 px-3 py-2 text-xs hover:bg-surface/60">
+          <Wrench className="h-3.5 w-3.5 text-primary" />
+          <span className="font-medium text-foreground">{name}</span>
+          <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">tool result</span>
+          <ChevronDown className="ml-auto h-3 w-3 text-muted-foreground transition-transform group-open:rotate-180" />
+        </summary>
+        <pre className="max-h-56 overflow-auto border-t border-border/60 px-3 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground whitespace-pre-wrap">
+          {outputText || "No output"}
+        </pre>
+      </details>
+
+      {/* Live preview modal (openPreview / brandComponents) */}
+      <Dialog open={previewHtml !== null} onOpenChange={(o) => !o && setPreviewHtml(null)}>
+        <DialogContent className="max-w-5xl p-0">
+          <DialogHeader className="border-b border-border px-4 py-3">
+            <DialogTitle className="text-sm">Live preview</DialogTitle>
+          </DialogHeader>
+          <div className="p-0">
+            <iframe
+              srcDoc={previewHtml ?? ""}
+              title="Live preview"
+              className="h-[72vh] w-full bg-white"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
 
@@ -294,6 +466,15 @@ function ThreadView() {
       sendMessage({ text, files });
     }
   }
+
+  // Register answer bus so askUser cards can submit replies into this thread.
+  useEffect(() => {
+    registerAnswerBus((text: string) => {
+      void sendWithThreadSeed(text);
+    });
+    return () => registerAnswerBus(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threadId]);
 
   const busy = status === "submitted" || status === "streaming";
 
