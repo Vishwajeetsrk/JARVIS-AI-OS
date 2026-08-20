@@ -1,5 +1,4 @@
-import * as fs from "node:fs";
-import * as path from "node:path";
+// Unified Memory Engine with Browser/Server Polymorphic Storage
 
 export interface IdentityMemory {
   preferredName: string;
@@ -93,10 +92,6 @@ export interface UnifiedMemorySnapshot {
   preferences: UserPreferences;
   lastUpdated: string;
 }
-
-const DATA_DIR = path.resolve(process.cwd(), "data");
-const UNIFIED_MEMORY_FILE = path.join(DATA_DIR, "unified_memory.json");
-const DAILY_TASKS_FILE = path.join(DATA_DIR, "daily_tasks.json");
 
 const DEFAULT_MEMORY: UnifiedMemorySnapshot = {
   identity: {
@@ -336,20 +331,24 @@ export class UnifiedMemoryEngine {
   }
 
   private loadMemory(): UnifiedMemorySnapshot {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-
-    if (fs.existsSync(UNIFIED_MEMORY_FILE)) {
+    if (typeof window === "undefined") {
       try {
-        const parsed = JSON.parse(fs.readFileSync(UNIFIED_MEMORY_FILE, "utf-8"));
-        return { ...DEFAULT_MEMORY, ...parsed };
+        const fs = require("node:fs");
+        const path = require("node:path");
+        const dataDir = path.resolve(process.cwd(), "data");
+        const memFile = path.join(dataDir, "unified_memory.json");
+        if (!fs.existsSync(dataDir)) {
+          fs.mkdirSync(dataDir, { recursive: true });
+        }
+        if (fs.existsSync(memFile)) {
+          const parsed = JSON.parse(fs.readFileSync(memFile, "utf-8"));
+          return { ...DEFAULT_MEMORY, ...parsed };
+        }
+        fs.writeFileSync(memFile, JSON.stringify(DEFAULT_MEMORY, null, 2), "utf-8");
       } catch (err) {
-        console.error("[UnifiedMemory] Error reading memory file, using defaults:", err);
+        // Fallback gracefully
       }
     }
-
-    this.saveMemory(DEFAULT_MEMORY);
     return DEFAULT_MEMORY;
   }
 
@@ -357,7 +356,15 @@ export class UnifiedMemoryEngine {
     if (data) {
       this.memory = { ...this.memory, ...data, lastUpdated: new Date().toISOString() };
     }
-    fs.writeFileSync(UNIFIED_MEMORY_FILE, JSON.stringify(this.memory, null, 2), "utf-8");
+    if (typeof window === "undefined") {
+      try {
+        const fs = require("node:fs");
+        const path = require("node:path");
+        const dataDir = path.resolve(process.cwd(), "data");
+        const memFile = path.join(dataDir, "unified_memory.json");
+        fs.writeFileSync(memFile, JSON.stringify(this.memory, null, 2), "utf-8");
+      } catch {}
+    }
     return this.memory;
   }
 
