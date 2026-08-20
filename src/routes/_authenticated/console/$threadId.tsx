@@ -264,21 +264,32 @@ function ThreadView() {
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {(["gemini", "groq"] as ModelProvider[]).map((provider) => (
-              <>
-                <div key={provider} className="px-2 py-1 text-[10px] uppercase tracking-widest text-muted-foreground/60 font-mono">
-                  {provider === "gemini" ? "✦ Google Gemini (Free)" : "⚡ Groq (Free)"}
+            {(["openrouter", "gemini", "groq", "cohere", "ollama"] as ModelProvider[]).map((provider) => {
+              const provModels = MODELS.filter((m) => m.provider === provider);
+              if (provModels.length === 0) return null;
+              const titles: Record<ModelProvider, string> = {
+                openrouter: "🚀 OpenRouter (Free Models)",
+                gemini: "✦ Google Gemini 2.0 (Free)",
+                groq: "⚡ Groq (Llama 3.3 70B)",
+                cohere: "🔮 Cohere AI",
+                ollama: "🏠 Local Ollama (Offline)",
+              };
+              return (
+                <div key={provider}>
+                  <div className="px-2 py-1 text-[10px] uppercase tracking-widest text-muted-foreground/60 font-mono">
+                    {titles[provider]}
+                  </div>
+                  {provModels.map((m) => (
+                    <SelectItem key={m.id} value={m.id}>
+                      <span className="flex items-center gap-2">
+                        <span className="text-primary">{m.icon}</span>
+                        {m.label}
+                      </span>
+                    </SelectItem>
+                  ))}
                 </div>
-                {MODELS.filter((m) => m.provider === provider).map((m) => (
-                  <SelectItem key={m.id} value={m.id}>
-                    <span className="flex items-center gap-2">
-                      <span className="text-primary">{m.icon}</span>
-                      {m.label}
-                    </span>
-                  </SelectItem>
-                ))}
-              </>
-            ))}
+              );
+            })}
           </SelectContent>
         </Select>
       </header>

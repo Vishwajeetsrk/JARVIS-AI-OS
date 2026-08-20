@@ -66,10 +66,40 @@ export const PROVIDERS: ProviderDef[] = [
     helpUrl: "https://www.notion.so/my-integrations",
   },
   {
-    id: "supabase", name: "Supabase", description: "DB, auth, storage.",
+    id: "supabase", name: "Supabase DB & Realtime", description: "PostgreSQL, Auth, Realtime Broadcast, Storage.",
     icon: SiSupabase, kind: "connector", auth: "token",
-    credentialLabel: "Management API personal access token",
-    helpUrl: "https://supabase.com/dashboard/account/tokens",
+    credentialLabel: "Management API personal access token / Service Role Key",
+    helpUrl: "https://supabase.com/dashboard/project/tupgfxqkefgntrpgakxk",
+  },
+  {
+    id: "openrouter", name: "OpenRouter AI Gateway", description: "Free Tier Models: Nemotron 3.5, Liquid LFM, GLM 5.2.",
+    icon: Brain, kind: "connector", auth: "token",
+    credentialLabel: "OpenRouter API Key (sk-or-v1-...)",
+    helpUrl: "https://openrouter.ai/keys",
+  },
+  {
+    id: "gemini", name: "Google Gemini 2.0 AI Studio", description: "Multimodal Vision, Flash Reasoning & Code Synthesis.",
+    icon: SiCloudflare, kind: "connector", auth: "token",
+    credentialLabel: "Google AI Studio API Key (AIzaSy...)",
+    helpUrl: "https://aistudio.google.com/app/apikey",
+  },
+  {
+    id: "groq", name: "Groq Cloud LLaMA 3.3", description: "High-speed token streaming (~300 tok/sec) & Whisper STT.",
+    icon: SiWolfram, kind: "connector", auth: "token",
+    credentialLabel: "Groq Cloud API Key (gsk_...)",
+    helpUrl: "https://console.groq.com/keys",
+  },
+  {
+    id: "salesforce", name: "Salesforce CRM", description: "Donor leads, 80G tax exemptions, data loader batch uploads.",
+    icon: Shield, kind: "connector", auth: "token",
+    credentialLabel: "Salesforce Connected App OAuth / Security Token",
+    helpUrl: "https://login.salesforce.com",
+  },
+  {
+    id: "razorpay", name: "Razorpay Payments", description: "Donations reconciliation, payment orders & settlement extracts.",
+    icon: SiZapier, kind: "connector", auth: "token",
+    credentialLabel: "Razorpay Key ID & Key Secret",
+    helpUrl: "https://dashboard.razorpay.com",
   },
   {
     id: "cloudflare", name: "Cloudflare", description: "Workers, DNS, R2.",

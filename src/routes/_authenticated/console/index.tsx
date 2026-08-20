@@ -28,6 +28,7 @@ import { ScreenRecordingStudio } from "@/components/dashboard/screen-recording-s
 import { YouTubeGrowthHub } from "@/components/dashboard/youtube-growth-hub";
 import { CareerLearningCenter } from "@/components/dashboard/career-learning-center";
 import { PrivacyControls } from "@/components/dashboard/privacy-controls";
+import { AIThinkingPresentation } from "@/components/dashboard/ai-thinking-presentation";
 import { getDashboardStats, getEngineStatus } from "@/lib/dashboard.functions";
 import { createThread } from "@/lib/threads.functions";
 import { toast } from "sonner";
@@ -248,6 +249,9 @@ function ConsoleDashboard() {
             ))}
           </div>
         </section>
+
+        {/* Cognitive AI Thinking Presentation & Live Sandbox Playground */}
+        <AIThinkingPresentation onExecutePrompt={(prompt) => mCreate.mutate(prompt)} />
 
         {/* Main grid */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">

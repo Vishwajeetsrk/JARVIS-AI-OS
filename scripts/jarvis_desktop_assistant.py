@@ -1175,46 +1175,85 @@ You are a Full-Stack Product Architect. Implement Wardelio's VIP Monetization & 
             self.voice.speak(resp, self)
             return
 
-        # 5. App Launchers
-        app_map = {
-            "code": "code",
-            "vs code": "code",
-            "vscode": "code",
-            "explorer": "explorer",
-            "files": "explorer",
-            "terminal": "powershell",
-            "powershell": "powershell",
-            "cmd": "cmd",
-            "calculator": "calc",
-            "calc": "calc",
-            "notepad": "notepad",
-            "task manager": "taskmgr",
-            "taskmgr": "taskmgr",
-            "settings": "ms-settings:",
-            "chrome": "chrome",
-            "spotify": "spotify",
-        }
+        # 5. Universal Windows App, Game, Office & Web Launcher
+        if any(q.startswith(w) for w in ["open ", "launch ", "start ", "play ", "run "]) or q in ["chrome", "youtube", "word", "excel", "ppt", "spotify", "steam", "calc", "calculator"]:
+            import re
+            raw_target = re.sub(r'^(open|launch|start|run|play)\s+', '', q).strip()
+            words = set(re.findall(r'\b\w+\b', raw_target.lower()))
 
-        for app_name, exe in app_map.items():
-            if f"open {app_name}" in q or f"launch {app_name}" in q or q == app_name:
-                self.voice.speak(f"Opening {app_name}, sir.", self)
-                try:
-                    subprocess.Popen([exe], shell=True)
-                except Exception as e:
-                    self.voice.speak(f"Could not open {app_name}: {e}", self)
+            # A. Web Platforms & Sites
+            web_map = {
+                "youtube": "https://youtube.com",
+                "google": "https://google.com",
+                "github": "https://github.com",
+                "gmail": "https://mail.google.com",
+                "twitter": "https://x.com",
+                "x": "https://x.com",
+                "instagram": "https://instagram.com",
+                "linkedin": "https://linkedin.com",
+                "netflix": "https://netflix.com",
+                "chatgpt": "https://chatgpt.com",
+                "claude": "https://claude.ai",
+                "supabase": "https://supabase.com/dashboard",
+                "vercel": "https://vercel.com",
+            }
+            site_opened = False
+            for site, url in web_map.items():
+                if site in words or raw_target == site:
+                    self.voice.speak(f"Opening {site.capitalize()} in your browser, sir.", self)
+                    webbrowser.open(url)
+                    site_opened = True
+                    return
+
+            # B. Windows Desktop Apps, Microsoft Office & Games
+            app_commands = {
+                "chrome": 'Start-Process chrome -ErrorAction SilentlyContinue; if (!$?) { Start-Process "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" -ErrorAction SilentlyContinue }; if (!$?) { Start-Process msedge }',
+                "edge": 'Start-Process msedge',
+                "browser": 'Start-Process msedge',
+                "word": 'Start-Process winword -ErrorAction SilentlyContinue; if (!$?) { Start-Process "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE" -ErrorAction SilentlyContinue }; if (!$?) { Start-Process wordpad }',
+                "excel": 'Start-Process excel -ErrorAction SilentlyContinue; if (!$?) { Start-Process "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE" -ErrorAction SilentlyContinue }',
+                "powerpoint": 'Start-Process powerpnt -ErrorAction SilentlyContinue; if (!$?) { Start-Process "C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE" -ErrorAction SilentlyContinue }',
+                "ppt": 'Start-Process powerpnt -ErrorAction SilentlyContinue; if (!$?) { Start-Process "C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE" -ErrorAction SilentlyContinue }',
+                "vscode": 'code',
+                "code": 'code',
+                "notepad": 'notepad',
+                "calculator": 'calc',
+                "calc": 'calc',
+                "paint": 'mspaint',
+                "task manager": 'taskmgr',
+                "taskmgr": 'taskmgr',
+                "terminal": 'powershell',
+                "powershell": 'powershell',
+                "cmd": 'cmd',
+                "explorer": 'explorer',
+                "files": 'explorer',
+                "spotify": 'Start-Process spotify: -ErrorAction SilentlyContinue; if (!$?) { Start-Process spotify }',
+                "steam": 'Start-Process steam: -ErrorAction SilentlyContinue; if (!$?) { Start-Process steam }',
+                "whatsapp": 'Start-Process whatsapp: -ErrorAction SilentlyContinue; if (!$?) { Start-Process "https://web.whatsapp.com" }',
+                "discord": 'Start-Process discord: -ErrorAction SilentlyContinue; if (!$?) { Start-Process "https://discord.com/app" }',
+                "camera": 'Start-Process microsoft.windows.camera:',
+                "settings": 'Start-Process ms-settings:',
+            }
+
+            for app_name, ps_code in app_commands.items():
+                if app_name in words or raw_target == app_name or f" {app_name} " in f" {raw_target} ":
+                    self.voice.speak(f"Opening {app_name.capitalize()}, sir.", self)
+                    try:
+                        subprocess.Popen(["powershell", "-NoProfile", "-Command", ps_code], shell=True)
+                    except Exception as e:
+                        self.voice.speak(f"Could not launch {app_name}: {e}", self)
+                    return
+
+            # C. Dynamic Process Launcher Fallback
+            try:
+                self.voice.speak(f"Opening {raw_target}, sir.", self)
+                ps_code = f"Start-Process '{raw_target}' -ErrorAction SilentlyContinue"
+                subprocess.Popen(["powershell", "-NoProfile", "-Command", ps_code], shell=True)
                 return
+            except Exception:
+                pass
 
-        # 6. Web & Search
-        if "open youtube" in q or "youtube" in q:
-            self.voice.speak("Opening YouTube.", self)
-            webbrowser.open("https://youtube.com")
-            return
-
-        if "open google" in q:
-            self.voice.speak("Opening Google.", self)
-            webbrowser.open("https://google.com")
-            return
-
+        # 6. Web Search
         if "search for" in q or "search google for" in q:
             search_query = q.replace("search google for", "").replace("search for", "").strip()
             self.voice.speak(f"Searching Google for {search_query}.", self)

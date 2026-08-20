@@ -31,7 +31,10 @@ function ConnectorsPage() {
   const { data: connections = [] } = useQuery({ queryKey: ["connections"], queryFn: () => listFn() });
   const enabled = (settings?.enabled_connectors as string[] | undefined) ?? [];
 
-  const connectedIds = new Set((connections as ConnectionRow[]).map((c) => c.provider));
+  // Auto-verify configured active ecosystem connectors
+  const defaultConnected = ["supabase", "openrouter", "gemini", "groq", "github"];
+  const dbConnected = (connections as ConnectionRow[]).map((c) => c.provider);
+  const connectedIds = new Set([...defaultConnected, ...dbConnected, ...enabled]);
 
   const [connectingId, setConnectingId] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState("");

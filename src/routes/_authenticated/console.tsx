@@ -54,10 +54,30 @@ function ConsoleShell() {
   const { data: threads = [] } = useQuery({ queryKey: ["threads"], queryFn: () => listFn({}) });
   const { data: projects = [] } = useQuery({ queryKey: ["projects"], queryFn: () => listProjFn({}) });
 
-  const allProjects = projects;
+  const DEFAULT_PROJECTS = [
+    { id: "wardelio", name: "Wardelio (Android & iOS)", color: "#E69D45", description: "150+ screens luxury mobile wardrobe styling app with 3D Try-On" },
+    { id: "jarvis-core", name: "JARVIS AI OS Core", color: "#06B6D4", description: "24-Agent Autonomous AI Operating System & Voice Bridge" },
+    { id: "learnify-ai", name: "Learnify AI Platform", color: "#A855F7", description: "Adaptive Learning, Career Tracks & Daily Mastery Pillars" },
+    { id: "crm-automation", name: "Salesforce & Razorpay Ops", color: "#10B981", description: "Automated Donor Lead Conversion & 80G Tax Reconciliation" },
+  ];
+
+  const allProjects = projects.length > 0 ? projects : DEFAULT_PROJECTS;
 
   const inv = () => qc.invalidateQueries({ queryKey: ["threads"] });
   const invP = () => qc.invalidateQueries({ queryKey: ["projects"] });
+
+  // Global Keyboard Shortcut: ⌘N / Ctrl+N for New Chat
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        mCreate.mutate(undefined);
+        toast.info("Starting new conversation…");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Realtime: keep the thread list and project list fresh as work happens.
   useEffect(() => {
