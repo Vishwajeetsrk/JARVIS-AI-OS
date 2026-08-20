@@ -638,6 +638,24 @@ Keep it structured, thorough, professional, and directly actionable."""
             self.voice.speak(response, self)
             return
 
+        # 2. Farewell, Sign-off & Standby Engine
+        if any(w in q for w in ["see you later tomorrow", "see you tomorrow", "see you later", "goodnight", "good night", "bye", "goodbye", "signing off", "take care", "thats all for today", "that's all for today", "sleep mode", "standby"]):
+            tasks = load_tasks()
+            completed_count = len(tasks.get("completed_today", []))
+            farewell_text = (
+                f"Have a wonderful and restful evening, sir. "
+                f"All {completed_count} accomplishments from today and your project matrices have been safely synchronized. "
+                f"System daemons and memory will remain on secure standby on your laptop. "
+                f"I look forward to assisting you tomorrow with your morning briefing and 5 daily pillars. Goodnight, Vishwajeet. See you tomorrow!"
+            )
+            print(f"\n{MAGENTA}┌── [{self.name} // System Sign-off & Standby] ──────────────────────{RESET}")
+            for line in farewell_text.split(". "):
+                if line.strip():
+                    print(f"{MAGENTA}│{RESET} {line.strip()}{'.' if not line.strip().endswith('.') else ''}")
+            print(f"{MAGENTA}└─────────────────────────────────────────────────────────────────────────────┘{RESET}\n")
+            self.voice.speak(farewell_text, self)
+            return
+
         # 2. General Capability Inquiries regarding Web Search & Google
         if ("can you automatic research" in q or "can you research on google" in q or "can you search on google" in q or "automatic research on google" in q):
             resp = (
