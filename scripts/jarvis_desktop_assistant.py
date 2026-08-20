@@ -644,22 +644,22 @@ export function CyberAnimatedCard() {
                 )
                 return
 
-        # 5. Salesforce & Razorpay Daily Office Workflow
-        if "salesforce" in q or "razorpay" in q or "data loader" in q or "bharathi" in q or "donation" in q or "office work" in q or "office task" in q:
-            if "email" in q or "bharathi" in q:
+        # 8. Salesforce & Razorpay Daily Office Workflow
+        if "salesforce" in q or "razorpay" in q or "data loader" in q or "donation" in q or "office work" in q or "office task" in q:
+            if "email" in q or "update" in q:
                 try:
                     from scripts.salesforce_sync_helper import generate_email_template
                     email_data = generate_email_template()
-                    print(f"\n{GREEN}[+] Generated Email for Bharathi Ma'am:{RESET}\n")
+                    print(f"\n{GREEN}[+] Generated Daily Salesforce Reconciliation Email:{RESET}\n")
                     print(f"Subject: {email_data['subject']}\n")
                     print(email_data['body'])
-                    self.voice.speak("I have generated the Salesforce update confirmation email for Bharathi Ma'am in your terminal, sir.", self)
+                    self.voice.speak("I have generated the Salesforce update confirmation email for your operations lead in your terminal, sir.", self)
                     return
                 except Exception:
                     pass
 
             self.voice.speak(
-                f"Your Salesforce office workflow has 7 steps: Download yesterday's Razorpay donations, clean in Excel, check or create Leads via email or phone, update PAN, format Opportunities for Data Loader, send update email to Bharathi Ma'am, and verify exception queries from Aswath Ma'am.",
+                f"Your Salesforce office workflow has 7 steps: Download yesterday's Razorpay donations, clean in Excel, check or create Leads via email or phone, update PAN, format Opportunities for Data Loader, send update email to your operations lead, and verify any exception queries.",
                 self
             )
             return

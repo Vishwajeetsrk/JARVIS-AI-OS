@@ -276,7 +276,7 @@ program
 // ─── salesforce ───
 program
   .command("salesforce")
-  .description("Generate daily Salesforce update email for Bharathi Ma'am")
+  .description("Generate daily Salesforce & Razorpay donation reconciliation update email")
   .action(() => {
     try {
       execSync("python scripts/salesforce_sync_helper.py", { stdio: "inherit" });

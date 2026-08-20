@@ -119,7 +119,7 @@ const DEFAULT_MEMORY: UnifiedMemorySnapshot = {
         "Lead creation and conversion to Donor / Account in Salesforce",
         "Matching Donor ID / Account ID using Email/Phone and updating PAN for 80G tax exemptions",
         "Formatting Opportunities and batch uploading via Salesforce Data Loader",
-        "Sending formal status update emails to Bharathi Ma'am and handling queries from Aswath Ma'am"
+        "Sending formal status reconciliation update emails and resolving custom operational exception queries"
       ],
       specialization: "AI-Powered Business Operations Automation, CRM-to-Payment Bridges, and Custom Internal Operating Systems"
     },

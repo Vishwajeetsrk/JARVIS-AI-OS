@@ -13,7 +13,7 @@ This audit documents all core applications, sub-repositories, design systems, an
 | **Three.js VRM Viewer** (`src/components/jarvis/vrm-avatar-viewer.tsx`) | 3D VRoid companion avatar with eye tracking & lip-sync | TypeScript, WebGL, `@pixiv/three-vrm`, Three.js | 🟢 Active | **Visual AI Companion** (Renders 3D humanoid character with 60fps animations). |
 | **Wardelio Mobile App** (`C:\Users\vishw\OneDrive\Desktop\Wardelio`) | Mobile style & wardrobe companion (150+ screens) | React, Vite, Capacitor (Android/iOS), Tailwind | 🟢 Integrated | **Personal Project Hub** (Tracked under Builder Mode & CLI launcher). |
 | **53 Design Systems & Presets** (`Projects/*`) | High-conversion UI themes & templates for digital product sales | HTML5, CSS3, React, Tailwind CSS | 🟢 Packaged | **Side-Income Digital Assets** (Serves as product template library). |
-| **Salesforce Sync Module** (`src/lib/integrations/salesforce-client.ts`) | Razorpay-to-Salesforce 7-step reconciliation & email generator | TypeScript, Node.js, Python | 🟢 Active | **Office Work Mode** (Automates daily donation updates for Bharathi Ma'am). |
+| **Salesforce Sync Module** (`src/lib/integrations/salesforce-client.ts`) | Razorpay-to-Salesforce 7-step reconciliation & email generator | TypeScript, Node.js, Python | 🟢 Active | **Office Work Mode** (Automates daily donation reconciliation & update emails). |
 
 ---
 

@@ -88,8 +88,8 @@ Say the command or click a button to instantly switch workspace state:
 * **Focus Guardian**: Prevents task explosion by strictly limiting daily commitments to 5 high-yield actions.
 
 ### 💼 5. Salesforce & Razorpay 7-Step Office Automation
-* **7-Step Reconciliation Pipeline**: Download Razorpay donation CSV ➔ Clean phone/email/PAN in Excel ➔ Verify Salesforce Contacts ➔ Convert Leads ➔ Insert Opportunities via Data Loader ➔ Send Status Email to Bharathi Ma'am ➔ Handle exceptions from Aswath Ma'am.
-* **1-Click Email Generator**: Say *"Generate email for Bharathi Ma'am"* or run `npx tsx cli/index.ts salesforce`.
+* **7-Step Reconciliation Pipeline**: Download Razorpay donation CSV ➔ Clean phone/email/PAN in Excel ➔ Verify Salesforce Contacts ➔ Convert Leads ➔ Insert Opportunities via Data Loader ➔ Generate Daily Reconciliation Status Email ➔ Handle custom exception cases.
+* **1-Click Email Generator**: Say *"Generate operations update email"* or run `npx tsx cli/index.ts salesforce`.
 
 ### 🔴 6. YouTube Growth, Content & Income Engine
 * **VishwaJeetSrK (94 subs)**: 1 Long-Form/week + 2–3 Derived Shorts (*Building AI, Learning in Public, Real Automation*).
@@ -172,8 +172,10 @@ JARVIS comes with a built-in command-line interface:
 | Command | Action |
 | :--- | :--- |
 | `npx tsx cli/index.ts plan` | Display today's 12:00 PM 5-Pillar Focused Schedule |
-| `npx tsx cli/index.ts salesforce` | Generate daily Salesforce update email for Bharathi Ma'am |
+| `npx tsx cli/index.ts salesforce` | Generate daily CRM & donation reconciliation update email |
 | `npx tsx cli/index.ts youtube` | Display YouTube growth strategy and priority video tasks |
+| `npx tsx cli/index.ts record` | Open Screen Recording & Demo Studio in browser |
+| `npx tsx cli/index.ts scan` | Safely scan laptop storage, large files & temp cache |
 | `npx tsx cli/index.ts wardelio` | Open Wardelio mobile app in VS Code |
 | `npx tsx cli/index.ts voice` | Launch Python Voice Daemon with Echo Guard |
 | `npx tsx cli/index.ts console` | Launch Web Console in default browser |
@@ -192,8 +194,10 @@ Once your voice assistant is running, say:
 * 🏋️ *"Jarvis, gym mode"* ➔ Activates Gym & Workout tracking
 * 🧠 *"Jarvis, let's focus"* ➔ Starts 30-minute quiet focus timer
 * 📋 *"Jarvis, 12 pm plan"* ➔ Summarizes today's 5 core pillars
-* 📧 *"Generate email for Bharathi Ma'am"* ➔ Prints formatted Salesforce update email
+* 📧 *"Generate operations email"* ➔ Prints formatted CRM & donation status email
 * 🔴 *"Jarvis, youtube ideas"* ➔ Gives top video recording task for VishwaJeetSrK or TinyLifeHacks
+* 🎬 *"Jarvis, start screen recording"* ➔ Opens Screen Recording Studio
+* 🛡️ *"Jarvis, scan my laptop"* ➔ Runs safe storage diagnostic scan
 * 📱 *"Tell me about Wardelio app"* ➔ Summarizes mobile app status or opens VS Code
 * 🔇 *"Mute audio"* / *"Volume up"* ➔ Controls Windows system audio
 
@@ -220,8 +224,7 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more informa
 
 <div align="center">
 
-**Built with ❤️ by [Vishwajeet](https://github.com/Vishwajeetsrk)**  
-*Maintainer: vishwajeetsrk@gmail.com*
+**Built with ❤️ for Open Source AI Innovation**  
 
 ⭐ If you find JARVIS AI OS inspiring, please give the repo a star on GitHub! ⭐
 

@@ -25,8 +25,8 @@ export interface CareerProfile {
 }
 
 export const DEFAULT_CAREER_PROFILE: CareerProfile = {
-  fullName: "Vishwajeet",
-  email: "vishwajeetsrk@gmail.com",
+  fullName: "Full-Stack AI Engineer",
+  email: "developer@example.com",
   phone: "+91-XXXXXXXXXX",
   location: "India (Open to Remote / Hybrid)",
   targetRoles: [

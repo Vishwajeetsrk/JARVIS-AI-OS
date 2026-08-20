@@ -21,7 +21,7 @@ export const DAILY_ENGLISH_PHRASES: EnglishPhraseItem[] = [
     category: "Email",
     meaning: "A polite, professional way to tell someone a document is attached to the email.",
     pronunciationHint: "pleez find thee uh-tacht re-con-sil-ee-ay-shun re-port",
-    workExample: "Good day, Ma'am. Please find the attached reconciliation report for yesterday's Razorpay donations.",
+    workExample: "Good day. Please find the attached reconciliation report for yesterday's Razorpay donations.",
     practicePrompt: "Use this phrase at the start of your daily status emails.",
   },
   {
@@ -45,7 +45,7 @@ export const DAILY_ENGLISH_PHRASES: EnglishPhraseItem[] = [
     category: "Email",
     meaning: "Thank you for replying quickly.",
     pronunciationHint: "eye uh-pree-shee-ayt yor prompt re-spons",
-    workExample: "Thank you for the update, Bharathi Ma'am. I appreciate your prompt response.",
+    workExample: "Thank you for the update. I appreciate your prompt response.",
     practicePrompt: "Use this to politely acknowledge a quick reply from colleagues.",
   },
 ];

@@ -37,7 +37,7 @@ export class AgentTeamManager {
         "7-step Razorpay donation transaction extraction & Excel cleaning",
         "Salesforce Lead verification and Contact matching",
         "Data Loader Opportunity batch upload preparation",
-        "Daily status email drafting for Bharathi Ma'am and Aswath Ma'am"
+        "Daily status reconciliation email drafting for operations and finance leads"
       ],
       capabilities: ["Salesforce REST", "Excel Sanitize", "Data Loader Mapper", "Email Drafter"]
     },

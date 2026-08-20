@@ -1,11 +1,11 @@
 """
 Salesforce & Razorpay Daily Donation Automation Helper
-Assists Vishwajeet in:
-1. Formatting yesterday's Razorpay donation payments for Salesforce Data Loader
+Assists with:
+1. Formatting Razorpay donation payments for Salesforce Data Loader
 2. Identifying new donors vs existing accounts by Email / Phone
 3. Generating Lead-to-Donor conversion files & PAN update CSVs
 4. Structuring Opportunities insert templates
-5. Generating standardized status emails for Bharathi Ma'am & Aswath Ma'am
+5. Generating standardized status reconciliation update emails
 """
 
 import sys
@@ -14,15 +14,25 @@ import json
 import datetime
 from pathlib import Path
 
+def get_local_recipient_name():
+    config_file = Path(__file__).parent.parent / "data" / "assistant_config.json"
+    if config_file.exists():
+        try:
+            with open(config_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return data.get("salesforce_email_recipient", "Operations Team Lead")
+        except Exception:
+            pass
+    return "Operations Team Lead"
+
 def generate_email_template(update_date=None, total_donations=0, total_amount=0, new_leads_count=0):
     if not update_date:
         update_date = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%d-%m-%Y")
     
-    today_str = datetime.datetime.now().strftime("%d-%m-%Y")
-
+    recipient = get_local_recipient_name()
     subject = f"Salesforce Update Completed till {update_date} — Razorpay Donations Sync"
     
-    body = f"""Respected Bharathi Ma'am,
+    body = f"""Dear {recipient},
 
 Good day!
 
@@ -38,12 +48,12 @@ Summary of Salesforce Updates:
 • Opportunities Inserted in Salesforce: Completed via Data Loader
 --------------------------------------------------
 
-I have also reviewed pending exception emails and special donation requests from you and Aswath Ma'am, and all corresponding records have been verified and updated in Salesforce.
+All corresponding donation and tax exemption records have been verified and updated in Salesforce.
 
 Please let me know if you need any additional reports or reconciliation details.
 
 Warm regards,
-Vishwajeet
+Operations Team
 """
     return {"subject": subject, "body": body}
 
@@ -52,7 +62,7 @@ def get_salesforce_workflow_steps():
         {
             "step": 1,
             "title": "Razorpay Export",
-            "desc": "Download yesterday's donation transaction CSV from Razorpay Dashboard (Filter: Captured, Paid)."
+            "desc": "Download donation transaction CSV from Razorpay Dashboard (Filter: Captured, Paid)."
         },
         {
             "step": 2,
@@ -61,44 +71,34 @@ def get_salesforce_workflow_steps():
         },
         {
             "step": 3,
-            "title": "Salesforce Donor Verification",
-            "desc": "Search Salesforce using Email/Phone. If existing -> fetch Account ID & Donor ID. If new -> Create Lead & convert to Donor."
+            "title": "Donor Verification",
+            "desc": "Verify if donor exists in Salesforce using Phone / Email matching."
         },
         {
             "step": 4,
-            "title": "PAN Update",
-            "desc": "Update Account PAN details using matched Donor ID for 80G tax exemption compliance."
+            "title": "Lead Creation & Conversion",
+            "desc": "If donor is new, create Lead in Salesforce and convert to Donor Account / Contact."
         },
         {
             "step": 5,
-            "title": "Opportunities Data Loader Insert",
-            "desc": "Map Account ID, Donation Amount, Close Date, Stage='Closed Won', Payment Mode='Razorpay' -> Upload via Data Loader."
+            "title": "PAN Matching & 80G Updates",
+            "desc": "Match Account ID, Contact ID, and update PAN for 80G tax exemption receipts."
         },
         {
             "step": 6,
-            "title": "Status Email to Bharathi Ma'am",
-            "desc": "Send formal update confirmation email with reconciliation summary."
+            "title": "Data Loader Batch Upload",
+            "desc": "Prepare Opportunities CSV format and execute batch Insert via Salesforce Data Loader."
         },
         {
             "step": 7,
-            "title": "Exception Queries & Aswath Ma'am Verification",
-            "desc": "Check and resolve any offline/liquor donation queries and reply via email."
+            "title": "Status Reconciliation Email",
+            "desc": "Generate and send final confirmation update email with date range and total reconciled amounts."
         }
     ]
 
 if __name__ == "__main__":
-    print("=" * 70)
-    print("  SALESFORCE & RAZORPAY DAILY DONATION WORKFLOW HELPER")
-    print("=" * 70)
-    
-    steps = get_salesforce_workflow_steps()
-    for s in steps:
-        print(f"  [{s['step']}] {s['title']}")
-        print(f"      -> {s['desc']}\n")
-        
     email = generate_email_template()
-    print("=" * 70)
-    print("  SAMPLE EMAIL TEMPLATE FOR BHARATHI MA'AM:")
-    print("=" * 70)
-    print(f"Subject: {email['subject']}\n")
+    print("=" * 60)
+    print(f"SUBJECT: {email['subject']}\n")
     print(email['body'])
+    print("=" * 60)

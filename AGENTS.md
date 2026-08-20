@@ -4,4 +4,4 @@ This project is managed by autonomous AI agents. For configuration and workflow 
 
 ## Contact
 
-Maintainer: **Vishwajeet** — vishwajeetsrk@gmail.com
+Maintained by the Open Source JARVIS AI Community.
