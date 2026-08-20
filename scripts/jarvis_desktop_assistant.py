@@ -621,7 +621,16 @@ export function CyberAnimatedCard() {
             subprocess.Popen(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "scripts/scan_laptop_health.ps1"], shell=True)
             return
 
-        # 6. Wardelio App Management
+        # 6. Screen Recording & Demo Studio Agent
+        if "record" in q or "recording" in q or "screen record" in q or "demo studio" in q:
+            self.voice.speak(
+                "Launching JARVIS Screen Recording Studio on your console, sir. You can capture full screen, application windows, or browser tabs with teleprompter support.",
+                self
+            )
+            subprocess.Popen(["start", "http://localhost:8080/console"], shell=True)
+            return
+
+        # 7. Wardelio App Management
         if "wardelio" in q:
             wardelio_path = r"C:\Users\vishw\OneDrive\Desktop\Wardelio"
             if "open" in q or "code" in q or "launch" in q:

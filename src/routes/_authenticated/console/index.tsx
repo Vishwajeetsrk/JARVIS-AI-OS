@@ -24,6 +24,7 @@ import { WeatherLearningHub } from "@/components/dashboard/weather-learning-hub"
 import { DailyContextHub } from "@/components/dashboard/daily-context-hub";
 import { SystemHealthMonitor } from "@/components/dashboard/system-health-monitor";
 import { LaptopHealthCenter } from "@/components/dashboard/laptop-health-center";
+import { ScreenRecordingStudio } from "@/components/dashboard/screen-recording-studio";
 import { YouTubeGrowthHub } from "@/components/dashboard/youtube-growth-hub";
 import { CareerLearningCenter } from "@/components/dashboard/career-learning-center";
 import { PrivacyControls } from "@/components/dashboard/privacy-controls";
@@ -317,6 +318,9 @@ function ConsoleDashboard() {
 
         {/* Live Project Process, Daily Tasks CRUD & Advance Tools Matrix */}
         <TaskProcessCenter />
+
+        {/* Screen Recording, Demo & Tutorial Studio */}
+        <ScreenRecordingStudio />
 
         {/* YouTube Growth, Content & Income Engine (VishwaJeetSrK + TinyLifeHacks) */}
         <YouTubeGrowthHub />

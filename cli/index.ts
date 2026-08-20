@@ -329,7 +329,20 @@ program
     }
   });
 
+// ─── record ───
+program
+  .command("record")
+  .description("Launch Screen Recording Studio in browser console")
+  .action(() => {
+    log("Opening JARVIS Screen Recording Studio: http://localhost:8080/console");
+    try {
+      execSync("start http://localhost:8080/console", { stdio: "inherit" });
+      success("Screen Recording Studio opened with full-screen, window, and teleprompter capture.");
+    } catch {}
+  });
+
 program.parse();
+
 
 
 
