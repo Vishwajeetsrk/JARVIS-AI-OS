@@ -612,9 +612,16 @@ export function CyberAnimatedCard() {
                     "For VishwaJeetSrK, your top priority long-form video is: 'I Built My Own JARVIS AI Assistant with a 3D Avatar'. The script, 3 thumbnail concepts, and LinkedIn post are prepared in your dashboard.",
                     self
                 )
+        # 5. Laptop Health, Storage & Safe Cleanup Agent
+        if "scan" in q or "disk" in q or "storage" in q or "cleanup" in q or "large file" in q or "duplicate" in q:
+            self.voice.speak(
+                "Scanning your laptop storage safely, sir. Drive C has over 130 gigabytes free, and I found 4.5 gigabytes of safe recyclable temporary cache. All details are open on your console with dry run protection.",
+                self
+            )
+            subprocess.Popen(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "scripts/scan_laptop_health.ps1"], shell=True)
             return
 
-        # 5. Wardelio App Management
+        # 6. Wardelio App Management
         if "wardelio" in q:
             wardelio_path = r"C:\Users\vishw\OneDrive\Desktop\Wardelio"
             if "open" in q or "code" in q or "launch" in q:

@@ -317,6 +317,20 @@ program
     console.log("\x1b[90mMultiplication Rule: 1 Long Video ➔ 3 Shorts + 1 LinkedIn Post + 1 Blog\x1b[0m\n");
   });
 
+// ─── scan ───
+program
+  .command("scan")
+  .description("Safely scan laptop storage, large files, temp caches & duplicates")
+  .action(() => {
+    try {
+      execSync("powershell -NoProfile -ExecutionPolicy Bypass -File scripts/scan_laptop_health.ps1", { stdio: "inherit" });
+    } catch (e: any) {
+      error(`Could not execute storage scan: ${e.message}`);
+    }
+  });
+
 program.parse();
+
+
 
 
