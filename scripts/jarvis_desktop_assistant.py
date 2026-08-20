@@ -1057,8 +1057,8 @@ You are a Full-Stack Product Architect. Implement Wardelio's VIP Monetization & 
             self.voice.speak(plan_text, self)
             return
 
-        # 4. YouTube Growth & Content Engine
-        if "youtube" in q or "video idea" in q or "tinylifehacks" in q or "vishwajeetsrk" in q:
+        # 4. YouTube Growth & Content Planning
+        if ("youtube channel" in q or "youtube growth" in q or "video idea" in q or "tinylifehacks" in q or "vishwajeetsrk" in q) and not any(q.startswith(w) for w in ["open", "launch", "play", "start"]):
             if "tinylifehacks" in q or "hack" in q or "shorts" in q:
                 self.voice.speak(
                     "For TinyLifeHacks, your top priority Short is: 'Stop Fixing Messy Names in Excel! Press Ctrl + E'. Estimated recording time is 20 minutes.",
