@@ -37,7 +37,7 @@ export class SystemHealthEngine {
         category: "Voice",
         status: "healthy",
         latencyMs: 45,
-        details: "Listening for 'Hey Nisha' / 'Hey Jarvis' on Windows default audio.",
+        details: "Sub-50ms native voice loop listening on Windows default audio.",
         fallbackAction: "Degrades gracefully to Web Text & Voice Mode"
       },
       {

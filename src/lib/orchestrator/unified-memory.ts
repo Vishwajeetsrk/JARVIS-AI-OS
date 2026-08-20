@@ -102,9 +102,9 @@ const DEFAULT_MEMORY: UnifiedMemorySnapshot = {
   identity: {
     preferredName: "Vishwajeet",
     role: "Full-Stack AI Product Builder & Systems Architect",
-    vision: "Build powerful AI products, SaaS platforms, multi-agent operating systems, and an emotionally intelligent personal companion (Nisha).",
+    vision: "Build powerful AI products, SaaS platforms, multi-agent operating systems, and an emotionally intelligent personal companion.",
     personality: {
-      companionName: "Nisha",
+      companionName: "AI Companion",
       primaryTone: "warm, intelligent, sweet, and calm",
       style: "curious, proactive without annoyance, respectful, playful when appropriate",
       traits: ["empathetic", "evidence-based", "solution-oriented", "polite", "focused"],
@@ -310,7 +310,7 @@ const DEFAULT_MEMORY: UnifiedMemorySnapshot = {
     voiceRate: 160,
     voiceVolume: 1.0,
     voiceGender: "female",
-    wakeWords: ["hey nisha", "nisha", "hey jarvis", "jarvis"],
+    wakeWords: ["hey jarvis", "jarvis"],
     proactiveLevel: "balanced",
     cameraPermission: "off",
     microphoneMode: "wake_word",

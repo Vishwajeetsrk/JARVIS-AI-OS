@@ -5,6 +5,8 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 
 import { join } from "node:path";
 import { homedir } from "node:os";
 import { execSync } from "node:child_process";
+import { mistakeLearningEngine } from "../src/lib/memory/mistake-learning-engine";
+import { skillInstallerEngine } from "../src/lib/skills/skill-installer-engine";
 
 const pkg = JSON.parse(readFileSync(join(import.meta.dirname, "../package.json"), "utf-8"));
 
@@ -341,7 +343,56 @@ program
     } catch {}
   });
 
+// ─── skill:install ───
+program
+  .command("skill:install <repoUrl>")
+  .description("Install skills from GitHub (e.g. https://github.com/jeffallan/claude-skills)")
+  .option("-n, --name <name>", "Custom name for the skill")
+  .action((repoUrl, opts) => {
+    log(`Installing skill from: ${repoUrl}...`);
+    const result = skillInstallerEngine.installSkillFromGit(repoUrl, opts.name);
+    if (result.success) {
+      success(result.message);
+    } else {
+      error(result.message);
+    }
+  });
+
+// ─── skill:list ───
+program
+  .command("skill:list")
+  .description("List all installed skills in JARVIS AI OS")
+  .action(() => {
+    const skills = skillInstallerEngine.getInstalledSkills();
+    console.log("\n\x1b[1m\x1b[36m=== INSTALLED JARVIS SKILLS ===\x1b[0m");
+    console.log("─".repeat(60));
+    skills.forEach((s, idx) => {
+      console.log(`${idx + 1}. \x1b[1m${s.name}\x1b[0m (${s.id})`);
+      console.log(`   \x1b[90m${s.description}\x1b[0m`);
+    });
+    console.log("─".repeat(60));
+    console.log(`Total: ${skills.length} skills active.\n`);
+  });
+
+// ─── lessons ───
+program
+  .command("lessons")
+  .description("Show all learned lessons and mistake prevention rules")
+  .action(() => {
+    const lessons = mistakeLearningEngine.getLessons();
+    console.log("\n\x1b[1m\x1b[32m=== JARVIS LEARNED LESSONS & GUARD RULES ===\x1b[0m");
+    console.log("─".repeat(65));
+    lessons.forEach((l, idx) => {
+      console.log(`🛡️  \x1b[1m[${l.category.toUpperCase()}]\x1b[0m ${l.triggerContext}`);
+      console.log(`   • \x1b[31mMistake Prevented:\x1b[0m ${l.mistakePattern}`);
+      console.log(`   • \x1b[32mPermanent Rule:\x1b[0m ${l.permanentRule}`);
+      console.log();
+    });
+    console.log("─".repeat(65));
+  });
+
 program.parse();
+
 
 
 

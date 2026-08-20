@@ -15,7 +15,7 @@ export function PrivacyControls() {
     voiceRate: 160,
     voiceVolume: 1.0,
     voiceGender: "female",
-    wakeWords: ["hey nisha", "nisha", "hey jarvis", "jarvis"],
+    wakeWords: ["hey jarvis", "jarvis"],
     proactiveLevel: "balanced",
     cameraPermission: "off",
     microphoneMode: "wake_word",

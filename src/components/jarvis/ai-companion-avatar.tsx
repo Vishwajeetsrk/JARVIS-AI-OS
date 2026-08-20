@@ -110,7 +110,7 @@ export function AICompanionAvatar({
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-3 py-1 font-mono text-xs font-semibold text-cyan-300 shadow-sm">
             <Sparkles className="h-3.5 w-3.5 text-cyan-400 animate-spin" style={{ animationDuration: "8s" }} />
-            NISHA // 3D AI COMPANION
+            3D AI COMPANION
           </span>
           <span className="rounded-full border border-purple-500/30 bg-purple-500/10 px-2 py-0.5 font-mono text-[10px] text-purple-300">
             LUMI × LYRA HYBRID

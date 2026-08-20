@@ -1,0 +1,46 @@
+[
+  {
+    "id": "lesson-001",
+    "timestamp": "2026-08-20T10:00:00Z",
+    "category": "workflow",
+    "triggerContext": "Deleting or moving user files on Windows laptop",
+    "mistakePattern": "Permanently deleting files with rmdir /s /q without confirmation",
+    "rootCause": "Lack of explicit confirmation gate on high-risk filesystem commands",
+    "permanentRule": "NEVER delete permanently. Always move to Windows Recycle Bin with explicit confirmation or run in Dry Run simulation.",
+    "timesEncountered": 1,
+    "lastVerified": "2026-08-20"
+  },
+  {
+    "id": "lesson-002",
+    "timestamp": "2026-08-20T11:00:00Z",
+    "category": "privacy",
+    "triggerContext": "Pushing code to public GitHub repositories",
+    "mistakePattern": "Hardcoding personal colleague names and contact info in public templates",
+    "rootCause": "Merging local context into public documentation",
+    "permanentRule": "Keep personal identifiers, custom office names, and private configs strictly in local data/ and read dynamically.",
+    "timesEncountered": 1,
+    "lastVerified": "2026-08-20"
+  },
+  {
+    "id": "lesson-003",
+    "timestamp": "2026-08-20T11:30:00Z",
+    "category": "runtime",
+    "triggerContext": "Voice loop audio streaming on speaker output",
+    "mistakePattern": "Microphone capturing assistant's own TTS output (echo loop)",
+    "rootCause": "Simultaneous open microphone during active speaker playback",
+    "permanentRule": "Echo Guard state machine must lock microphone input during audio synthesis.",
+    "timesEncountered": 1,
+    "lastVerified": "2026-08-20"
+  },
+  {
+    "id": "lesson-004",
+    "timestamp": "2026-08-20T12:00:00Z",
+    "category": "build",
+    "triggerContext": "Lucide React icon import for Youtube",
+    "mistakePattern": "import { Youtube } from 'lucide-react' causes export not found error",
+    "rootCause": "Lucide React exports PlayCircle or Video instead of Youtube in current version",
+    "permanentRule": "Use PlayCircle or Video for video media representations.",
+    "timesEncountered": 1,
+    "lastVerified": "2026-08-20"
+  }
+]
