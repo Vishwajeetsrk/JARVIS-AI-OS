@@ -1,164 +1,370 @@
 [
   {
-    "name": "ai-data-analyst",
-    "path": "/preset-sites/ai-data-analyst/",
+    "name": "acreage-nike",
+    "displayName": "Acreage \u00d7 Nike",
+    "category": "E-Commerce & Retail",
+    "path": "/preset-sites/acreage-nike/",
     "hasSource": true,
-    "fileCount": 15
+    "fileCount": 55
   },
   {
-    "name": "ai-talk-radio",
-    "path": "/preset-sites/ai-talk-radio/",
+    "name": "asme",
+    "displayName": "Asme",
+    "category": "SaaS",
+    "path": "/preset-sites/asme/",
     "hasSource": true,
-    "fileCount": 15
+    "fileCount": 34
   },
   {
-    "name": "anywhere",
-    "path": "/preset-sites/anywhere/",
-    "hasSource": true,
-    "fileCount": 10
-  },
-  {
-    "name": "axion-studio",
-    "path": "/preset-sites/axion-studio/",
-    "hasSource": true,
-    "fileCount": 5
-  },
-  {
-    "name": "brandly",
-    "path": "/preset-sites/brandly/",
-    "hasSource": true,
-    "fileCount": 3
-  },
-  {
-    "name": "cinematic-cloud",
-    "path": "/preset-sites/cinematic-cloud/",
-    "hasSource": true,
-    "fileCount": 4
-  },
-  {
-    "name": "cinematic-stream",
-    "path": "/preset-sites/cinematic-stream/",
-    "hasSource": true,
-    "fileCount": 3
-  },
-  {
-    "name": "datacore",
-    "path": "/preset-sites/datacore/",
-    "hasSource": true,
-    "fileCount": 3
-  },
-  {
-    "name": "ecovolta",
-    "path": "/preset-sites/ecovolta/",
-    "hasSource": true,
-    "fileCount": 3
-  },
-  {
-    "name": "guardnet",
-    "path": "/preset-sites/guardnet/",
-    "hasSource": true,
-    "fileCount": 6
-  },
-  {
-    "name": "halo-usd",
-    "path": "/preset-sites/halo-usd/",
-    "hasSource": true,
-    "fileCount": 9
-  },
-  {
-    "name": "image-to-voxel-art",
-    "path": "/preset-sites/image-to-voxel-art/",
-    "hasSource": true,
-    "fileCount": 9
-  },
-  {
-    "name": "linkflow",
-    "path": "/preset-sites/linkflow/",
-    "hasSource": true,
-    "fileCount": 3
-  },
-  {
-    "name": "lumina",
-    "path": "/preset-sites/lumina/",
-    "hasSource": true,
-    "fileCount": 3
-  },
-  {
-    "name": "metricx-studio",
-    "path": "/preset-sites/metricx-studio/",
-    "hasSource": true,
-    "fileCount": 7
-  },
-  {
-    "name": "micro-organized",
-    "path": "/preset-sites/micro-organized/",
-    "hasSource": true,
-    "fileCount": 3
-  },
-  {
-    "name": "omni-product-studio",
-    "path": "/preset-sites/omni-product-studio/",
-    "hasSource": true,
-    "fileCount": 8
-  },
-  {
-    "name": "power-ai",
-    "path": "/preset-sites/power-ai/",
+    "name": "aurora-signup",
+    "displayName": "Aurora Sign Up",
+    "category": "SaaS",
+    "path": "/preset-sites/aurora-signup/",
     "hasSource": true,
     "fileCount": 13
   },
   {
+    "name": "auto-machines",
+    "displayName": "Auto Machines",
+    "category": "Industrial & Logistics",
+    "path": "/preset-sites/auto-machines/",
+    "hasSource": true,
+    "fileCount": 22
+  },
+  {
+    "name": "axion-studio",
+    "displayName": "Axion Studio",
+    "category": "SaaS",
+    "path": "/preset-sites/axion-studio/",
+    "hasSource": true,
+    "fileCount": 41
+  },
+  {
+    "name": "baby-track-automation",
+    "displayName": "Baby Track",
+    "category": "Industrial & Logistics",
+    "path": "/preset-sites/baby-track-automation/",
+    "hasSource": true,
+    "fileCount": 24
+  },
+  {
+    "name": "bionova",
+    "displayName": "BIONOVA",
+    "category": "SaaS",
+    "path": "/preset-sites/bionova/",
+    "hasSource": true,
+    "fileCount": 30
+  },
+  {
+    "name": "brandly",
+    "displayName": "Brandly",
+    "category": "SaaS",
+    "path": "/preset-sites/brandly/",
+    "hasSource": true,
+    "fileCount": 17
+  },
+  {
+    "name": "cinematic-cloud",
+    "displayName": "Cinematic Cloud",
+    "category": "Media & Entertainment",
+    "path": "/preset-sites/cinematic-cloud/",
+    "hasSource": true,
+    "fileCount": 21
+  },
+  {
+    "name": "cinematic-stream",
+    "displayName": "FRAMECAST",
+    "category": "Media & Entertainment",
+    "path": "/preset-sites/cinematic-stream/",
+    "hasSource": true,
+    "fileCount": 30
+  },
+  {
+    "name": "cognitra",
+    "displayName": "COGNITRA",
+    "category": "AI & Intelligence",
+    "path": "/preset-sites/cognitra/",
+    "hasSource": true,
+    "fileCount": 36
+  },
+  {
+    "name": "datacore",
+    "displayName": "Datacore",
+    "category": "SaaS",
+    "path": "/preset-sites/datacore/",
+    "hasSource": true,
+    "fileCount": 20
+  },
+  {
+    "name": "designpro",
+    "displayName": "DesignPro",
+    "category": "SaaS",
+    "path": "/preset-sites/designpro/",
+    "hasSource": true,
+    "fileCount": 30
+  },
+  {
+    "name": "ecovolta",
+    "displayName": "EcoVolta",
+    "category": "Industrial & Logistics",
+    "path": "/preset-sites/ecovolta/",
+    "hasSource": true,
+    "fileCount": 22
+  },
+  {
+    "name": "equilibrium",
+    "displayName": "Equilibrium",
+    "category": "SaaS",
+    "path": "/preset-sites/equilibrium/",
+    "hasSource": true,
+    "fileCount": 46
+  },
+  {
+    "name": "foundation-epoch",
+    "displayName": "Foundation Epoch",
+    "category": "Web3 & Fintech",
+    "path": "/preset-sites/foundation-epoch/",
+    "hasSource": true,
+    "fileCount": 27
+  },
+  {
+    "name": "gsap-pill-nav",
+    "displayName": "ARC PACE",
+    "category": "SaaS",
+    "path": "/preset-sites/gsap-pill-nav/",
+    "hasSource": true,
+    "fileCount": 28
+  },
+  {
+    "name": "guardnet",
+    "displayName": "Guardnet",
+    "category": "Cybersecurity",
+    "path": "/preset-sites/guardnet/",
+    "hasSource": true,
+    "fileCount": 19
+  },
+  {
+    "name": "halo-usd",
+    "displayName": "Halo",
+    "category": "Web3 & Fintech",
+    "path": "/preset-sites/halo-usd/",
+    "hasSource": true,
+    "fileCount": 39
+  },
+  {
+    "name": "jack-3d-creator",
+    "displayName": "Jack",
+    "category": "SaaS",
+    "path": "/preset-sites/jack-3d-creator/",
+    "hasSource": true,
+    "fileCount": 27
+  },
+  {
+    "name": "linkflow",
+    "displayName": "LinkFlow",
+    "category": "SaaS",
+    "path": "/preset-sites/linkflow/",
+    "hasSource": true,
+    "fileCount": 18
+  },
+  {
+    "name": "lumina",
+    "displayName": "Lumina",
+    "category": "AI & Intelligence",
+    "path": "/preset-sites/lumina/",
+    "hasSource": true,
+    "fileCount": 22
+  },
+  {
+    "name": "max-reed",
+    "displayName": "Max Reed",
+    "category": "SaaS",
+    "path": "/preset-sites/max-reed/",
+    "hasSource": true,
+    "fileCount": 30
+  },
+  {
+    "name": "metricx-studio",
+    "displayName": "MetricX",
+    "category": "SaaS",
+    "path": "/preset-sites/metricx-studio/",
+    "hasSource": true,
+    "fileCount": 22
+  },
+  {
+    "name": "micro-organized",
+    "displayName": "micro",
+    "category": "SaaS",
+    "path": "/preset-sites/micro-organized/",
+    "hasSource": true,
+    "fileCount": 16
+  },
+  {
+    "name": "mindloop",
+    "displayName": "Mindloop",
+    "category": "AI & Intelligence",
+    "path": "/preset-sites/mindloop/",
+    "hasSource": true,
+    "fileCount": 114
+  },
+  {
+    "name": "power-ai",
+    "displayName": "Power AI",
+    "category": "AI & Intelligence",
+    "path": "/preset-sites/power-ai/",
+    "hasSource": true,
+    "fileCount": 33
+  },
+  {
+    "name": "pureflow-one",
+    "displayName": "PureFlow One",
+    "category": "SaaS",
+    "path": "/preset-sites/pureflow-one/",
+    "hasSource": true,
+    "fileCount": 23
+  },
+  {
     "name": "reposit-solar",
+    "displayName": "Reposit Solar",
+    "category": "Industrial & Logistics",
     "path": "/preset-sites/reposit-solar/",
     "hasSource": true,
-    "fileCount": 7
+    "fileCount": 21
+  },
+  {
+    "name": "rivr-defi",
+    "displayName": "RIVR",
+    "category": "Web3 & Fintech",
+    "path": "/preset-sites/rivr-defi/",
+    "hasSource": true,
+    "fileCount": 31
+  },
+  {
+    "name": "securify",
+    "displayName": "securify",
+    "category": "Cybersecurity",
+    "path": "/preset-sites/securify/",
+    "hasSource": true,
+    "fileCount": 27
+  },
+  {
+    "name": "stellar-ai",
+    "displayName": "Stellar.ai",
+    "category": "AI & Intelligence",
+    "path": "/preset-sites/stellar-ai/",
+    "hasSource": true,
+    "fileCount": 31
   },
   {
     "name": "stretch-beauty",
+    "displayName": "STRETCH",
+    "category": "E-Commerce & Retail",
     "path": "/preset-sites/stretch-beauty/",
     "hasSource": true,
-    "fileCount": 3
+    "fileCount": 24
   },
   {
     "name": "targo-logistics",
+    "displayName": "Targo",
+    "category": "Industrial & Logistics",
     "path": "/preset-sites/targo-logistics/",
     "hasSource": true,
-    "fileCount": 3
+    "fileCount": 21
+  },
+  {
+    "name": "terra-geo",
+    "displayName": "Terra",
+    "category": "Industrial & Logistics",
+    "path": "/preset-sites/terra-geo/",
+    "hasSource": true,
+    "fileCount": 31
   },
   {
     "name": "toonhub",
+    "displayName": "TOONHUB",
+    "category": "Media & Entertainment",
     "path": "/preset-sites/toonhub/",
     "hasSource": true,
-    "fileCount": 3
+    "fileCount": 28
   },
   {
     "name": "transform-data",
+    "displayName": "Transform Data",
+    "category": "SaaS",
     "path": "/preset-sites/transform-data/",
     "hasSource": true,
-    "fileCount": 3
+    "fileCount": 20
   },
   {
     "name": "ui-rocket",
+    "displayName": "UI Rocket",
+    "category": "SaaS",
     "path": "/preset-sites/ui-rocket/",
     "hasSource": true,
-    "fileCount": 3
+    "fileCount": 31
+  },
+  {
+    "name": "unleash-scroll-hero",
+    "displayName": "Unleash The Full Power",
+    "category": "SaaS",
+    "path": "/preset-sites/unleash-scroll-hero/",
+    "hasSource": true,
+    "fileCount": 25
+  },
+  {
+    "name": "vaultshield",
+    "displayName": "VaultShield",
+    "category": "Web3 & Fintech",
+    "path": "/preset-sites/vaultshield/",
+    "hasSource": true,
+    "fileCount": 24
   },
   {
     "name": "velorah",
+    "displayName": "Velorah",
+    "category": "SaaS",
     "path": "/preset-sites/velorah/",
     "hasSource": true,
-    "fileCount": 5
+    "fileCount": 27
+  },
+  {
+    "name": "velorix",
+    "displayName": "Velorix",
+    "category": "SaaS",
+    "path": "/preset-sites/velorix/",
+    "hasSource": true,
+    "fileCount": 26
+  },
+  {
+    "name": "viralmedia-ai",
+    "displayName": "Viralmedia Labs",
+    "category": "Media & Entertainment",
+    "path": "/preset-sites/viralmedia-ai/",
+    "hasSource": true,
+    "fileCount": 24
   },
   {
     "name": "wanderful",
+    "displayName": "Travel",
+    "category": "SaaS",
     "path": "/preset-sites/wanderful/",
     "hasSource": true,
-    "fileCount": 3
+    "fileCount": 37
   },
   {
     "name": "web3-eos",
+    "displayName": "Web3 EOS",
+    "category": "Web3 & Fintech",
     "path": "/preset-sites/web3-eos/",
     "hasSource": true,
-    "fileCount": 4
+    "fileCount": 24
+  },
+  {
+    "name": "zenith-realty",
+    "displayName": "ZENITH REALTY",
+    "category": "E-Commerce & Retail",
+    "path": "/preset-sites/zenith-realty/",
+    "hasSource": true,
+    "fileCount": 34
   }
 ]

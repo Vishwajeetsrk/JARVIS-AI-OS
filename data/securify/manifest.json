@@ -1,0 +1,15 @@
+{
+  "id": "securify",
+  "name": "securify",
+  "category": "Cybersecurity",
+  "description": "Luxury Cybersecurity design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/securify/",
+  "color": "#8B5CF6",
+  "tags": [
+    "Cybersecurity",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "acreage-nike",
+  "name": "Acreage \u00d7 Nike",
+  "category": "E-Commerce & Retail",
+  "description": "Luxury E-Commerce & Retail design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/acreage-nike/",
+  "color": "#F59E0B",
+  "tags": [
+    "E-Commerce & Retail",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

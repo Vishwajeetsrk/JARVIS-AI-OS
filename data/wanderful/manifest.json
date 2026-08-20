@@ -1,0 +1,15 @@
+{
+  "id": "wanderful",
+  "name": "Travel",
+  "category": "SaaS",
+  "description": "Luxury SaaS design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/wanderful/",
+  "color": "#8B5CF6",
+  "tags": [
+    "SaaS",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

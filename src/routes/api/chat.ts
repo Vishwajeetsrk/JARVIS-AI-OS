@@ -23,6 +23,7 @@ import {
   runAutomatedTest,
 } from "@/mastra/tools/file-operations";
 import { executeDeepResearch } from "@/mastra/tools/research-engine";
+import { listLearnedDesigns, getLearnedDesign, searchLearnedDesigns, recreateDesign, explainDesignChoices } from "@/lib/learnify-engine";
 
 const DEFAULT_MODEL = "gemini-flash-latest";
 
@@ -68,9 +69,11 @@ CAPABILITIES (only claim these — they are real):
 - Deep Research & Skill Generation: deepResearch executes multi-source research before designing websites, posters, or architectures, selects tokens from 53 design systems, and generates persistent skills (.skill / SKILL.md) in the skills/ library and memory bank.
 - Documents: createWordDocument (.docx), createPresentation (.pptx), createSpreadsheet (.xlsx), createReport (.md/.html). After creating a file, tell the user the download chip appears above their message.
 - Web: webSearch performs live web searches (no key needed). Use it for current events, research, and anything you are unsure about. getTopNews fetches today's top tech news (Hacker News, TechCrunch, The Verge) — use it directly for any news request instead of repeating the user's question. youtubeSearch / youtubeOpen open YouTube in the user's browser.
+- Media: you CAN play music, videos, movies, and trailers. Use playMusic (opens YouTube Music / Spotify / YouTube), playVideo (opens YouTube search), playMovie (searches the full movie on YouTube), playTrailer (official trailer), and playLocalMedia (plays a local media file with the system player in the desktop app). NEVER tell the user you cannot play media — always open it with these tools. For any music request, say "Playing music..." and open it.
+- Local Files: when running in the Jarvis desktop app you have FULL access to the user's computer: listLocalFiles (browse folders), readLocalFile (view file contents), writeLocalFile (create/edit files), copyLocalFile, moveLocalFile, deleteLocalFile. Use these to manage the user's files, create folders, move/copy files between folders, or organize their downloads. If the user asks about their files and you're not sure, list their home folder first.
 - Markets: getStockQuote fetches live stock/crypto quotes and trends from Yahoo Finance.
 - Coding: runCode executes a code snippet; executeShell runs shell commands (both require the user to have them enabled).
-- Design: listDesignSystems / getDesignSystem return 53 brand-grade design systems and live project sites; use them to apply consistent design.
+- Design: listDesignSystems / getDesignSystem return 53 brand-grade design systems and live project sites; use them to apply consistent design. The **Learnify Design Engine** has AI-learned patterns from 47 real projects (colors, fonts, components, glass effects, gradients, animations). Use recreateDesign to generate complete websites from these learned patterns with custom branding. Enabled design skills give you: design-prompts (32 premium styles — brutalism, glassmorphism, cyberpunk, art deco, academia, vaporwave...), animmaster-lib (300 pro animated components — scroll, mouse, WebGL shaders, hover, text, 3D), aceternity-ui (spotlight, sparkles, aurora, 3D cards, bento grids, magnetic buttons). Apply these when the user requests a named style or animated component.
 - Actions that open the user's browser (YouTube, any URL) work through openUrl/youtubeSearch — when you use them, mention that a tab was opened.
 - Memory: recallMemory searches past conversations. saveSkill lets you persist reusable knowledge after a complex task.
 - Connectors: when the user has connected providers (GitHub, Slack, Notion, Google Calendar, Gmail, Zapier, Brave, ElevenLabs...), their tools become available automatically.
@@ -539,6 +542,161 @@ export const Route = createFileRoute("/api/chat")({
               },
             },
 
+            // ----- Media playback (music, video, movies) -----
+            playMusic: {
+              description:
+                "Play a song, artist, or music. Opens the track directly on YouTube Music and also searches YouTube so the user can watch the official video. Use for any music request: 'play X song', 'play music', 'play some tunes', 'play relaxing music'.",
+              parameters: z.object({
+                song: z.string().describe("Song title, artist, or music query, e.g. 'Blinding Lights The Weeknd'"),
+                album: z.string().optional().describe("Optional album name"),
+                platform: z.enum(["youtube-music", "youtube", "spotify"]).optional().describe("Preferred platform (defaults to youtube-music)"),
+              }),
+              execute: async ({ song, album, platform = "youtube-music" }: { song: string; album?: string; platform?: "youtube-music" | "youtube" | "spotify" }) => {
+                const q = [song, album].filter(Boolean).join(" ");
+                if (platform === "spotify") {
+                  return clientAction(
+                    "openUrl",
+                    { url: `https://open.spotify.com/search/${encodeURIComponent(q)}` },
+                    `Playing music on Spotify: "${q}". A new tab was opened.`,
+                  );
+                }
+                if (platform === "youtube") {
+                  return clientAction(
+                    "openUrl",
+                    { url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` },
+                    `Playing music on YouTube: "${q}". A new tab was opened.`,
+                  );
+                }
+                return clientAction(
+                  "playMusic",
+                  { url: `https://music.youtube.com/search?q=${encodeURIComponent(q)}`, searchUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, query: q },
+                  `Playing music: "${q}". A new tab was opened.`,
+                );
+              },
+            },
+            playVideo: {
+              description:
+                "Play or watch a video on YouTube. Opens a YouTube search for the requested video. Use for any video request: 'play X video', 'watch X', 'show me X on video'.",
+              parameters: z.object({
+                query: z.string().describe("Video search query, e.g. 'solar eclipse 2026' or a specific video title"),
+              }),
+              execute: async ({ query }: { query: string }) =>
+                clientAction(
+                  "openUrl",
+                  { url: `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}` },
+                  `Playing video: "${query}". A new tab was opened.`,
+                ),
+            },
+            playMovie: {
+              description:
+                "Watch or find a movie. Searches YouTube for the full movie (official trailers and full-length uploads). Use for any movie request: 'watch X movie', 'play X movie', 'find X movie'.",
+              parameters: z.object({
+                movie: z.string().describe("Movie title, e.g. 'Inception' or 'Harry Potter'"),
+                year: z.string().optional().describe("Optional release year to disambiguate"),
+              }),
+              execute: async ({ movie, year }: { movie: string; year?: string }) => {
+                const q = [movie, year].filter(Boolean).join(" ");
+                return clientAction(
+                  "openUrl",
+                  { url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}+movie` },
+                  `Finding movie: "${movie}". A new tab was opened with search results.`,
+                );
+              },
+            },
+            playTrailer: {
+              description:
+                "Play the official trailer of a movie, series, or game on YouTube. Use when the user asks for a trailer.",
+              parameters: z.object({
+                title: z.string().describe("Movie/series/game title, e.g. 'Dune Part Two'"),
+                year: z.string().optional(),
+              }),
+              execute: async ({ title, year }: { title: string; year?: string }) => {
+                const q = [title, year].filter(Boolean).join(" ");
+                return clientAction(
+                  "openUrl",
+                  { url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}+official+trailer` },
+                  `Playing the official trailer for "${title}". A new tab was opened.`,
+                );
+              },
+            },
+            playLocalMedia: {
+              description:
+                "Play a local media file (music, video, movie) from the user's computer using the default system player. Only works in the Jarvis desktop app. Opens the file's folder for selection if no exact path is given.",
+              parameters: z.object({
+                path: z.string().describe("Absolute or home-relative path to the media file, e.g. 'Music/my song.mp4' or 'C:/Users/name/Videos/movie.mp4'"),
+              }),
+              execute: async ({ path: mediaPath }: { path: string }) =>
+                clientAction(
+                  "playLocalMedia",
+                  { path: mediaPath },
+                  `Opening local media: "${mediaPath}".`,
+                ),
+            },
+
+            // ----- Local file access (Jarvis desktop app only) -----
+            listLocalFiles: {
+              description:
+                "List files and folders on the user's local computer. Only works in the Jarvis desktop app. Defaults to the user's home folder. Use to browse the user's machine.",
+              parameters: z.object({
+                path: z.string().optional().describe("Folder path (absolute or home-relative). Empty for home folder."),
+              }),
+              execute: async ({ path = "" }: { path?: string }) =>
+                clientAction("localFileList", { path }, `Listed local folder: "${path || "home"}"`),
+            },
+            readLocalFile: {
+              description:
+                "Read the text content of a local file on the user's computer. Only works in the Jarvis desktop app.",
+              parameters: z.object({
+                path: z.string().describe("Absolute or home-relative path to the file"),
+                startLine: z.number().optional(),
+                endLine: z.number().optional(),
+              }),
+              execute: async ({ path }: { path: string }) =>
+                clientAction("localFileRead", { path }, `Read local file: "${path}"`),
+            },
+            writeLocalFile: {
+              description:
+                "Write or append text content to a local file on the user's computer, creating folders as needed. Only works in the Jarvis desktop app.",
+              parameters: z.object({
+                path: z.string().describe("Absolute or home-relative path to the file"),
+                content: z.string().describe("Text content to write"),
+                append: z.boolean().optional().describe("Append instead of overwrite"),
+              }),
+              execute: async ({ path, content, append = false }: { path: string; content: string; append?: boolean }) =>
+                clientAction(
+                  "localFileWrite",
+                  { path, content, append },
+                  `${append ? "Appended to" : "Wrote"} local file: "${path}"`,
+                ),
+            },
+            copyLocalFile: {
+              description: "Copy a file or folder on the user's local computer. Only works in the Jarvis desktop app.",
+              parameters: z.object({
+                source: z.string().describe("Source path"),
+                destination: z.string().describe("Destination path"),
+              }),
+              execute: async ({ source, destination }: { source: string; destination: string }) =>
+                clientAction("localFileCopy", { source, destination }, `Copied "${source}" to "${destination}"`),
+            },
+            moveLocalFile: {
+              description: "Move or rename a file or folder on the user's local computer. Only works in the Jarvis desktop app.",
+              parameters: z.object({
+                source: z.string().describe("Source path"),
+                destination: z.string().describe("Destination path"),
+              }),
+              execute: async ({ source, destination }: { source: string; destination: string }) =>
+                clientAction("localFileMove", { source, destination }, `Moved "${source}" to "${destination}"`),
+            },
+            deleteLocalFile: {
+              description: "Delete a file or folder on the user's local computer. Only works in the Jarvis desktop app.",
+              parameters: z.object({
+                path: z.string().describe("Path to delete"),
+                recursive: z.boolean().optional().describe("Delete folders recursively"),
+              }),
+              execute: async ({ path, recursive = false }: { path: string; recursive?: boolean }) =>
+                clientAction("localFileDelete", { path, recursive }, `Deleted local path: "${path}"`),
+            },
+
             // ----- Coding & shell -----
             runCode: {
               description:
@@ -797,6 +955,115 @@ export const Route = createFileRoute("/api/chat")({
                 return await executeDeepResearch(args);
               },
             },
+
+            // ----- Learnify Design Engine (AI-learned from 47 reference projects) -----
+            listLearnedDesigns: {
+              description:
+                "List all 47 AI-learned design systems from the Learnify project library. Each has extracted colors, fonts, components, and patterns. Use to browse available design references before recreating.",
+              parameters: z.object({
+                theme: z.enum(["dark", "light"]).optional().describe("Filter by theme"),
+                category: z.string().optional().describe("Filter by category keyword"),
+              }),
+              execute: async ({ theme, category }: { theme?: "dark" | "light"; category?: string }) => {
+                let designs = listLearnedDesigns();
+                if (theme) designs = designs.filter(d => d.theme === theme);
+                if (category) {
+                  const q = category.toLowerCase();
+                  designs = designs.filter(d => d.category.toLowerCase().includes(q) || d.name.toLowerCase().includes(q));
+                }
+                return {
+                  count: designs.length,
+                  designs: designs.map(d => ({
+                    id: d.id,
+                    name: d.name,
+                    category: d.category,
+                    theme: d.theme,
+                    pattern: d.pattern,
+                    fonts: d.fonts,
+                    components: d.components.slice(0, 5),
+                  })),
+                };
+              },
+            },
+            searchLearnedDesigns: {
+              description:
+                "Search the 47 learned design systems by keyword. Matches against name, category, pattern, and components.",
+              parameters: z.object({ query: z.string().describe("Search keyword") }),
+              execute: async ({ query }: { query: string }) => {
+                const results = searchLearnedDesigns(query);
+                return {
+                  count: results.length,
+                  results: results.map(d => ({
+                    id: d.id,
+                    name: d.name,
+                    category: d.category,
+                    theme: d.theme,
+                    pattern: d.pattern,
+                  })),
+                };
+              },
+            },
+            getLearnedDesign: {
+              description:
+                "Get full details (colors, fonts, components, patterns) of a specific learned design system. Use this to understand a design before recreating it.",
+              parameters: z.object({ id: z.string().describe("Design system ID (e.g. stellar-ai, vaultshield)") }),
+              execute: async ({ id }: { id: string }) => {
+                const design = getLearnedDesign(id);
+                if (!design) return { error: `Design "${id}" not found. Use listLearnedDesigns to see available IDs.` };
+                return design;
+              },
+            },
+            recreateDesign: {
+              description:
+                "Generate a complete, ready-to-preview HTML website by learning from 47 reference projects. Supports custom branding (colors, fonts, name), theme override, and component selection. Returns full HTML that can be saved and opened in a browser. Use when the user asks to create, build, or generate a website/page/landing page.",
+              parameters: z.object({
+                referenceDesign: z.string().optional().describe("ID of a learned design to base on (e.g. stellar-ai, vaultshield)"),
+                theme: z.enum(["dark", "light"]).optional().describe("Theme override"),
+                brandName: z.string().optional().describe("Custom brand/company name"),
+                brandColors: z.object({
+                  primary: z.string().optional(),
+                  secondary: z.string().optional(),
+                  accent: z.string().optional(),
+                  background: z.string().optional(),
+                  foreground: z.string().optional(),
+                }).optional().describe("Custom brand colors"),
+                fonts: z.object({
+                  heading: z.string().optional(),
+                  body: z.string().optional(),
+                }).optional().describe("Custom fonts"),
+                components: z.array(z.string()).optional().describe("Components to include"),
+                category: z.string().optional().describe("Site category"),
+                description: z.string().optional().describe("What the site is about"),
+                borderRadius: z.string().optional().describe("Border radius override"),
+                saveToFile: z.boolean().optional().describe("Save the HTML to a file in the workspace"),
+                fileName: z.string().optional().describe("File name for the saved HTML"),
+              }),
+              execute: async (args: any) => {
+                const result = recreateDesign(args);
+                const explanation = explainDesignChoices(args);
+
+                let filePath: string | undefined;
+                if (args.saveToFile) {
+                  const name = args.fileName || `${(args.brandName || "site").toLowerCase().replace(/\s+/g, "-")}`;
+                  const safePath = name.replace(/[^a-zA-Z0-9-_]/g, "_");
+                  filePath = `learnify-output/${safePath}.html`;
+                  const { writeFile } = await import("@/mastra/tools/file-operations");
+                  await writeFile(filePath, result.html);
+                }
+
+                return {
+                  ok: true,
+                  explanation,
+                  designSystem: result.designSystem,
+                  htmlLength: result.html.length,
+                  savedTo: filePath,
+                  previewNote: filePath
+                    ? `Saved to ${filePath}. Open in browser to preview.`
+                    : `HTML generated (${result.html.length} chars). Set saveToFile=true to save to workspace.`,
+                  html: result.html.slice(0, 2000) + "\n\n... (full HTML available via saveToFile)",
+                };
+              },
+            },
           };
 
           // Add connector-backed tools (GitHub, Slack, Notion, GCal, Gmail, Zapier, Brave...) from verified credentials.
@@ -857,6 +1124,43 @@ export const Route = createFileRoute("/api/chat")({
                         if (!embedding) return;
                         return supabaseAdmin.from("messages").update({ embedding }).eq("id", row.id);
                       });
+                    }
+                  }
+                }
+
+                // Auto-title: if this is the first message, generate a title from it
+                if (lastUser) {
+                  const { count } = await supabaseAdmin
+                    .from("messages")
+                    .select("id", { count: "exact", head: true })
+                    .eq("thread_id", body.threadId);
+                  if (count === 1 || count === 2) {
+                    // First exchange — generate title from user message text
+                    const userText = (lastUser as any).parts
+                      ?.filter((p: any) => p.type === "text")
+                      .map((p: any) => p.text)
+                      .join(" ")
+                      .slice(0, 200) ?? "";
+                    if (userText.length > 5) {
+                      // Generate a concise title from the message
+                      const title = userText
+                        .replace(/\n/g, " ")
+                        .replace(/\s+/g, " ")
+                        .trim()
+                        .slice(0, 80)
+                        .replace(/[?.!]+$/, "");
+                      // Don't overwrite if already titled
+                      const { data: thread } = await supabaseAdmin
+                        .from("threads")
+                        .select("title")
+                        .eq("id", body.threadId)
+                        .single();
+                      if (thread && thread.title === "New chat") {
+                        await supabaseAdmin
+                          .from("threads")
+                          .update({ title })
+                          .eq("id", body.threadId);
+                      }
                     }
                   }
                 }

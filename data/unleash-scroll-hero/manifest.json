@@ -1,0 +1,15 @@
+{
+  "id": "unleash-scroll-hero",
+  "name": "Unleash The Full Power",
+  "category": "SaaS",
+  "description": "Luxury SaaS design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/unleash-scroll-hero/",
+  "color": "#8B5CF6",
+  "tags": [
+    "SaaS",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

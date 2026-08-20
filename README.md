@@ -10,6 +10,7 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
 [![Three.js](https://img.shields.io/badge/Three.js-3D_VRM-black?style=for-the-badge&logo=three.js)](https://threejs.org)
 [![Supabase](https://img.shields.io/badge/Supabase-pgvector-3FCF8E?style=for-the-badge&logo=supabase)](https://supabase.com)
+[![Tauri](https://img.shields.io/badge/Tauri-Desktop_App-24C8D8?style=for-the-badge&logo=tauri)](https://tauri.app)
 [![Capacitor](https://img.shields.io/badge/Capacitor-Android_&_iOS-119EFF?style=for-the-badge&logo=capacitor)](https://capacitorjs.com)
 [![GitHub Stars](https://img.shields.io/github/stars/Vishwajeetsrk/JARVIS-AI-OS?style=for-the-badge&logo=github)](https://github.com/Vishwajeetsrk/JARVIS-AI-OS)
 
@@ -105,6 +106,47 @@ Say the command or click a button to instantly switch workspace state:
 ### 🦙 8. 100% Offline Local AI (Ollama + Llama 3)
 * If your internet disconnects, Jarvis automatically falls back to your local Ollama instance (`http://localhost:11434`), giving you completely private, offline intelligence.
 
+### 🎵 9. Music, Video & Movie Playback
+Jarvis **plays anything** — no more "I can't play that" responses:
+* **`playMusic`** — "Play Blinding Lights by The Weeknd" opens the track directly on YouTube Music / Spotify / YouTube.
+* **`playVideo`** — any video request opens instantly in YouTube.
+* **`playMovie`** — finds full movies on YouTube (trailers + full-length uploads).
+* **`playTrailer`** — plays official trailers for movies, series, and games.
+* **`playLocalMedia`** — plays local music/video/movie files with your system's default player in the desktop app.
+
+### 🗂️ 10. Full Local File Access (Desktop App)
+Running in the **Jarvis desktop app**, Jarvis has complete read/write control over your computer:
+* **Browse**: list folders and files (`listLocalFiles`)
+* **Read**: view text contents of any file (`readLocalFile`)
+* **Write**: create or edit files, auto-creating folders (`writeLocalFile`)
+* **Copy / Move / Delete**: organize your machine exactly like Explorer (`copyLocalFile`, `moveLocalFile`, `deleteLocalFile`)
+* Powered by native Tauri Rust commands (`list_local_dir`, `read_local_file`, `write_local_file`, `copy_local_path`, `move_local_path`, `delete_local_path`, `open_local_path`).
+
+### 🎨 11. AI Design Learning Engine (47 Real Projects)
+Jarvis **learned design systems from 47 real production projects** (Learnify AI library) and can recreate them with your branding:
+* **Learned database**: colors, fonts, components, glass effects, gradients, animations extracted per project into `src/lib/learnify-designs.json`.
+* **`recreateDesign`** — "Create a dark SaaS landing page like stellar-ai with my brand colors" generates a complete, preview-ready HTML site.
+* **`listLearnedDesigns` / `searchLearnedDesigns` / `getLearnedDesign`** — browse and inspect all 47 learned styles (dark/light themes, font categories, component patterns).
+* Source copies of all 47 projects live in `learnify-designs/` for reference.
+
+### 🧩 12. Premium Design & Animation Skills
+Three curated skill libraries installed and auto-loaded when relevant:
+* **`design-prompts`** — 32 premium design styles (Academia, Art Deco, Bauhaus, Cyberpunk, Glassmorphism, Neo-Brutalism, Swiss, Vaporwave, Web3, Terminal...) each with full color tokens, typography systems, and AI-ready prompts.
+* **`animmaster-lib`** — 300 PRO animated components across 14 categories (scroll animations, mouse effects, WebGL shaders, page transitions, sliders, hero animations, physics effects, SVG animations...).
+* **`aceternity-ui`** — the famous premium component catalog (Sparkles, Aurora Background, 3D Card, Bento Grid, Magnetic Button, Typewriter, Moving Border, Hero Parallax, Spotlight...).
+
+### 💬 13. Persistent Smart Chat
+* **Auto-titles**: first message in a new chat automatically generates a smart title — no more endless "New chat" entries.
+* **Rename / Delete / Pin / Move**: every conversation can be renamed, deleted, starred (pinned), or moved into a project.
+* **Full memory**: all messages, questions, and answers persist in Supabase (pgvector) and are embedded for cross-session recall — Jarvis remembers everything you've ever discussed.
+
+### 🖥️ 14. Native Desktop App (Tauri) — Auto-Starts on Boot
+* **Installable Windows app** (`Jarvis-AI-OS-Setup.exe` NSIS installer + `.msi` MSI installer).
+* **Auto-start on login** — Jarvis launches automatically every time you open your laptop (via `tauri-plugin-autostart`).
+* **Window state memory** — remembers size/position between sessions.
+* **Deep links, notifications, clipboard, tray** — native OS integrations enabled.
+* Built with Rust + Tauri v2, loading the live web console.
+
 ---
 
 ## 💻 Installation & Setup
@@ -127,12 +169,29 @@ npm run dev
 ```
 Open **[http://localhost:8080/console](http://localhost:8080/console)** in your browser!
 
-### 4. Create Desktop Shortcut (Windows App)
+### 4. Install the Native Desktop App (Windows, auto-starts on boot)
+Run the installer (built from `src-tauri/` with Rust + Tauri v2):
+```powershell
+# NSIS installer (recommended)
+.\Jarvis-AI-OS-Setup.exe
+
+# or MSI installer
+.\Jarvis-AI-OS-Installer.msi
+```
+*Jarvis registers itself to **auto-start when you open your laptop**, remembers window state, and supports notifications, clipboard, deep links, and the tray.*
+
+To rebuild the desktop app yourself:
+```bash
+# prerequisites: Rust (rustup) + VS Build Tools 2022 (C++ workload)
+npm run tauri:build   # or: npm run tauri:dev
+```
+
+### 5. Create Desktop Shortcut (Windows App)
 Double-click:
 👉 [`Install-Jarvis-App.bat`](Install-Jarvis-App.bat)
 *This creates a standalone, borderless **"JARVIS AI OS"** app icon directly on your Windows Desktop!*
 
-### 5. Launch Native Desktop Voice Assistant
+### 6. Launch Native Desktop Voice Assistant
 ```bash
 npm run assistant
 ```
@@ -209,13 +268,13 @@ JARVIS AI OS runs seamlessly across every device and operating system:
 
 | Platform | Interface | Execution Method | Capabilities |
 | :--- | :--- | :--- | :--- |
-| **Windows Laptop / PC** | 🖥️ Native Desktop + Daemon | Double-click `AutoStart-Setup.bat` | 3D VRoid Avatar, Web Console, Auto-Start on Boot, Python Voice Assistant with Echo Guard |
-| **MacBook / macOS** | 🍎 Native Terminal + Web App | `npm run dev` / `npx tsx cli/index.ts` | 60 FPS Web Console, Full Screen Recording Studio, Terminal CLI Suite, 69 Skills |
+| **Windows Laptop / PC** | 🖥️ Tauri Native Desktop App | Install `Jarvis-AI-OS-Setup.exe` | Native desktop app, auto-start on boot, local file access (read/write/copy/move), media playback, 3D VRoid Avatar, Web Console, Python Voice Assistant with Echo Guard |
+| **MacBook / macOS** | 🍎 Native Terminal + Web App | `npm run dev` / `npx tsx cli/index.ts` | 60 FPS Web Console, Full Screen Recording Studio, Terminal CLI Suite, 72 Skills |
 | **Linux (Ubuntu/Arch)** | 🐧 Terminal + Browser Shell | `git clone` & `npm run dev` | Headless & GUI agent orchestration, Mastra TS workflows, Ollama offline inference |
 | **Android Phone / Tablet** | 📱 Capacitor Native APK / PWA | Double-click `Install-On-Phone.bat` | Portable companion, WiFi remote control, live task matrix & voice command bridge |
 | **iPhone / iPad (iOS)** | 🍏 Safari PWA / Local Network | Open `http://<LAPTOP-IP>:8080/console` | 3D Arc Reactor HUD, mobile context switcher, responsive task management |
 | **Terminal / SSH** | ⌨️ Global Command-Line Suite | `npx tsx cli/index.ts [cmd]` | 12+ headless power commands: `plan`, `scan`, `record`, `lessons`, `skill:install` |
-| **Cloud Web Console** | 🌐 Browser PWA | [jarvisaios.vercel.app](https://jarvisaios.vercel.app) | Public specs, 53 design system kits, and live demo sandbox |
+| **Cloud Web Console** | 🌐 Browser PWA | [jarvisaios.vercel.app](https://jarvisaios.vercel.app) | Public specs, 53 design system kits, 47 learned design systems, live demo sandbox |
 
 ---
 

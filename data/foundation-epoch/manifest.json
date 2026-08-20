@@ -1,0 +1,15 @@
+{
+  "id": "foundation-epoch",
+  "name": "Foundation Epoch",
+  "category": "Web3 & Fintech",
+  "description": "Luxury Web3 & Fintech design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/foundation-epoch/",
+  "color": "#8B5CF6",
+  "tags": [
+    "Web3 & Fintech",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

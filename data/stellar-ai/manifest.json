@@ -1,0 +1,15 @@
+{
+  "id": "stellar-ai",
+  "name": "Stellar.ai",
+  "category": "AI & Intelligence",
+  "description": "Luxury AI & Intelligence design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/stellar-ai/",
+  "color": "#06B6D4",
+  "tags": [
+    "AI & Intelligence",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "viralmedia-ai",
+  "name": "Viralmedia Labs",
+  "category": "Media & Entertainment",
+  "description": "Luxury Media & Entertainment design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/viralmedia-ai/",
+  "color": "#06B6D4",
+  "tags": [
+    "Media & Entertainment",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

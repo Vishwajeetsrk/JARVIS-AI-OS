@@ -1,0 +1,15 @@
+{
+  "id": "terra-geo",
+  "name": "Terra",
+  "category": "Industrial & Logistics",
+  "description": "Luxury Industrial & Logistics design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/terra-geo/",
+  "color": "#8B5CF6",
+  "tags": [
+    "Industrial & Logistics",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

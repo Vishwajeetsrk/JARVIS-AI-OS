@@ -1,0 +1,94 @@
+.bubble-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 50;
+}
+.bubble-menu.absolute {
+  position: absolute;
+}
+.bubble-menu.fixed {
+  position: fixed;
+}
+.bubble {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  transition:
+    transform 0.2s ease,
+    background 0.3s ease;
+}
+.bubble:hover {
+  transform: scale(1.05);
+}
+.menu-btn {
+  flex-direction: column;
+  gap: 6px;
+}
+.menu-line {
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+.menu-line.short {
+  width: 14px;
+}
+.menu-btn:hover .menu-line.short {
+  width: 20px;
+}
+.menu-btn.open .menu-line:not(.short) {
+  transform: translateY(4px) rotate(45deg);
+}
+.menu-btn.open .menu-line.short {
+  transform: translateY(-4px) rotate(-45deg);
+  width: 20px;
+}
+.bubble-menu-items {
+  inset: 0;
+  position: fixed;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.pill-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 800px;
+}
+.pill-link {
+  display: block;
+  padding: 16px 36px;
+  border-radius: 9999px;
+  background-color: var(--pill-bg);
+  color: var(--pill-color);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 24px;
+  transform: rotate(var(--item-rot));
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.pill-link:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--hover-color) !important;
+  transform: scale(1.05) rotate(0deg);
+}
+.pill-label {
+  display: block;
+}

@@ -64,13 +64,12 @@
     },
     "notification": {
       "enabled": true
+    },
+    "autostart": {
+      "enabled": true
+    },
+    "window-state": {
+      "enabled": true
     }
-  },
-  "android": {
-    "minSdkVersion": 24,
-    "targets": ["aarch64", "armv7", "x86_64"]
-  },
-  "ios": {
-    "minimumSystemVersion": "15.0"
   }
 }

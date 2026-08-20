@@ -1,0 +1,16 @@
+@import url("https://db.onlinewebfonts.com/c/38c9851a552c219fba7878035cef1a1c?family=Britanica-Black");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}

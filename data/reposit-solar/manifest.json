@@ -1,0 +1,15 @@
+{
+  "id": "reposit-solar",
+  "name": "Reposit Solar",
+  "category": "Industrial & Logistics",
+  "description": "Luxury Industrial & Logistics design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/reposit-solar/",
+  "color": "#F59E0B",
+  "tags": [
+    "Industrial & Logistics",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

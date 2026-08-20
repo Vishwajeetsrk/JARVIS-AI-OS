@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { loadMessages, getSettings, createThread } from "@/lib/threads.functions";
+import { getTauriBridge } from "@/lib/tauri-bridge";
 import { supabase } from "@/integrations/supabase/client";
 import { MODELS, modelById, type ModelProvider } from "@/lib/models";
 import {
@@ -59,7 +60,64 @@ function ToolPartView({ part }: { part: any }) {
     if (out?.__jarvis_action__) {
       const a = out.__jarvis_action__;
       if (a?.type === "openUrl" && a?.url) window.open(a.url, "_blank", "noopener");
-      setResolved({ kind: "action", label: out.message ?? "Action executed." });
+      else if (a?.type === "playMusic" && a?.url) window.open(a.url, "_blank", "noopener");
+      else if (a?.type === "playLocalMedia" && a?.path) {
+        const { isTauriRuntime } = getTauriBridge();
+        if (isTauriRuntime()) {
+          void window.__TAURI_INTERNALS__?.invoke("open_local_path", { path: a.path });
+        } else {
+          const { open } = getTauriBridge();
+          void open(a.path);
+        }
+      }
+      else if (a?.type === "localFileList" && typeof a?.path === "string") {
+        const { getLocalFs } = getTauriBridge();
+        const fs = getLocalFs();
+        if (fs.available) {
+          void fs.listDir(a.path ?? "").then((entries) => {
+            if (entries) setResolved({ kind: "action", label: `Listed ${entries.length} items in "${a.path || "home"}"` });
+          });
+        }
+      }
+      else if (a?.type === "localFileRead" && typeof a?.path === "string") {
+        const { getLocalFs } = getTauriBridge();
+        const fs = getLocalFs();
+        if (fs.available) {
+          void fs.readFile(a.path).then((content) => {
+            if (content !== null) setResolved({ kind: "action", label: `Read "${a.path}" (${content.length} chars)` });
+          });
+        }
+      }
+      else if (a?.type === "localFileWrite" && typeof a?.path === "string") {
+        const { getLocalFs } = getTauriBridge();
+        const fs = getLocalFs();
+        if (fs.available) {
+          void fs.writeFile(a.path, a.content ?? "", a.append === true).then((n) => {
+            if (n !== null) setResolved({ kind: "action", label: `Wrote ${n} bytes to "${a.path}"` });
+          });
+        }
+      }
+      else if (a?.type === "localFileCopy" && typeof a?.source === "string" && typeof a?.destination === "string") {
+        const { getLocalFs } = getTauriBridge();
+        void getLocalFs().copy(a.source, a.destination).then((ok) => {
+          if (ok) setResolved({ kind: "action", label: `Copied "${a.source}" to "${a.destination}"` });
+        });
+      }
+      else if (a?.type === "localFileMove" && typeof a?.source === "string" && typeof a?.destination === "string") {
+        const { getLocalFs } = getTauriBridge();
+        void getLocalFs().move(a.source, a.destination).then((ok) => {
+          if (ok) setResolved({ kind: "action", label: `Moved "${a.source}" to "${a.destination}"` });
+        });
+      }
+      else if (a?.type === "localFileDelete" && typeof a?.path === "string") {
+        const { getLocalFs } = getTauriBridge();
+        void getLocalFs().remove(a.path, a.recursive === true).then((ok) => {
+          if (ok) setResolved({ kind: "action", label: `Deleted "${a.path}"` });
+        });
+      }
+      else {
+        setResolved({ kind: "action", label: out.message ?? "Action executed." });
+      }
     }
   }, [part?.state, part?.output]);
 

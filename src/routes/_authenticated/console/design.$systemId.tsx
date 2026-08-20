@@ -408,14 +408,22 @@ function ProjectSiteDetailPage({ data }: { data: ProjectSiteDetail }) {
           </div>
           <p className="text-xs text-muted-foreground truncate">{data.description}</p>
         </div>
-        <a
-          href={data.previewUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-1.5 rounded-md bg-background border border-border px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
-        >
-          <ExternalLink className="h-3.5 w-3.5 text-primary" /> Open site
-        </a>
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            to="/console"
+            className="flex items-center gap-1.5 rounded-md bg-primary/10 border border-primary/40 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/20 transition-all active:scale-95"
+          >
+            <Palette className="h-3.5 w-3.5" /> Recreate with AI
+          </Link>
+          <a
+            href={data.previewUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 rounded-md bg-background border border-border px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
+          >
+            <ExternalLink className="h-3.5 w-3.5 text-primary" /> Open site
+          </a>
+        </div>
       </header>
 
       <div className="flex-1 overflow-hidden p-6">

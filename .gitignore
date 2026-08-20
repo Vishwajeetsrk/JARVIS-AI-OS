@@ -53,3 +53,9 @@ build-*.log
 
 # Third-party design captures (Woblo references — keep local, not committed)
 knowledge/
+
+# Tauri desktop build artifacts
+src-tauri/target/
+src-tauri/gen/
+*.exe
+*.msi

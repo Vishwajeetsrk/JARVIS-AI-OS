@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: #f5f3ee;
+  color: #31463b;
+  -webkit-font-smoothing: antialiased;
+}
+
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.35);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: none;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    0 8px 32px rgba(49, 70, 59, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.2px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.25) 35%,
+    rgba(255, 255, 255, 0) 55%,
+    rgba(255, 255, 255, 0.2) 85%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.btn-green-gradient {
+  background: linear-gradient(135deg, #3d9b6a 0%, #2a7d52 48%, #1f6b45 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 28px rgba(42, 125, 82, 0.35);
+}
+
+.btn-green-gradient:hover {
+  filter: brightness(1.05);
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track-15 {
+  animation: marquee-scroll 15s linear infinite;
+}
+
+.marquee-track-30 {
+  animation: marquee-scroll 30s linear infinite;
+}

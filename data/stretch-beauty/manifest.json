@@ -1,0 +1,15 @@
+{
+  "id": "stretch-beauty",
+  "name": "STRETCH",
+  "category": "E-Commerce & Retail",
+  "description": "Luxury E-Commerce & Retail design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/stretch-beauty/",
+  "color": "#8B5CF6",
+  "tags": [
+    "E-Commerce & Retail",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

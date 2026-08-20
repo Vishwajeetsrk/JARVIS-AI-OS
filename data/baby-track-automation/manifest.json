@@ -1,0 +1,15 @@
+{
+  "id": "baby-track-automation",
+  "name": "Baby Track",
+  "category": "Industrial & Logistics",
+  "description": "Luxury Industrial & Logistics design system and full interactive site with responsive layouts, typography, and micro-animations.",
+  "previewUrl": "/preset-sites/baby-track-automation/",
+  "color": "#8B5CF6",
+  "tags": [
+    "Industrial & Logistics",
+    "Tailwind CSS",
+    "React 19",
+    "Framer Motion",
+    "Luxury UI"
+  ]
+}

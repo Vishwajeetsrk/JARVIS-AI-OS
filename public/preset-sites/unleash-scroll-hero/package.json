@@ -1,0 +1,27 @@
+{
+  "name": "unleash-scroll-hero-preset",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "cp index.source.html index.html && vite",
+    "build": "cp index.source.html index.html && vite build && node scripts/copy-dist.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "gsap": "^3.13.0",
+    "hls.js": "^1.5.18",
+    "motion": "^12.23.12",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.6.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}
