@@ -524,6 +524,39 @@ program
     }
   });
 
+// ─── wardelio:upgrade ───
+program
+  .command("wardelio:upgrade")
+  .description("Autonomously upgrade Wardelio mobile app with 3D tactile buttons, luxury cards & settings flow")
+  .action(async () => {
+    log("Scanning C:\\Users\\vishw\\OneDrive\\Desktop\\Wardelio...");
+    const { fileOperationEngine } = await import("../src/lib/assistant/file-operation-engine");
+    const result = fileOperationEngine.upgradeWardelioSettingsAndButtons();
+    if (result.success) {
+      success("Wardelio mobile application upgraded successfully!");
+      console.log(`\n\x1b[1m\x1b[35m[📱 MODIFIED & CREATED FILES IN WARDELIO]:\x1b[0m`);
+      result.modifiedFiles.forEach((f) => console.log(` • \x1b[32m${f}\x1b[0m`));
+      console.log(`\n\x1b[90mAll changes opened in VS Code & recorded in action history.\x1b[0m\n`);
+    } else {
+      error("Failed to upgrade Wardelio files.");
+    }
+  });
+
+// ─── file:history ───
+program
+  .command("file:history")
+  .description("View full history of all autonomous file operations and edits across projects")
+  .action(async () => {
+    const { fileOperationEngine } = await import("../src/lib/assistant/file-operation-engine");
+    const history = fileOperationEngine.getHistory();
+    console.log(`\n\x1b[1m\x1b[36m=== JARVIS AUTONOMOUS FILE OPERATIONS HISTORY (${history.length} operations) ===\x1b[0m`);
+    history.forEach((h, i) => {
+      console.log(`\x1b[1m${i + 1}. [${h.action.toUpperCase()}]\x1b[0m \x1b[90m(${new Date(h.timestamp).toLocaleTimeString()})\x1b[0m: ${h.description}`);
+      console.log(`   \x1b[34mTarget:\x1b[0m ${h.targetPath}`);
+    });
+    console.log("");
+  });
+
 program.parse();
 
 
