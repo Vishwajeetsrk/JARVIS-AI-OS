@@ -9,29 +9,21 @@ export function ProjectCards({ onNewProject }: { onNewProject?: () => void }) {
   const listFn = useServerFn(listProjects);
   const { data: projects = [] } = useQuery({ queryKey: ["projects"], queryFn: () => listFn({}) });
 
-  const all = projects.map((p: any) => ({
-    id: p.id as string,
-    name: p.name as string,
-    color: (p.color as string) ?? "#D97757",
-    updated_at: p.updated_at as string | null,
-  }));
+  const DEFAULT_PROJECT_CARDS = [
+    { id: "wardelio", name: "Wardelio (Android & iOS)", color: "#E69D45", updated_at: new Date().toISOString() },
+    { id: "jarvis-core", name: "JARVIS AI OS Core", color: "#06B6D4", updated_at: new Date().toISOString() },
+    { id: "learnify-ai", name: "Learnify AI Platform", color: "#A855F7", updated_at: new Date().toISOString() },
+    { id: "crm-automation", name: "Salesforce & Razorpay Ops", color: "#10B981", updated_at: new Date().toISOString() },
+  ];
 
-  if (all.length === 0) {
-    return (
-      <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border p-6 text-center">
-        <FolderOpen className="h-5 w-5 text-muted-foreground/60" />
-        <p className="text-xs text-muted-foreground">No projects yet.</p>
-        {onNewProject && (
-          <button
-            onClick={onNewProject}
-            className="mt-1 inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90"
-          >
-            <FolderPlus className="h-3.5 w-3.5" /> New project
-          </button>
-        )}
-      </div>
-    );
-  }
+  const all = projects.length > 0
+    ? projects.map((p: any) => ({
+        id: p.id as string,
+        name: p.name as string,
+        color: (p.color as string) ?? "#D97757",
+        updated_at: p.updated_at as string | null,
+      }))
+    : DEFAULT_PROJECT_CARDS;
 
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
