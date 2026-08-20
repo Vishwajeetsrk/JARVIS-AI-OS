@@ -675,7 +675,17 @@ Keep it structured, thorough, professional, and directly actionable."""
             self.generate_app_prd_and_architecture(query)
             return
 
-        # 4. Deep UI Design & GitHub Repo Research
+        # 4. Visual Inspector & Screen Bug Hunter / Quality Auditor
+        if any(k in q for k in ["audit screen", "inspect screen", "scan screen", "find bugs", "audit app", "inspect app", "audit image", "audit svg", "scan image", "scan video", "quality audit", "finding error"]):
+            self.voice.speak("Capturing screen, inspecting visual hierarchy, and scanning for bugs and layout errors, sir.", self)
+            try:
+                subprocess.run(["npx", "tsx", "cli/index.ts", "audit:screen"], shell=True, cwd=str(WORKSPACE_ROOT))
+            except Exception:
+                pass
+            self.voice.speak("Screen and application audit completed, sir. The bug report and step-by-step fix plan are opened in VS Code.", self)
+            return
+
+        # 5. Deep UI Design & GitHub Repo Research
         if ("ui design" in q or "top github repo" in q or "design system" in q or "ui repos" in q):
             self.voice.speak(f"Researching top GitHub repositories, modern UI design patterns, and animations, sir.", self)
             filepath = self.generate_ui_animation_source_code(query)

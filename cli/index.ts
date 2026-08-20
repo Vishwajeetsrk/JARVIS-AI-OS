@@ -472,17 +472,55 @@ program
     success("Deep research completed! Component templates are available in src/components/ui/.");
   });
 
-// ─── plan:app ───
+// ─── audit:screen ───
 program
-  .command("plan:app <idea...>")
-  .description("Generate full PRD, system architecture, UI/UX design tokens, and security plan")
-  .action((ideaParts: string[]) => {
-    const idea = ideaParts.join(" ");
-    log(`Generating full PRD & Architecture for: "${idea}"...`);
+  .command("audit:screen")
+  .description("Deeply scan & audit live running screen/app for bugs, missing UI, and fix plan")
+  .action(async () => {
+    log("Capturing live screen & running application window...");
+    const { deepVisualAuditor } = await import("../src/lib/vision/deep-visual-auditor");
     try {
-      execSync(`python scripts/jarvis_desktop_assistant.py --plan "${idea.replace(/"/g, '\\"')}"`, { stdio: "inherit" });
-    } catch {
-      success(`PRD compiler initiated for "${idea}". Docs stored in docs/ directory.`);
+      const screenshot = deepVisualAuditor.captureScreen();
+      log(`Screen captured: ${screenshot}`);
+      log("Analyzing visual hierarchy, detecting UI bugs, missing elements & layout shifts...");
+      const result = deepVisualAuditor.auditImageOrScreen(screenshot, true);
+      success("Screen audit completed!");
+      console.log(`\n\x1b[1m\x1b[36m=== SCREEN QUALITY & BUG AUDIT REPORT ===\x1b[0m`);
+      console.log(`Summary: ${result.summary}`);
+      console.log(`\n\x1b[31m[Bugs & Visual Concerns]:\x1b[0m`);
+      result.bugsFound.forEach((b) => console.log(` • ${b}`));
+      console.log(`\n\x1b[33m[Missing UX Elements]:\x1b[0m`);
+      result.missingElements.forEach((m) => console.log(` • ${m}`));
+      console.log(`\n\x1b[32m[Step-by-Step Fix Plan]:\x1b[0m`);
+      result.fixPlan.forEach((f, i) => console.log(` ${i + 1}. ${f}`));
+      console.log(`\n\x1b[90mReport saved & opened in VS Code: ${result.reportPath}\x1b[0m\n`);
+    } catch (e: any) {
+      error(`Could not audit screen: ${e.message}`);
+    }
+  });
+
+// ─── audit:file ───
+program
+  .command("audit:file <filePath>")
+  .description("Deeply audit an image, SVG vector, or video file for quality, bugs, and fixes")
+  .action(async (filePath: string) => {
+    const { deepVisualAuditor } = await import("../src/lib/vision/deep-visual-auditor");
+    log(`Auditing file: ${filePath}...`);
+    try {
+      const isSvg = filePath.endsWith(".svg");
+      const result = isSvg
+        ? deepVisualAuditor.auditSvg(filePath)
+        : deepVisualAuditor.auditImageOrScreen(filePath, false);
+      success("File audit completed!");
+      console.log(`\n\x1b[1m\x1b[36m=== VISUAL & STRUCTURAL AUDIT REPORT ===\x1b[0m`);
+      console.log(`Summary: ${result.summary}`);
+      console.log(`\n\x1b[31m[Issues Found]:\x1b[0m`);
+      result.bugsFound.forEach((b) => console.log(` • ${b}`));
+      console.log(`\n\x1b[32m[Fix Plan]:\x1b[0m`);
+      result.fixPlan.forEach((f, i) => console.log(` ${i + 1}. ${f}`));
+      console.log(`\n\x1b[90mReport saved & opened in VS Code: ${result.reportPath}\x1b[0m\n`);
+    } catch (e: any) {
+      error(`Could not audit file: ${e.message}`);
     }
   });
 
