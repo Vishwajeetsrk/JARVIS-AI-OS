@@ -169,7 +169,7 @@ function ConsoleShell() {
     >
       <Icon className="h-[16px] w-[16px] shrink-0 opacity-80" /> <span className="flex-1 text-left">{label}</span>
       {badge && (
-        <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-medium text-sky-400">{badge}</span>
+        <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${badge === "Free" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : "border-sky-500/30 bg-sky-500/10 text-sky-400"}`}>{badge}</span>
       )}
     </Link>
   );
@@ -278,7 +278,7 @@ function ConsoleShell() {
         >
           <NavLink to="/console/projects" icon={Folder} label="Projects" />
           <NavLink to="/console/design" icon={Layers} label="Artifacts" />
-          <NavLink to="/console/skills" icon={Code2} label="Code" badge="Upgrade" />
+          <NavLink to="/console/skills" icon={Code2} label="Code" badge="Free" />
           <NavLink to="/console/settings" icon={SlidersHorizontal} label="Customize" />
         </motion.nav>
       </div>
@@ -435,10 +435,10 @@ function ConsoleShell() {
           <div className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/60 px-3 py-1 text-xs">
             <span className="text-zinc-400">Free plan</span>
             <span className="text-zinc-600">·</span>
-            <Link to="/console/settings" className="font-medium text-sky-400 hover:underline">Upgrade</Link>
+            <span className="font-medium text-emerald-400">All free</span>
           </div>
           <div className="flex flex-1 justify-end">
-            <button className="rounded-full p-2 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300 transition-colors" aria-label="Ghost">
+            <button className="rounded-full p-2 text-emerald-400 hover:bg-zinc-800 hover:text-emerald-300 transition-colors" aria-label="Ghost — Free" title="Ghost — Free">
               <Ghost className="h-5 w-5" />
             </button>
           </div>
