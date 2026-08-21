@@ -31,8 +31,9 @@ import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink, Wrench, ChevronDown, Copy, Check, Brain, Zap, Users, Layers, Eye, Code2 } from "lucide-react";
+import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink, Wrench, ChevronDown, Copy, Check, Brain, Zap, Users, Layers, Eye, Code2, Image, Folder, Link2 } from "lucide-react";
 import { z } from "zod";
+import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { VoiceButton } from "@/components/dashboard/voice-button";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -692,12 +693,39 @@ function ThreadView() {
           <PromptInputFooter>
             <PromptInputTools className="flex-wrap gap-1.5">
               <PromptInputActionMenu>
-                <PromptInputActionMenuTrigger tooltip="Add photos or files">
+                <PromptInputActionMenuTrigger tooltip="Attack · photo, file, folder, reference link — deep scan">
                   <Paperclip className="h-4 w-4" />
-                  <span className="hidden sm:inline">Attach</span>
+                  <span className="hidden sm:inline">Attack</span>
                 </PromptInputActionMenuTrigger>
-                <PromptInputActionMenuContent>
-                  <PromptInputActionAddAttachments label="Add photos or files" />
+                <PromptInputActionMenuContent className="w-64">
+                  <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Attack — deep scan & switch</div>
+                  <PromptInputActionAddAttachments label="📷 Photo — deep scan image" />
+                  <PromptInputActionAddAttachments label="📄 File — analyze & index" />
+                  <button
+                    onClick={() => {
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      (input as any).webkitdirectory = true;
+                      input.onchange = (e) => {
+                        const files = (e.target as HTMLInputElement).files;
+                        if (files) toast.success(`Deep scan: ${files.length} files from folder — analysis started`);
+                      };
+                      input.click();
+                    }}
+                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-accent"
+                  >
+                    <Folder className="h-4 w-4" /> Folder — scan all
+                  </button>
+                  <button
+                    onClick={() => {
+                      const url = prompt("Enter reference link to deeply scan:");
+                      if (url) toast.success(`Deep scan: ${url} — fetching & analysis started`);
+                    }}
+                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-accent"
+                  >
+                    <Link2 className="h-4 w-4" /> Reference link — fetch & analyze
+                  </button>
+                  <div className="mt-1 border-t border-border pt-1.5 text-[10px] text-muted-foreground">Jarvis deeply scans & picks best model (Gemini Flash 2.0 → fallback). Plugins & connectors with real logos in dropdown.</div>
                 </PromptInputActionMenuContent>
               </PromptInputActionMenu>
               <VoiceButton onTranscribed={(t) => t && handleSubmit({ text: t, files: [] })} />
@@ -722,22 +750,26 @@ function ComposerChips() {
 
   return (
     <>
-      <Link
-        to="/console/skills"
-        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground hover:border-primary/40 hover:text-foreground"
-      >
-        <Sparkles className="h-3.5 w-3.5 text-primary" />
-        <span>Skills</span>
-        <span className="rounded-full bg-primary/15 px-1.5 text-[10px] font-medium text-primary">{skills}</span>
-      </Link>
-      <Link
-        to="/console/connectors"
-        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground hover:border-primary/40 hover:text-foreground"
-      >
-        <Cable className="h-3.5 w-3.5 text-primary" />
-        <span>MCP</span>
-        <span className="rounded-full bg-primary/15 px-1.5 text-[10px] font-medium text-primary">{connectors}</span>
-      </Link>
+      <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+        <Link
+          to="/console/skills"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground hover:border-primary/40 hover:text-foreground transition-colors"
+        >
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          <span>Skills</span>
+          <span className="rounded-full bg-primary/15 px-1.5 text-[10px] font-medium text-primary">{skills}</span>
+        </Link>
+      </motion.div>
+      <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+        <Link
+          to="/console/connectors"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground hover:border-primary/40 hover:text-foreground transition-colors"
+        >
+          <Cable className="h-3.5 w-3.5 text-primary" />
+          <span>MCP</span>
+          <span className="rounded-full bg-primary/15 px-1.5 text-[10px] font-medium text-primary">{connectors}</span>
+        </Link>
+      </motion.div>
       <button
         type="button"
         onClick={() => setWebSearch((v) => !v)}

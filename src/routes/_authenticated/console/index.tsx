@@ -18,9 +18,17 @@ import {
   ExternalLink,
   Eye,
   Palette,
+  Monitor,
+  Tablet,
+  Smartphone,
+  Copy,
+  Check,
 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { createThread } from "@/lib/threads.functions";
 import { DashboardView } from "@/components/jarvis/dashboard-view";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MODELS } from "@/lib/models";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/console/")({
@@ -98,8 +106,13 @@ function ClaudeHome() {
   const [now, setNow] = useState(() => new Date());
   const [input, setInput] = useState("");
   const [mode, setMode] = useState<"chat" | "cowork">("chat");
-  const [model] = useState("Sonnet 4.6");
+  const [modelId, setModelId] = useState("gemini-flash-latest");
   const [focused, setFocused] = useState(false);
+  const selectedModel = MODELS.find((m) => m.id === modelId) ?? MODELS[0];
+  const [codeSite, setCodeSite] = useState<string | null>(null);
+  const [codeContent, setCodeContent] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 60_000);
@@ -132,6 +145,18 @@ function ClaudeHome() {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
+    }
+  };
+
+  const handleShowCode = async (slug: string) => {
+    setCodeSite(slug);
+    setCodeContent("Loading…");
+    try {
+      const res = await fetch(`/preset-sites/${slug}/index.html`);
+      const html = await res.text();
+      setCodeContent(html.slice(0, 12000));
+    } catch {
+      setCodeContent("Failed to load code.");
     }
   };
 
@@ -183,11 +208,24 @@ function ClaudeHome() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="hidden items-center gap-1 text-xs text-zinc-400 sm:flex">
-                  <span className="font-medium text-zinc-300">{model}</span>
-                  <span className="text-zinc-600">Medium</span>
-                  <ChevronDown className="h-3 w-3" />
-                </div>
+                <Select value={modelId} onValueChange={setModelId}>
+                  <SelectTrigger className="hidden h-7 w-[160px] border-zinc-700 bg-zinc-900 text-xs text-zinc-300 sm:flex">
+                    <SelectValue>
+                      <span className="flex items-center gap-1.5">
+                        <span>{selectedModel.icon}</span> {selectedModel.label}
+                      </span>
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[280px]">
+                    {MODELS.slice(0, 8).map((m) => (
+                      <SelectItem key={m.id} value={m.id} className="text-xs">
+                        <span className="flex items-center gap-1.5">
+                          <span>{m.icon}</span> {m.label} <span className="text-[10px] text-muted-foreground">{m.provider}</span>
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <button className="hidden h-8 w-8 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 sm:flex" aria-label="Mic"><Mic className="h-4 w-4" /></button>
                 <button className="hidden h-8 w-8 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 sm:flex" aria-label="Voice"><AudioLines className="h-4 w-4" /></button>
                 <button onClick={handleSend} disabled={!input.trim() || mCreate.isPending} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1f9d6b] text-white hover:bg-[#1a8a5e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors" aria-label="Send"><Sparkles className="h-4 w-4" /></button>
@@ -212,23 +250,45 @@ function ClaudeHome() {
             <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-400"><Palette className="h-3.5 w-3.5" /> Featured — live view · code · recreation</h3>
             <Link to="/design" className="text-xs text-sky-400 hover:underline">All 27 systems →</Link>
           </div>
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[11px] font-medium text-zinc-500">Live preview — {previewDevice}</span>
+            <div className="flex items-center gap-1 rounded-full border border-zinc-800 bg-zinc-900 p-1">
+              <button onClick={() => setPreviewDevice("desktop")} className={`rounded-full p-1.5 ${previewDevice === "desktop" ? "bg-white text-zinc-900" : "text-zinc-500 hover:text-zinc-300"}`} title="Desktop"><Monitor className="h-3.5 w-3.5" /></button>
+              <button onClick={() => setPreviewDevice("tablet")} className={`rounded-full p-1.5 ${previewDevice === "tablet" ? "bg-white text-zinc-900" : "text-zinc-500 hover:text-zinc-300"}`} title="Tablet"><Tablet className="h-3.5 w-3.5" /></button>
+              <button onClick={() => setPreviewDevice("mobile")} className={`rounded-full p-1.5 ${previewDevice === "mobile" ? "bg-white text-zinc-900" : "text-zinc-500 hover:text-zinc-300"}`} title="Mobile"><Smartphone className="h-3.5 w-3.5" /></button>
+            </div>
+          </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {[
               { slug: "aceternity-ai-saas", title: "Aceternity AI SaaS", accent: "from-sky-500/20 to-blue-600/10" },
               { slug: "aceternity-nodus-agent", title: "Nodus Agent", accent: "from-purple-500/20 to-violet-600/10" },
               { slug: "aceternity-productized-agency", title: "Productized Agency", accent: "from-emerald-500/20 to-teal-600/10" },
             ].map((p) => (
-              <div key={p.slug} className={`rounded-xl border border-zinc-800 bg-gradient-to-b p-3 ${p.accent}`}>
+              <div key={p.slug} className={`flex flex-col rounded-xl border border-zinc-800 bg-gradient-to-b p-3 ${p.accent}`}>
                 <div className="text-sm font-medium text-white">{p.title}</div>
                 <div className="mt-1 text-[11px] text-zinc-400">/preset-sites/{p.slug}/</div>
+                <div className={`mt-3 overflow-hidden rounded-lg border border-zinc-700 bg-black ${previewDevice === "mobile" ? "mx-auto max-w-[320px]" : previewDevice === "tablet" ? "mx-auto max-w-[500px]" : "w-full"}`} style={{ height: previewDevice === "mobile" ? 220 : previewDevice === "tablet" ? 200 : 180 }}>
+                  <iframe src={`/preset-sites/${p.slug}/`} title={p.title} className="h-full w-full border-0" loading="lazy" />
+                </div>
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   <a href={`/preset-sites/${p.slug}/`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-900 hover:bg-zinc-100"><Eye className="h-3 w-3" /> Live</a>
-                  <Link to="/console/design" className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-[11px] font-medium text-zinc-200 hover:bg-zinc-700"><Code2 className="h-3 w-3" /> Code</Link>
+                  <button onClick={() => handleShowCode(p.slug)} className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-[11px] font-medium text-zinc-200 hover:bg-zinc-700"><Code2 className="h-3 w-3" /> Code</button>
                   <Link to="/design" className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:bg-zinc-800"><Sparkles className="h-3 w-3" /> Recreate</Link>
                 </div>
               </div>
             ))}
           </div>
+          <Dialog open={!!codeSite} onOpenChange={(o) => !o && setCodeSite(null)}>
+            <DialogContent className="max-h-[80vh] max-w-3xl overflow-hidden bg-zinc-950">
+              <DialogHeader><DialogTitle className="text-white">Code — {codeSite}</DialogTitle></DialogHeader>
+              <div className="relative">
+                <button onClick={() => { navigator.clipboard.writeText(codeContent); setCopied(true); setTimeout(() => setCopied(false), 1500); }} className="absolute right-2 top-2 inline-flex items-center gap-1 rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300 hover:bg-zinc-700">
+                  {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />} {copied ? "Copied" : "Copy"}
+                </button>
+                <pre className="max-h-[60vh] overflow-auto rounded-lg bg-black p-4 font-mono text-xs text-zinc-300">{codeContent}</pre>
+              </div>
+            </DialogContent>
+          </Dialog>
           <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-zinc-500">
             <Link to="/console/design" className="inline-flex items-center gap-1 hover:text-zinc-300"><ExternalLink className="h-3 w-3" /> All 67 live sites</Link>
             <span>·</span>
@@ -247,5 +307,6 @@ function ClaudeHome() {
 function Pill({ icon: Icon, label, color, to }: { icon: typeof GraduationCap; label: string; color?: string; to?: string }) {
   const cls = "inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/70 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition-colors";
   const inner = <><Icon className={`h-3.5 w-3.5 ${color ?? "text-zinc-400"}`} /> {label}</>;
-  return to ? <Link to={to} className={cls}>{inner}</Link> : <button className={cls}>{inner}</button>;
+  const content = to ? <Link to={to} className={cls}>{inner}</Link> : <button className={cls}>{inner}</button>;
+  return <motion.div whileHover={{ scale: 1.05, y: -1 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 300 }}>{content}</motion.div>;
 }

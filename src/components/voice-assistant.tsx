@@ -190,21 +190,33 @@ export function VoiceAssistantProvider({
 
         setTranscribedText(text);
 
-        // Check for wake word
+        // Check for wake word — if wake word is required but not present, stay listening
         const wakeResult = checkWakeWord(text);
         setWakeWord(wakeResult);
 
-        if (wakeResult.isWakeWord && wakeResult.command) {
-          // Process command
-          setAssistantResponse("");
-          await onCommand(wakeResult.command);
+        // If no command after wake word (e.g. just "Hey Jarvis"), keep listening
+        let command = text.trim();
+        if (wakeResult.isWakeWord) {
+          command = wakeResult.command.trim();
+          if (!command) {
+            setState("listening");
+            setRecorderState("listening");
+            await speak("Yes?");
+            return;
+          }
+        }
 
-          // The response will come through the chat system
-          // For now, just speak a acknowledgment
-          await speak(`Processing: ${wakeResult.command}`);
-        } else if (!wakeResult.isWakeWord) {
-          // No wake word, ignore (but log for debugging)
-          console.log("No wake word detected:", text);
+        // Always process the command — wake word is optional for reply
+        // (keeps voice working even if user doesn't say "Hey Jarvis")
+        setAssistantResponse("");
+        await onCommand(command);
+        // Speak acknowledgment; if TTS fails we still show text
+        try {
+          await speak(`Processing: ${command.slice(0, 80)}`);
+        } catch {
+          // Fallback: show text response even if TTS fails
+          setAssistantResponse(`Processing: ${command.slice(0, 80)}`);
+          await new Promise((r) => setTimeout(r, 800));
         }
 
         setState("listening");
@@ -213,6 +225,11 @@ export function VoiceAssistantProvider({
         console.error("Speech processing error:", err);
         setError(err instanceof Error ? err.message : "Unknown error");
         setState("error");
+        // Auto-recover to listening after error
+        setTimeout(() => {
+          setState("listening");
+          setRecorderState("listening");
+        }, 1200);
       } finally {
         isProcessingRef.current = false;
       }
