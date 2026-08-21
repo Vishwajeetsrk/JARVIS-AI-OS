@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { JarvisStar, JarvisWordmark } from "@/components/jarvis/logo";
 import { MarketingNav, MarketingFooter } from "@/components/jarvis/marketing-nav";
 import heroImg from "@/assets/console-hero.jpg";
@@ -167,31 +168,31 @@ function LandingPage() {
         {/* Cyberpunk ambient lighting */}
         <div className="pointer-events-none absolute -top-20 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-cyan-600/15 via-blue-600/10 to-purple-600/15 blur-[120px]" />
 
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 text-center">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }} className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 text-center">
           {/* Holographic Arc Reactor */}
-          <div className="cursor-pointer transition-transform hover:scale-105">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.15, duration: 0.5 }} className="cursor-pointer transition-transform hover:scale-105">
             <Link to="/console" title="Click to Launch JARVIS Command Console">
               <ArcReactorHud size={190} state="listening" audioLevel={0.5} statusText="JARVIS CORE // v2.6.0 ACTIVE" />
             </Link>
-          </div>
+          </motion.div>
 
-          <div className="flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-950/30 px-3.5 py-1 text-xs font-mono text-cyan-300 shadow-sm">
+          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.4 }} className="flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-950/30 px-3.5 py-1 text-xs font-mono text-cyan-300 shadow-sm">
             <JarvisStar size={14} className="text-cyan-400" />
             <span>v2.6.0 · Persistent-Memory Autonomous Personal AI-OS</span>
-          </div>
+          </motion.div>
 
-          <h1 className="font-display text-4xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
+          <motion.h1 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }} className="font-display text-4xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
             One Brain. <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">Many Shells.</span>
             <br />
             Every Workflow, Remembered.
-          </h1>
+          </motion.h1>
 
-          <p className="max-w-2xl text-base text-slate-400 md:text-lg">
+          <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.4 }} className="max-w-2xl text-base text-slate-400 md:text-lg">
             JARVIS AI OS runs directly on your Windows laptop and mobile phone. Equipped with a <strong>3D VRoid companion</strong>, <strong>Screen Recording Studio</strong>, <strong>Salesforce & Razorpay automation</strong>, and <strong>9 autonomous agents</strong>.
-          </p>
+          </motion.p>
 
           {/* Hero CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
+          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.4 }} className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
             <Link
               to="/console"
               className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
@@ -214,10 +215,10 @@ function LandingPage() {
             >
               <Download className="h-4 w-4 text-purple-400" /> Releases (v2.6.0)
             </a>
-          </div>
+          </motion.div>
 
           {/* Interactive 7-Context Modes Strip */}
-          <div className="mt-8 w-full max-w-4xl rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-xl">
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.4 }} className="mt-8 w-full max-w-4xl rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-xl">
             <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider mb-3 text-left flex items-center justify-between">
               <span>⚡ 7 Dynamic Context Modes</span>
               <span className="text-cyan-400">Say "Hey Jarvis, [Mode]"</span>
@@ -240,8 +241,8 @@ function LandingPage() {
             <div className="mt-3 rounded-xl border border-cyan-500/20 bg-slate-950 p-3 text-left text-xs text-slate-300">
               <span className="font-bold text-cyan-400">{CONTEXT_MODES[selectedMode].name}:</span> {CONTEXT_MODES[selectedMode].desc}
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ── Stats Strip ─────────────────────────────────────────────── */}

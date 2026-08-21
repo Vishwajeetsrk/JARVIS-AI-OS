@@ -9,16 +9,8 @@ import type {
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const hasGlob = typeof (import.meta as any).glob === "function";
-const rawFiles: Record<string, string> = hasGlob
-  ? (import.meta as any).glob("../../data/**/*", { query: "?raw", import: "default", eager: true })
-  : {};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const siteHtml: Record<string, string> = hasGlob
-  ? (import.meta as any).glob("../../public/preset-sites/*/index.html", { query: "?raw", import: "default", eager: true })
-  : {};
+const rawFiles: Record<string, string> = (import.meta as any).glob("../../data/**/*", { query: "?raw", import: "default", eager: true });
+const siteHtml: Record<string, string> = (import.meta as any).glob("../../public/preset-sites/*/index.html", { query: "?raw", import: "default", eager: true });
 
 function readFileSafe(id: string, rel: string): string {
   const key = `../../data/${id}/${rel}`;
