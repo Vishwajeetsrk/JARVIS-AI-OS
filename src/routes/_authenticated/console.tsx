@@ -13,7 +13,9 @@ import {
   Plus, Trash2, LogOut, MessageSquare, Star, MoreHorizontal, Pencil,
   FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu, Palette, LayoutDashboard,
   Clock, BookOpen, Users, KanbanSquare, Activity, CircleDollarSign, ShieldCheck, ScrollText, ChevronDown,
+  Layers, Code2, SlidersHorizontal, Compass, Ghost, Mic, AudioLines, GraduationCap,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator,
@@ -159,13 +161,16 @@ function ConsoleShell() {
   const starred = (threads as any[]).filter((t: any) => t.starred);
   const unstarred = (threads as any[]).filter((t: any) => !t.starred);
 
-  const NavLink = ({ to, icon: Icon, label }: { to: string; icon: typeof Wrench; label: string }) => (
+  const NavLink = ({ to, icon: Icon, label, badge }: { to: string; icon: typeof Wrench; label: string; badge?: string }) => (
     <Link
       to={to}
-      className="side-item flex items-center gap-2 rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
-      activeProps={{ className: "bg-primary/10 text-foreground" }}
+      className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] text-zinc-400 hover:bg-[#1a1a1d] hover:text-zinc-100 transition-colors"
+      activeProps={{ className: "!bg-[#232326] !text-zinc-100" }}
     >
-      <Icon className="h-3.5 w-3.5" /> {label}
+      <Icon className="h-[16px] w-[16px] shrink-0 opacity-80" /> <span className="flex-1 text-left">{label}</span>
+      {badge && (
+        <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-medium text-sky-400">{badge}</span>
+      )}
     </Link>
   );
 
@@ -174,15 +179,15 @@ function ConsoleShell() {
     return (
       <li key={t.id}>
         <div
-          className={`group flex items-center gap-1 rounded-md px-2 py-1.5 text-sm ${
-            active ? "bg-primary/10 text-foreground" : "text-muted-foreground hover:bg-background hover:text-foreground"
+          className={`group flex items-center gap-1 rounded-lg px-2 py-1.5 text-[13px] transition-colors ${
+            active ? "bg-[#232326] text-zinc-100" : "text-zinc-400 hover:bg-[#1a1a1d] hover:text-zinc-200"
           }`}
         >
           <button
             onClick={() => navigate({ to: "/console/$threadId", params: { threadId: t.id } })}
             className="flex flex-1 items-center gap-2 overflow-hidden text-left"
           >
-            <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" />
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full border border-zinc-500 opacity-60" />
             <span className="truncate">{t.title}</span>
           </button>
           <button
@@ -250,65 +255,50 @@ function ConsoleShell() {
   };
 
   const sidebarBody = (
-    <>
-      <div className="flex items-center justify-between border-b border-border p-4">
-        <Link to="/"><JarvisWordmark /></Link>
-        <StatusBadge status="ready" />
-      </div>
-      <button
-        onClick={() => mCreate.mutate(undefined)}
-        className="shine m-3 flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90 active:scale-[0.98]"
-      >
-        <Plus className="h-4 w-4" /> New chat
-        <kbd className="ml-auto hidden rounded bg-primary-foreground/20 px-1.5 text-[10px] font-mono sm:block">⌘N</kbd>
-      </button>
-
-      <nav className="flex-1 space-y-4 overflow-y-auto px-2 pb-3">
-        <div className="space-y-0.5">
-          <NavLink to="/console" icon={LayoutDashboard} label="Dashboard" />
-          <NavLink to="/console/agents" icon={Users} label="Crew" />
-          <NavLink to="/console/issues" icon={KanbanSquare} label="Issues" />
-          <NavLink to="/console/tools" icon={Wrench} label="Tools" />
-          <NavLink to="/console/connectors" icon={Cable} label="Connectors" />
-          <NavLink to="/console/plugins" icon={Puzzle} label="Plugins" />
-          <NavLink to="/console/skills" icon={Sparkles} label="Skills" />
-          <NavLink to="/console/roadmaps" icon={BookOpen} label="Roadmaps & Learnify" />
-          <NavLink to="/console/design" icon={Palette} label="Design Systems" />
-          <NavLink to="/console/github" icon={GitBranch} label="GitHub" />
-          <NavLink to="/console/settings" icon={Settings} label="Settings" />
-          <button
-            onClick={toggleMore}
-            aria-expanded={moreOpen}
-            className="side-item flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <MoreHorizontal className="h-3.5 w-3.5" /> More
-            <ChevronDown className={`ml-auto h-3.5 w-3.5 transition-transform duration-200 ${moreOpen ? "rotate-180" : ""}`} />
-          </button>
-          {moreOpen && (
-            <div className="reveal-stagger space-y-0.5 pb-0.5">
-              <NavLink to="/console/runs" icon={Activity} label="Runs" />
-              <NavLink to="/console/approvals" icon={ShieldCheck} label="Approvals" />
-              <NavLink to="/console/automations" icon={Clock} label="Automations" />
-              <NavLink to="/console/costs" icon={CircleDollarSign} label="Costs & Budgets" />
-              <NavLink to="/console/activity" icon={ScrollText} label="Activity" />
-            </div>
-          )}
+    <div className="flex h-full flex-col bg-[#0f0f10] text-zinc-300">
+      {/* Top: brand + New + Claude nav */}
+      <div className="px-3 pt-5 pb-3">
+        <div className="mb-4 flex items-center px-2">
+          <span className="font-serif text-[21px] font-bold tracking-tight text-white">Jarvis</span>
         </div>
+        <motion.button
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          onClick={() => mCreate.mutate(undefined)}
+          className="flex w-full items-center gap-2 rounded-lg bg-[#232326] px-3 py-2 text-[13px] font-medium text-zinc-200 hover:bg-[#2a2a2e] active:scale-[0.98] transition-all"
+        >
+          <Plus className="h-4 w-4" /> New
+        </motion.button>
+        <motion.nav
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.08, duration: 0.3 }}
+          className="mt-4 space-y-0.5"
+        >
+          <NavLink to="/console/projects" icon={Folder} label="Projects" />
+          <NavLink to="/console/design" icon={Layers} label="Artifacts" />
+          <NavLink to="/console/skills" icon={Code2} label="Code" badge="Upgrade" />
+          <NavLink to="/console/settings" icon={SlidersHorizontal} label="Customize" />
+        </motion.nav>
+      </div>
 
-        <div>
-          <div className="flex items-center justify-between px-2 pb-1">
-            <span className="text-mono-xs opacity-60">Projects</span>
+      <div className="flex-1 overflow-y-auto px-3 space-y-6 py-2 scrollbar-thin scrollbar-thumb-zinc-800">
+        {/* Projects */}
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
+          <div className="flex items-center justify-between px-2 pb-2">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Projects</span>
             <button
               onClick={() => setNewProjOpen(true)}
-              className="rounded p-1 text-muted-foreground hover:bg-background hover:text-foreground"
+              className="rounded p-1 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
               aria-label="New project"
             >
-              <FolderPlus className="h-3.5 w-3.5" />
+              <Plus className="h-3.5 w-3.5" />
             </button>
           </div>
-          <ul className="space-y-0.5 max-h-48 overflow-y-auto">
+          <ul className="space-y-0.5 max-h-40 overflow-y-auto">
             {allProjects.length === 0 && (
-              <li className="px-3 py-1 text-xs text-muted-foreground/70">No projects yet</li>
+              <li className="px-3 py-1 text-xs text-zinc-500">No projects yet</li>
             )}
             {allProjects.map((p) => {
               const active = params.projectId === p.id;
@@ -318,19 +308,16 @@ function ConsoleShell() {
                     to="/console/projects/$projectId"
                     params={{ projectId: p.id }}
                     title={p.name}
-                    className={`flex flex-1 items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-sm transition-colors ${
-                      active ? "bg-primary/10 text-foreground" : "text-muted-foreground hover:bg-background hover:text-foreground"
+                    className={`flex flex-1 items-center gap-2 overflow-hidden rounded-lg px-2 py-1.5 text-[13px] transition-colors ${
+                      active ? "bg-[#232326] text-zinc-100" : "text-zinc-400 hover:bg-[#1a1a1d] hover:text-zinc-200"
                     }`}
                   >
-                    <span className="h-2 w-2 rounded-full shrink-0" style={{ background: (p as any).color }} />
+                    <Folder className="h-3.5 w-3.5 shrink-0 opacity-70" />
                     <span className="truncate">{p.name}</span>
                   </Link>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button
-                        className="rounded p-1 opacity-0 hover:bg-background group-hover:opacity-100"
-                        aria-label={`Actions for ${p.name}`}
-                      >
+                      <button className="rounded p-1 opacity-0 hover:bg-zinc-800 group-hover:opacity-100" aria-label={`Actions for ${p.name}`}>
                         <MoreHorizontal className="h-3.5 w-3.5" />
                       </button>
                     </DropdownMenuTrigger>
@@ -347,58 +334,115 @@ function ConsoleShell() {
               );
             })}
           </ul>
-        </div>
+        </motion.div>
 
         {starred.length > 0 && (
-          <div>
-            <div className="px-2 pb-1 text-mono-xs opacity-60">Pinned</div>
+          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}>
+            <div className="px-2 pb-2 text-[11px] font-medium uppercase tracking-wider text-zinc-500">Pinned</div>
             <ul className="space-y-0.5">{starred.map(renderThread)}</ul>
-          </div>
+          </motion.div>
         )}
 
-        <div>
-          <div className="px-2 pb-1 text-mono-xs opacity-60">Recent</div>
-          {unstarred.length === 0 && (
-            <div className="px-3 py-2 text-xs text-muted-foreground">No threads yet.</div>
-          )}
-          <ul className="space-y-0.5">{unstarred.map(renderThread)}</ul>
-        </div>
-      </nav>
-
-      <div className="border-t border-border p-3 space-y-2">
-        {typeof localStorage !== "undefined" && localStorage.getItem("jarvis-guest-mode") === "true" ? (
-          <div className="rounded-md border border-amber/30 bg-amber/10 p-2.5 text-xs text-amber flex items-center justify-between">
-            <span className="font-medium">Guest Demo Mode</span>
-            <button
-              onClick={signOut}
-              className="text-[11px] underline font-mono hover:text-foreground"
-            >
-              Sign In
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <div className="flex items-center justify-between px-2 pb-2">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Chats and tasks</span>
+            <button className="rounded p-1 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200">
+              <SlidersHorizontal className="h-3.5 w-3.5" />
             </button>
           </div>
+          {unstarred.length === 0 ? (
+            <div className="px-3 py-2 text-xs text-zinc-500">No chats yet.</div>
+          ) : (
+            <ul className="space-y-0.5">{unstarred.map(renderThread)}</ul>
+          )}
+          {/* Collapsible example like screenshot: Website animation */}
+          <button className="mt-2 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] text-zinc-400 hover:bg-[#1a1a1d] hover:text-zinc-200">
+            <span className="h-1.5 w-1.5 rounded-full border border-zinc-500" />
+            <span className="flex-1 truncate text-left">Website animation and 3D motion</span>
+            <ChevronDown className="h-3 w-3 opacity-60" />
+          </button>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }}>
+          <Link to="/console/design" className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] text-zinc-400 hover:bg-[#1a1a1d] hover:text-zinc-200">
+            <Palette className="h-4 w-4" /> Design
+          </Link>
+        </motion.div>
+
+        {/* Hidden: Dashboard / Crew / Tools as secondary */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.28 }} className="pt-2 border-t border-zinc-800/60">
+          <button
+            onClick={toggleMore}
+            aria-expanded={moreOpen}
+            className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] text-zinc-500 hover:bg-[#1a1a1d] hover:text-zinc-300"
+          >
+            <Compass className="h-4 w-4" /> More
+            <ChevronDown className={`ml-auto h-3 w-3 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
+          </button>
+          {moreOpen && (
+            <div className="mt-1 space-y-0.5">
+              <NavLink to="/console" icon={LayoutDashboard} label="Dashboard" />
+              <NavLink to="/console/agents" icon={Users} label="Crew" />
+              <NavLink to="/console/tools" icon={Wrench} label="Tools" />
+              <NavLink to="/console/connectors" icon={Cable} label="Connectors" />
+              <NavLink to="/console/github" icon={GitBranch} label="GitHub" />
+            </div>
+          )}
+        </motion.div>
+      </div>
+
+      <div className="border-t border-zinc-800/60 p-3">
+        {typeof localStorage !== "undefined" && localStorage.getItem("jarvis-guest-mode") === "true" ? (
+          <div className="mb-2 flex items-center justify-between rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+            <span className="font-medium">Guest Demo</span>
+            <button onClick={signOut} className="text-[11px] underline">Sign In</button>
+          </div>
         ) : (
-          <div className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground/60">
-            <span className="h-1.5 w-1.5 rounded-full bg-sage" />
-            <span className="font-mono">Gemini + Groq · Free tier</span>
+          <div className="mb-2 flex items-center gap-2 px-2 py-1 text-xs text-zinc-500">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="font-mono text-[11px]">Gemini + Groq · Free</span>
           </div>
         )}
-        <button
-          onClick={signOut}
-          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-background hover:text-foreground"
-        >
-          <LogOut className="h-4 w-4" /> {typeof localStorage !== "undefined" && localStorage.getItem("jarvis-guest-mode") === "true" ? "Exit Guest Mode" : "Sign out"}
-        </button>
+        <div className="flex items-center gap-2 rounded-lg px-2 py-2 hover:bg-[#1a1a1d] transition-colors">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#232326] text-[11px] font-bold text-zinc-200">V</div>
+          <div className="flex-1 overflow-hidden">
+            <div className="truncate text-[12px] font-medium text-zinc-200">Vishwajeet · Free</div>
+          </div>
+          <ChevronDown className="h-3 w-3 text-zinc-500" />
+          <div className="ml-1 flex items-center gap-1 text-zinc-500">
+            <span className="h-2 w-2 rounded-full bg-sky-500" />
+          </div>
+        </div>
+        <div className="mt-1 flex items-center gap-1 px-1 text-zinc-500">
+          <button className="rounded p-1.5 hover:bg-zinc-800 hover:text-zinc-200"><span className="text-[11px]">⬇</span></button>
+          <button className="rounded p-1.5 hover:bg-zinc-800 hover:text-zinc-200"><Compass className="h-3.5 w-3.5" /></button>
+          <button className="rounded p-1.5 hover:bg-zinc-800 hover:text-zinc-200"><Layers className="h-3.5 w-3.5" /></button>
+        </div>
       </div>
-    </>
+    </div>
   );
 
   return (
-    <div className="grid h-screen grid-cols-1 bg-background text-foreground md:grid-cols-[280px_1fr]">
-      <aside className="hidden flex-col border-r border-border bg-surface md:flex">
+    <div className="grid h-screen grid-cols-1 bg-[#09090b] text-zinc-100 md:grid-cols-[280px_1fr]">
+      <aside className="hidden flex-col border-r border-zinc-800/60 bg-[#0f0f10] md:flex">
         {sidebarBody}
       </aside>
 
-      <main className="flex min-h-0 flex-col overflow-hidden">
+      <main className="flex min-h-0 flex-col overflow-hidden bg-[#09090b]">
+        {/* Claude top bar — desktop */}
+        <div className="hidden h-11 items-center justify-between border-b border-zinc-800/40 bg-[#09090b] px-6 md:flex">
+          <div className="flex-1" />
+          <div className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/60 px-3 py-1 text-xs">
+            <span className="text-zinc-400">Free plan</span>
+            <span className="text-zinc-600">·</span>
+            <Link to="/console/settings" className="font-medium text-sky-400 hover:underline">Upgrade</Link>
+          </div>
+          <div className="flex flex-1 justify-end">
+            <button className="rounded-full p-2 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300 transition-colors" aria-label="Ghost">
+              <Ghost className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
         {/* Mobile top bar */}
         <div className="flex items-center justify-between border-b border-border bg-surface/60 px-3 py-2 md:hidden">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>

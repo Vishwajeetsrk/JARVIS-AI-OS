@@ -1,981 +1,1029 @@
-﻿{
-    "meta":  {
-                 "totalProjects":  49,
-                 "sourcePath":  "C:\\Users\\vishw\\Music\\Learnify AI\\Projects",
-                 "learnedAt":  "2026-08-21",
-                 "description":  "Design systems extracted from 49 Learnify AI projects. AI uses these to recreate, remix, and customize sites."
-             },
-    "designSystems":  [
-                          {
-                              "id":  "stellar-ai",
-                              "name":  "Stellar AI",
-                              "category":  "Enterprise AI Platform",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "hsl(240, 30%, 4%)",
-                                             "foreground":  "hsl(220, 20%, 96%)",
-                                             "card":  "hsl(240, 20%, 7%)",
-                                             "primary":  "hsl(252, 85%, 68%)",
-                                             "secondary":  "hsl(220, 15%, 15%)",
-                                             "muted":  "hsl(220, 12%, 55%)",
-                                             "accent":  "hsl(170, 15%, 45%)",
-                                             "border":  "hsl(240, 10%, 18%)"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "General Sans"
-                                        ],
-                              "components":  [
-                                                 "liquid-glass",
-                                                 "gradient-text",
-                                                 "hero-vignette",
-                                                 "tabbed-hero",
-                                                 "logo-row",
-                                                 "marquee"
-                                             ],
-                              "pattern":  "glassmorphism with purple/cyan gradient accents",
-                              "tailwind":  {
-                                               "radius":  "2px",
-                                               "darkMode":  "class"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js",
-                                                  "src/App.tsx"
-                                              ]
-                          },
-                          {
-                              "id":  "viralmedia-ai",
-                              "name":  "ViralMedia AI",
-                              "category":  "AI Video Generation",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "hsl(0, 0%, 0%)",
-                                             "foreground":  "hsl(0, 0%, 100%)",
-                                             "card":  "hsl(0, 0%, 9%)",
-                                             "primary":  "hsl(0, 0%, 97%)",
-                                             "secondary":  "hsl(0, 0%, 15%)",
-                                             "muted-foreground":  "hsl(0, 0%, 75%)",
-                                             "border":  "hsl(0, 0%, 20%)"
-                                         },
-                              "fonts":  [
-                                            "Barlow",
-                                            "Instrument Serif"
-                                        ],
-                              "components":  [
-                                                 "liquid-glass",
-                                                 "gradient-text",
-                                                 "hero-vignette",
-                                                 "video-showcase",
-                                                 "scroll-reveal",
-                                                 "cta-section"
-                                             ],
-                              "pattern":  "editorial with glass panels and serif accents",
-                              "tailwind":  {
-                                               "radius":  "2px",
-                                               "darkMode":  "class"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "equilibrium",
-                              "name":  "Equilibrium",
-                              "category":  "Wellness Studio",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "hsl(160, 18%, 6%)",
-                                             "foreground":  "hsl(150, 12%, 96%)",
-                                             "card":  "hsl(160, 14%, 10%)",
-                                             "primary":  "hsl(168, 45%, 52%)",
-                                             "secondary":  "hsl(160, 10%, 14%)",
-                                             "muted":  "hsl(160, 8%, 50%)",
-                                             "accent":  "hsl(168, 50%, 45%)",
-                                             "border":  "hsl(160, 10%, 16%)"
-                                         },
-                              "fonts":  [
-                                            "Geist Sans"
-                                        ],
-                              "components":  [
-                                                 "liquid-glass",
-                                                 "hero-scrim",
-                                                 "pill-nav",
-                                                 "gradient-text"
-                                             ],
-                              "pattern":  "organic dark with teal-green glass",
-                              "tailwind":  {
-                                               "radius":  "full",
-                                               "darkMode":  "class"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "vaultshield",
-                              "name":  "VaultShield",
-                              "category":  "Password Manager",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "#192837",
-                                             "foreground":  "#FFFFFF",
-                                             "primary":  "#7342E2",
-                                             "secondary":  "#1E3245",
-                                             "muted":  "#5A6D7E",
-                                             "accent":  "#7342E2",
-                                             "border":  "#243B50"
-                                         },
-                              "fonts":  [
-                                            "Helvetica Now Display Bold",
-                                            "Helvetica Now Text"
-                                        ],
-                              "components":  [
-                                                 "mesh-background",
-                                                 "cta-glow",
-                                                 "mobile-menu",
-                                                 "fade-up"
-                                             ],
-                              "pattern":  "dark blue with purple glow CTA",
-                              "tailwind":  {
-                                               "radius":  "0px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "ui-rocket",
-                              "name":  "UI Rocket",
-                              "category":  "AI UI Builder",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "#08020e",
-                                             "foreground":  "#f5f0ff",
-                                             "card":  "#110a1a",
-                                             "primary":  "#a78bfa",
-                                             "secondary":  "#1a0f26",
-                                             "muted":  "#6b5b8a",
-                                             "accent":  "#a78bfa",
-                                             "border":  "#2a1a3a"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "Instrument Serif"
-                                        ],
-                              "components":  [
-                                                 "liquid-glass-strong",
-                                                 "hero-vignette",
-                                                 "gradient-text",
-                                                 "dashboard-mock",
-                                                 "chat-panel"
-                                             ],
-                              "pattern":  "deep purple-black with violet accents and glass panels",
-                              "tailwind":  {
-                                               "radius":  "12px",
-                                               "darkMode":  "class"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "brandly",
-                              "name":  "Brandly",
-                              "category":  "Branding Portfolio",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#F5F3EE",
-                                             "foreground":  "#080808",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#080808",
-                                             "secondary":  "#6B6B66",
-                                             "muted":  "#A09890",
-                                             "border":  "#E9E5DF"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "Anton"
-                                        ],
-                              "components":  [
-                                                 "clean-layout",
-                                                 "large-typography",
-                                                 "minimal-cards"
-                                             ],
-                              "pattern":  "warm beige with bold serif accents",
-                              "tailwind":  {
-                                               "radius":  "0px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "ecovolta",
-                              "name":  "EcoVolt",
-                              "category":  "Solar Energy",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#F5F3EE",
-                                             "foreground":  "#31463B",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#31463B",
-                                             "secondary":  "#5A7A6A",
-                                             "muted":  "#8A9A90",
-                                             "accent":  "#4CAF50",
-                                             "border":  "#D4DED8",
-                                             "success":  "#2E7D32"
-                                         },
-                              "fonts":  [
-                                            "Inter"
-                                        ],
-                              "components":  [
-                                                 "liquid-glass-light",
-                                                 "green-gradient-cta",
-                                                 "logo-marquee",
-                                                 "feature-grid"
-                                             ],
-                              "pattern":  "eco green on warm cream with glass panels",
-                              "tailwind":  {
-                                               "radius":  "8px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "mindloop",
-                              "name":  "MindLoop",
-                              "category":  "AI Newsletter",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "hsl(0, 0%, 0%)",
-                                             "foreground":  "hsl(0, 0%, 100%)",
-                                             "card":  "hsl(0, 0%, 5%)",
-                                             "primary":  "hsl(0, 0%, 100%)",
-                                             "secondary":  "hsl(0, 0%, 12%)",
-                                             "muted":  "hsl(0, 0%, 65%)",
-                                             "accent":  "hsl(170, 15%, 45%)",
-                                             "border":  "hsl(0, 0%, 15%)"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "Instrument Serif"
-                                        ],
-                              "components":  [
-                                                 "liquid-glass",
-                                                 "hero-vignette",
-                                                 "search-section",
-                                                 "cta-section",
-                                                 "hls-video"
-                                             ],
-                              "pattern":  "pure black with teal glass accents",
-                              "tailwind":  {
-                                               "radius":  "2px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "wanderful",
-                              "name":  "Wanderful",
-                              "category":  "Travel Platform",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#F3EBE4",
-                                             "foreground":  "#1C1C1C",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#1C1C1C",
-                                             "secondary":  "#6B6B66",
-                                             "muted":  "#A09890",
-                                             "border":  "#E0D8D0"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "Helvetica"
-                                        ],
-                              "components":  [
-                                                 "parallax-video",
-                                                 "gem-card",
-                                                 "destination-grid",
-                                                 "marquee"
-                                             ],
-                              "pattern":  "warm travel aesthetic with parallax and large cards",
-                              "tailwind":  {
-                                               "radius":  "32px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "cognitra",
-                              "name":  "Cognitra",
-                              "category":  "AI Automation Agency",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#FFFFFF",
-                                             "foreground":  "#1A1A1A",
-                                             "card":  "#F5F5F5",
-                                             "primary":  "#1A1A1A",
-                                             "secondary":  "#666666",
-                                             "muted":  "#999999",
-                                             "border":  "#E5E5E5"
-                                         },
-                              "fonts":  [
-                                            "Helvetica Now Var",
-                                            "Helvetica"
-                                        ],
-                              "components":  [
-                                                 "scroll-bounce",
-                                                 "statement-section",
-                                                 "services-grid",
-                                                 "fading-video"
-                                             ],
-                              "pattern":  "Swiss minimal monochrome with bold statements",
-                              "tailwind":  {
-                                               "radius":  "0px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "acreage-nike",
-                              "name":  "Acreage Nike",
-                              "category":  "Nike Shoe Brand",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "#0A0A0A",
-                                             "foreground":  "#FFFFFF",
-                                             "primary":  "#FF4500",
-                                             "secondary":  "#1A1A1A",
-                                             "muted":  "#888888",
-                                             "border":  "#333333"
-                                         },
-                              "fonts":  [
-                                            "Manrope",
-                                            "Instrument Serif"
-                                        ],
-                              "components":  [
-                                                 "spotlight-reveal",
-                                                 "bubble-menu",
-                                                 "scroll-video",
-                                                 "gsap-animations"
-                                             ],
-                              "pattern":  "Nike-inspired with GSAP scroll animations and spotlight effects",
-                              "tailwind":  {
-                                               "radius":  "0px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "zenith-realty",
-                              "name":  "Zenith Realty",
-                              "category":  "Real Estate",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#F8F8F8",
-                                             "foreground":  "#141414",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#141414",
-                                             "secondary":  "#666666",
-                                             "muted":  "#999999",
-                                             "border":  "#E5E5E5"
-                                         },
-                              "fonts":  [
-                                            "Lato",
-                                            "sans-serif"
-                                        ],
-                              "components":  [
-                                                 "property-card",
-                                                 "investment-section",
-                                                 "how-it-works",
-                                                 "charts"
-                                             ],
-                              "pattern":  "clean corporate with property cards and data visualization",
-                              "tailwind":  {
-                                               "radius":  "8px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "stretch-beauty",
-                              "name":  "Stretch Beauty",
-                              "category":  "Beauty E-commerce",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#FFFBF5",
-                                             "foreground":  "#1A1A1A",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#1A1A1A",
-                                             "secondary":  "#8B7355",
-                                             "muted":  "#C4B5A0",
-                                             "accent":  "#D4A574",
-                                             "border":  "#E8DDD0"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "system-ui"
-                                        ],
-                              "components":  [
-                                                 "announcement-bar",
-                                                 "best-sellers",
-                                                 "categories",
-                                                 "product-grid"
-                                             ],
-                              "pattern":  "warm luxury e-commerce with announcement bar",
-                              "tailwind":  {
-                                               "radius":  "4px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "halo-usd",
-                              "name":  "Halo USD",
-                              "category":  "Crypto Stablecoin",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "#000000",
-                                             "foreground":  "#FFFFFF",
-                                             "card":  "#111111",
-                                             "primary":  "#FFFFFF",
-                                             "secondary":  "#888888",
-                                             "muted":  "#666666",
-                                             "border":  "#222222"
-                                         },
-                              "fonts":  [
-                                            "General Sans",
-                                            "Inter"
-                                        ],
-                              "components":  [
-                                                 "brand-marquee",
-                                                 "wallet-section",
-                                                 "pill-button",
-                                                 "backed-by"
-                                             ],
-                              "pattern":  "crypto sleek with investor logos and wallet integration",
-                              "tailwind":  {
-                                               "radius":  "full"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "toonhub",
-                              "name":  "ToonHub",
-                              "category":  "NFT Collectibles",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#FFF8F0",
-                                             "foreground":  "#1A1A1A",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#FF6B35",
-                                             "secondary":  "#4A90D9",
-                                             "muted":  "#999999",
-                                             "accent":  "#FFD700",
-                                             "border":  "#E8E0D8"
-                                         },
-                              "fonts":  [
-                                            "Outfit",
-                                            "Nunito"
-                                        ],
-                              "components":  [
-                                                 "toon-nav",
-                                                 "grain-overlay",
-                                                 "nft-card",
-                                                 "drop-countdown"
-                                             ],
-                              "pattern":  "playful cartoon with grain texture and rounded everything",
-                              "tailwind":  {
-                                               "radius":  "16px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "bionova",
-                              "name":  "Bionova",
-                              "category":  "Bio Tech",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#F0F7F4",
-                                             "foreground":  "#1A3A2A",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#1A3A2A",
-                                             "secondary":  "#4A8A6A",
-                                             "muted":  "#8AB4A0",
-                                             "accent":  "#2E7D32",
-                                             "border":  "#D0E8D8"
-                                         },
-                              "fonts":  [
-                                            "Poppins",
-                                            "sans-serif"
-                                        ],
-                              "components":  [
-                                                 "hero-video",
-                                                 "feature-grid",
-                                                 "cta-section"
-                                             ],
-                              "pattern":  "bio-green with rounded friendly typography",
-                              "tailwind":  {
-                                               "radius":  "12px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "jack-3d-creator",
-                              "name":  "Jack 3D Creator",
-                              "category":  "3D Portfolio",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "#0C0C0C",
-                                             "foreground":  "#D7E2EA",
-                                             "card":  "#161616",
-                                             "primary":  "#D7E2EA",
-                                             "secondary":  "#8899AA",
-                                             "muted":  "#556677",
-                                             "border":  "#2A2A2A"
-                                         },
-                              "fonts":  [
-                                            "Kanit",
-                                            "sans-serif"
-                                        ],
-                              "components":  [
-                                                 "magnet-cursor",
-                                                 "animated-text",
-                                                 "projects-grid",
-                                                 "marquee-section"
-                                             ],
-                              "pattern":  "3D artist portfolio with magnetic cursor effects",
-                              "tailwind":  {
-                                               "radius":  "0px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "targo-logistics",
-                              "name":  "Targo Logistics",
-                              "category":  "Logistics",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#FFFFFF",
-                                             "foreground":  "#1A1A2E",
-                                             "card":  "#F8F9FA",
-                                             "primary":  "#1A1A2E",
-                                             "secondary":  "#4A5568",
-                                             "muted":  "#A0AEC0",
-                                             "accent":  "#E53E3E",
-                                             "border":  "#E2E8F0"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "sans-serif"
-                                        ],
-                              "components":  [
-                                                 "clipped-button",
-                                                 "consultation-card",
-                                                 "hero-video"
-                                             ],
-                              "pattern":  "corporate logistics with red accent and clipped shapes",
-                              "tailwind":  {
-                                               "radius":  "4px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "terra-geo",
-                              "name":  "Terra Geo",
-                              "category":  "Geospatial Platform",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "hsl(0, 0%, 100%)",
-                                             "foreground":  "hsl(222, 47%, 11%)",
-                                             "card":  "hsl(210, 40%, 98%)",
-                                             "primary":  "hsl(217, 89%, 57%)",
-                                             "secondary":  "hsl(220, 14%, 96%)",
-                                             "muted":  "hsl(220, 9%, 46%)",
-                                             "border":  "hsl(214, 20%, 90%)"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "sans-serif"
-                                        ],
-                              "components":  [
-                                                 "builder-selection",
-                                                 "grid-background",
-                                                 "feature-cards"
-                                             ],
-                              "pattern":  "clean SaaS with blue primary and data visualization",
-                              "tailwind":  {
-                                               "radius":  "8px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "rivr-defi",
-                              "name":  "Rivr DeFi",
-                              "category":  "DeFi Protocol",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#F0F0F0",
-                                             "foreground":  "#1E325A",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#1E325A",
-                                             "secondary":  "#4A6FA5",
-                                             "muted":  "#8BA4C7",
-                                             "accent":  "#3B82F6",
-                                             "border":  "#D0D8E4"
-                                         },
-                              "fonts":  [
-                                            "Helvetica",
-                                            "sans-serif"
-                                        ],
-                              "components":  [
-                                                 "hero-badge",
-                                                 "protocol-stats",
-                                                 "governance-section"
-                                             ],
-                              "pattern":  "fintech blue with data-heavy protocol layout",
-                              "tailwind":  {
-                                               "radius":  "4px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "power-ai",
-                              "name":  "Power AI",
-                              "category":  "AI Platform",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "#0A0A0A",
-                                             "foreground":  "#FFFFFF",
-                                             "card":  "#141414",
-                                             "primary":  "#FFFFFF",
-                                             "secondary":  "#888888",
-                                             "muted":  "#555555",
-                                             "border":  "#222222"
-                                         },
-                              "fonts":  [
-                                            "Geist Sans",
-                                            "Inter"
-                                        ],
-                              "components":  [
-                                                 "fading-video",
-                                                 "feature-grid",
-                                                 "logo-marquee"
-                                             ],
-                              "pattern":  "minimal dark with video backgrounds",
-                              "tailwind":  {
-                                               "radius":  "0px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "linkflow",
-                              "name":  "LinkFlow",
-                              "category":  "Link-in-Bio",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#FFFFFF",
-                                             "foreground":  "#1A1A1A",
-                                             "card":  "#F5F5F5",
-                                             "primary":  "#6366F1",
-                                             "secondary":  "#4B5563",
-                                             "muted":  "#9CA3AF",
-                                             "accent":  "#8B5CF6",
-                                             "border":  "#E5E7EB"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "sans-serif"
-                                        ],
-                              "components":  [
-                                                 "link-grid",
-                                                 "profile-header",
-                                                 "social-icons"
-                                             ],
-                              "pattern":  "link aggregator with purple accent",
-                              "tailwind":  {
-                                               "radius":  "12px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "baby-track",
-                              "name":  "Baby Track",
-                              "category":  "Baby Tracking",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#FFF5F5",
-                                             "foreground":  "#4A3728",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#E8758A",
-                                             "secondary":  "#8B6F5E",
-                                             "muted":  "#C4AFA0",
-                                             "accent":  "#FFB5C5",
-                                             "border":  "#F0E0D8"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "sans-serif"
-                                        ],
-                              "components":  [
-                                                 "branded-navbar",
-                                                 "tracking-cards",
-                                                 "milestone-grid"
-                                             ],
-                              "pattern":  "warm pastel baby tracking with pink accent",
-                              "tailwind":  {
-                                               "radius":  "16px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "securify",
-                              "name":  "Securify",
-                              "category":  "Cybersecurity",
-                              "theme":  "dark",
-                              "colors":  {
-                                             "background":  "#0D1117",
-                                             "foreground":  "#C9D1D9",
-                                             "card":  "#161B22",
-                                             "primary":  "#58A6FF",
-                                             "secondary":  "#8B949E",
-                                             "muted":  "#484F58",
-                                             "accent":  "#3FB950",
-                                             "border":  "#30363D"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "sans-serif"
-                                        ],
-                              "components":  [
-                                                 "branded-navbar",
-                                                 "security-grid",
-                                                 "feature-cards"
-                                             ],
-                              "pattern":  "GitHub-dark inspired cybersecurity layout",
-                              "tailwind":  {
-                                               "radius":  "6px"
-                                           },
-                              "sourceFiles":  [
-                                                  "src/index.css",
-                                                  "tailwind.config.js"
-                                              ]
-                          },
-                          {
-                              "id":  "superdesign",
-                              "name":  "Superdesign",
-                              "category":  "AI Design Platform",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#FAFAFA",
-                                             "foreground":  "#0F0F0F",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#0F0F0F",
-                                             "secondary":  "#F0F0F0",
-                                             "muted":  "#6E6E6E",
-                                             "accent":  "#0F0F0F",
-                                             "border":  "#E5E5E5"
-                                         },
-                              "fonts":  [
-                                            "Inter Variable",
-                                            "JetBrains Mono"
-                                        ],
-                              "components":  [
-                                                 "minimal-nav",
-                                                 "template-gallery",
-                                                 "feature-row",
-                                                 "stat-banner",
-                                                 "cta-strip"
-                                             ],
-                              "pattern":  "minimal light editorial: near-black type on off-white with sharp corners and mono accents",
-                              "tailwind":  {
-                                               "radius":  "0px",
-                                               "darkMode":  "class"
-                                           },
-                              "sourceFiles":  [
-                                                  "index.html",
-                                                  "styles.css"
-                                              ]
-                          },
-                          {
-                              "id":  "vanguard",
-                              "name":  "Vanguard",
-                              "category":  "Architecture Studio",
-                              "theme":  "light",
-                              "colors":  {
-                                             "background":  "#FFFFFF",
-                                             "foreground":  "#000000",
-                                             "card":  "#FFFFFF",
-                                             "primary":  "#000000",
-                                             "secondary":  "#1A1A1A",
-                                             "muted":  "#737373",
-                                             "accent":  "#000000",
-                                             "border":  "#E5E5E5"
-                                         },
-                              "fonts":  [
-                                            "Inter",
-                                            "system-ui"
-                                        ],
-                              "components":  [
-                                                 "statement-hero",
-                                                 "oversized-type",
-                                                 "editorial-grid",
-                                                 "work-listing",
-                                                 "quiet-cta"
-                                             ],
-                              "pattern":  "brutalist monochrome editorial: oversized display type, full-bleed imagery, generous whitespace",
-                              "tailwind":  {
-                                               "radius":  "0px",
-                                               "darkMode":  "media"
-                                           },
-                              "sourceFiles":  [
-                                                  "index.html",
-                                                  "styles.css"
-                                              ]
-                          }
-                      ],
-    "commonPatterns":  {
-                           "liquidGlass":  {
-                                               "description":  "Frosted glass effect used across 15+ projects",
-                                               "css":  ".liquid-glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }",
-                                               "variants":  [
-                                                                "light (0.35 opacity)",
-                                                                "strong (16-50px blur)",
-                                                                "subtle (4px blur)"
-                                                            ]
-                                           },
-                           "gradientText":  {
-                                                "description":  "Gradient text effect for headings",
-                                                "css":  ".gradient-text { background: linear-gradient(120deg, #e0e7ff, #a5b4fc, #67e8f9); -webkit-background-clip: text; color: transparent; }",
-                                                "variants":  [
-                                                                 "violet-cyan",
-                                                                 "blue-white",
-                                                                 "gray",
-                                                                 "gold"
-                                                             ]
-                                            },
-                           "heroVignette":  {
-                                                "description":  "Dark overlay gradient on hero sections",
-                                                "css":  ".hero-vignette { background: linear-gradient(180deg, rgba(0,0,0,0.45), transparent 35%, rgba(0,0,0,0.75) 72%, rgba(0,0,0,0.95)); }",
-                                                "variants":  [
-                                                                 "linear",
-                                                                 "radial",
-                                                                 "scrim"
-                                                             ]
-                                            },
-                           "fadeInUp":  {
-                                            "description":  "Scroll-triggered fade-in-up animation",
-                                            "css":  "@keyframes fadeInUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }",
-                                            "easing":  "cubic-bezier(0.22, 1, 0.36, 1)"
-                                        },
-                           "marquee":  {
-                                           "description":  "Infinite scrolling marquee for logos/content",
-                                           "css":  "@keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }",
-                                           "usage":  "Logo carousels, brand rows, scrolling text"
-                                       }
-                       },
-    "themeCategories":  {
-                            "dark":  [
-                                         "stellar-ai",
-                                         "viralmedia-ai",
-                                         "equilibrium",
-                                         "vaultshield",
-                                         "ui-rocket",
-                                         "mindloop",
-                                         "acreage-nike",
-                                         "halo-usd",
-                                         "jack-3d-creator",
-                                         "power-ai",
-                                         "securify"
-                                     ],
-                            "light":  [
-                                          "brandly",
-                                          "ecovolta",
-                                          "wanderful",
-                                          "cognitra",
-                                          "zenith-realty",
-                                          "stretch-beauty",
-                                          "toonhub",
-                                          "bionova",
-                                          "targo-logistics",
-                                          "terra-geo",
-                                          "rivr-defi",
-                                          "linkflow",
-                                          "baby-track"
-                                      ]
-                        },
-    "fontCategories":  {
-                           "sans":  [
-                                        "Inter",
-                                        "General Sans",
-                                        "Geist Sans",
-                                        "Lato",
-                                        "Poppins",
-                                        "Kanit",
-                                        "Outfit",
-                                        "Nunito",
-                                        "Barlow"
-                                    ],
-                           "serif":  [
-                                         "Instrument Serif"
-                                     ],
-                           "display":  [
-                                           "Anton",
-                                           "Helvetica Now Display Bold"
-                                       ],
-                           "system":  [
-                                          "system-ui",
-                                          "sans-serif"
-                                      ]
-                       }
+{
+  "meta": {
+    "totalProjects": 49,
+    "sourcePath": "C:\\Users\\vishw\\Music\\Learnify AI\\Projects",
+    "learnedAt": "2026-08-21",
+    "description": "Design systems extracted from 49 Learnify AI projects. AI uses these to recreate, remix, and customize sites.",
+    "lastExtended": "2026-08-21T16:37:18.454Z"
+  },
+  "designSystems": [
+    {
+      "id": "stellar-ai",
+      "name": "Stellar AI",
+      "category": "Enterprise AI Platform",
+      "theme": "dark",
+      "colors": {
+        "background": "hsl(240, 30%, 4%)",
+        "foreground": "hsl(220, 20%, 96%)",
+        "card": "hsl(240, 20%, 7%)",
+        "primary": "hsl(252, 85%, 68%)",
+        "secondary": "hsl(220, 15%, 15%)",
+        "muted": "hsl(220, 12%, 55%)",
+        "accent": "hsl(170, 15%, 45%)",
+        "border": "hsl(240, 10%, 18%)"
+      },
+      "fonts": [
+        "Inter",
+        "General Sans"
+      ],
+      "components": [
+        "liquid-glass",
+        "gradient-text",
+        "hero-vignette",
+        "tabbed-hero",
+        "logo-row",
+        "marquee"
+      ],
+      "pattern": "glassmorphism with purple/cyan gradient accents",
+      "tailwind": {
+        "radius": "2px",
+        "darkMode": "class"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js",
+        "src/App.tsx"
+      ]
+    },
+    {
+      "id": "viralmedia-ai",
+      "name": "ViralMedia AI",
+      "category": "AI Video Generation",
+      "theme": "dark",
+      "colors": {
+        "background": "hsl(0, 0%, 0%)",
+        "foreground": "hsl(0, 0%, 100%)",
+        "card": "hsl(0, 0%, 9%)",
+        "primary": "hsl(0, 0%, 97%)",
+        "secondary": "hsl(0, 0%, 15%)",
+        "muted-foreground": "hsl(0, 0%, 75%)",
+        "border": "hsl(0, 0%, 20%)"
+      },
+      "fonts": [
+        "Barlow",
+        "Instrument Serif"
+      ],
+      "components": [
+        "liquid-glass",
+        "gradient-text",
+        "hero-vignette",
+        "video-showcase",
+        "scroll-reveal",
+        "cta-section"
+      ],
+      "pattern": "editorial with glass panels and serif accents",
+      "tailwind": {
+        "radius": "2px",
+        "darkMode": "class"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "equilibrium",
+      "name": "Equilibrium",
+      "category": "Wellness Studio",
+      "theme": "dark",
+      "colors": {
+        "background": "hsl(160, 18%, 6%)",
+        "foreground": "hsl(150, 12%, 96%)",
+        "card": "hsl(160, 14%, 10%)",
+        "primary": "hsl(168, 45%, 52%)",
+        "secondary": "hsl(160, 10%, 14%)",
+        "muted": "hsl(160, 8%, 50%)",
+        "accent": "hsl(168, 50%, 45%)",
+        "border": "hsl(160, 10%, 16%)"
+      },
+      "fonts": [
+        "Geist Sans"
+      ],
+      "components": [
+        "liquid-glass",
+        "hero-scrim",
+        "pill-nav",
+        "gradient-text"
+      ],
+      "pattern": "organic dark with teal-green glass",
+      "tailwind": {
+        "radius": "full",
+        "darkMode": "class"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "vaultshield",
+      "name": "VaultShield",
+      "category": "Password Manager",
+      "theme": "dark",
+      "colors": {
+        "background": "#192837",
+        "foreground": "#FFFFFF",
+        "primary": "#7342E2",
+        "secondary": "#1E3245",
+        "muted": "#5A6D7E",
+        "accent": "#7342E2",
+        "border": "#243B50"
+      },
+      "fonts": [
+        "Helvetica Now Display Bold",
+        "Helvetica Now Text"
+      ],
+      "components": [
+        "mesh-background",
+        "cta-glow",
+        "mobile-menu",
+        "fade-up"
+      ],
+      "pattern": "dark blue with purple glow CTA",
+      "tailwind": {
+        "radius": "0px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "ui-rocket",
+      "name": "UI Rocket",
+      "category": "AI UI Builder",
+      "theme": "dark",
+      "colors": {
+        "background": "#08020e",
+        "foreground": "#f5f0ff",
+        "card": "#110a1a",
+        "primary": "#a78bfa",
+        "secondary": "#1a0f26",
+        "muted": "#6b5b8a",
+        "accent": "#a78bfa",
+        "border": "#2a1a3a"
+      },
+      "fonts": [
+        "Inter",
+        "Instrument Serif"
+      ],
+      "components": [
+        "liquid-glass-strong",
+        "hero-vignette",
+        "gradient-text",
+        "dashboard-mock",
+        "chat-panel"
+      ],
+      "pattern": "deep purple-black with violet accents and glass panels",
+      "tailwind": {
+        "radius": "12px",
+        "darkMode": "class"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "brandly",
+      "name": "Brandly",
+      "category": "Branding Portfolio",
+      "theme": "light",
+      "colors": {
+        "background": "#F5F3EE",
+        "foreground": "#080808",
+        "card": "#FFFFFF",
+        "primary": "#080808",
+        "secondary": "#6B6B66",
+        "muted": "#A09890",
+        "border": "#E9E5DF"
+      },
+      "fonts": [
+        "Inter",
+        "Anton"
+      ],
+      "components": [
+        "clean-layout",
+        "large-typography",
+        "minimal-cards"
+      ],
+      "pattern": "warm beige with bold serif accents",
+      "tailwind": {
+        "radius": "0px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "ecovolta",
+      "name": "EcoVolt",
+      "category": "Solar Energy",
+      "theme": "light",
+      "colors": {
+        "background": "#F5F3EE",
+        "foreground": "#31463B",
+        "card": "#FFFFFF",
+        "primary": "#31463B",
+        "secondary": "#5A7A6A",
+        "muted": "#8A9A90",
+        "accent": "#4CAF50",
+        "border": "#D4DED8",
+        "success": "#2E7D32"
+      },
+      "fonts": [
+        "Inter"
+      ],
+      "components": [
+        "liquid-glass-light",
+        "green-gradient-cta",
+        "logo-marquee",
+        "feature-grid"
+      ],
+      "pattern": "eco green on warm cream with glass panels",
+      "tailwind": {
+        "radius": "8px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "mindloop",
+      "name": "MindLoop",
+      "category": "AI Newsletter",
+      "theme": "dark",
+      "colors": {
+        "background": "hsl(0, 0%, 0%)",
+        "foreground": "hsl(0, 0%, 100%)",
+        "card": "hsl(0, 0%, 5%)",
+        "primary": "hsl(0, 0%, 100%)",
+        "secondary": "hsl(0, 0%, 12%)",
+        "muted": "hsl(0, 0%, 65%)",
+        "accent": "hsl(170, 15%, 45%)",
+        "border": "hsl(0, 0%, 15%)"
+      },
+      "fonts": [
+        "Inter",
+        "Instrument Serif"
+      ],
+      "components": [
+        "liquid-glass",
+        "hero-vignette",
+        "search-section",
+        "cta-section",
+        "hls-video"
+      ],
+      "pattern": "pure black with teal glass accents",
+      "tailwind": {
+        "radius": "2px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "wanderful",
+      "name": "Wanderful",
+      "category": "Travel Platform",
+      "theme": "light",
+      "colors": {
+        "background": "#F3EBE4",
+        "foreground": "#1C1C1C",
+        "card": "#FFFFFF",
+        "primary": "#1C1C1C",
+        "secondary": "#6B6B66",
+        "muted": "#A09890",
+        "border": "#E0D8D0"
+      },
+      "fonts": [
+        "Inter",
+        "Helvetica"
+      ],
+      "components": [
+        "parallax-video",
+        "gem-card",
+        "destination-grid",
+        "marquee"
+      ],
+      "pattern": "warm travel aesthetic with parallax and large cards",
+      "tailwind": {
+        "radius": "32px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "cognitra",
+      "name": "Cognitra",
+      "category": "AI Automation Agency",
+      "theme": "light",
+      "colors": {
+        "background": "#FFFFFF",
+        "foreground": "#1A1A1A",
+        "card": "#F5F5F5",
+        "primary": "#1A1A1A",
+        "secondary": "#666666",
+        "muted": "#999999",
+        "border": "#E5E5E5"
+      },
+      "fonts": [
+        "Helvetica Now Var",
+        "Helvetica"
+      ],
+      "components": [
+        "scroll-bounce",
+        "statement-section",
+        "services-grid",
+        "fading-video"
+      ],
+      "pattern": "Swiss minimal monochrome with bold statements",
+      "tailwind": {
+        "radius": "0px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "acreage-nike",
+      "name": "Acreage Nike",
+      "category": "Nike Shoe Brand",
+      "theme": "dark",
+      "colors": {
+        "background": "#0A0A0A",
+        "foreground": "#FFFFFF",
+        "primary": "#FF4500",
+        "secondary": "#1A1A1A",
+        "muted": "#888888",
+        "border": "#333333"
+      },
+      "fonts": [
+        "Manrope",
+        "Instrument Serif"
+      ],
+      "components": [
+        "spotlight-reveal",
+        "bubble-menu",
+        "scroll-video",
+        "gsap-animations"
+      ],
+      "pattern": "Nike-inspired with GSAP scroll animations and spotlight effects",
+      "tailwind": {
+        "radius": "0px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "zenith-realty",
+      "name": "Zenith Realty",
+      "category": "Real Estate",
+      "theme": "light",
+      "colors": {
+        "background": "#F8F8F8",
+        "foreground": "#141414",
+        "card": "#FFFFFF",
+        "primary": "#141414",
+        "secondary": "#666666",
+        "muted": "#999999",
+        "border": "#E5E5E5"
+      },
+      "fonts": [
+        "Lato",
+        "sans-serif"
+      ],
+      "components": [
+        "property-card",
+        "investment-section",
+        "how-it-works",
+        "charts"
+      ],
+      "pattern": "clean corporate with property cards and data visualization",
+      "tailwind": {
+        "radius": "8px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "stretch-beauty",
+      "name": "Stretch Beauty",
+      "category": "Beauty E-commerce",
+      "theme": "light",
+      "colors": {
+        "background": "#FFFBF5",
+        "foreground": "#1A1A1A",
+        "card": "#FFFFFF",
+        "primary": "#1A1A1A",
+        "secondary": "#8B7355",
+        "muted": "#C4B5A0",
+        "accent": "#D4A574",
+        "border": "#E8DDD0"
+      },
+      "fonts": [
+        "Inter",
+        "system-ui"
+      ],
+      "components": [
+        "announcement-bar",
+        "best-sellers",
+        "categories",
+        "product-grid"
+      ],
+      "pattern": "warm luxury e-commerce with announcement bar",
+      "tailwind": {
+        "radius": "4px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "halo-usd",
+      "name": "Halo USD",
+      "category": "Crypto Stablecoin",
+      "theme": "dark",
+      "colors": {
+        "background": "#000000",
+        "foreground": "#FFFFFF",
+        "card": "#111111",
+        "primary": "#FFFFFF",
+        "secondary": "#888888",
+        "muted": "#666666",
+        "border": "#222222"
+      },
+      "fonts": [
+        "General Sans",
+        "Inter"
+      ],
+      "components": [
+        "brand-marquee",
+        "wallet-section",
+        "pill-button",
+        "backed-by"
+      ],
+      "pattern": "crypto sleek with investor logos and wallet integration",
+      "tailwind": {
+        "radius": "full"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "toonhub",
+      "name": "ToonHub",
+      "category": "NFT Collectibles",
+      "theme": "light",
+      "colors": {
+        "background": "#FFF8F0",
+        "foreground": "#1A1A1A",
+        "card": "#FFFFFF",
+        "primary": "#FF6B35",
+        "secondary": "#4A90D9",
+        "muted": "#999999",
+        "accent": "#FFD700",
+        "border": "#E8E0D8"
+      },
+      "fonts": [
+        "Outfit",
+        "Nunito"
+      ],
+      "components": [
+        "toon-nav",
+        "grain-overlay",
+        "nft-card",
+        "drop-countdown"
+      ],
+      "pattern": "playful cartoon with grain texture and rounded everything",
+      "tailwind": {
+        "radius": "16px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "bionova",
+      "name": "Bionova",
+      "category": "Bio Tech",
+      "theme": "light",
+      "colors": {
+        "background": "#F0F7F4",
+        "foreground": "#1A3A2A",
+        "card": "#FFFFFF",
+        "primary": "#1A3A2A",
+        "secondary": "#4A8A6A",
+        "muted": "#8AB4A0",
+        "accent": "#2E7D32",
+        "border": "#D0E8D8"
+      },
+      "fonts": [
+        "Poppins",
+        "sans-serif"
+      ],
+      "components": [
+        "hero-video",
+        "feature-grid",
+        "cta-section"
+      ],
+      "pattern": "bio-green with rounded friendly typography",
+      "tailwind": {
+        "radius": "12px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "jack-3d-creator",
+      "name": "Jack 3D Creator",
+      "category": "3D Portfolio",
+      "theme": "dark",
+      "colors": {
+        "background": "#0C0C0C",
+        "foreground": "#D7E2EA",
+        "card": "#161616",
+        "primary": "#D7E2EA",
+        "secondary": "#8899AA",
+        "muted": "#556677",
+        "border": "#2A2A2A"
+      },
+      "fonts": [
+        "Kanit",
+        "sans-serif"
+      ],
+      "components": [
+        "magnet-cursor",
+        "animated-text",
+        "projects-grid",
+        "marquee-section"
+      ],
+      "pattern": "3D artist portfolio with magnetic cursor effects",
+      "tailwind": {
+        "radius": "0px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "targo-logistics",
+      "name": "Targo Logistics",
+      "category": "Logistics",
+      "theme": "light",
+      "colors": {
+        "background": "#FFFFFF",
+        "foreground": "#1A1A2E",
+        "card": "#F8F9FA",
+        "primary": "#1A1A2E",
+        "secondary": "#4A5568",
+        "muted": "#A0AEC0",
+        "accent": "#E53E3E",
+        "border": "#E2E8F0"
+      },
+      "fonts": [
+        "Inter",
+        "sans-serif"
+      ],
+      "components": [
+        "clipped-button",
+        "consultation-card",
+        "hero-video"
+      ],
+      "pattern": "corporate logistics with red accent and clipped shapes",
+      "tailwind": {
+        "radius": "4px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "terra-geo",
+      "name": "Terra Geo",
+      "category": "Geospatial Platform",
+      "theme": "light",
+      "colors": {
+        "background": "hsl(0, 0%, 100%)",
+        "foreground": "hsl(222, 47%, 11%)",
+        "card": "hsl(210, 40%, 98%)",
+        "primary": "hsl(217, 89%, 57%)",
+        "secondary": "hsl(220, 14%, 96%)",
+        "muted": "hsl(220, 9%, 46%)",
+        "border": "hsl(214, 20%, 90%)"
+      },
+      "fonts": [
+        "Inter",
+        "sans-serif"
+      ],
+      "components": [
+        "builder-selection",
+        "grid-background",
+        "feature-cards"
+      ],
+      "pattern": "clean SaaS with blue primary and data visualization",
+      "tailwind": {
+        "radius": "8px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "rivr-defi",
+      "name": "Rivr DeFi",
+      "category": "DeFi Protocol",
+      "theme": "light",
+      "colors": {
+        "background": "#F0F0F0",
+        "foreground": "#1E325A",
+        "card": "#FFFFFF",
+        "primary": "#1E325A",
+        "secondary": "#4A6FA5",
+        "muted": "#8BA4C7",
+        "accent": "#3B82F6",
+        "border": "#D0D8E4"
+      },
+      "fonts": [
+        "Helvetica",
+        "sans-serif"
+      ],
+      "components": [
+        "hero-badge",
+        "protocol-stats",
+        "governance-section"
+      ],
+      "pattern": "fintech blue with data-heavy protocol layout",
+      "tailwind": {
+        "radius": "4px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "power-ai",
+      "name": "Power AI",
+      "category": "AI Platform",
+      "theme": "dark",
+      "colors": {
+        "background": "#0A0A0A",
+        "foreground": "#FFFFFF",
+        "card": "#141414",
+        "primary": "#FFFFFF",
+        "secondary": "#888888",
+        "muted": "#555555",
+        "border": "#222222"
+      },
+      "fonts": [
+        "Geist Sans",
+        "Inter"
+      ],
+      "components": [
+        "fading-video",
+        "feature-grid",
+        "logo-marquee"
+      ],
+      "pattern": "minimal dark with video backgrounds",
+      "tailwind": {
+        "radius": "0px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "linkflow",
+      "name": "LinkFlow",
+      "category": "Link-in-Bio",
+      "theme": "light",
+      "colors": {
+        "background": "#FFFFFF",
+        "foreground": "#1A1A1A",
+        "card": "#F5F5F5",
+        "primary": "#6366F1",
+        "secondary": "#4B5563",
+        "muted": "#9CA3AF",
+        "accent": "#8B5CF6",
+        "border": "#E5E7EB"
+      },
+      "fonts": [
+        "Inter",
+        "sans-serif"
+      ],
+      "components": [
+        "link-grid",
+        "profile-header",
+        "social-icons"
+      ],
+      "pattern": "link aggregator with purple accent",
+      "tailwind": {
+        "radius": "12px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "baby-track",
+      "name": "Baby Track",
+      "category": "Baby Tracking",
+      "theme": "light",
+      "colors": {
+        "background": "#FFF5F5",
+        "foreground": "#4A3728",
+        "card": "#FFFFFF",
+        "primary": "#E8758A",
+        "secondary": "#8B6F5E",
+        "muted": "#C4AFA0",
+        "accent": "#FFB5C5",
+        "border": "#F0E0D8"
+      },
+      "fonts": [
+        "Inter",
+        "sans-serif"
+      ],
+      "components": [
+        "branded-navbar",
+        "tracking-cards",
+        "milestone-grid"
+      ],
+      "pattern": "warm pastel baby tracking with pink accent",
+      "tailwind": {
+        "radius": "16px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "securify",
+      "name": "Securify",
+      "category": "Cybersecurity",
+      "theme": "dark",
+      "colors": {
+        "background": "#0D1117",
+        "foreground": "#C9D1D9",
+        "card": "#161B22",
+        "primary": "#58A6FF",
+        "secondary": "#8B949E",
+        "muted": "#484F58",
+        "accent": "#3FB950",
+        "border": "#30363D"
+      },
+      "fonts": [
+        "Inter",
+        "sans-serif"
+      ],
+      "components": [
+        "branded-navbar",
+        "security-grid",
+        "feature-cards"
+      ],
+      "pattern": "GitHub-dark inspired cybersecurity layout",
+      "tailwind": {
+        "radius": "6px"
+      },
+      "sourceFiles": [
+        "src/index.css",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "id": "superdesign",
+      "name": "Superdesign",
+      "category": "AI Design Platform",
+      "theme": "light",
+      "colors": {
+        "background": "#FAFAFA",
+        "foreground": "#0F0F0F",
+        "card": "#FFFFFF",
+        "primary": "#0F0F0F",
+        "secondary": "#F0F0F0",
+        "muted": "#6E6E6E",
+        "accent": "#0F0F0F",
+        "border": "#E5E5E5"
+      },
+      "fonts": [
+        "Inter Variable",
+        "JetBrains Mono"
+      ],
+      "components": [
+        "minimal-nav",
+        "template-gallery",
+        "feature-row",
+        "stat-banner",
+        "cta-strip"
+      ],
+      "pattern": "minimal light editorial: near-black type on off-white with sharp corners and mono accents",
+      "tailwind": {
+        "radius": "0px",
+        "darkMode": "class"
+      },
+      "sourceFiles": [
+        "index.html",
+        "styles.css"
+      ]
+    },
+    {
+      "id": "vanguard",
+      "name": "Vanguard",
+      "category": "Architecture Studio",
+      "theme": "light",
+      "colors": {
+        "background": "#FFFFFF",
+        "foreground": "#000000",
+        "card": "#FFFFFF",
+        "primary": "#000000",
+        "secondary": "#1A1A1A",
+        "muted": "#737373",
+        "accent": "#000000",
+        "border": "#E5E5E5"
+      },
+      "fonts": [
+        "Inter",
+        "system-ui"
+      ],
+      "components": [
+        "statement-hero",
+        "oversized-type",
+        "editorial-grid",
+        "work-listing",
+        "quiet-cta"
+      ],
+      "pattern": "brutalist monochrome editorial: oversized display type, full-bleed imagery, generous whitespace",
+      "tailwind": {
+        "radius": "0px",
+        "darkMode": "media"
+      },
+      "sourceFiles": [
+        "index.html",
+        "styles.css"
+      ]
+    },
+    {
+      "id": "aceternity-ui",
+      "name": "Aceternity UI",
+      "category": "Animation-First Marketing & SaaS",
+      "theme": "dark",
+      "colors": {
+        "background": "#09090b",
+        "foreground": "#fafafa",
+        "card": "#0a0a0b",
+        "primary": "#fafafa",
+        "secondary": "#27272a",
+        "muted": "#a1a1aa",
+        "accent": "#27272a",
+        "border": "#27272a"
+      },
+      "fonts": [
+        "Inter",
+        "Geist Mono",
+        "Laila"
+      ],
+      "components": [
+        "hero",
+        "navbar",
+        "bento-grid",
+        "marquee",
+        "card-hover",
+        "spotlight",
+        "aurora-background",
+        "meteor",
+        "grid-background",
+        "glowing-button",
+        "testimonials",
+        "pricing-table",
+        "feature-section",
+        "cta",
+        "footer"
+      ],
+      "pattern": "Dark neutral-zinc base (#09090b) with high-contrast white type and vivid gradient accents (blue #0099ff, purple #59168b, teal #00bb7f, amber #f99c00, pink #ff6568). Signature motion: aurora, meteor shower, spotlight, marquee, animated grid, shimmer, radar-spin, cell-ripple. shadcn-style CSS tokens + Tailwind utilities; class='dark' dual-theme.",
+      "tailwind": {
+        "radius": "8px",
+        "darkMode": "class"
+      },
+      "sourceFiles": [
+        "aceternity-catalog.json",
+        "public/preset-sites/aceternity-*/index.html"
+      ]
+    }
+  ],
+  "commonPatterns": {
+    "liquidGlass": {
+      "description": "Frosted glass effect used across 15+ projects",
+      "css": ".liquid-glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }",
+      "variants": [
+        "light (0.35 opacity)",
+        "strong (16-50px blur)",
+        "subtle (4px blur)"
+      ]
+    },
+    "gradientText": {
+      "description": "Gradient text effect for headings",
+      "css": ".gradient-text { background: linear-gradient(120deg, #e0e7ff, #a5b4fc, #67e8f9); -webkit-background-clip: text; color: transparent; }",
+      "variants": [
+        "violet-cyan",
+        "blue-white",
+        "gray",
+        "gold"
+      ]
+    },
+    "heroVignette": {
+      "description": "Dark overlay gradient on hero sections",
+      "css": ".hero-vignette { background: linear-gradient(180deg, rgba(0,0,0,0.45), transparent 35%, rgba(0,0,0,0.75) 72%, rgba(0,0,0,0.95)); }",
+      "variants": [
+        "linear",
+        "radial",
+        "scrim"
+      ]
+    },
+    "fadeInUp": {
+      "description": "Scroll-triggered fade-in-up animation",
+      "css": "@keyframes fadeInUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }",
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)"
+    },
+    "marquee": {
+      "description": "Infinite scrolling marquee for logos/content",
+      "css": "@keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }",
+      "usage": "Logo carousels, brand rows, scrolling text"
+    }
+  },
+  "themeCategories": {
+    "dark": [
+      "stellar-ai",
+      "viralmedia-ai",
+      "equilibrium",
+      "vaultshield",
+      "ui-rocket",
+      "mindloop",
+      "acreage-nike",
+      "halo-usd",
+      "jack-3d-creator",
+      "power-ai",
+      "securify"
+    ],
+    "light": [
+      "brandly",
+      "ecovolta",
+      "wanderful",
+      "cognitra",
+      "zenith-realty",
+      "stretch-beauty",
+      "toonhub",
+      "bionova",
+      "targo-logistics",
+      "terra-geo",
+      "rivr-defi",
+      "linkflow",
+      "baby-track"
+    ]
+  },
+  "fontCategories": {
+    "sans": [
+      "Inter",
+      "General Sans",
+      "Geist Sans",
+      "Lato",
+      "Poppins",
+      "Kanit",
+      "Outfit",
+      "Nunito",
+      "Barlow"
+    ],
+    "serif": [
+      "Instrument Serif"
+    ],
+    "display": [
+      "Anton",
+      "Helvetica Now Display Bold"
+    ],
+    "system": [
+      "system-ui",
+      "sans-serif"
+    ]
+  }
 }
