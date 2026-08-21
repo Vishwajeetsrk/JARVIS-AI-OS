@@ -243,7 +243,7 @@ export function DashboardView() {
         </section>
 
         {/* All Capabilities Matrix — answers all questions */}
-        <CapabilitiesMatrix onSelect={(label) => mCreate.mutate(`Help me with ${label}: `)} />
+        <CapabilitiesMatrix onSelect={(prompt) => mCreate.mutate(prompt)} />
 
         {/* Cognitive AI Thinking Presentation & Live Sandbox Playground */}
         <AIThinkingPresentation onExecutePrompt={(prompt) => mCreate.mutate(prompt)} />
