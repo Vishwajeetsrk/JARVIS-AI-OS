@@ -7,6 +7,7 @@
 import { google } from "@ai-sdk/google";
 import { createGroq } from "@ai-sdk/groq";
 import { createOllama } from "ollama-ai-provider";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { streamText } from "ai";
 
 export const OLLAMA_HOST = process.env.OLLAMA_HOST || "http://localhost:11434";
@@ -45,7 +46,16 @@ const GROQ_IDS = new Set([
   "groq/compound-mini",
 ]);
 
+const OPENROUTER_IDS = new Set([
+  "nvidia/nemotron-3.5-lightning:free",
+  "liquid/lfm-2.5-2.6b:free",
+  "z-ai/glm-5.2:free",
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "google/gemini-2.0-flash-exp:free",
+]);
+
 const isOllamaId = (id: string) => id.startsWith("ollama/");
+const isOpenRouterId = (id: string) => id.includes(":free") || OPENROUTER_IDS.has(id);
 const stripOllamaPrefix = (id: string) => id.replace(/^ollama\//, "");
 
 export async function ollamaHealthy(): Promise<boolean> {
@@ -91,6 +101,12 @@ function ollamaModel(modelId: string): ChatModel {
   return createOllama({ baseURL: OLLAMA_HOST })(stripOllamaPrefix(modelId)) as unknown as ChatModel;
 }
 
+function openRouterModel(modelId: string): ChatModel {
+  const key = process.env.OPENROUTER_API_KEY;
+  if (!key) throw new Error("OPENROUTER_API_KEY not set");
+  return createOpenAICompatible({ baseURL: "https://openrouter.ai/api/v1", apiKey: key, name: "openrouter" })(modelId) as unknown as ChatModel;
+}
+
 /**
  * Resolve a chat model id to a concrete AI-SDK model.
  * Returns { usedFallback: true } when the requested model could not be used
@@ -117,6 +133,13 @@ export async function resolveChatModel(requestedId: string): Promise<ResolvedMod
     const id = remapGemini(requestedId);
     if (process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
       return { model: geminiModel(id), provider: "gemini", modelId: requestedId, usedFallback: false };
+    }
+    return fallbackCloud(requestedId);
+  }
+
+  if (isOpenRouterId(requestedId)) {
+    if (process.env.OPENROUTER_API_KEY) {
+      return { model: openRouterModel(requestedId), provider: "groq" as any, modelId: requestedId, usedFallback: false };
     }
     return fallbackCloud(requestedId);
   }
@@ -169,5 +192,34 @@ async function fallbackCloud(originalId: string): Promise<ResolvedModel> {
   throw new Error(
     "No AI provider available: set GEMINI_API_KEY or GROQ_API_KEY, or start Ollama at " + OLLAMA_HOST,
   );
+}
+
+export function getBestModelForTask(task: string): string {
+  const t = task.toLowerCase();
+  if (t.includes("website") || t.includes("landing") || t.includes("portfolio") || t.includes("frontend") || t.includes("react") || t.includes("next.js")) return "gemini-flash-latest";
+  if (t.includes("app") || t.includes("mobile") || t.includes("android") || t.includes("ios") || t.includes("capacitor")) return "gemini-flash-latest";
+  if (t.includes("code") || t.includes("bug") || t.includes("refactor") || t.includes("api")) return "llama-3.3-70b-versatile";
+  if (t.includes("image") || t.includes("vision")) return "gemini-flash-latest";
+  return "gemini-flash-latest";
+}
+
+export function isQuotaError(err: any): boolean {
+  const msg = String(err?.message ?? err ?? "").toLowerCase();
+  return msg.includes("429") || msg.includes("quota") || msg.includes("rate limit") || msg.includes("exceeded") || msg.includes("resource exhausted");
+}
+
+export async function getFallbackChainForError(failedId: string): Promise<ResolvedModel[]> {
+  const chain: ResolvedModel[] = [];
+  const tried = new Set([failedId]);
+  const candidates = ["gemini-flash-latest", "llama-3.3-70b-versatile", "llama-3.1-8b-instant", "nvidia/nemotron-3.5-lightning:free", "gemini-flash-lite-latest"];
+  for (const id of candidates) {
+    if (tried.has(id)) continue;
+    try {
+      const r = await resolveChatModel(id);
+      chain.push(r);
+      tried.add(id);
+    } catch {}
+  }
+  return chain;
 }
 

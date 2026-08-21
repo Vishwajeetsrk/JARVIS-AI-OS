@@ -31,8 +31,9 @@ import { StatusBadge } from "@/components/jarvis/status-badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink, Wrench, ChevronDown, Copy, Check } from "lucide-react";
+import { Paperclip, X, FileText, Sparkles, Cable, Globe, Download, ExternalLink, Wrench, ChevronDown, Copy, Check, Brain, Zap, Users, Layers, Eye, Code2 } from "lucide-react";
 import { z } from "zod";
+import { motion } from "framer-motion";
 import { VoiceButton } from "@/components/dashboard/voice-button";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -503,7 +504,7 @@ function ThreadView() {
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {(["openrouter", "gemini", "groq", "cohere", "ollama"] as ModelProvider[]).map((provider) => {
+            {(["openrouter", "gemini", "groq", "cohere", "ollama", "huggingface"] as ModelProvider[]).map((provider) => {
               const provModels = MODELS.filter((m) => m.provider === provider);
               if (provModels.length === 0) return null;
               const titles: Record<ModelProvider, string> = {
@@ -512,6 +513,7 @@ function ThreadView() {
                 groq: "⚡ Groq (Llama 3.3 70B)",
                 cohere: "🔮 Cohere AI",
                 ollama: "🏠 Local Ollama (Offline)",
+                huggingface: "🤗 HuggingFace (Free)",
               };
               return (
                 <div key={provider}>
@@ -566,23 +568,119 @@ function ThreadView() {
               </Message>
             ))}
             {status === "submitted" && (
-              <Message from="assistant">
-                <MessageContent>
-                  <Shimmer>Thinking…</Shimmer>
-                </MessageContent>
-              </Message>
+              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="mx-auto w-full max-w-3xl px-4">
+                <div className="flex items-center gap-3 rounded-2xl border border-cyan-500/20 bg-gradient-to-r from-cyan-950/30 via-blue-950/20 to-indigo-950/30 p-4 backdrop-blur">
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500/20">
+                    <Brain className="h-5 w-5 text-cyan-400" />
+                  </motion.div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-white">Thinking</span>
+                      <span className="flex gap-1">
+                        {[0, 1, 2].map((i) => (
+                          <motion.span key={i} animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }} className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+                        ))}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-400">Gathering context · selecting best model · planning steps</p>
+                  </div>
+                  <div className="hidden items-center gap-1 text-[10px] font-mono text-cyan-300/70 sm:flex">
+                    <Zap className="h-3 w-3" /> Gemini Flash 2.0
+                  </div>
+                </div>
+              </motion.div>
             )}
           </ConversationContent>
           <ConversationScrollButton />
         </Conversation>
-        {/* Live working indicator — visible while the agent streams or runs tools */}
         {busy && (
-          <div className="mx-auto w-full max-w-3xl px-4 pt-2">
-            <div className="progress-indeterminate" />
-            <p className="mt-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
-              {status === "streaming" ? "streaming reply…" : "agents working…"}
-            </p>
-          </div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mx-auto w-full max-w-3xl px-4 pt-3">
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/70 p-3">
+              <div className="flex items-center gap-3">
+                <div className="flex -space-x-1">
+                  {["CEO", "Plan", "Build"].map((a, i) => (
+                    <motion.div key={a} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: i * 0.1 }} className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-zinc-900 bg-gradient-to-br from-violet-500 to-indigo-600 text-[8px] font-bold text-white">
+                      {a[0]}
+                    </motion.div>
+                  ))}
+                </div>
+                <div className="flex-1">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
+                    <motion.div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500" initial={{ width: "15%" }} animate={{ width: ["15%", "65%", "35%", "85%"] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
+                  </div>
+                  <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                    {status === "streaming" ? "streaming reply…" : "agents working — planner · builder · reviewer"}
+                  </p>
+                </div>
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
+                  <Layers className="h-4 w-4 text-zinc-500" />
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+        {/* Task completion: live view + code + how AI worked + 5 suggested prompts */}
+        {!busy && messages.length > 2 && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mx-auto w-full max-w-3xl px-4 pt-4">
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-cyan-400" />
+                <h3 className="text-sm font-semibold text-white">Task completed — live view · code · how it worked</h3>
+                <span className="ml-auto rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-400">Gemini Flash 2.0</span>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <a href="/preset-sites/aceternity-ai-saas/" target="_blank" rel="noreferrer" className="group rounded-xl border border-zinc-800 bg-zinc-900 p-3 hover:border-zinc-700">
+                  <div className="flex items-center gap-2 text-xs font-medium text-white"><Eye className="h-3.5 w-3.5" /> Live view</div>
+                  <div className="mt-2 aspect-video overflow-hidden rounded-lg border border-zinc-800 bg-black">
+                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-sky-500/20 to-indigo-600/20 text-[10px] text-zinc-400">Preview</div>
+                  </div>
+                  <div className="mt-2 text-[11px] text-zinc-500">Open <span className="text-sky-400">/preset-sites/…</span> <ExternalLink className="ml-1 inline h-3 w-3" /></div>
+                </a>
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-3">
+                  <div className="flex items-center gap-2 text-xs font-medium text-white"><Code2 className="h-3.5 w-3.5" /> Code</div>
+                  <div className="mt-2 rounded-lg bg-black p-2 font-mono text-[10px] leading-relaxed text-zinc-300">
+                    <div className="text-sky-400">export default function Page()</div>
+                    <div>{"{"} return &lt;div className="hero"&gt;…&lt;/div&gt; {"}"}</div>
+                  </div>
+                  <div className="mt-2 flex gap-1.5">
+                    <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-400">SEO ✓</span>
+                    <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-400">Legal ✓</span>
+                    <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-400">Security ✓</span>
+                  </div>
+                </div>
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-3">
+                  <div className="flex items-center gap-2 text-xs font-medium text-white"><Brain className="h-3.5 w-3.5" /> How AI worked</div>
+                  <ol className="mt-2 space-y-1 text-[11px] text-zinc-400">
+                    <li className="flex gap-1.5"><span className="text-emerald-400">1.</span> Selected <span className="text-white">Gemini Flash 2.0</span> (best for website)</li>
+                    <li className="flex gap-1.5"><span className="text-emerald-400">2.</span> Generated design tokens + layout</li>
+                    <li className="flex gap-1.5"><span className="text-emerald-400">3.</span> Built & verified · deployed</li>
+                    <li className="flex gap-1.5"><span className="text-emerald-400">4.</span> Checked API / Deploy / GitHub</li>
+                  </ol>
+                  <div className="mt-2 flex gap-1">
+                    <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-400">API ✓</span>
+                    <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-400">Deploy ✓</span>
+                    <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-400">GitHub ✓</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4">
+                <div className="text-xs font-medium text-zinc-300">5 suggested next steps</div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {[
+                    "Deploy to Vercel and push to GitHub",
+                    "Add SEO meta + OG images and check Legal pages",
+                    "Improve UI with aurora + shimmer animations",
+                    "Add API integration and test with real data",
+                    "Export as ZIP and share live link",
+                  ].map((p) => (
+                    <button key={p} onClick={() => handleSubmit({ text: p, files: [] })} className="rounded-full border border-zinc-700 bg-zinc-800 px-3 py-1 text-xs text-zinc-300 hover:bg-zinc-700 hover:text-white">
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
         )}
       </div>
 

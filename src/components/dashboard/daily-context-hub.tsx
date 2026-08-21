@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
   contextModeManager,
   type JarvisContextMode,
@@ -11,7 +12,7 @@ import {
 import {
   Briefcase, GraduationCap, Dumbbell, DollarSign, Target, Sparkles,
   CheckCircle2, Circle, Clock, Flame, ShieldAlert, Cpu, ArrowRight,
-  Sun, Moon, Zap, RefreshCw, Check
+  Sun, Moon, Zap, RefreshCw, Check, Mic
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -80,12 +81,17 @@ export function DailyContextHub() {
 
           {/* Context Switching Pills */}
           <div className="flex flex-wrap items-center gap-1.5">
-            {(Object.keys(CONTEXT_MODES) as JarvisContextMode[]).map((m) => {
+            {(Object.keys(CONTEXT_MODES) as JarvisContextMode[]).map((m, idx) => {
               const cfg = CONTEXT_MODES[m];
               const isSelected = activeMode === m;
               return (
-                <button
+                <motion.button
                   key={m}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.04, duration: 0.25 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => handleSwitchMode(m)}
                   className={`flex items-center gap-1 rounded-xl px-2.5 py-1 text-xs font-semibold transition-all ${
                     isSelected
@@ -101,11 +107,31 @@ export function DailyContextHub() {
                   {m === "gym" && <Dumbbell className="h-3 w-3" />}
                   {m === "review" && <Moon className="h-3 w-3" />}
                   {cfg.name.replace(" Mode", "")}
-                </button>
+                </motion.button>
               );
             })}
           </div>
         </div>
+
+        {/* 1b. Native Desktop Voice Assistant — Dynamic Context Aware */}
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mt-4 flex items-center justify-between rounded-xl border border-cyan-500/20 bg-gradient-to-r from-cyan-950/30 to-blue-950/20 p-3">
+          <div className="flex items-center gap-3">
+            <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity }} className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/20">
+              <Mic className="h-4 w-4 text-cyan-400" />
+            </motion.div>
+            <div>
+              <div className="text-xs font-semibold text-white">Native Desktop Voice Assistant</div>
+              <div className="text-[11px] text-zinc-400">“Hey Jarvis” · {currentModeConfig.name} · {isOnline ? "Online" : "Local"}</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="flex h-2 w-2">
+              <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+            </span>
+            <span className="text-[11px] font-medium text-emerald-400">Listening · {activeMode}</span>
+          </div>
+        </motion.div>
 
         {/* 2. 12:00 PM Daily Planning Matrix (5 Pillars) */}
         <div className="mt-4">
