@@ -69,7 +69,7 @@ Traditional AI chatbots **forget everything** the moment you close the tab. **JA
 * **Drag-and-Drop Custom Models**: Drop any `.vrm` 3D character file onto the dashboard to customize your assistant!
 
 ### 🎙️ 2. Native Desktop Voice Assistant (Echo Guard & Wake Words)
-* **Wake Words**: Say *"Hey Nisha"*, *"Nisha"*, *"Hey Jarvis"*, or *"Jarvis"*.
+* **Wake Words**: Say *"Hey User"*, *"User"*, *"Hey Jarvis"*, or *"Jarvis"*.
 * **Echo Guard Technology**: Automatically mutes the microphone while speaking so Jarvis **never hears or loops its own voice**.
 * **Speech Stitcher**: Intelligently stitches natural pauses together before executing commands.
 * **Low Latency**: Sub-50ms instant response execution on your laptop.
