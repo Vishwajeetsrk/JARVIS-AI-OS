@@ -41,6 +41,14 @@ function loadAgentTeam(): { count: number; names: string[] } {
   return { count: AGENT_ROSTER.length, names: AGENT_ROSTER };
 }
 
+function isSimpleRAG(text: string): boolean {
+  const t = text.toLowerCase();
+  const complex = ["create", "build", "generate", "clone", "hack", "deploy", "write file", "execute shell", "run code", "make a", "design a"];
+  if (complex.some((k) => t.includes(k))) return false;
+  const simple = ["summarize", "explain", "what is", "why", "how does", "tell me", "describe", "what are", "summarize the last"];
+  return simple.some((k) => t.includes(k)) || t.split(/\s+/).length < 15;
+}
+
 function buildBaseSystem(agents: string[]): string {
   const roster = agents.length ? ` (${agents.join(", ")})` : "";
   const masterContext = unifiedMemory.assembleContextForPrompt("");
@@ -1887,6 +1895,26 @@ export const Route = createFileRoute("/api/chat")({
             } catch {}
           }
 
+          // Fast path for simple RAG — bypass full agent loop for <800ms first token
+          const _lastUser = [...requestMessages].reverse().find((m) => m.role === "user");
+          const _lastText = _lastUser
+            ? Array.isArray((_lastUser as any).parts)
+              ? (_lastUser as any).parts.map((p: any) => (p?.type === "text" ? p.text : "")).join(" ")
+              : ""
+            : "";
+          if (_lastText && isSimpleRAG(_lastText)) {
+            const fastResult = streamText({
+              model: aiModel as any,
+              system,
+              messages: await convertToModelMessages(requestMessages),
+              stopWhen: isStepCount(1),
+            });
+            return fastResult.toUIMessageStreamResponse({
+              originalMessages: requestMessages,
+              headers: { "X-Jarvis-Model": resolved.modelId + (resolved.usedFallback ? " (fallback)" : "") },
+            });
+          }
+
           const result = streamText({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             model: aiModel as any,
@@ -1901,6 +1929,7 @@ export const Route = createFileRoute("/api/chat")({
           });
 
           const streamResponse = result.toUIMessageStreamResponse({
+            headers: { "X-Jarvis-Model": resolved.modelId + (resolved.usedFallback ? " (fallback)" : "") },
             originalMessages: requestMessages,
             onFinish: async ({ messages }) => {
               if (!userId || !body.threadId) return;

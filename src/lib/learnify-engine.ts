@@ -52,18 +52,18 @@ export interface DesignRecreationResult {
 
 // Get all learned designs
 export function listLearnedDesigns(): LearnedDesign[] {
-  return learnifyData.designSystems;
+  return learnifyData.designSystems as unknown as LearnedDesign[];
 }
 
 // Get a specific learned design
 export function getLearnedDesign(id: string): LearnedDesign | undefined {
-  return learnifyData.designSystems.find(d => d.id === id);
+  return (learnifyData.designSystems as unknown as LearnedDesign[]).find(d => d.id === id);
 }
 
 // Search designs by keyword
 export function searchLearnedDesigns(query: string): LearnedDesign[] {
   const q = query.toLowerCase();
-  return learnifyData.designSystems.filter(d =>
+  return (learnifyData.designSystems as unknown as LearnedDesign[]).filter(d =>
     d.name.toLowerCase().includes(q) ||
     d.category.toLowerCase().includes(q) ||
     d.pattern.toLowerCase().includes(q) ||
@@ -73,7 +73,7 @@ export function searchLearnedDesigns(query: string): LearnedDesign[] {
 
 // Get designs by theme
 export function getDesignsByTheme(theme: "dark" | "light"): LearnedDesign[] {
-  return learnifyData.designSystems.filter(d => d.theme === theme);
+  return (learnifyData.designSystems as unknown as LearnedDesign[]).filter(d => d.theme === theme);
 }
 
 // Get common patterns

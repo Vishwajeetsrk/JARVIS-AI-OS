@@ -126,12 +126,12 @@ function useCountUp(target: number, duration = 1500) {
 function StatCard({ value, label, suffix }: { value: number; label: string; suffix: string }) {
   const { count, ref } = useCountUp(value);
   return (
-    <div ref={ref} className="text-center rounded-2xl border border-border bg-card/60 p-5 shadow-sm">
+    <motion.div ref={ref} whileHover={{ scale: 1.03, y: -2 }} transition={{ type: "spring", stiffness: 300 }} className="text-center rounded-2xl border border-border bg-card/60 p-5 shadow-sm">
       <div className="font-display text-4xl font-extrabold text-cyan-400 md:text-5xl">
         {count}{suffix}
       </div>
       <div className="mt-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -269,10 +269,15 @@ function LandingPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {CORE_MODULES.map((m) => (
-            <div
+          {CORE_MODULES.map((m, idx) => (
+            <motion.div
               key={m.title}
-              className={`rounded-2xl border bg-gradient-to-b p-6 transition-all hover:-translate-y-1 hover:shadow-xl ${m.highlight} bg-slate-900/70 backdrop-blur-md`}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.05, duration: 0.4 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              className={`rounded-2xl border bg-gradient-to-b p-6 hover:shadow-xl ${m.highlight} bg-slate-900/70 backdrop-blur-md`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white">
@@ -284,7 +289,7 @@ function LandingPage() {
               </div>
               <h3 className="mt-4 font-display text-lg font-bold text-white">{m.title}</h3>
               <p className="mt-2 text-xs leading-relaxed text-slate-300">{m.body}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>

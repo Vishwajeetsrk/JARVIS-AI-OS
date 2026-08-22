@@ -136,6 +136,12 @@ fn open_local_path(path: String) -> Result<(), String> {
         .map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn move_to_recycle_bin(path: String) -> Result<(), String> {
+    let p = resolve(&path);
+    trash::delete(&p).map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -154,7 +160,8 @@ pub fn run() {
             copy_local_path,
             move_local_path,
             delete_local_path,
-            open_local_path
+            open_local_path,
+            move_to_recycle_bin
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
