@@ -263,11 +263,14 @@ function ClaudeHome() {
               { slug: "aceternity-ai-saas", title: "Aceternity AI SaaS", accent: "from-sky-500/20 to-blue-600/10" },
               { slug: "aceternity-nodus-agent", title: "Nodus Agent", accent: "from-purple-500/20 to-violet-600/10" },
               { slug: "aceternity-productized-agency", title: "Productized Agency", accent: "from-emerald-500/20 to-teal-600/10" },
+              { slug: "aceternity-simplistic-saas", title: "Simplistic SaaS", accent: "from-amber-500/20 to-orange-600/10" },
+              { slug: "aceternity-cryptgen-marketing", title: "Cryptgen Marketing", accent: "from-cyan-500/20 to-teal-600/10" },
+              { slug: "aceternity-playful-marketing", title: "Playful Marketing", accent: "from-pink-500/20 to-rose-600/10" },
             ].map((p) => (
-              <div key={p.slug} className={`flex flex-col rounded-xl border border-zinc-800 bg-gradient-to-b p-3 ${p.accent}`}>
+              <div key={p.slug} className={`flex flex-col rounded-xl border border-zinc-800 bg-gradient-to-b p-3 ${p.accent} hover:border-zinc-700 transition-colors`}>
                 <div className="text-sm font-medium text-white">{p.title}</div>
                 <div className="mt-1 text-[11px] text-zinc-400">/preset-sites/{p.slug}/</div>
-                <div className={`mt-3 overflow-hidden rounded-lg border border-zinc-700 bg-black ${previewDevice === "mobile" ? "mx-auto max-w-[320px]" : previewDevice === "tablet" ? "mx-auto max-w-[500px]" : "w-full"}`} style={{ height: previewDevice === "mobile" ? 220 : previewDevice === "tablet" ? 200 : 180 }}>
+                <div className={`mt-3 overflow-hidden rounded-xl border border-zinc-700 bg-black shadow-lg ${previewDevice === "mobile" ? "mx-auto max-w-[360px]" : previewDevice === "tablet" ? "mx-auto max-w-[600px]" : "w-full"}`} style={{ height: previewDevice === "mobile" ? 320 : previewDevice === "tablet" ? 280 : 240 }}>
                   <iframe src={`/preset-sites/${p.slug}/`} title={p.title} className="h-full w-full border-0" loading="lazy" />
                 </div>
                 <div className="mt-3 flex flex-wrap gap-1.5">
@@ -277,6 +280,11 @@ function ClaudeHome() {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="mt-4 flex justify-center">
+            <Link to="/console/design" className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-2 text-xs font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white">
+              <Eye className="h-4 w-4" /> View all 67 live sites · code · recreation
+            </Link>
           </div>
           <Dialog open={!!codeSite} onOpenChange={(o) => !o && setCodeSite(null)}>
             <DialogContent className="max-h-[80vh] max-w-3xl overflow-hidden bg-zinc-950">
