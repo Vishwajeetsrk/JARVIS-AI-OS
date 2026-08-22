@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
   head: () => ({
     meta: [
-      { title: "JARVIS AI OS v2.6.0 — Persistent-Memory Autonomous Operating System" },
+      { title: "JARVIS AI OS v2.7.0 — Persistent-Memory Autonomous Operating System" },
       {
         name: "description",
         content:
@@ -47,7 +47,7 @@ const CORE_MODULES = [
   {
     icon: Video,
     title: "Screen Recording & Demo Studio",
-    tag: "NEW IN v2.6.0",
+    tag: "NEW IN v2.7.0",
     body: "Native 60fps WebRTC recording for full screens, windows, or browser tabs with teleprompter and PIP webcam.",
     highlight: "from-red-500/20 via-pink-500/10 to-transparent border-red-500/30"
   },
@@ -89,11 +89,13 @@ const CORE_MODULES = [
 ];
 
 const SURFACES = [
-  { title: "Web Console", icon: Monitor, link: "/console", sub: "React 19 + TanStack Hub" },
+  { title: "Windows Desktop", icon: Monitor, link: "/console", sub: "Tauri 2.7 · Recycle Bin Safe" },
+  { title: "macOS + Linux", icon: Laptop, link: "/console", sub: "60 FPS Console · 72 Skills" },
   { title: "Voice Daemon", icon: Zap, link: "/console", sub: "Python 3.10 + Echo Guard" },
-  { title: "Terminal CLI", icon: Terminal, link: "/console", sub: "npx tsx cli/index.ts" },
-  { title: "Android Companion", icon: Smartphone, link: "/console", sub: "Capacitor Mobile APK" },
-  { title: "Offline Local AI", icon: Brain, link: "/console", sub: "Ollama + Llama 3" },
+  { title: "Terminal CLI", icon: Terminal, link: "/console", sub: "npx tsx cli/index.ts · 12 cmds" },
+  { title: "Android Companion", icon: Smartphone, link: "/console", sub: "Capacitor APK · PWA" },
+  { title: "iOS PWA", icon: Apple, link: "/console", sub: "Safari · http://<IP>:8080" },
+  { title: "Cloud PWA", icon: Globe, link: "https://jarvisaios.vercel.app", sub: "67 live sites · 27 systems" },
 ];
 
 function useCountUp(target: number, duration = 1500) {
@@ -158,7 +160,7 @@ function LandingPage() {
           className="inline-flex items-center gap-2 text-cyan-300 font-semibold hover:underline"
         >
           <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
-          <span>🚀 JARVIS AI OS v2.6.0 Released — Screen Recording Studio & Windows Boot Live!</span>
+          <span>🚀 JARVIS AI OS v2.7.0 Released — Screen Recording Studio & Windows Boot Live!</span>
           <span className="rounded bg-cyan-500/20 px-2 py-0.5 text-[10px] text-cyan-300">View Releases →</span>
         </a>
       </div>
@@ -172,13 +174,13 @@ function LandingPage() {
           {/* Holographic Arc Reactor */}
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.15, duration: 0.5 }} className="cursor-pointer transition-transform hover:scale-105">
             <Link to="/console" title="Click to Launch JARVIS Command Console">
-              <ArcReactorHud size={190} state="listening" audioLevel={0.5} statusText="JARVIS CORE // v2.6.0 ACTIVE" />
+              <ArcReactorHud size={190} state="listening" audioLevel={0.5} statusText="JARVIS CORE // v2.7.0 ACTIVE" />
             </Link>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.4 }} className="flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-950/30 px-3.5 py-1 text-xs font-mono text-cyan-300 shadow-sm">
             <JarvisStar size={14} className="text-cyan-400" />
-            <span>v2.6.0 · Persistent-Memory Autonomous Personal AI-OS</span>
+            <span>v2.7.0 · Persistent-Memory Autonomous Personal AI-OS</span>
           </motion.div>
 
           <motion.h1 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }} className="font-display text-4xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
@@ -213,7 +215,7 @@ function LandingPage() {
               rel="noreferrer"
               className="flex items-center gap-2 rounded-xl border border-purple-500/30 bg-purple-950/20 px-5 py-3.5 text-sm font-medium text-purple-300 hover:bg-purple-900/30 transition-all"
             >
-              <Download className="h-4 w-4 text-purple-400" /> Releases (v2.6.0)
+              <Download className="h-4 w-4 text-purple-400" /> Releases (v2.7.0)
             </a>
           </motion.div>
 
@@ -256,7 +258,7 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ── Core Feature Matrix (v2.6.0) ────────────────────────────── */}
+      {/* ── Core Feature Matrix (v2.7.0) ────────────────────────────── */}
       <section className="mx-auto max-w-6xl px-6 py-20">
         <div className="mb-12 text-center">
           <span className="font-mono text-xs text-cyan-400 uppercase tracking-widest">Built-In Superpowers</span>
@@ -294,23 +296,31 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ── 5 Surfaces Architecture ─────────────────────────────────── */}
+      {/* ── 7 Surfaces Architecture ─────────────────────────────────── */}
       <section className="border-y border-slate-800/80 bg-slate-900/30 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mb-12 text-center">
-            <span className="font-mono text-xs text-purple-400 uppercase tracking-widest">Cross-Platform Sync</span>
+            <span className="font-mono text-xs text-purple-400 uppercase tracking-widest">Cross-Platform Sync · v2.7.0</span>
             <h2 className="mt-2 font-display text-3xl font-extrabold text-white sm:text-4xl">
-              5 Front Doors. One Master Brain.
+              7 Front Doors. One Master Brain.
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-5">
-            {SURFACES.map((s) => (
-              <div key={s.title} className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 text-left hover:border-slate-700 transition-all">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
+            {SURFACES.map((s, idx) => (
+              <motion.div
+                key={s.title}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.05, duration: 0.3 }}
+                whileHover={{ y: -3, scale: 1.02 }}
+                className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 text-left hover:border-slate-700 transition-all hover:shadow-lg hover:shadow-cyan-500/5"
+              >
                 <s.icon className="h-6 w-6 text-cyan-400 mb-3" />
                 <div className="font-display text-base font-bold text-white">{s.title}</div>
                 <div className="mt-1 font-mono text-[11px] text-slate-400">{s.sub}</div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

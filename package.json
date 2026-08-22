@@ -1,7 +1,7 @@
 {
   "name": "vishwajeet-ai-os",
-  "version": "2.6.0",
-  "description": "JARVIS AI OS - persistent-memory AI operating system with 24 agents, 53 design systems, and 22 live project sites",
+  "version": "2.7.0",
+  "description": "JARVIS AI OS - persistent-memory AI operating system with 24 agents, 67 live sites, 27 design systems, 26 capabilities",
   "bin": {
     "jarvis": "./cli/index.ts"
   },

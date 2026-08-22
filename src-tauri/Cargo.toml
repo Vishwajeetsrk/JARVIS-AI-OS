@@ -1,6 +1,6 @@
 [package]
 name = "jarvis-ai-os"
-version = "2.5.6"
+version = "2.7.0"
 description = "Jarvis AI OS — AI Operating System"
 authors = ["Vishwajeet"]
 edition = "2021"

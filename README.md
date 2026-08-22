@@ -262,19 +262,19 @@ Once your voice assistant is running, say:
 
 ---
 
-## 🌍 Universal Cross-Platform Support
+## 🌍 Universal Cross-Platform Support — v2.7.0
 
-JARVIS AI OS runs seamlessly across every device and operating system:
+JARVIS AI OS runs seamlessly across **7 surfaces** — one brain, every device:
 
-| Platform | Interface | Execution Method | Capabilities |
+| Platform | Interface | Execution Method | Capabilities (v2.7.0) |
 | :--- | :--- | :--- | :--- |
-| **Windows Laptop / PC** | 🖥️ Tauri Native Desktop App | Install `Jarvis-AI-OS-Setup.exe` | Native desktop app, auto-start on boot, local file access (read/write/copy/move), media playback, 3D VRoid Avatar, Web Console, Python Voice Assistant with Echo Guard |
-| **MacBook / macOS** | 🍎 Native Terminal + Web App | `npm run dev` / `npx tsx cli/index.ts` | 60 FPS Web Console, Full Screen Recording Studio, Terminal CLI Suite, 72 Skills |
-| **Linux (Ubuntu/Arch)** | 🐧 Terminal + Browser Shell | `git clone` & `npm run dev` | Headless & GUI agent orchestration, Mastra TS workflows, Ollama offline inference |
-| **Android Phone / Tablet** | 📱 Capacitor Native APK / PWA | Double-click `Install-On-Phone.bat` | Portable companion, WiFi remote control, live task matrix & voice command bridge |
-| **iPhone / iPad (iOS)** | 🍏 Safari PWA / Local Network | Open `http://<LAPTOP-IP>:8080/console` | 3D Arc Reactor HUD, mobile context switcher, responsive task management |
-| **Terminal / SSH** | ⌨️ Global Command-Line Suite | `npx tsx cli/index.ts [cmd]` | 12+ headless power commands: `plan`, `scan`, `record`, `lessons`, `skill:install` |
-| **Cloud Web Console** | 🌐 Browser PWA | [jarvisaios.vercel.app](https://jarvisaios.vercel.app) | Public specs, 53 design system kits, 47 learned design systems, live demo sandbox |
+| **Windows Laptop / PC** | 🖥️ Tauri Native Desktop App | Install `Jarvis-AI-OS-Setup.exe` (or `.msi`) | Native desktop app, auto-start on boot, **Recycle Bin safe** (`move_to_recycle_bin`), local file access (read/write/copy/move), media playback, 3D VRoid Avatar, Web Console, Python Voice Assistant with Echo Guard, 26-domain Capabilities Matrix |
+| **MacBook / macOS** | 🍎 Native Terminal + Web App | `npm run dev` / `npx tsx cli/index.ts` | 60 FPS Web Console, Full Screen Recording Studio, Terminal CLI Suite, 72 Skills, `motion` hero + `CapabilitiesMatrix` |
+| **Linux (Ubuntu/Arch)** | 🐧 Terminal + Browser Shell | `git clone` & `npm run dev` | Headless & GUI agent orchestration, Mastra TS workflows, Ollama offline inference, `isSimpleRAG` <800ms fast path |
+| **Android Phone / Tablet** | 📱 Capacitor Native APK / PWA | Double-click `Install-On-Phone.bat` | Portable companion, WiFi remote control, live task matrix & voice command bridge, responsive `Chat/Cowork` |
+| **iPhone / iPad (iOS)** | 🍏 Safari PWA / Local Network | Open `http://<LAPTOP-IP>:8080/console` | 3D Arc Reactor HUD, mobile context switcher, responsive task management, `All Capabilities` grid |
+| **Terminal / SSH** | ⌨️ Global Command-Line Suite | `npx tsx cli/index.ts [cmd]` | 12+ headless power commands: `plan`, `scan`, `record`, `lessons`, `skill:install`, `X-Jarvis-Model` header |
+| **Cloud Web Console** | 🌐 Browser PWA | [jarvisaios.vercel.app](https://jarvisaios.vercel.app) | Public specs, 67 live `preset-sites` (12 Aceternity), 27 design systems, live preview + code + recreation, `isSimpleRAG` |
 
 ---
 
