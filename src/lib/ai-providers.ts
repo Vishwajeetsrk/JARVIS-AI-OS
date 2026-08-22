@@ -189,6 +189,53 @@ async function fallbackCloud(originalId: string): Promise<ResolvedModel> {
     return { model: ollamaModel("llama3.3"), provider: "ollama", modelId: "ollama/llama3.3", usedFallback: true };
   }
 
+  // Graceful Mock Demo Provider fallback if no keys configured
+  if (process.env.AI_PROVIDER === "mock" || !geminiKey && !groqKey) {
+    const mockModel: ChatModel = {
+      specificationVersion: "v1",
+      provider: "mock",
+      modelId: "mock-nia-assistant",
+      defaultObjectGenerationMode: "json",
+      async doGenerate() {
+        return {
+          text: "I am Nia, your 3D AI companion. I'm currently running in Local Demo Mode. I can help you organize your workspace, generate presentations, polish prompts, or chat via voice and text!",
+          finishReason: "stop",
+          usage: { promptTokens: 10, completionTokens: 30 },
+          rawCall: { rawPrompt: null, rawSettings: {} },
+        };
+      },
+      async doStream() {
+        const text = "I am Nia, your 3D AI companion. I'm currently running in Local Demo Mode. I'm ready to help you manage your workspace, optimize prompts, or chat!";
+        const words = text.split(" ");
+        const stream = new ReadableStream({
+          async start(controller) {
+            for (const word of words) {
+              controller.enqueue({
+                type: "text-delta",
+                textDelta: word + " ",
+              });
+              await new Promise((r) => setTimeout(r, 40));
+            }
+            controller.enqueue({
+              type: "finish",
+              finishReason: "stop",
+              usage: { promptTokens: 10, completionTokens: words.length },
+            });
+            controller.close();
+          },
+        });
+        return { stream, rawCall: { rawPrompt: null, rawSettings: {} } };
+      },
+    } as unknown as ChatModel;
+
+    return {
+      model: mockModel,
+      provider: "gemini" as any,
+      modelId: "mock-nia-demo",
+      usedFallback: true,
+    };
+  }
+
   throw new Error(
     "No AI provider available: set GEMINI_API_KEY or GROQ_API_KEY, or start Ollama at " + OLLAMA_HOST,
   );

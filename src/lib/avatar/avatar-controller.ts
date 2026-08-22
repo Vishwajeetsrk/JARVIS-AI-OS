@@ -175,6 +175,18 @@ export class AvatarController {
     this.emit();
   }
 
+  public setListening(isListening: boolean): void {
+    this.isListening = isListening;
+    if (isListening) {
+      this.currentState = "LISTENING";
+      this.currentEmotion = "attentive";
+    } else if (this.currentState === "LISTENING") {
+      this.currentState = "IDLE";
+      this.currentEmotion = "neutral";
+    }
+    this.emit();
+  }
+
   public lookAt(target: { x: number; y: number }): void {
     this.eyeTarget = target;
   }

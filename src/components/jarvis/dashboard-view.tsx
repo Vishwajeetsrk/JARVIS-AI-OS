@@ -1,4 +1,4 @@
-﻿import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type ReactNode } from "react";
@@ -34,6 +34,7 @@ import { getDashboardStats, getEngineStatus } from "@/lib/dashboard.functions";
 import { createThread } from "@/lib/threads.functions";
 import { toast } from "sonner";
 import { CapabilitiesMatrix } from "@/components/jarvis/capabilities-matrix";
+import { VidaSotaHub } from "@/components/dashboard/vida-sota-hub";
 
 function SectionCard({
   title,
@@ -241,6 +242,9 @@ export function DashboardView() {
             ))}
           </div>
         </section>
+
+        {/* VIDA SOTA Autonomous 7-Tool Hub */}
+        <VidaSotaHub />
 
         {/* All Capabilities Matrix — answers all questions */}
         <CapabilitiesMatrix onSelect={(prompt) => mCreate.mutate(prompt)} />
