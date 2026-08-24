@@ -11,15 +11,19 @@
   "app": {
     "windows": [
       {
-        "title": "Jarvis AI OS",
-        "width": 1280,
-        "height": 800,
-        "minWidth": 800,
-        "minHeight": 600,
+        "label": "main",
+        "title": "Nia AI Companion",
+        "url": "/companion",
+        "width": 380,
+        "height": 580,
+        "minWidth": 260,
+        "minHeight": 380,
         "resizable": true,
         "fullscreen": false,
-        "decorations": true,
-        "transparent": false
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "shadow": false
       }
     ],
     "security": {
