@@ -3,344 +3,184 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { JarvisStar, JarvisWordmark } from "@/components/jarvis/logo";
 import { MarketingNav, MarketingFooter } from "@/components/jarvis/marketing-nav";
-import heroImg from "@/assets/console-hero.jpg";
 import { StatusBadge } from "@/components/jarvis/status-badge";
-import { ArcReactorHud } from "@/components/jarvis/arc-reactor-hud";
 import {
   CheckCircle2, ShieldCheck, Zap, Globe, Cpu, Smartphone, Monitor, Terminal,
   Radio, TrendingUp, Users, MemoryStick, Sparkles, ArrowRight, GitBranch,
   Database, Brain, Infinity, Download, ExternalLink, AppWindow, Apple,
-  Laptop, Video, Briefcase, Award, HardDrive, Play, Flame, Layers, Star
+  Laptop, Video, Briefcase, Award, HardDrive, Play, Flame, Layers, Star,
+  MessageSquare, Wand2, FileText, Trash2, Calendar, Presentation, FileSpreadsheet
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
   head: () => ({
     meta: [
-      { title: "JARVIS AI OS v2.7.0 — Persistent-Memory Autonomous Operating System" },
+      { title: "Viskey & Vida — Your Proactive 3D AI Work Partner (JARVIS AI OS)" },
       {
         name: "description",
         content:
-          "JARVIS AI OS: Persistent memory, 3D VRoid companion avatar, 9 autonomous agents, screen recording studio, and office CRM workflow automation.",
+          "Local-first Windows 3D AI companion, 100 SOTA use cases, executive Excel dashboard generator, PPTX presentation studio, and persistent memory.",
       },
     ],
   }),
 });
 
-const AGENTS = [
-  "Lead Orchestrator", "Work & CRM Agent", "Learning & Code Mentor", "Career & Resume Agent",
-  "Project & Product Agent", "YouTube Growth Agent", "Side Income Agent", "Memory Governance",
-  "Automation Daemon", "saas-builder", "voice-echo-guard", "storage-health-agent"
+const SOTA_CASES = [
+  { id: "reply", title: "Reply Savior", desc: "Contextual message responder with 6 calibrated tones.", icon: MessageSquare, tag: "Communication" },
+  { id: "prompt", title: "Keyword & Prompt Savior", desc: "Transforms rough thoughts into production-ready prompts.", icon: Wand2, tag: "AI Engineering" },
+  { id: "resume", title: "Resume Savior", desc: "ATS-optimized career highlights with authentic verified facts.", icon: FileText, tag: "Career" },
+  { id: "cleanup", title: "Workspace Janitor", desc: "Safe file scanning with Windows Recycle Bin staging.", icon: Trash2, tag: "System" },
+  { id: "wrap", title: "Daily Review & Wrap", desc: "End-of-day accomplishment audit and tomorrow's top 5.", icon: Calendar, tag: "Productivity" },
+  { id: "research", title: "Market & Investment Research", desc: "Intelligence briefs separating verified facts from assumptions.", icon: TrendingUp, tag: "Intelligence" },
+  { id: "presentation", title: "Presentation Generation", desc: "16:9 widescreen master decks with KPI callouts.", icon: Presentation, tag: "Studio" },
+  { id: "sheet", title: "Spreadsheet Generation", desc: "Multi-sheet workbooks with KPI dashboard cards & formulas.", icon: FileSpreadsheet, tag: "Finance" },
 ];
 
-const CONTEXT_MODES = [
-  { id: "focus", name: "🧠 Focus Mode", desc: "Silences distractions, starts 30-min deep work timer." },
-  { id: "work", name: "💼 Work Mode", desc: "CRM & Razorpay 7-step donation reconciliation pipeline." },
-  { id: "build", name: "🚀 Builder Mode", desc: "Project architecture for Wardelio, Learnify AI & JARVIS." },
-  { id: "gym", name: "🏋️ Gym Mode", desc: "Strength workout routine, rest timers, and hydration." },
-  { id: "learn", name: "🎓 Learn Mode", desc: "Senior tutor: Concept ➔ Exercise ➔ Real Project Code." },
-  { id: "business", name: "💰 Business Mode", desc: "Tracks 4 revenue streams (Services, UI Kits, Micro-SaaS)." },
-  { id: "review", name: "🌙 Daily Review", desc: "Review accomplishments and roll over tomorrow's top 5." },
-];
-
-const CORE_MODULES = [
-  {
-    icon: Video,
-    title: "Screen Recording & Demo Studio",
-    tag: "NEW IN v2.7.0",
-    body: "Native 60fps WebRTC recording for full screens, windows, or browser tabs with teleprompter and PIP webcam.",
-    highlight: "from-red-500/20 via-pink-500/10 to-transparent border-red-500/30"
-  },
-  {
-    icon: Sparkles,
-    title: "3D VRoid Companion (Lumi × Lyra)",
-    tag: "60 FPS RENDER",
-    body: "Interactive 3D humanoid avatar with real-time mouse eye-tracking, breathing, blinking, and viseme lip-sync.",
-    highlight: "from-cyan-500/20 via-blue-500/10 to-transparent border-cyan-500/30"
-  },
-  {
-    icon: HardDrive,
-    title: "Laptop Health & Storage Scanner",
-    tag: "SAFE CLEANUP",
-    body: "Non-destructive Drive C/D analyzer, %TEMP% cleaner, exact hash duplicate finder, and Recycle Bin safety.",
-    highlight: "from-emerald-500/20 via-teal-500/10 to-transparent border-emerald-500/30"
-  },
-  {
-    icon: Briefcase,
-    title: "CRM & Salesforce 7-Step Pipeline",
-    tag: "AUTOMATION",
-    body: "Download Razorpay CSV ➔ Clean in Excel ➔ Verify Contacts ➔ Batch Data Loader ➔ 1-Click Status Email.",
-    highlight: "from-blue-500/20 via-indigo-500/10 to-transparent border-blue-500/30"
-  },
-  {
-    icon: Award,
-    title: "ATS Resume & Career Engine",
-    tag: "98/100 ATS SCORE",
-    body: "Instant tailored resumes for AI Engineers and Operations Specialists, plus daily 5-phrase English coach.",
-    highlight: "from-amber-500/20 via-orange-500/10 to-transparent border-amber-500/30"
-  },
-  {
-    icon: TrendingUp,
-    title: "YouTube Growth & 1➔5 Multiplier",
-    tag: "CONTENT ENGINE",
-    body: "Dual-channel strategy (VishwaJeetSrK + TinyLifeHacks) turning 1 long video into 3 Shorts + LinkedIn + Blog.",
-    highlight: "from-purple-500/20 via-violet-500/10 to-transparent border-purple-500/30"
-  }
-];
-
-const SURFACES = [
-  { title: "Windows Desktop", icon: Monitor, link: "/console", sub: "Tauri 2.7 · Recycle Bin Safe" },
-  { title: "macOS + Linux", icon: Laptop, link: "/console", sub: "60 FPS Console · 72 Skills" },
-  { title: "Voice Daemon", icon: Zap, link: "/console", sub: "Python 3.10 + Echo Guard" },
-  { title: "Terminal CLI", icon: Terminal, link: "/console", sub: "npx tsx cli/index.ts · 12 cmds" },
-  { title: "Android Companion", icon: Smartphone, link: "/console", sub: "Capacitor APK · PWA" },
-  { title: "iOS PWA", icon: Apple, link: "/console", sub: "Safari · http://<IP>:8080" },
-  { title: "Cloud PWA", icon: Globe, link: "https://jarvisaios.vercel.app", sub: "67 live sites · 27 systems" },
-];
-
-function useCountUp(target: number, duration = 1500) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !started.current) {
-        started.current = true;
-        const start = Date.now();
-        const tick = () => {
-          const elapsed = Date.now() - start;
-          const progress = Math.min(elapsed / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 4);
-          setCount(Math.floor(eased * target));
-          if (progress < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      }
-    });
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [target, duration]);
-
-  return { count, ref };
-}
-
-function StatCard({ value, label, suffix }: { value: number; label: string; suffix: string }) {
-  const { count, ref } = useCountUp(value);
+export function LandingPage() {
   return (
-    <motion.div ref={ref} whileHover={{ scale: 1.03, y: -2 }} transition={{ type: "spring", stiffness: 300 }} className="text-center rounded-2xl border border-border bg-card/60 p-5 shadow-sm">
-      <div className="font-display text-4xl font-extrabold text-cyan-400 md:text-5xl">
-        {count}{suffix}
-      </div>
-      <div className="mt-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</div>
-    </motion.div>
-  );
-}
-
-function LandingPage() {
-  const [selectedMode, setSelectedMode] = useState(0);
-
-  const stats = [
-    { value: 9, label: "Autonomous Agents", suffix: "" },
-    { value: 53, label: "Design Systems & Themes", suffix: "" },
-    { value: 7, label: "Context Switching Modes", suffix: "" },
-    { value: 0, label: "Memory Lost", suffix: "%" },
-  ];
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen bg-[#06080F] text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-black">
       <MarketingNav />
 
-      {/* Release Announcement Bar */}
-      <div className="border-b border-cyan-500/20 bg-gradient-to-r from-cyan-950/40 via-blue-950/30 to-purple-950/40 px-4 py-2 text-center text-xs font-mono">
-        <a
-          href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 text-cyan-300 font-semibold hover:underline"
-        >
-          <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
-          <span>🚀 JARVIS AI OS v2.7.0 Released — Screen Recording Studio & Windows Boot Live!</span>
-          <span className="rounded bg-cyan-500/20 px-2 py-0.5 text-[10px] text-cyan-300">View Releases →</span>
-        </a>
-      </div>
-
-      {/* ── Hero Section ─────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
-        {/* Cyberpunk ambient lighting */}
-        <div className="pointer-events-none absolute -top-20 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-cyan-600/15 via-blue-600/10 to-purple-600/15 blur-[120px]" />
-
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }} className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 text-center">
-          {/* Holographic Arc Reactor */}
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.15, duration: 0.5 }} className="cursor-pointer transition-transform hover:scale-105">
-            <Link to="/console" title="Click to Launch JARVIS Command Console">
-              <ArcReactorHud size={190} state="listening" audioLevel={0.5} statusText="JARVIS CORE // v2.7.0 ACTIVE" />
-            </Link>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.4 }} className="flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-950/30 px-3.5 py-1 text-xs font-mono text-cyan-300 shadow-sm">
-            <JarvisStar size={14} className="text-cyan-400" />
-            <span>v2.7.0 · Persistent-Memory Autonomous Personal AI-OS</span>
-          </motion.div>
-
-          <motion.h1 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }} className="font-display text-4xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
-            One Brain. <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">Many Shells.</span>
-            <br />
-            Every Workflow, Remembered.
-          </motion.h1>
-
-          <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.4 }} className="max-w-2xl text-base text-slate-400 md:text-lg">
-            JARVIS AI OS runs directly on your Windows laptop and mobile phone. Equipped with a <strong>3D VRoid companion</strong>, <strong>Screen Recording Studio</strong>, <strong>Salesforce & Razorpay automation</strong>, and <strong>9 autonomous agents</strong>.
-          </motion.p>
-
-          {/* Hero CTAs */}
-          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.4 }} className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
-            <Link
-              to="/console"
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all"
-            >
-              Open JARVIS Console <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
-              href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/80 px-5 py-3.5 text-sm font-medium text-slate-200 hover:border-slate-500 hover:bg-slate-800 transition-all"
-            >
-              <GitBranch className="h-4 w-4 text-cyan-400" /> GitHub Repository
-            </a>
-            <a
-              href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 rounded-xl border border-purple-500/30 bg-purple-950/20 px-5 py-3.5 text-sm font-medium text-purple-300 hover:bg-purple-900/30 transition-all"
-            >
-              <Download className="h-4 w-4 text-purple-400" /> Releases (v2.7.0)
-            </a>
-          </motion.div>
-
-          {/* Interactive 7-Context Modes Strip */}
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.4 }} className="mt-8 w-full max-w-4xl rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-xl">
-            <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider mb-3 text-left flex items-center justify-between">
-              <span>⚡ 7 Dynamic Context Modes</span>
-              <span className="text-cyan-400">Say "Hey Jarvis, [Mode]"</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-7 text-xs">
-              {CONTEXT_MODES.map((m, idx) => (
-                <button
-                  key={m.id}
-                  onClick={() => setSelectedMode(idx)}
-                  className={`rounded-xl border p-2.5 text-center transition-all ${
-                    selectedMode === idx
-                      ? "border-cyan-500 bg-cyan-500/20 text-white font-bold shadow-md shadow-cyan-500/10"
-                      : "border-slate-800 bg-slate-950/50 text-slate-400 hover:text-slate-200 hover:border-slate-700"
-                  }`}
-                >
-                  <p className="truncate font-semibold">{m.name}</p>
-                </button>
-              ))}
-            </div>
-            <div className="mt-3 rounded-xl border border-cyan-500/20 bg-slate-950 p-3 text-left text-xs text-slate-300">
-              <span className="font-bold text-cyan-400">{CONTEXT_MODES[selectedMode].name}:</span> {CONTEXT_MODES[selectedMode].desc}
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ── Stats Strip ─────────────────────────────────────────────── */}
-      <section className="border-y border-slate-800/80 bg-slate-900/40 py-12">
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-            {stats.map((s) => (
-              <StatCard key={s.label} value={s.value} label={s.label} suffix={s.suffix} />
-            ))}
+      {/* Hero Section — Viskey & Vida Proactive Style */}
+      <section className="relative overflow-hidden pt-20 pb-16 md:pt-28 md:pb-24 border-b border-slate-800/60">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(6,182,212,0.15),rgba(0,0,0,0))]" />
+        
+        <div className="relative mx-auto max-w-7xl px-6 flex flex-col items-center text-center space-y-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-950/40 px-4 py-1.5 text-xs text-cyan-300 backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 animate-pulse text-cyan-400" />
+            <span className="font-semibold uppercase tracking-wider font-mono">Local-First 3D AI Companion • Version 2.7.0</span>
           </div>
-        </div>
-      </section>
 
-      {/* ── Core Feature Matrix (v2.7.0) ────────────────────────────── */}
-      <section className="mx-auto max-w-6xl px-6 py-20">
-        <div className="mb-12 text-center">
-          <span className="font-mono text-xs text-cyan-400 uppercase tracking-widest">Built-In Superpowers</span>
-          <h2 className="mt-2 font-display text-3xl font-extrabold text-white sm:text-4xl md:text-5xl">
-            Engineered For Pure High Performance
-          </h2>
-          <p className="mt-3 text-sm text-slate-400 max-w-xl mx-auto">
-            Everything you need across content production, software engineering, business automation, and daily focus.
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white max-w-5xl leading-[1.1]">
+            Let your AI work partners <br />
+            <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">
+              get started.
+            </span>
+          </h1>
+
+          <p className="max-w-2xl text-base sm:text-lg text-slate-400 leading-relaxed">
+            Nia is a local-first Windows 3D AI companion that roams on your desktop. Built with 10 specialized agents, 
+            7 VIDA SOTA productivity tools, executive Excel &amp; PPTX generation, and strict Data Control privacy.
           </p>
-        </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {CORE_MODULES.map((m, idx) => (
-            <motion.div
-              key={m.title}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.05, duration: 0.4 }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className={`rounded-2xl border bg-gradient-to-b p-6 hover:shadow-xl ${m.highlight} bg-slate-900/70 backdrop-blur-md`}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <Link
+              to="/companion"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:-translate-y-0.5 transition-all"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white">
-                  <m.icon className="h-5 w-5" />
-                </div>
-                <span className="rounded-full bg-white/10 px-2 py-0.5 font-mono text-[9px] font-bold text-white">
-                  {m.tag}
-                </span>
-              </div>
-              <h3 className="mt-4 font-display text-lg font-bold text-white">{m.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-300">{m.body}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── 7 Surfaces Architecture ─────────────────────────────────── */}
-      <section className="border-y border-slate-800/80 bg-slate-900/30 py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mb-12 text-center">
-            <span className="font-mono text-xs text-purple-400 uppercase tracking-widest">Cross-Platform Sync · v2.7.0</span>
-            <h2 className="mt-2 font-display text-3xl font-extrabold text-white sm:text-4xl">
-              7 Front Doors. One Master Brain.
-            </h2>
+              <Sparkles className="w-4 h-4 text-slate-950" />
+              <span>Launch 3D Companion (Nia)</span>
+            </Link>
+            <Link
+              to="/console"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/80 px-6 py-3.5 text-sm font-semibold text-white hover:bg-slate-800 transition-all hover:border-slate-500"
+            >
+              <span>Open Command Console</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/how-it-works"
+              className="inline-flex items-center gap-2 rounded-xl border border-purple-500/30 bg-purple-950/40 px-6 py-3.5 text-sm font-semibold text-purple-300 hover:bg-purple-900/50 transition-all"
+            >
+              <span>100 SOTA Cases &amp; Web Elements</span>
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
-            {SURFACES.map((s, idx) => (
-              <motion.div
-                key={s.title}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.05, duration: 0.3 }}
-                whileHover={{ y: -3, scale: 1.02 }}
-                className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 text-left hover:border-slate-700 transition-all hover:shadow-lg hover:shadow-cyan-500/5"
-              >
-                <s.icon className="h-6 w-6 text-cyan-400 mb-3" />
-                <div className="font-display text-base font-bold text-white">{s.title}</div>
-                <div className="mt-1 font-mono text-[11px] text-slate-400">{s.sub}</div>
-              </motion.div>
+          {/* Quick Metrics Bar */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl pt-8">
+            {[
+              { label: "3D VRM Rig", value: "VRM 1.0 (Nai.vrm)", sub: "Phonetic Lip Sync" },
+              { label: "SOTA Tools", value: "7 Autonomous", sub: "1-Click Exports" },
+              { label: "Data Control", value: "49+ Excluded Apps", sub: "Zero Secret Leaks" },
+              { label: "Platforms", value: "Windows Native", sub: "Tauri 2.0 & Web" },
+            ].map((m) => (
+              <div key={m.label} className="p-4 rounded-2xl border border-slate-800 bg-slate-950/60 backdrop-blur-md text-left">
+                <div className="text-[11px] text-slate-500 uppercase font-mono">{m.label}</div>
+                <div className="text-lg font-bold text-white mt-0.5">{m.value}</div>
+                <div className="text-xs text-cyan-400/80 font-medium">{m.sub}</div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Terminal Quick Launch ───────────────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-6 py-20 text-center">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-8 shadow-2xl backdrop-blur-xl">
-          <Terminal className="mx-auto h-8 w-8 text-cyan-400 mb-3" />
-          <h3 className="font-display text-2xl font-bold text-white">1-Click Local Execution</h3>
-          <p className="mt-2 text-xs text-slate-400">Clone and launch the full JARVIS ecosystem directly in your shell:</p>
-          <div className="mt-4 flex items-center justify-between rounded-xl border border-slate-700 bg-black px-4 py-3 font-mono text-xs text-cyan-300">
-            <code>git clone https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git &amp;&amp; cd JARVIS-AI-OS &amp;&amp; npm install &amp;&amp; npm run dev</code>
+      {/* 100 SOTA Use Cases Showcase */}
+      <section className="py-20 border-b border-slate-800/60 bg-slate-950/40">
+        <div className="mx-auto max-w-7xl px-6 space-y-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <div className="text-xs font-mono uppercase tracking-widest text-cyan-400">Autonomous Capabilities</div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mt-1">Conquer 100 SOTA Use Cases.</h2>
+              <p className="text-sm text-slate-400 mt-2 max-w-xl">
+                Every tool is calibrated for desktop work: non-destructive file staging, verified citations, and executive document generation.
+              </p>
+            </div>
+            <Link
+              to="/how-it-works"
+              className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 font-semibold"
+            >
+              <span>Explore full interactive cases</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          <div className="mt-6 flex justify-center gap-3">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {SOTA_CASES.map((c) => {
+              const Icon = c.icon;
+              return (
+                <div
+                  key={c.id}
+                  className="p-5 rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-cyan-500/50 transition-all hover:-translate-y-1 shadow-lg group flex flex-col justify-between space-y-4"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-slate-800 text-cyan-400 flex items-center justify-center group-hover:bg-cyan-500/20 group-hover:text-cyan-300 transition-colors">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">
+                        {c.tag}
+                      </span>
+                    </div>
+                    <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">{c.title}</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">{c.desc}</p>
+                  </div>
+                  <Link
+                    to="/console"
+                    className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+                  >
+                    <span>Run tool</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Privacy & Data Control Section */}
+      <section className="py-16 border-b border-slate-800/60">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="p-8 md:p-12 rounded-3xl border border-cyan-500/30 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 uppercase tracking-widest font-mono">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Privacy is always a top priority</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">
+                Data Control with 49+ Excluded App Rules
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                Applications you exclude (Chrome, ChatGPT, Access, Canva, Eigent, Password Managers) are never read by Nia.
+                Accessibility trees are not captured for memory, and OCR tools strictly refuse to operate on them.
+              </p>
+            </div>
             <Link
               to="/console"
-              className="rounded-xl bg-cyan-500 px-6 py-2.5 text-xs font-bold text-black hover:bg-cyan-400 transition-all"
+              className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-600 transition-all whitespace-nowrap shadow-md"
             >
-              Open Web Console Now →
+              Open Data Control Settings
             </Link>
           </div>
         </div>

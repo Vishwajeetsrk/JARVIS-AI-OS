@@ -40,8 +40,8 @@ interface VRMAvatarViewerProps {
 }
 
 const VRM_MODELS = [
+  { id: "nai", name: "Nia (Nai.vrm)", path: "/vrm/Nai.vrm", size: "15.6 MB" },
   { id: "nia-v1", name: "Nia V1", path: "/vrm/nia-v1.vrm", size: "15.6 MB" },
-  { id: "nai", name: "Nai (VRoid)", path: "/vrm/nai.vrm", size: "15.6 MB" },
   { id: "nexa-girl", name: "NEXA Girl", path: "/vrm/nexa-girl.vrm", size: "26.8 MB" },
   { id: "girl", name: "Girl", path: "/vrm/girl.vrm", size: "28.3 MB" },
   { id: "boy", name: "Boy", path: "/vrm/boy.vrm", size: "20.0 MB" },
@@ -252,9 +252,13 @@ export function VRMAvatarViewer({ onClose }: VRMAvatarViewerProps) {
       selectedModel,
       (gltf) => {
         const vrm = gltf.userData.vrm as VRM;
-        VRMUtils.removeUnnecessaryVertices(gltf.scene);
-        VRMUtils.removeUnnecessaryJoints(gltf.scene);
-        vrm.scene.rotation.y = Math.PI;
+        if (!vrm) return;
+        VRMUtils.rotateVRM0(vrm);
+        vrm.scene.traverse((obj) => {
+          if ((obj as THREE.Mesh).isMesh) {
+            obj.frustumCulled = false;
+          }
+        });
         if (vrmRef.current && sceneRef.current) {
           sceneRef.current.remove(vrmRef.current.scene);
           VRMUtils.deepDispose(vrmRef.current.scene);

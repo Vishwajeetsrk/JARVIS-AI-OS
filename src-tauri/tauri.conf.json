@@ -66,14 +66,8 @@
         "schemes": ["jarvis"]
       }
     },
-    "notification": {
-      "enabled": true
-    },
-    "autostart": {
-      "enabled": true
-    },
-    "window-state": {
-      "enabled": true
-    }
+    "notification": {},
+    "autostart": {},
+    "window-state": {}
   }
 }

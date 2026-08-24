@@ -4,6 +4,7 @@ import { resolveChatModel } from "@/lib/ai-providers";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { executeShell } from "@/mastra/tools/shell-executor";
+import { Packer } from "docx";
 import { createDocx } from "@/mastra/tools/docx-creator";
 import { createPptx } from "@/mastra/tools/pptx-creator";
 import { createXlsx } from "@/mastra/tools/xlsx-creator";
@@ -298,15 +299,16 @@ export const Route = createFileRoute("/api/chat")({
               }),
               execute: async (args: { title: string; author?: string; sections: any[]; orientation?: "portrait" | "landscape" }) => {
                 if (!docxEnabled) return { error: "Word documents are disabled in Settings → Model & Tools." };
-                const blob = await createDocx(args);
-                const base64 = Buffer.from(await blob.arrayBuffer()).toString("base64");
+                const doc = await createDocx(args);
+                const buf = await Packer.toBuffer(doc);
+                const base64 = Buffer.from(buf).toString("base64");
                 const filename = `${SAFE_NAME(args.title)}.docx`;
                 return {
                   ok: true,
                   filename,
                   mediaType: DOCX_MT,
                   downloadUrl: toDataUrl(base64, DOCX_MT),
-                  size: blob.size,
+                  size: buf.length,
                   message: `Created ${filename}. Tell the user to click the download chip above.`,
                 };
               },

@@ -11,7 +11,7 @@ import { audioLipSync } from "@/lib/avatar/audio-lip-sync";
 import { avatarController } from "@/lib/avatar/avatar-controller";
 import { continuousVoiceEngine, type VoiceStatus } from "@/lib/voice/continuous-voice-engine";
 import { desktopWander, type WanderState } from "@/lib/avatar/desktop-wander-controller";
-import { Sparkles, Mic, MicOff, Volume2, Move, X, Radio, Bot, Wrench } from "lucide-react";
+import { Sparkles, Mic, MicOff, Volume2, Move, X, Radio, Bot, Wrench, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 interface NiaDesktopCompanionProps {
@@ -22,70 +22,101 @@ export function NiaDesktopCompanion({ onClose }: NiaDesktopCompanionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const vrmRef = useRef<VRM | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const [posXPercent, setPosXPercent] = useState<number>(50);
   const [wanderState, setWanderState] = useState<WanderState>("WALKING_RIGHT");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>("listening");
-  const [subtitle, setSubtitle] = useState<string>("Hello Vishwajeet! I'm walking across your laptop.");
+  const [subtitle, setSubtitle] = useState<string>("Hello Vishwajeet! I'm Nia, your 3D desktop companion.");
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [autoWalk, setAutoWalk] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [isModelLoaded, setIsModelLoaded] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const width = 280;
-    const height = 360;
+    const width = 320;
+    const height = 440;
 
     // 1. Setup Three.js Scene with 100% Transparent Alpha
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 20);
-    camera.position.set(0, 1.15, 2.2); // Full-body view to see walking legs
+    const camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 20);
+    camera.position.set(0, 0.95, 2.6); // Full body view
+    camera.lookAt(0, 0.85, 0);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    containerRef.current.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
+    containerRef.current.replaceChildren(renderer.domElement);
 
-    // 2. Dynamic Lights for Character
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+    // 2. High-Fidelity Character Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.6);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0x38bdf8, 2.2);
-    dirLight.position.set(1.5, 2.0, 1.5);
-    scene.add(dirLight);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    keyLight.position.set(1.0, 2.5, 2.0);
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0x38bdf8, 1.8);
+    fillLight.position.set(-1.5, 1.5, 1.5);
+    scene.add(fillLight);
 
     const rimLight = new THREE.DirectionalLight(0xa855f7, 2.5);
-    rimLight.position.set(-1.5, 1.5, -1.0);
+    rimLight.position.set(0, 2.0, -2.0);
     scene.add(rimLight);
 
-    // 3. Load Nia VRM
+    // 3. Load Nia VRM (Tries Nai.vrm -> nia-v1.vrm -> nai.vrm)
     const loader = new GLTFLoader();
     loader.register((parser) => new VRMLoaderPlugin(parser));
-    loader.load(
-      "/vrm/nia-v1.vrm",
-      (gltf) => {
-        const vrm = gltf.userData.vrm as VRM;
-        VRMUtils.removeUnnecessaryVertices(gltf.scene);
-        VRMUtils.removeUnnecessaryJoints(gltf.scene);
-        vrm.scene.rotation.y = Math.PI;
-        vrmRef.current = vrm;
-        scene.add(vrm.scene);
-      },
-      undefined,
-      () => {
-        // Fallback to nai.vrm or nexa-girl.vrm
-        loader.load("/vrm/nai.vrm", (gltf) => {
+
+    const loadVRMModel = (url: string, fallbacks: string[]) => {
+      loader.load(
+        url,
+        (gltf) => {
           const vrm = gltf.userData.vrm as VRM;
-          vrm.scene.rotation.y = Math.PI;
+          if (!vrm) {
+            if (fallbacks.length > 0) {
+              loadVRMModel(fallbacks[0], fallbacks.slice(1));
+            }
+            return;
+          }
+
+          // Handle VRM 0.0 rotation automatically without distorting VRM 1.0
+          VRMUtils.rotateVRM0(vrm);
+
+          // Disable frustum culling on all child meshes to guarantee 100% visibility
+          vrm.scene.traverse((obj) => {
+            if ((obj as THREE.Mesh).isMesh) {
+              obj.frustumCulled = false;
+              obj.castShadow = false;
+              obj.receiveShadow = false;
+            }
+          });
+
           vrmRef.current = vrm;
           scene.add(vrm.scene);
-        });
-      }
-    );
+          setIsModelLoaded(true);
+          setLoadError(null);
+        },
+        undefined,
+        (err) => {
+          console.warn(`Failed loading ${url}, attempting fallback...`, err);
+          if (fallbacks.length > 0) {
+            loadVRMModel(fallbacks[0], fallbacks.slice(1));
+          } else {
+            setLoadError("Could not load 3D VRM file.");
+          }
+        }
+      );
+    };
+
+    loadVRMModel("/vrm/Nai.vrm", ["/vrm/nia-v1.vrm", "/vrm/nai.vrm", "/vrm/Nia.vrm", "/vrm/nexa-girl.vrm"]);
 
     // 4. Mouse Tracking & Animation Loop
     const mousePos = { x: 0, y: 0 };
@@ -125,6 +156,14 @@ export function NiaDesktopCompanion({ onClose }: NiaDesktopCompanionProps) {
           desktopWander.update(vrm, delta, elapsed, mousePos, isSpeaking);
           setPosXPercent(desktopWander.screenXPercent);
           setWanderState(desktopWander.state);
+        } else {
+          // Subtle idle breathing when staying in place
+          if (vrm.humanoid) {
+            const chest = vrm.humanoid.getNormalizedBoneNode("chest");
+            if (chest) {
+              chest.rotation.x = Math.sin(elapsed * 1.5) * 0.03;
+            }
+          }
         }
 
         // Phonetic Audio Lip-Sync Update
@@ -139,35 +178,32 @@ export function NiaDesktopCompanion({ onClose }: NiaDesktopCompanionProps) {
     // 5. Subscribe to Voice & Speech Engine
     const unsubVoice = continuousVoiceEngine.subscribe((event) => {
       setVoiceStatus(event.status);
-      if (event.transcript) {
-        setSubtitle(`You: "${event.transcript}"`);
+      if (event.status === "speaking") {
+        setIsSpeaking(true);
+      } else {
+        setIsSpeaking(false);
       }
       if (event.response) {
         setSubtitle(event.response);
+      } else if (event.transcript) {
+        setSubtitle(`You: "${event.transcript}"`);
       }
     });
 
-    const unsubAvatar = avatarController.subscribe((state) => {
-      setIsSpeaking(state.state === "SPEAKING");
+    const unsubAvatar = avatarController.subscribe((event) => {
+      setIsSpeaking(event.isSpeaking);
+      if (event.message) setSubtitle(event.message);
     });
-
-    // Auto-start continuous voice listening
-    continuousVoiceEngine.startAlwaysOn();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
       window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
       unsubVoice();
       unsubAvatar();
-      if (vrmRef.current) VRMUtils.deepDispose(vrmRef.current.scene);
       renderer.dispose();
-      if (containerRef.current && renderer.domElement) {
-        containerRef.current.removeChild(renderer.domElement);
-      }
     };
-  }, [autoWalk, isSpeaking]);
+  }, [autoWalk]);
 
-  // Drag & Drop Handler
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
     setDragOffset({
@@ -217,8 +253,14 @@ export function NiaDesktopCompanion({ onClose }: NiaDesktopCompanionProps) {
         <div
           ref={containerRef}
           onMouseDown={handleMouseDown}
-          className="relative h-[360px] w-[280px] cursor-grab active:cursor-grabbing drop-shadow-[0_15px_25px_rgba(56,189,248,0.25)]"
-        />
+          className="relative h-[440px] w-[320px] cursor-grab active:cursor-grabbing drop-shadow-[0_20px_35px_rgba(56,189,248,0.3)] flex items-center justify-center"
+        >
+          {loadError && (
+            <div className="p-3 bg-red-950/80 border border-red-500/50 rounded-xl text-[11px] text-red-200 text-center">
+              {loadError}
+            </div>
+          )}
+        </div>
 
         {/* Action Capsule Underneath */}
         <div className="mt-[-10px] flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-slate-950/85 px-3 py-1 text-xs text-cyan-300 shadow-lg backdrop-blur-md opacity-90 transition-opacity group-hover:opacity-100">
