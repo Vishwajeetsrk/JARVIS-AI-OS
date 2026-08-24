@@ -1,22 +1,18 @@
 @echo off
-title Nia 3D AI Companion (Standalone Desktop App)
+title Nia AI Companion Launcher
 cd /d "%~dp0"
-echo ============================================================
-echo   Launching Nia 3D AI Companion (Standalone Windows App)
-echo   3D Model: Nia (Nai.vrm - Transparent Desktop Companion)
-echo ============================================================
-echo.
 
-:: 1. Launch Vite local server in background if not already active
+:: 1. Check if Nia server is already active on 8080
 powershell -Command "try { $r = Invoke-WebRequest -Uri 'http://localhost:8080/' -TimeoutSec 1 -UseBasicParsing; exit 0 } catch { exit 1 }"
 if %ERRORLEVEL% NEQ 0 (
-    echo [INFO] Starting Nia desktop background engine...
-    start /B npm run dev
+    echo Starting Nia desktop engine in background...
+    powershell -Command "Start-Process -FilePath 'npm.cmd' -ArgumentList 'run dev' -WorkingDirectory '%~dp0' -WindowStyle Hidden"
     timeout /t 3 /nobreak >nul
 )
 
 :: 2. Launch Standalone Native Window (App Mode - No Browser Tabs, No URL bar)
-echo [INFO] Launching Nia Standalone Desktop Application Window...
+echo Launching Nia 3D Desktop Companion...
 start msedge.exe --app="http://localhost:8080/companion" --window-size=380,580 --window-position=100,200
 
-exit /b 0
+:: 3. Exit launcher automatically
+exit 0
