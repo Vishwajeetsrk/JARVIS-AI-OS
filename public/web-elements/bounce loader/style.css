@@ -1,0 +1,67 @@
+body
+{
+	margin: 0;
+	padding: 0;
+	background:#262626;
+}
+
+.line
+{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	width: 100px;
+	height: 100px;
+	background: transparent;
+	border-bottom: 4px solid #fff;
+	animation: animate 2s linear infinite;
+}
+
+.dot
+{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	width: 10px;
+	height: 10px;
+	background: #fff;
+	border-radius: 50%;	
+	animation: bounce 2s linear infinite;
+}
+
+@keyframes bounce
+{
+	0%
+	{
+		top: calc(50% + -45px);
+	}
+
+	25%
+	{
+		top: calc(50% - 100px);
+	}
+
+	50%
+	{
+		top: calc(50% - 55px);
+	}
+
+	75%
+	{
+		top: calc(50% - 90px);
+	}
+}
+@keyframes animate
+{
+	0%
+	{
+		transform: translate(-50%,-50%) rotate(0deg);
+	}
+
+	100%
+	{
+		transform: translate(-50%,-50%) rotate(360deg);
+	}
+}

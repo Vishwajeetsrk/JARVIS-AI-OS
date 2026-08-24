@@ -1,0 +1,23 @@
+
+ #customize-theme-controls #accordion-panel-education_way_theme_options h3.accordion-section-title,
+ #customize-theme-controls #accordion-section-education_way_copyright_info_section h3.accordion-section-title,
+ #customize-theme-controls #accordion-panel-widgets h3.accordion-section-title
+
+{
+   background-color:#286090;
+   color: #FFF;
+}
+
+
+#customize-theme-controls #accordion-panel-education_way_theme_options h3.accordion-section-title:after,
+#customize-theme-controls #accordion-section-education_way_copyright_info_section h3.accordion-section-title:after,
+ #customize-theme-controls #accordion-panel-widgets h3.accordion-section-title:after
+
+{
+   color: #FFF;
+}
+
+.description p
+{
+  color: #000;
+}

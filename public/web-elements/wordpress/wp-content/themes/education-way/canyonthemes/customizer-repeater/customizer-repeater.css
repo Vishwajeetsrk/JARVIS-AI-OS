@@ -1,0 +1,77 @@
+/**
+* Font Awesome Icon Lists CSS
+*/
+.pt-customize-icons .icons-list-wrapper{
+    height: 180px;
+    overflow-y: scroll;
+    background: #fff;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+.pt-customize-icons .icons-list-wrapper span{
+    display: block;
+    float: left;
+    padding: 14px;
+    height: 20px;
+    width: 20px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 50%;
+}
+.pt-customize-icons .icons-list-wrapper span:hover,
+.pt-customize-icons .icons-list-wrapper span.selected {
+    background: #2d2d2d;
+    color: #fff;
+}
+.icon-preview,
+.icon-toggle{
+    background: #2d2d2d;
+    height: 40px;
+    text-align: center;
+    margin-bottom: 5px;
+    border: 1px solid #2D2D2D;
+    border-radius: 8px;
+    color: #fff;
+    padding-bottom: 3px;
+    display: inline-block;
+    min-width: 40px;
+    cursor: pointer;
+}
+.icon-preview i {
+    font-size: 25px;
+    padding: 9px;
+}
+.icon-toggle,
+.icon-toggle span {
+    background: #eee;
+    border: none;
+    color: #2d2d2d;
+    float: right;
+    font-size: 17px;
+    line-height: 40px;
+}
+.icon-toggle span {
+    font-size: 20px;
+}
+.single-icon{
+    cursor: pointer;
+}
+.repeater-fields{
+    line-height: 16px;
+    padding: 10px 15px 15px;
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.repeater-fields .icon-toggle,
+.repeater-fields .icon-toggle span{
+    background: transparent;
+}
+.customize-control-title.checkbox {
+    display: inline;
+    font-size: 13px;
+}
+.customize-message h2 {
+    margin: 0;
+    padding: 0;
+}

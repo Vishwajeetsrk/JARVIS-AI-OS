@@ -1,0 +1,48 @@
+.education-way-about-wrap .education-way-section .dashicons {
+	margin-top: -4px;
+	vertical-align: middle;
+}
+
+.education-way-about-wrap .nav-tab {
+	font-size: 16px;
+}
+
+.education-way-about-wrap h1 {
+	font-size: 2em;
+}
+
+.education-way-about-wrap h3 {
+	font-size: 1.2em;
+}
+
+.education-way-about-wrap .education-way-section-useful-plugins,
+.education-way-about-wrap .education-way-section-upgrade-to-pro,
+.education-way-about-wrap .education-way-section-demo-content {
+	margin-top: 50px;
+}
+
+.education-way-about-wrap .tab-upgrade-to-pro {
+	background-color: #bf2424;
+	background-color: #159614;
+	color: #FFF;
+}
+
+.education-way-about-wrap .wp-badge {
+	background-color: #FFF;
+	background-size: 110px auto;
+	background-position: center;
+	height: 70px;
+}
+
+.education-way-about-wrap .quick-links a {
+	margin-right: 5px;
+}
+
+.education-way-about-notice .btn-dismiss {
+	margin-left: 20px;
+}
+
+.education-way-about-wrap .plugin-list {
+	list-style-position: inside;
+	list-style-type: disc;
+}

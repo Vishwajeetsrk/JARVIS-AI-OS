@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CompanionRouteImport } from './routes/companion'
 import { Route as DesignRouteImport } from './routes/design'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as SkillsRouteImport } from './routes/skills'
@@ -66,6 +67,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompanionRoute = CompanionRouteImport.update({
+  id: '/companion',
+  path: '/companion',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignRoute = DesignRouteImport.update({
@@ -302,6 +308,7 @@ const ApiDesignSystemsIdTemplatesFileRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/companion': typeof CompanionRoute
   '/design': typeof DesignRoute
   '/how-it-works': typeof HowItWorksRoute
   '/skills': typeof SkillsRoute
@@ -347,6 +354,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/companion': typeof CompanionRoute
   '/design': typeof DesignRoute
   '/how-it-works': typeof HowItWorksRoute
   '/skills': typeof SkillsRoute
@@ -393,6 +401,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/companion': typeof CompanionRoute
   '/design': typeof DesignRoute
   '/how-it-works': typeof HowItWorksRoute
   '/skills': typeof SkillsRoute
@@ -440,6 +449,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/companion'
     | '/design'
     | '/how-it-works'
     | '/skills'
@@ -485,6 +495,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/companion'
     | '/design'
     | '/how-it-works'
     | '/skills'
@@ -530,6 +541,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/companion'
     | '/design'
     | '/how-it-works'
     | '/skills'
@@ -577,6 +589,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CompanionRoute: typeof CompanionRoute
   DesignRoute: typeof DesignRoute
   HowItWorksRoute: typeof HowItWorksRoute
   SkillsRoute: typeof SkillsRoute
@@ -615,6 +628,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/companion': {
+      id: '/companion'
+      path: '/companion'
+      fullPath: '/companion'
+      preLoaderRoute: typeof CompanionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/design': {
@@ -1044,6 +1064,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  CompanionRoute: CompanionRoute,
   DesignRoute: DesignRoute,
   HowItWorksRoute: HowItWorksRoute,
   SkillsRoute: SkillsRoute,

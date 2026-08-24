@@ -1,0 +1,51 @@
+body
+{
+	overflow: hidden;
+	background-color: lightgray;
+}
+
+.wrap
+{
+	/* transform: */
+	top: 50%;
+	left: 50%;
+	position: absolute;
+	transform: translate(-50%,-50%) rotate(45deg);
+}
+
+.eye
+{
+	height: 260px;
+	width: 260px;
+	background: red;
+	margin: 4em auto;
+	padding: 15px;
+	border-radius: 100% 0 100% 0;
+	box-sizing: border-box;
+	position: relative;
+	animation: spin 5s linear forwards infinite;
+}
+
+.eye:before
+{
+	position: absolute;
+	background: blue;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: 0 100% 0 100%;
+	content: '';
+}
+
+.eye > .eye{
+	margin: 0;
+	height: 100%;
+	width: 100%;
+}
+
+@keyframes spin{
+	100%{
+		transform: rotateZ(180deg);
+	}
+}

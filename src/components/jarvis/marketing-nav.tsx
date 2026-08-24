@@ -9,8 +9,8 @@ export function MarketingNav() {
           <JarvisWordmark />
         </Link>
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          <Link to="/how-it-works" className="transition-colors hover:text-foreground">
-            How it works
+          <Link to="/how-it-works" className="transition-colors text-cyan-400 hover:text-cyan-300 font-medium">
+            Vida & SOTA (100 Cases)
           </Link>
           <Link to="/skills" className="transition-colors hover:text-foreground">
             Skills

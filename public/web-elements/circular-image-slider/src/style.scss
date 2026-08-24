@@ -1,0 +1,67 @@
+@import "compass/css3";
+
+@function circlePos($percent, $radius){
+  @return #{($radius * cos($percent) + 50) + "% " + ($radius * sin($percent) + 50) + "%"}
+}
+
+body, html {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background-color: #F0EDE3;
+  display: flex;
+	align-items: center;
+}
+
+.circle, .circle__inner div {
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.circle {
+  border-radius: 50%;
+  position: relative;
+  width: 75vh;
+  height: 75vh;
+  max-width: 75vw;
+  max-height: 75vw;
+  margin: 0 auto;
+  overflow: hidden;
+  box-shadow: 0 0 1em;
+  background-color: #999;
+  
+  .circle__inner {
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: 0 0;
+  }
+  
+  &.transition .slice {
+    transform: rotate(0);
+  }
+}
+
+.slice {
+  border-radius: 50%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: inherit;
+  background-repeat: no-repeat;
+  transition: transform 3s .1s cubic-bezier(0.600, -0.100, 0.735, 0.045);
+}
+
+@for $i from 0 to 12 {
+  $point1: circlePos(-90 + (30deg * $i), 50);
+  $point2: circlePos(-90 + (30deg * ($i + 0.25)), 50);
+  $point3: circlePos(-90 + (30deg * ($i + 0.5)), 50);
+  $point4: circlePos(-90 + (30deg * ($i + 0.75)), 50);
+  $point5: circlePos(-90 + (30deg * ($i + 1)), 50);
+  
+  .slice--#{$i} {
+    clip-path: polygon($point1, $point2, $point3, $point4, $point5, 50% 50%);
+    transform: rotate(-#{30 * $i}deg);
+  }
+}
