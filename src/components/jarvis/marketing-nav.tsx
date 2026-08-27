@@ -53,6 +53,13 @@ export function MarketingNav() {
               <span>3D Motion Hub</span>
             </Link>
             <Link
+              to="/blog"
+              className="flex items-center gap-1.5 transition-colors hover:text-purple-300"
+            >
+              <Layers className="h-3.5 w-3.5 text-purple-400" />
+              <span>Blog &amp; Docs</span>
+            </Link>
+            <Link
               to="/console/analytics"
               className="flex items-center gap-1.5 transition-colors hover:text-sky-400"
             >

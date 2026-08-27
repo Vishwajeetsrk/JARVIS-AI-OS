@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CompanionRouteImport } from './routes/companion'
 import { Route as DesignRouteImport } from './routes/design'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
@@ -72,6 +73,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompanionRoute = CompanionRouteImport.update({
@@ -343,6 +349,7 @@ const ApiDesignSystemsIdTemplatesFileRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
   '/companion': typeof CompanionRoute
   '/design': typeof DesignRoute
   '/how-it-works': typeof HowItWorksRoute
@@ -394,6 +401,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
   '/companion': typeof CompanionRoute
   '/design': typeof DesignRoute
   '/how-it-works': typeof HowItWorksRoute
@@ -446,6 +454,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
   '/companion': typeof CompanionRoute
   '/design': typeof DesignRoute
   '/how-it-works': typeof HowItWorksRoute
@@ -499,6 +508,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/blog'
     | '/companion'
     | '/design'
     | '/how-it-works'
@@ -550,6 +560,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/blog'
     | '/companion'
     | '/design'
     | '/how-it-works'
@@ -601,6 +612,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/blog'
     | '/companion'
     | '/design'
     | '/how-it-works'
@@ -654,6 +666,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  BlogRoute: typeof BlogRoute
   CompanionRoute: typeof CompanionRoute
   DesignRoute: typeof DesignRoute
   HowItWorksRoute: typeof HowItWorksRoute
@@ -693,6 +706,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/companion': {
@@ -1174,6 +1194,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  BlogRoute: BlogRoute,
   CompanionRoute: CompanionRoute,
   DesignRoute: DesignRoute,
   HowItWorksRoute: HowItWorksRoute,
