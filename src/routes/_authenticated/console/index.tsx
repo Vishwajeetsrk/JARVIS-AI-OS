@@ -23,6 +23,12 @@ import {
   Smartphone,
   Copy,
   Check,
+  Users,
+  Layers,
+  BarChart3,
+  Bot,
+  Zap,
+  ArrowRight
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { createThread } from "@/lib/threads.functions";
@@ -35,8 +41,8 @@ export const Route = createFileRoute("/_authenticated/console/")({
   component: TabbedHome,
   head: () => ({
     meta: [
-      { title: "Jarvis — Evening thoughts" },
-      { name: "description", content: "Jarvis AI OS · Chat with your autonomous OS. Dashboard + live projects." },
+      { title: "Jarvis — Autonomous Console" },
+      { name: "description", content: "Jarvis AI OS · Chat with your autonomous OS. 8-bot fleet, voice studio & live app builder." },
     ],
   }),
 });
@@ -64,21 +70,37 @@ function TabbedHome() {
 
   return (
     <div className="flex h-full flex-col bg-[#09090b]">
-      {/* Tab switcher — Chat ↔ Dashboard (restores old dashboard) */}
-      <div className="flex items-center justify-center border-b border-zinc-800/40 bg-[#09090b] px-4 py-2">
-        <div className="flex rounded-full border border-zinc-800 bg-zinc-900 p-1 text-xs">
+      {/* Tab switcher — Chat ↔ Dashboard */}
+      <div className="flex items-center justify-between border-b border-zinc-800/40 bg-[#09090b] px-6 py-2.5">
+        <div className="flex rounded-full border border-zinc-800 bg-zinc-900/80 p-1 text-xs">
           <button
             onClick={() => setTab("chat")}
-            className={`rounded-full px-4 py-1.5 font-medium transition-colors ${tab === "chat" ? "bg-white text-zinc-900" : "text-zinc-400 hover:text-zinc-200"}`}
+            className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 font-semibold transition-all ${tab === "chat" ? "bg-white text-zinc-900 shadow-md" : "text-zinc-400 hover:text-zinc-200"}`}
           >
-            Chat
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>Chat &amp; Cowork</span>
           </button>
           <button
             onClick={() => setTab("dashboard")}
-            className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 font-medium transition-colors ${tab === "dashboard" ? "bg-white text-zinc-900" : "text-zinc-400 hover:text-zinc-200"}`}
+            className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 font-semibold transition-all ${tab === "dashboard" ? "bg-white text-zinc-900 shadow-md" : "text-zinc-400 hover:text-zinc-200"}`}
           >
-            <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard
+            <LayoutDashboard className="h-3.5 w-3.5" />
+            <span>Activity Dashboard</span>
           </button>
+        </div>
+
+        <div className="hidden sm:flex items-center gap-3 text-xs">
+          <Link to="/console/fleet" className="flex items-center gap-1 text-cyan-400 hover:text-cyan-300 font-medium">
+            <Users className="h-3.5 w-3.5" /> 8-Bot Fleet
+          </Link>
+          <span className="text-zinc-700">·</span>
+          <Link to="/console/voice" className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-medium">
+            <Mic className="h-3.5 w-3.5" /> Voice Cloner
+          </Link>
+          <span className="text-zinc-700">·</span>
+          <Link to="/console/apps" className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium">
+            <Layers className="h-3.5 w-3.5" /> App Builder
+          </Link>
         </div>
       </div>
 
@@ -108,6 +130,7 @@ function ClaudeHome() {
   const [mode, setMode] = useState<"chat" | "cowork">("chat");
   const [modelId, setModelId] = useState("gemini-flash-latest");
   const [focused, setFocused] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const selectedModel = MODELS.find((m) => m.id === modelId) ?? MODELS[0];
   const [codeSite, setCodeSite] = useState<string | null>(null);
   const [codeContent, setCodeContent] = useState("");
@@ -125,7 +148,6 @@ function ClaudeHome() {
     mutationFn: (text: string) => createFn({ data: { project_id: null } }).then((t) => ({ t, text })),
     onSuccess: ({ t, text }) => {
       qc.invalidateQueries({ queryKey: ["threads"] });
-      // Cowork hint: prefix task so backend knows it's agentic deliverable vs chat Q&A
       const seed = mode === "cowork" && text.trim() ? `Cowork task: ${text.trim()}` : text.trim();
       if (seed) {
         navigate({ to: "/console/$threadId", params: { threadId: t.id }, search: { seed } as any });
@@ -148,6 +170,39 @@ function ClaudeHome() {
     }
   };
 
+  const toggleMic = () => {
+    if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
+      toast.info("Opening Voice Studio with 2-Minute Cloner...");
+      navigate({ to: "/console/voice" });
+      return;
+    }
+    try {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.onstart = () => {
+        setIsListening(true);
+        toast.info("Listening... speak now.");
+      };
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInput((prev) => (prev ? prev + " " + transcript : transcript));
+        setIsListening(false);
+        toast.success("Speech captured!");
+      };
+      recognition.onerror = () => {
+        setIsListening(false);
+        toast.error("Microphone error. Opening Voice Studio.");
+        navigate({ to: "/console/voice" });
+      };
+      recognition.onend = () => setIsListening(false);
+      recognition.start();
+    } catch {
+      navigate({ to: "/console/voice" });
+    }
+  };
+
   const handleShowCode = async (slug: string) => {
     setCodeSite(slug);
     setCodeContent("Loading…");
@@ -159,6 +214,13 @@ function ClaudeHome() {
       setCodeContent("Failed to load code.");
     }
   };
+
+  const quickPrompts = [
+    { label: "👔 Daily Priority Digest", prompt: "@chief_of_staff scan my priorities, schedule, and dropped threads for today." },
+    { label: "🎯 Lead Discovery Sequence", prompt: "@sales_outbound find ICP leads and generate automated personalized email outreach." },
+    { label: "🏗️ Scaffold React Native App", prompt: "Create a cross-platform React Native 0.74 mobile app with Expo Router and SQLite offline sync." },
+    { label: "🎙️ 2-Min Custom Voice Clone", prompt: "Open Voice Studio to clone a reference audio sample into a 30-slot custom voice profile." },
+  ];
 
   return (
     <div className="flex h-full flex-col overflow-y-auto bg-[#09090b]">
@@ -184,7 +246,7 @@ function ClaudeHome() {
             initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.1, duration: 0.35, ease: [0.2, 0, 0, 1] }}
-            className={`mt-8 w-full rounded-[28px] border bg-[#1a1a1d] p-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all ${focused ? "border-zinc-700 ring-1 ring-zinc-700/50" : "border-zinc-800"}`}
+            className={`mt-8 w-full rounded-[28px] border bg-[#1a1a1d] p-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all ${focused ? "border-cyan-500/50 ring-1 ring-cyan-500/30" : "border-zinc-800"}`}
           >
             <textarea
               value={input}
@@ -193,18 +255,24 @@ function ClaudeHome() {
               onBlur={() => setFocused(false)}
               onKeyDown={handleKeyDown}
               rows={1}
-              placeholder={mode === "cowork" ? "Describe a task to delegate…" : "How can I help you today?"}
+              placeholder={mode === "cowork" ? "Describe an autonomous task or prompt (e.g., @sales_outbound find 5 leads)..." : "How can JARVIS assist your workspace today?"}
               className="min-h-[44px] w-full resize-none bg-transparent px-3 py-3 text-[15px] leading-6 text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
               style={{ fieldSizing: "content" } as any}
             />
             <div className="mt-2 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 transition-colors" aria-label="Add">
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/console/apps" })}
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 transition-colors"
+                  aria-label="New App"
+                  title="Scaffold New App"
+                >
                   <Plus className="h-4 w-4" />
                 </button>
                 <div className="flex items-center rounded-full border border-zinc-800 bg-zinc-900 p-1 text-xs">
-                  <button onClick={() => setMode("chat")} className={`rounded-full px-3 py-1 font-medium transition-colors ${mode === "chat" ? "bg-zinc-700 text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Chat</button>
-                  <button onClick={() => setMode("cowork")} className={`rounded-full px-3 py-1 font-medium transition-colors ${mode === "cowork" ? "bg-zinc-700 text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Cowork</button>
+                  <button onClick={() => setMode("chat")} className={`rounded-full px-3 py-1 font-medium transition-colors ${mode === "chat" ? "bg-zinc-700 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-200"}`}>Chat</button>
+                  <button onClick={() => setMode("cowork")} className={`rounded-full px-3 py-1 font-medium transition-colors ${mode === "cowork" ? "bg-cyan-600 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-200"}`}>Cowork</button>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -226,89 +294,101 @@ function ClaudeHome() {
                     ))}
                   </SelectContent>
                 </Select>
-                <button className="hidden h-8 w-8 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 sm:flex" aria-label="Mic"><Mic className="h-4 w-4" /></button>
-                <button className="hidden h-8 w-8 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 sm:flex" aria-label="Voice"><AudioLines className="h-4 w-4" /></button>
-                <button onClick={handleSend} disabled={!input.trim() || mCreate.isPending} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1f9d6b] text-white hover:bg-[#1a8a5e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors" aria-label="Send"><Sparkles className="h-4 w-4" /></button>
+                <button
+                  type="button"
+                  onClick={toggleMic}
+                  className={`h-8 w-8 flex items-center justify-center rounded-full transition-colors ${isListening ? "bg-red-500/20 text-red-400 border border-red-500/50 animate-pulse" : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"}`}
+                  aria-label="Mic"
+                  title="Voice Dictation"
+                >
+                  <Mic className="h-4 w-4" />
+                </button>
+                <Link
+                  to="/console/voice"
+                  className="hidden h-8 w-8 items-center justify-center rounded-full text-emerald-400 hover:bg-emerald-950/40 hover:text-emerald-300 sm:flex"
+                  aria-label="Voice Studio"
+                  title="Open Voice Studio"
+                >
+                  <AudioLines className="h-4 w-4" />
+                </Link>
+                <button onClick={handleSend} disabled={!input.trim() || mCreate.isPending} className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md" aria-label="Send">
+                  <Sparkles className="h-4 w-4 fill-current" />
+                </button>
               </div>
             </div>
           </motion.div>
 
+          {/* Quick Action Suggestion Chips */}
           <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.35 }} className="mt-5 flex flex-wrap items-center justify-center gap-2">
-            <Pill icon={GraduationCap} label="Learn" to="/console/roadmaps" />
-            <Pill icon={Code2} label="Code" to="/console/skills" />
-            <Pill icon={HardDrive} label="From Drive" color="text-[#4285f4]" />
-            <Pill icon={CalendarDays} label="From Calendar" color="text-[#34a853]" />
-            <Pill icon={Mail} label="From Gmail" color="text-[#ea4335]" />
+            {quickPrompts.map((qp) => (
+              <button
+                key={qp.label}
+                onClick={() => setInput(qp.prompt)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-zinc-800/80 bg-zinc-900/60 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:border-cyan-500/40 hover:bg-zinc-800 hover:text-white transition-all shadow-sm"
+              >
+                <span>{qp.label}</span>
+              </button>
+            ))}
           </motion.div>
 
-          <p className="mt-2 text-[11px] text-zinc-600">{mode === "cowork" ? "Cowork runs agentic — multi-step, file access, deliverables." : "Chat is conversational — quick Q&A, no file edits."}</p>
+          <p className="mt-2 text-[11px] text-zinc-500">{mode === "cowork" ? "Cowork mode enables autonomous tools, code generation & multi-step execution." : "Chat mode is conversational for fast Q&A."}</p>
         </motion.div>
 
-        {/* Showcase: live view + code + recreation — bridges to design systems */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }} className="mt-2 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-400"><Palette className="h-3.5 w-3.5" /> Featured — live view · code · recreation</h3>
-            <Link to="/design" className="text-xs text-sky-400 hover:underline">All 27 systems →</Link>
-          </div>
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[11px] font-medium text-zinc-500">Live preview — {previewDevice}</span>
-            <div className="flex items-center gap-1 rounded-full border border-zinc-800 bg-zinc-900 p-1">
-              <button onClick={() => setPreviewDevice("desktop")} className={`rounded-full p-1.5 ${previewDevice === "desktop" ? "bg-white text-zinc-900" : "text-zinc-500 hover:text-zinc-300"}`} title="Desktop"><Monitor className="h-3.5 w-3.5" /></button>
-              <button onClick={() => setPreviewDevice("tablet")} className={`rounded-full p-1.5 ${previewDevice === "tablet" ? "bg-white text-zinc-900" : "text-zinc-500 hover:text-zinc-300"}`} title="Tablet"><Tablet className="h-3.5 w-3.5" /></button>
-              <button onClick={() => setPreviewDevice("mobile")} className={`rounded-full p-1.5 ${previewDevice === "mobile" ? "bg-white text-zinc-900" : "text-zinc-500 hover:text-zinc-300"}`} title="Mobile"><Smartphone className="h-3.5 w-3.5" /></button>
+        {/* Featured Showcase: 67 Live Preset Sites + Code Inspection */}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }} className="mt-4 rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 shadow-xl">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-300"><Palette className="h-4 w-4 text-cyan-400" /> Featured Template Sites &amp; Live Code Studio</h3>
+            <div className="flex items-center gap-1 text-xs text-zinc-500">
+              <button onClick={() => setPreviewDevice("desktop")} className={`p-1 rounded ${previewDevice === "desktop" ? "text-cyan-400 bg-zinc-800" : "hover:text-zinc-300"}`}><Monitor className="h-3.5 w-3.5" /></button>
+              <button onClick={() => setPreviewDevice("tablet")} className={`p-1 rounded ${previewDevice === "tablet" ? "text-cyan-400 bg-zinc-800" : "hover:text-zinc-300"}`}><Tablet className="h-3.5 w-3.5" /></button>
+              <button onClick={() => setPreviewDevice("mobile")} className={`p-1 rounded ${previewDevice === "mobile" ? "text-cyan-400 bg-zinc-800" : "hover:text-zinc-300"}`}><Smartphone className="h-3.5 w-3.5" /></button>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {[
-              { slug: "aceternity-ai-saas", title: "Aceternity AI SaaS", accent: "from-sky-500/20 to-blue-600/10" },
-              { slug: "aceternity-nodus-agent", title: "Nodus Agent", accent: "from-purple-500/20 to-violet-600/10" },
-              { slug: "aceternity-productized-agency", title: "Productized Agency", accent: "from-emerald-500/20 to-teal-600/10" },
-              { slug: "aceternity-simplistic-saas", title: "Simplistic SaaS", accent: "from-amber-500/20 to-orange-600/10" },
-              { slug: "aceternity-cryptgen-marketing", title: "Cryptgen Marketing", accent: "from-cyan-500/20 to-teal-600/10" },
-              { slug: "aceternity-playful-marketing", title: "Playful Marketing", accent: "from-pink-500/20 to-rose-600/10" },
-            ].map((p) => (
-              <PreviewCard key={p.slug} p={p} previewDevice={previewDevice} onShowCode={handleShowCode} />
-            ))}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <PreviewCard
+              p={{ slug: "crm-lead-management-panel-staffu-admin-template", title: "CRM Lead Pipeline & Analytics Panel", accent: "from-blue-950/40 to-slate-950" }}
+              previewDevice={previewDevice}
+              onShowCode={handleShowCode}
+            />
+            <PreviewCard
+              p={{ slug: "clucky-the-rooster-alarm-that-gets-you-up", title: "Clucky Rooster Interactive Audio Alarm", accent: "from-amber-950/40 to-slate-950" }}
+              previewDevice={previewDevice}
+              onShowCode={handleShowCode}
+            />
           </div>
-          <div className="mt-4 flex justify-center">
-            <Link to="/console/design" className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-2 text-xs font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white">
-              <Eye className="h-4 w-4" /> View all 67 live sites · code · recreation
-            </Link>
-          </div>
+
           <Dialog open={!!codeSite} onOpenChange={(o) => !o && setCodeSite(null)}>
-            <DialogContent className="max-h-[80vh] max-w-3xl overflow-hidden bg-zinc-950">
-              <DialogHeader><DialogTitle className="text-white">Code — {codeSite}</DialogTitle></DialogHeader>
+            <DialogContent className="max-w-3xl bg-[#0f0f12] border-zinc-800">
+              <DialogHeader><DialogTitle className="text-white font-mono text-sm">Code Inspector — {codeSite}</DialogTitle></DialogHeader>
               <div className="relative">
-                <button onClick={() => { navigator.clipboard.writeText(codeContent); setCopied(true); setTimeout(() => setCopied(false), 1500); }} className="absolute right-2 top-2 inline-flex items-center gap-1 rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300 hover:bg-zinc-700">
-                  {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />} {copied ? "Copied" : "Copy"}
+                <button onClick={() => { navigator.clipboard.writeText(codeContent); setCopied(true); setTimeout(() => setCopied(false), 1500); }} className="absolute right-2 top-2 inline-flex items-center gap-1 rounded bg-zinc-800 px-2.5 py-1 text-xs text-zinc-200 hover:bg-zinc-700">
+                  {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />} {copied ? "Copied" : "Copy Source"}
                 </button>
-                <pre className="max-h-[60vh] overflow-auto rounded-lg bg-black p-4 font-mono text-xs text-zinc-300">{codeContent}</pre>
+                <pre className="max-h-[60vh] overflow-auto rounded-lg bg-black p-4 font-mono text-xs text-zinc-300 scrollbar-thin">{codeContent}</pre>
               </div>
             </DialogContent>
           </Dialog>
-          <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-zinc-500">
-            <Link to="/console/design" className="inline-flex items-center gap-1 hover:text-zinc-300"><ExternalLink className="h-3 w-3" /> All 67 live sites</Link>
-            <span>·</span>
-            <Link to="/console/projects" className="hover:text-zinc-300">Projects</Link>
-            <span>·</span>
-            <span className="text-zinc-600">Recreation uses same design tokens via Learnify</span>
+
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-500 border-t border-zinc-800/60 pt-3">
+            <div className="flex items-center gap-3">
+              <Link to="/console/components" className="inline-flex items-center gap-1 text-cyan-400 hover:text-cyan-300 font-medium">
+                <Sparkles className="h-3 w-3" /> 3D Motion Components
+              </Link>
+              <span>·</span>
+              <Link to="/console/apps" className="hover:text-zinc-300 font-medium">Universal App Builder</Link>
+            </div>
+            <span className="font-mono text-[10px] text-zinc-600">67+ Live Presets • 100% Client-Side Rendered</span>
           </div>
         </motion.div>
 
-        <div className="py-4 text-center text-[11px] text-zinc-600">Jarvis can make mistakes. Verify important info. · <Link to="/how-it-works" className="underline decoration-zinc-700 underline-offset-4 hover:text-zinc-400">How Jarvis works</Link></div>
+        <div className="py-4 text-center text-[11px] text-zinc-600">JARVIS AI OS v3.0 Master Release · <Link to="/how-it-works" className="underline decoration-zinc-700 underline-offset-4 hover:text-zinc-400">100 SOTA Use Cases</Link></div>
       </div>
     </div>
   );
 }
 
-function Pill({ icon: Icon, label, color, to }: { icon: typeof GraduationCap; label: string; color?: string; to?: string }) {
-  const cls = "inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/70 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition-colors";
-  const inner = <><Icon className={`h-3.5 w-3.5 ${color ?? "text-zinc-400"}`} /> {label}</>;
-  const content = to ? <Link to={to} className={cls}>{inner}</Link> : <button className={cls}>{inner}</button>;
-  return <motion.div whileHover={{ scale: 1.05, y: -1 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 300 }}>{content}</motion.div>;
-}
-
-/** Lazy iframe — only loads when user hovers the card, preventing browser freeze on mount */
+/** Lazy iframe preview card */
 function PreviewCard({
   p,
   previewDevice,
@@ -319,17 +399,17 @@ function PreviewCard({
   onShowCode: (slug: string) => void;
 }) {
   const [active, setActive] = useState(false);
-  const h = previewDevice === "mobile" ? 320 : previewDevice === "tablet" ? 280 : 240;
+  const h = previewDevice === "mobile" ? 300 : previewDevice === "tablet" ? 260 : 220;
   return (
     <div
-      className={`flex flex-col rounded-xl border border-zinc-800 bg-gradient-to-b p-3 ${p.accent} hover:border-zinc-700 transition-colors`}
+      className={`flex flex-col rounded-xl border border-zinc-800/80 bg-gradient-to-b p-3.5 ${p.accent} hover:border-zinc-700 transition-all shadow-md`}
       onMouseEnter={() => setActive(true)}
     >
-      <div className="text-sm font-medium text-white">{p.title}</div>
-      <div className="mt-1 text-[11px] text-zinc-400">/preset-sites/{p.slug}/</div>
+      <div className="text-xs font-bold text-white truncate">{p.title}</div>
+      <div className="mt-0.5 text-[10px] text-zinc-400 font-mono">/preset-sites/{p.slug}/</div>
       <div
-        className={`mt-3 overflow-hidden rounded-xl border border-zinc-700 bg-black shadow-lg ${
-          previewDevice === "mobile" ? "mx-auto max-w-[360px]" : previewDevice === "tablet" ? "mx-auto max-w-[600px]" : "w-full"
+        className={`mt-2.5 overflow-hidden rounded-xl border border-zinc-800 bg-black shadow-inner ${
+          previewDevice === "mobile" ? "mx-auto max-w-[320px]" : previewDevice === "tablet" ? "mx-auto max-w-[500px]" : "w-full"
         }`}
         style={{ height: h }}
       >
@@ -337,14 +417,14 @@ function PreviewCard({
           <iframe src={`/preset-sites/${p.slug}/`} title={p.title} className="h-full w-full border-0" />
         ) : (
           <div className="flex h-full items-center justify-center gap-2 text-[11px] text-zinc-500">
-            <Eye className="h-3.5 w-3.5" /> hover to preview
+            <Eye className="h-3.5 w-3.5 text-zinc-400" /> Hover to preview live
           </div>
         )}
       </div>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        <a href={`/preset-sites/${p.slug}/`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-900 hover:bg-zinc-100"><Eye className="h-3 w-3" /> Live</a>
-        <button onClick={() => onShowCode(p.slug)} className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-[11px] font-medium text-zinc-200 hover:bg-zinc-700"><Code2 className="h-3 w-3" /> Code</button>
-        <Link to="/design" className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:bg-zinc-800"><Sparkles className="h-3 w-3" /> Recreate</Link>
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        <a href={`/preset-sites/${p.slug}/`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-zinc-900 hover:bg-zinc-100 shadow-sm"><Eye className="h-3 w-3" /> Live Demo</a>
+        <button onClick={() => onShowCode(p.slug)} className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-[10px] font-medium text-zinc-200 hover:bg-zinc-700"><Code2 className="h-3 w-3" /> Code</button>
+        <Link to="/console/apps" className="inline-flex items-center gap-1 rounded-full border border-purple-500/30 bg-purple-950/40 px-2.5 py-1 text-[10px] font-medium text-purple-300 hover:bg-purple-900/50"><Sparkles className="h-3 w-3" /> Fork in Builder</Link>
       </div>
     </div>
   );
