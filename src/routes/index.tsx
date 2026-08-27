@@ -547,12 +547,22 @@ export function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <PresetGalleryCard
-              p={{ slug: "crm-lead-management-panel-staffu-admin-template", title: "CRM Lead Pipeline & Analytics Panel", accent: "from-blue-950/40 to-slate-950" }}
+              p={{ slug: "aceternity-productized-agency", title: "Aceternity Productized Agency OS", accent: "from-purple-950/40 to-slate-950" }}
               previewDevice={previewDevice}
               onShowCode={handleShowCode}
             />
             <PresetGalleryCard
-              p={{ slug: "clucky-the-rooster-alarm-that-gets-you-up", title: "Clucky Rooster Interactive Audio Alarm", accent: "from-amber-950/40 to-slate-950" }}
+              p={{ slug: "aceternity-cryptgen-marketing", title: "Cryptgen Dark FinTech & Web3 Marketing", accent: "from-cyan-950/40 to-slate-950" }}
+              previewDevice={previewDevice}
+              onShowCode={handleShowCode}
+            />
+            <PresetGalleryCard
+              p={{ slug: "aceternity-playful-marketing", title: "Playful SaaS Interactive Landing Page", accent: "from-pink-950/40 to-slate-950" }}
+              previewDevice={previewDevice}
+              onShowCode={handleShowCode}
+            />
+            <PresetGalleryCard
+              p={{ slug: "aceternity-simplistic-saas", title: "Simplistic High-Converting SaaS Platform", accent: "from-blue-950/40 to-slate-950" }}
               previewDevice={previewDevice}
               onShowCode={handleShowCode}
             />
