@@ -1,0 +1,15 @@
+{
+  "id": "responsive-photo-asset-gallery-staffu",
+  "name": "Responsive Photo & Asset Gallery",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Responsive Photo & Asset Gallery | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/responsive-photo-asset-gallery-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

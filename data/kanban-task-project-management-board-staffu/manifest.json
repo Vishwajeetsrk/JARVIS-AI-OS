@@ -1,0 +1,15 @@
+{
+  "id": "kanban-task-project-management-board-staffu",
+  "name": "Kanban Task & Project Management Board",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Kanban Task & Project Management Board | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/kanban-task-project-management-board-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

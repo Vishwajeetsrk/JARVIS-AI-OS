@@ -19,7 +19,7 @@ export const listShippedSkillCatalog = createServerFn({ method: "GET" })
 
 export const createLearnedSkill = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         name: z.string().min(1).max(64),
@@ -36,7 +36,7 @@ export const createLearnedSkill = createServerFn({ method: "POST" })
 
 export const deleteLearnedSkill = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ name: z.string().min(1) }).parse(data))
+  .validator((data) => z.object({ name: z.string().min(1) }).parse(data))
   .handler(async ({ data }) => {
     const { deleteSkill } = await import("@/lib/skills");
     return await deleteSkill(data.name);

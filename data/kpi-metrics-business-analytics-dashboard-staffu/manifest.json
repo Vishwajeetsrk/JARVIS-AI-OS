@@ -1,0 +1,15 @@
+{
+  "id": "kpi-metrics-business-analytics-dashboard-staffu",
+  "name": "KPI Metrics & Business Analytics Dashboard",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page KPI Metrics & Business Analytics Dashboard | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/kpi-metrics-business-analytics-dashboard-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

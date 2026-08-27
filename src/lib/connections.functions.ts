@@ -28,7 +28,7 @@ export const listConnections = createServerFn({ method: "GET" })
 /** Verifies a credential against the real provider API, then stores it. */
 export const connectProvider = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
+  .validator((d) =>
     z.object({ provider: z.string().min(1), credential: z.string().default("") }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -61,7 +61,7 @@ export const connectProvider = createServerFn({ method: "POST" })
 
 export const disconnectProvider = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ provider: z.string().min(1) }).parse(d))
+  .validator((d) => z.object({ provider: z.string().min(1) }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
@@ -76,7 +76,7 @@ export const disconnectProvider = createServerFn({ method: "POST" })
 /** Re-runs verification for a stored credential. */
 export const testConnection = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ provider: z.string().min(1) }).parse(d))
+  .validator((d) => z.object({ provider: z.string().min(1) }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { verifyCredential } = await import("@/lib/connectors.server");

@@ -1,0 +1,15 @@
+{
+  "id": "sales-pipeline-opportunity-tracking-staffu",
+  "name": "Sales Pipeline & Opportunity Tracking",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Sales Pipeline & Opportunity Tracking | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/sales-pipeline-opportunity-tracking-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

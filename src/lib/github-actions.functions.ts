@@ -67,7 +67,7 @@ export const githubSignInStart = createServerFn({ method: "POST" })
 /** Polls the device flow until the user authorizes, then stores the token. */
 export const githubSignInPoll = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ deviceCode: z.string().min(1) }).parse(d))
+  .validator((d) => z.object({ deviceCode: z.string().min(1) }).parse(d))
   .handler(async ({ data, context }) => {
     const clientId = process.env.GITHUB_CLIENT_ID;
     if (!clientId) return { ok: false as const, error: "GITHUB_CLIENT_ID not configured." };
@@ -110,7 +110,7 @@ export const githubSignInPoll = createServerFn({ method: "POST" })
 
 export const githubCreateRepo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
+  .validator((d) =>
     z.object({
       name: z.string().regex(/^[a-zA-Z0-9_.-]+$/).min(1).max(100),
       description: z.string().max(300).optional(),
@@ -204,7 +204,7 @@ async function pushFilesToRepo(
 /** Push a set of files to a repo. If the repo doesn't exist, creates it first. */
 export const githubPushFiles = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
+  .validator((d) =>
     z.object({
       repo: z.string().regex(/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/).describe("owner/name (must exist)"),
       files: z.array(z.object({ path: z.string().min(1), content: z.string() })).min(1).max(200),
@@ -221,7 +221,7 @@ export const githubPushFiles = createServerFn({ method: "POST" })
 /** Create a repo (if needed) and push project files into it. */
 export const githubPushProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
+  .validator((d) =>
     z.object({
       projectId: z.string().uuid().optional(),
       buildId: z.string().uuid().optional(),

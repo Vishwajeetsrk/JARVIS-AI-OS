@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Copy, Check, Sparkles, MessageSquare } from "lucide-react";
-import { generateReplyRescue, ReplyTone } from "@/server/tools/replyRescue";
+import { generateReplyRescue, ReplyTone } from "@/lib/vida-tools/replyRescue";
 
 export function ReplyRescue() {
   const [incoming, setIncoming] = useState("Can you please send me an update on the Nia 3D avatar integration and when we will have it ready for review?");

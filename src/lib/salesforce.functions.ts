@@ -3,7 +3,7 @@ import { z } from "zod";
 import { salesforceClient, type DonorRecord } from "./integrations/salesforce-client";
 
 export const reconcileDonationFn = createServerFn({ method: "POST" })
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       name: z.string(),
       email: z.string().email(),

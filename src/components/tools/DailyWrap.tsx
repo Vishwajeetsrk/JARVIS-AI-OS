@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Copy, Check, Calendar, CheckSquare, Clock, AlertOctagon, Target } from "lucide-react";
-import { generateDailyWrap, DailyWrapOutput } from "@/server/tools/dailyWrap";
+import { generateDailyWrap, DailyWrapOutput } from "@/lib/vida-tools/dailyWrap";
 
 export function DailyWrap() {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { listDesignSystems, getDesignSystem, listProjectSites, getProjectSite } from "@/lib/design-systems";
+import { listDesignSystems, getDesignSystem, listProjectSites, getProjectSite, listLearnifyDesigns, getLearnifyDesign } from "@/lib/design-systems";
 
 export const Route = createFileRoute("/api/design-systems")({
   server: {
@@ -9,6 +9,16 @@ export const Route = createFileRoute("/api/design-systems")({
         const id = url.searchParams.get("id");
 
         if (id) {
+          // Learnify design lookup
+          if (id.startsWith("learnify-")) {
+            const learnify = getLearnifyDesign(id);
+            if (learnify) {
+              return new Response(JSON.stringify(learnify), {
+                headers: { "content-type": "application/json" },
+              });
+            }
+          }
+
           const site = getProjectSite(id);
           if (site) {
             return new Response(JSON.stringify(site), {
@@ -24,7 +34,11 @@ export const Route = createFileRoute("/api/design-systems")({
           });
         }
 
-        const systems = [...listDesignSystems(), ...listProjectSites()];
+        const systems = [
+          ...listDesignSystems(),
+          ...listProjectSites(),
+          ...listLearnifyDesigns(),
+        ];
         return new Response(JSON.stringify(systems), {
           headers: { "content-type": "application/json" },
         });

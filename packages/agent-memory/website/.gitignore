@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+.env*.local
+.vercel
+*.tsbuildinfo
+.DS_Store
+package-lock.json
+pnpm-lock.yaml
+yarn.lock

@@ -1,0 +1,15 @@
+{
+  "id": "expense-invoice-tracking-system-staffu",
+  "name": "Expense & Invoice Tracking System",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Expense & Invoice Tracking System | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/expense-invoice-tracking-system-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

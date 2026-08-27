@@ -1,21 +1,22 @@
 <div align="center">
 
-# ⚡ JARVIS AI OS — Personal Intelligence Operating System
-### *Embodied 3D AI Companion (Nia/Nai) • Persistent 4-Tier Memory • 10-Agent Fleet • SOTA Tool Suite*
+# ⚡ JARVIS AI OS — Autonomous Personal Intelligence Operating System
+### *Embodied 3D AI Companion • 8-Bot Autonomous Fleet • Real-Time Voice Studio • Universal App Builder • 4-Tier Neural Memory*
 
 ![JARVIS AI OS Hero Banner](public/jarvis-hero-banner.svg)
 
+[![Release: v3.0.0](https://img.shields.io/badge/Release-v3.0.0_Master-blue?style=for-the-badge&logo=rocket)](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg?style=for-the-badge)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
+[![Supabase Cloud](https://img.shields.io/badge/Database-Supabase_PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com)
 [![Three.js](https://img.shields.io/badge/Three.js-VRM_1.0-black?style=for-the-badge&logo=three.js)](https://threejs.org)
 [![Google Gemini](https://img.shields.io/badge/AI_Engine-Gemini_2.0_Flash-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
-[![Tauri](https://img.shields.io/badge/Tauri-Windows_Desktop-24C8D8?style=for-the-badge&logo=tauri)](https://tauri.app)
 [![GitHub Stars](https://img.shields.io/github/stars/Vishwajeetsrk/JARVIS-AI-OS?style=for-the-badge&logo=github)](https://github.com/Vishwajeetsrk/JARVIS-AI-OS)
 
 ---
 
-### [🌐 Live Web Console](http://localhost:8080/console) • [💃 3D Companion Screen](http://localhost:8080/companion) • [💻 Desktop Launcher](#-1-click-windows-desktop-app) • [🛠️ VIDA SOTA Tools](#-vida-sota-autonomous-tool-suite)
+### [🌐 Live Web Console](http://localhost:3000/console) • [🤖 Autonomous Bot Fleet](http://localhost:3000/console/fleet) • [🎙️ Voice Studio](http://localhost:3000/console/voice) • [🏗️ App Builder](http://localhost:3000/console/apps) • [📊 Analytics](http://localhost:3000/console/analytics) • [🎨 UI Motion Hub](http://localhost:3000/console/components)
 
 </div>
 
@@ -25,52 +26,94 @@
 
 Traditional AI chatbots **forget everything** the moment you close the tab. **JARVIS AI OS** does not.
 
-**JARVIS AI OS** is a **persistent, intelligent, emotionally aware, 3D voice-first personal operating system** running directly on your Windows laptop and syncing across all surfaces. It combines an **interactive 3D VRM companion (Nia)**, **real-time audio lip-syncing**, a **10-specialized agent fleet**, and **7 production-grade productivity engines** into one unified workspace.
+**JARVIS AI OS** is a **persistent-memory, multi-surface autonomous AI Operating System** that operates across **Desktop, Mobile, Web, and Chrome Extensions**. It autonomously designs, codes, tests, and deploys **Full Stack Web Apps, React Native Mobile Apps, 3D Websites, Chrome Extensions (Manifest V3), AI Agents, and Scheduled Automations**.
 
-```
-                           +----------------------------------------+
-                           |          YOU (VISHWAJEET)              |
-                           +----------------------------------------+
-                                         |         ^
-                          "Hey Nia"      |         | Real-time Voice Audio
-                          "Let's Work"   |         | & 3D Phonetic Lip-Sync
-                                         v         |
-                     +----------------------------------------------------+
-                     |           JARVIS BRAIN ORCHESTRATOR                |
-                     |     (4-Tier Memory Vault & Security Manager)       |
-                     +----------------------------------------------------+
-                                 /         |         \
-                                /          |          \
-                               v           v           v
-                    +------------+  +------------+  +-------------------+
-                    | 3D AVATAR  |  | HYBRID AI  |  | 7 SOTA TOOL SUITE |
-                    |  (Nai.vrm) |  | Gemini/Groq|  | Reply, Prompt,    |
-                    | VRM 1.0    |  | Local Mock |  | Resume, Cleanup   |
-                    +------------+  +------------+  +-------------------+
-                               |           |                  |
-                               +-----------+------------------+
-                                           |
-                                           v
-                    +----------------------------------------------------+
-                    |  10-AGENT FLEET: Planner • Research • Code • SRE   |
-                    +----------------------------------------------------+
+```mermaid
+graph TD
+    User([User / Voice / Chat / Mobile / Desktop]) --> Gateway[Unified API & Realtime WebSocket Gateway]
+    
+    subgraph Core_OS_Engines [JARVIS AI OS Core Engines]
+        Gateway --> IntentRouter[Intent & Prompt Router]
+        IntentRouter --> ChiefOfStaff[Chief of Staff Coordinator]
+        ChiefOfStaff --> MemoryEngine[4-Tier Neural Memory: Working / Episodic / Semantic / Procedural]
+        ChiefOfStaff --> AgentFleet[Autonomous Bot Fleet: 8 Specialized Roles]
+        ChiefOfStaff --> AppForge[Universal App Builder: Full-Stack / Mobile / Web / Extension]
+        ChiefOfStaff --> VoiceEngine[Real-Time Voice & Voice Cloning Engine]
+        ChiefOfStaff --> ToolRunner[Computer-Use & Tool Connector Engine]
+        ChiefOfStaff --> Scheduler[Routine & Cron Automation Scheduler]
+    end
+
+    subgraph External_Integrations [Tool Connectors & Cloud]
+        ToolRunner --> MCP[MCP Servers: GitHub / Postgres / Supabase / Slack / Notion / Linear / Gmail]
+        ToolRunner --> DesktopBridge[Desktop OS Shell & Computer-Use Bridge]
+        VoiceEngine --> TelephonySIP[SIP Telephony / Free Number Gateway]
+        VoiceEngine --> VoiceCloner[xAI / Whisper / Custom Voice Cloning API]
+        AgentFleet --> AnalyticsDB[(Supabase PostgreSQL Analytics)]
+    end
 ```
 
 ---
 
-## ✨ New in v2.7: Nia 3D VRM Avatar & SOTA Architecture
+## 🚀 Key Master Features (v3.0.0)
 
-### 🌸 1. Interactive 3D VRM 1.0 Humanoid Companion (`Nai.vrm`)
+### 🤖 1. Autonomous Bot Fleet & Chief of Staff Hub (`/console/fleet`)
+Give each autonomous bot a dedicated job with schedule routines, automated tool execution, and priority escalation:
+
+| Bot Persona | Primary Objective | Key Tools & Integrations | Automated Output |
+| :--- | :--- | :--- | :--- |
+| **👔 Chief of Staff** | Always-on assistant. Scans Slack, Email, Calendar, and Meeting Notes to surface daily priorities. | Gmail, Google Calendar, Slack, Notion | Morning Executive Briefing, Priority Digest, Thread Follow-up Tracker |
+| **🎯 Sales Outbound** | Lead discovery, automated ICP enrichment, and hyper-personalized email sequencing. | Apollo, Clearbit, Gmail, HubSpot | Outbound Campaigns, Prospect List, Warm Lead Alerts |
+| **🕵️ Talent Scout** | Sourcing candidate profiles, resume screening, and GitHub challenge evaluation. | LinkedIn, Greenhouse, Resend | Candidate Pipeline Matrix, Scorecards, Offer Letters |
+| **📈 Paid Media** | Ad spend optimization and automated budget reallocation across Meta/Google/TikTok ads. | Google Ads API, Meta Marketing API, GA4 | Creative Performance Heatmaps, Daily ROAS Reports |
+| **💳 Expense Manager** | Receipt OCR extraction, invoice reconciliation, and SaaS license waste audits. | QuickBooks, Stripe, Bank Plaid API | Monthly P&L Summaries, Budget Threshold Alerts |
+| **📊 Product Performance** | Funnel drop-off analytics, feature adoption scores, and churn prediction. | PostHog, Mixpanel, Amplitude, Sentry | Product Health Scores, Churn Risk Alerts |
+| **🐛 Bug Reproduction** | Reads Sentry logs, writes automated Playwright repro test scripts, and proposes AST code fixes. | Playwright, Sentry, Monaco Editor | Executable Repro Scripts, Draft Pull Requests |
+| **🛡️ Account Health** | Customer retention monitoring, usage spike alerts, and automated QBR deck generation. | Salesforce, Intercom, Vitally | Client Health Dashboard, Executive QBR Slide Decks |
+
+---
+
+### 🎙️ 2. Real-Time Voice Studio & 2-Minute Custom Voice Cloner (`/console/voice`)
+* **Sub-Second Latency Speech-to-Speech Engine**: Sub-400ms time-to-first-audio with natural turn-taking and interruption handling.
+* **2-Minute Custom Voice Cloning**: Upload a 90–120s reference `.wav` audio sample to clone up to **30 custom voices for free**.
+* **Multilingual Timbre Retention (25+ Languages)**: Retains voice timbre, cadence, and warmth across English, Spanish, French, German, Hindi, Japanese, etc.
+* **Prosody & Speech Emotion Tags**: Real-time emotion control (`warm`, `authoritative`, `friendly`, `energetic`, `casual`).
+* **Direct SIP Telephony & Inbound Calling**: Automated call recording, transcripts, and SOC-2/HIPAA/GDPR compliance guardrails.
+
+---
+
+### 🏗️ 3. Universal Multi-Platform App Builder (`/console/apps`)
+1-click autonomous code scaffolding, live Monaco editing, interactive previews, and ZIP exports for:
+* **Full-Stack SaaS Apps**: TanStack Start / Next.js + PostgreSQL + Supabase Auth + Stripe Billing.
+* **Cross-Platform Mobile Apps**: React Native 0.74 + Expo Router + SQLite offline cache + native sensors.
+* **3D Responsive Websites**: Aceternity UI, 3D Canvas Earth Globe, and 3D Book Flip interactive animation.
+* **AI Chrome Extensions (Manifest V3)**: Side-panel assistants with DOM content scripts and background service workers.
+* **Autonomous AI Agents & Workflows**: Mastra graph definitions with 4-tier neural memory and cron scheduler.
+
+---
+
+### 🎨 4. Interactive UI Components & 3D Motion Hub (`/console/components`)
+Browse, inspect, and copy live code, interactive previews, and production prompts for 10+ premium UI components:
+* **Interactive 3D Earth Globe**: WebGL Three.js interactive earth with orbital rotation and location pins.
+* **3D Book Page Flip Animation**: Smooth CSS 3D transformed interactive book with realistic page turns.
+* **Animated Pricing Calculator**: Annual/Monthly discount toggles and real-time tier calculators.
+* **Dynamic Testimonial Carousel**: Glassmorphism testimonial cards with animated avatars.
+* **Preset Sites & Templates**: 67+ live template previews including CRM panels, Staff Management, and SaaS dashboards.
+
+---
+
+### 📊 5. Shared Usage Analytics & Cost Attribution (`/console/analytics`)
+* **Real-time Cost & Token Efficiency**: Granular tracking across Gemini 2.0 Flash, Groq LLaMA 3.3 70B, and OpenRouter.
+* **Bot Workload Attribution**: Visual token breakdown and budget utilization per bot persona.
+* **Multi-Channel Ingestion Telemetry**: Live counters for processed Slack messages, emails, calendar events, and PRs.
+* **Self-Healing Error Metrics**: 99.4% task success rate with autonomous AST exception self-healing.
+
+---
+
+### 🌸 6. 3D Embodied Desktop Companion (Nia/Nai VRM 1.0)
 * **True 3D Embodiment**: Powered by Three.js & `@pixiv/three-vrm` with secondary physics for hair and cloth.
 * **Audio-Driven Phonetic Visemes**: Mouth modulates in real time to phonetic vowels (`aa`, `ih`, `ou`, `ee`, `oh`) during speech.
-* **Eye & Head Tracking**: Avatar smoothly tracks pointer/cursor movement with Slerp rotation interpolation.
-* **Emotion & State Model**: Visual feedback for `idle`, `listening`, `thinking`, `speaking`, `happy`, `concerned`, `excited`, `calm`, `working`, and `error`.
-* **Freedom-to-Walk Desktop Kinematics**: Roaming across the desktop (5% to 92% screen boundaries), sitting, resting, and waving.
-
-### 🎙️ 2. Always-On Voice & Interruption Guard
-* **Continuous Hands-Free Recognition**: Auto-reconnecting speech loop with *"Hey Nia"* / *"Hey Jarvis"* wake word triggers.
-* **Speech Interruption Guard**: Microphone instantly cuts off ongoing avatar TTS playback the moment you speak.
-* **Hybrid Fallback AI Chain**: Auto-resolves `Gemini 2.0 Flash` ➔ `Groq Llama 3.3 70B` ➔ `Local Ollama` ➔ `Offline Mock Mode`.
+* **Eye & Head Tracking**: Avatar smoothly tracks cursor movement with Slerp rotation interpolation.
+* **Desktop Freedom-to-Walk**: Roams across screen boundaries, sits, waves, and works alongside you.
 
 ---
 
@@ -90,21 +133,6 @@ JARVIS AI OS embeds 7 calibrated, type-safe agent tools directly on the dashboar
 
 ---
 
-## 🤖 10 Specialized Autonomous Agents
-
-1. **Planner Agent**: Decomposes complex goals, estimates risk, and orchestrates multi-agent tasks.
-2. **Research Agent**: Conducts multi-source web intelligence with labeled facts, assumptions, and citations.
-3. **Browser Agent**: Navigates web pages, searches YouTube, extracts content, and assists workflows safely.
-4. **File Agent**: Handles approved workspace scanning, duplicate detection, and safe Recycle Bin staging.
-5. **Document Agent**: Generates structured `.docx`, `.md`, and PDF reports without hallucinated claims.
-6. **Presentation Agent**: Designs executive 16:9 `.pptx` slide decks with structured outlines.
-7. **Spreadsheet Agent**: Builds multi-column `.xlsx` workbooks and audit datasets with ExcelJS.
-8. **Coding Agent**: Writes idiomatic, type-safe TypeScript, React, and Three.js components.
-9. **Testing Agent**: Executes Vitest unit tests, typechecks, and verifies system integrity.
-10. **Review Agent**: Performs pre-commit code reviews, safety audits, and quality scorecards.
-
----
-
 ## 🔒 3-Tier Security & Permission Architecture
 
 * **Level 1 (Low Risk - Immediate):** Web search, open URL, draft document, generate code, summarize text.
@@ -118,7 +146,6 @@ JARVIS AI OS embeds 7 calibrated, type-safe agent tools directly on the dashboar
 ### Prerequisites
 * **Node.js** v20+ or v24+
 * **Windows 11 / 10** (or macOS / Linux)
-* *(Optional)* Rust & Cargo for building native Windows `.exe`
 
 ### 1. Installation
 
@@ -139,62 +166,65 @@ Copy `.env.example` to `.env`:
 cp .env.example .env
 ```
 
-Fill in your optional AI keys (or leave as `AI_PROVIDER=mock` for instant offline testing):
+Your `.env` file comes pre-configured for Supabase Cloud and Free AI engines (Gemini 2.0 Flash & Groq):
 
 ```env
-AI_PROVIDER=gemini
-AI_MODEL=gemini-flash-latest
-GEMINI_API_KEY="your-gemini-api-key"
-ENABLE_VOICE=true
-PORT=8080
+# Supabase Cloud Database
+SUPABASE_URL="https://tupgfxqkefgntrpgakxk.supabase.co"
+SUPABASE_PUBLISHABLE_KEY="sb_publishable_xS9EjiYb3cjZQ_hVKWvPWg_wF9SKZML"
+
+# Free Primary AI Engines
+GEMINI_API_KEY="your-gemini-key"
+GROQ_API_KEY="your-groq-key"
+
+PORT=3000
 ```
 
-### 3. Launching Nia
+### 3. Launch JARVIS AI OS
 
 ```bash
-# Start development server
+# Start local development server
 npm run dev
-
-# Or double-click the 1-click Windows launcher:
-.\Launch-Nia.bat
 ```
 
-Open [http://localhost:8080/console](http://localhost:8080/console) in your browser!
+Visit **`http://localhost:3000`** in your browser to access the full operating system!
 
 ---
 
-## 💻 1-Click Windows Desktop App
+## 📁 Repository Structure
 
-Create a native Windows Desktop shortcut pointing to Nia:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\Install-Nia-Desktop-Shortcut.ps1
 ```
-
-Double-clicking **"Nia AI Companion"** on your Windows Desktop will automatically check port `8080`, start the background services, and launch your interactive 3D console.
-
-### Packaging to Native Windows `.exe` (Tauri)
-
-```bash
-npm run tauri:build
-```
-
-The compiled installer is output to `src-tauri/target/release/bundle/nsis/`.
-
----
-
-## 🧪 Testing & Validation
-
-```bash
-# Run TypeScript type safety check (0 errors)
-npm run typecheck
-
-# Run Vitest test suite
-npm test
+├── cli/                         # JARVIS Command Line Interface
+├── data/                        # Preset template definitions & local JSON stores
+├── public/                      # Static assets, VRM models, hero graphics
+├── scripts/                     # Python desktop daemons & migration scripts
+├── src/
+│   ├── components/              # 3D Avatar, UI Motion components, Monaco Studio
+│   │   ├── jarvis/              # Command bar, Code editor, Desktop companion
+│   │   ├── tools/               # VIDA 7 SOTA autonomous tool suite
+│   │   └── ui/                  # 3D Earth Globe, Book Flip, Aceternity UI
+│   ├── integrations/            # Supabase Cloud client & auth middleware
+│   ├── lib/                     # Bot fleet, Voice cloner, App builder, Analytics
+│   ├── mastra/                  # Autonomous agent graphs & memory workflows
+│   └── routes/                  # TanStack Start file-based routing
+│       └── _authenticated/
+│           └── console/         # Fleet, Voice, Apps, Analytics, Components hubs
+├── supabase/                    # 14 PostgreSQL database migrations & RLS policies
+└── package.json
 ```
 
 ---
 
-## 📜 License
+## 🤝 Contributing
 
-MIT © [Vishwajeet](https://github.com/Vishwajeetsrk) — Open Source Personal AI Operating System.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/issues).
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+Made with ❤️ by <a href="https://github.com/Vishwajeetsrk">Vishwajeet</a> and the Open Source JARVIS AI Community.
+</div>

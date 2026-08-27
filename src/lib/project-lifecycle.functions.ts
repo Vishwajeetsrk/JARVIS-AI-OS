@@ -9,7 +9,7 @@ import type { Json } from "@/integrations/supabase/types";
 
 export const saveProjectBuild = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       projectId: z.string().uuid(),
       name: z.string().min(1).max(200),
@@ -40,7 +40,7 @@ export const saveProjectBuild = createServerFn({ method: "POST" })
 
 export const listProjectBuilds = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("project_builds")
@@ -54,7 +54,7 @@ export const listProjectBuilds = createServerFn({ method: "GET" })
 
 export const getProjectBuild = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ buildId: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ buildId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("project_builds")
@@ -68,7 +68,7 @@ export const getProjectBuild = createServerFn({ method: "GET" })
 
 export const deleteProjectBuild = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ buildId: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ buildId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("project_builds")
@@ -83,7 +83,7 @@ export const deleteProjectBuild = createServerFn({ method: "POST" })
 
 export const recordDeployment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       projectId: z.string().uuid(),
       buildId: z.string().uuid().optional(),
@@ -113,7 +113,7 @@ export const recordDeployment = createServerFn({ method: "POST" })
 
 export const listProjectDeployments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("project_deployments")
@@ -129,7 +129,7 @@ export const listProjectDeployments = createServerFn({ method: "GET" })
 
 export const saveProjectDatabase = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       projectId: z.string().uuid(),
       name: z.string().min(1).max(120),
@@ -158,7 +158,7 @@ export const saveProjectDatabase = createServerFn({ method: "POST" })
 
 export const listProjectDatabases = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("project_databases")
@@ -172,7 +172,7 @@ export const listProjectDatabases = createServerFn({ method: "GET" })
 
 export const deleteProjectDatabase = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("project_databases")
@@ -187,7 +187,7 @@ export const deleteProjectDatabase = createServerFn({ method: "POST" })
 
 export const setProjectPlugin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       projectId: z.string().uuid(),
       pluginId: z.string().min(1).max(120),
@@ -213,7 +213,7 @@ export const setProjectPlugin = createServerFn({ method: "POST" })
 
 export const listProjectPlugins = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("project_plugins")
@@ -228,7 +228,7 @@ export const listProjectPlugins = createServerFn({ method: "GET" })
 
 export const createProjectApiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       projectId: z.string().uuid(),
       name: z.string().min(1).max(120),
@@ -257,7 +257,7 @@ export const createProjectApiKey = createServerFn({ method: "POST" })
 
 export const listProjectApiKeys = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("project_api_keys")
@@ -271,7 +271,7 @@ export const listProjectApiKeys = createServerFn({ method: "GET" })
 
 export const revokeProjectApiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("project_api_keys")
@@ -286,7 +286,7 @@ export const revokeProjectApiKey = createServerFn({ method: "POST" })
 
 export const saveProjectAnalysis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       projectId: z.string().uuid(),
       reportType: z.string().optional(),
@@ -310,7 +310,7 @@ export const saveProjectAnalysis = createServerFn({ method: "POST" })
 
 export const getProjectAnalysis = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ projectId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("project_analysis")

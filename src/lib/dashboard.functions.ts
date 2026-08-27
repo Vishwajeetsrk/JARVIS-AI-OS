@@ -107,7 +107,7 @@ export const getEngineStatus = createServerFn({ method: "GET" })
 
 export const listActivity = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({ limit: z.number().optional() }).parse(data ?? {}),
   )
   .handler(async ({ data, context }) => {

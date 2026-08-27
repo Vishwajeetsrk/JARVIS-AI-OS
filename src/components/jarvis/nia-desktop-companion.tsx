@@ -38,15 +38,15 @@ export function NiaDesktopCompanion({ onClose }: NiaDesktopCompanionProps) {
     if (!containerRef.current) return;
 
     const width = 320;
-    const height = 440;
+    const height = 480;
 
     // 1. Setup Three.js Scene with 100% Transparent Alpha
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    const camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 20);
-    camera.position.set(0, 0.95, 2.6); // Full body view
-    camera.lookAt(0, 0.85, 0);
+    const camera = new THREE.PerspectiveCamera(25, width / height, 0.1, 20);
+    camera.position.set(0, 1.0, 3.2); // Full body — head to feet
+    camera.lookAt(0, 0.9, 0);
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.setSize(width, height);
@@ -90,14 +90,39 @@ export function NiaDesktopCompanion({ onClose }: NiaDesktopCompanionProps) {
           // Handle VRM 0.0 rotation automatically without distorting VRM 1.0
           VRMUtils.rotateVRM0(vrm);
 
-          // Disable frustum culling on all child meshes to guarantee 100% visibility
+          // Disable frustum culling + remove all non-skinned helper meshes (bone spheres, physics discs)
           vrm.scene.traverse((obj) => {
             if ((obj as THREE.Mesh).isMesh) {
-              obj.frustumCulled = false;
-              obj.castShadow = false;
-              obj.receiveShadow = false;
+              const mesh = obj as THREE.Mesh;
+              // Remove helper debug geometry (e.g. spring-bone sphere colliders that appear as blue discs)
+              const isHelper =
+                obj.name.toLowerCase().includes("helper") ||
+                obj.name.toLowerCase().includes("collider") ||
+                obj.name.toLowerCase().includes("joint") ||
+                obj.name.toLowerCase().includes("debug");
+              if (isHelper) {
+                mesh.visible = false;
+                return;
+              }
+              mesh.frustumCulled = false;
+              mesh.castShadow = false;
+              mesh.receiveShadow = false;
             }
           });
+
+          // Additionally hide SpringBone colliders if the VRM has them registered
+          if ((vrm as any).springBoneManager) {
+            const sbm = (vrm as any).springBoneManager;
+            if (sbm.colliderGroups) {
+              sbm.colliderGroups.forEach((g: any) => {
+                if (g.colliders) {
+                  g.colliders.forEach((c: any) => {
+                    if (c.object) c.object.visible = false;
+                  });
+                }
+              });
+            }
+          }
 
           vrmRef.current = vrm;
           scene.add(vrm.scene);
@@ -116,7 +141,8 @@ export function NiaDesktopCompanion({ onClose }: NiaDesktopCompanionProps) {
       );
     };
 
-    loadVRMModel("/vrm/Nai.vrm", ["/vrm/nia-v1.vrm", "/vrm/nai.vrm", "/vrm/Nia.vrm", "/vrm/nexa-girl.vrm"]);
+    // Load Nia — tries all known filename casings (Windows is case-insensitive but Linux/Mac are not)
+    loadVRMModel("/vrm/nai.vrm", ["/vrm/Nai.vrm", "/vrm/nia-v1.vrm", "/vrm/Nia.vrm", "/vrm/nexa-girl.vrm"]);
 
     // 4. Mouse Tracking & Animation Loop
     const mousePos = { x: 0, y: 0 };
@@ -253,7 +279,7 @@ export function NiaDesktopCompanion({ onClose }: NiaDesktopCompanionProps) {
         <div
           ref={containerRef}
           onMouseDown={handleMouseDown}
-          className="relative h-[440px] w-[320px] cursor-grab active:cursor-grabbing drop-shadow-[0_20px_35px_rgba(56,189,248,0.3)] flex items-center justify-center"
+          className="relative h-[480px] w-[320px] cursor-grab active:cursor-grabbing drop-shadow-[0_20px_35px_rgba(56,189,248,0.3)] flex items-center justify-center"
         >
           {loadError && (
             <div className="p-3 bg-red-950/80 border border-red-500/50 rounded-xl text-[11px] text-red-200 text-center">

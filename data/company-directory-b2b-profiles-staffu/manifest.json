@@ -1,0 +1,15 @@
+{
+  "id": "company-directory-b2b-profiles-staffu",
+  "name": "Company Directory & B2B Profiles",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Company Directory & B2B Profiles | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/company-directory-b2b-profiles-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

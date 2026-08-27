@@ -1,0 +1,15 @@
+{
+  "id": "team-structure-department-management-staffu",
+  "name": "Team Structure & Department Management",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Team Structure & Department Management | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/team-structure-department-management-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

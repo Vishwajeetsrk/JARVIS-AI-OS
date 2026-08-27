@@ -1,7 +1,7 @@
 import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { listProjects, deleteProject, renameProject, listThreads, createThread, listWorkspaceProjects } from "@/lib/threads.functions";
 import {
   listProjectBuilds, getProjectBuild, deleteProjectBuild,
@@ -10,15 +10,21 @@ import {
   listProjectPlugins,
   listProjectApiKeys, createProjectApiKey, revokeProjectApiKey,
 } from "@/lib/project-lifecycle.functions";
+import { listProjectFiles, readProjectFile, writeProjectFile, createProjectFile, deleteProjectFile } from "@/lib/file-editor.functions";
 import { PageHeader } from "@/components/jarvis/catalog-grid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import {
   Plus, Trash2, FileText, Palette, Link2, ExternalLink, Play, Pencil,
-  Download, Rocket, Database, Plug, KeyRound, BarChart3, Eye, Copy, Check,
+  Download, Rocket, Database, Plug, KeyRound, BarChart3, Eye, Copy, Check, Code2,
 } from "lucide-react";
 import { toast } from "sonner";
+
+// Lazy-load Monaco so it doesn't bloat the main bundle
+const CodeEditor = lazy(() =>
+  import("@/components/jarvis/code-editor").then((m) => ({ default: m.CodeEditor }))
+);
 
 const COLORS = ["#D97757", "#E69D45", "#58A65C", "#6A9BCC", "#A855F7", "#EC4899"];
 
@@ -27,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/console/projects/$projectI
   head: () => ({ meta: [{ title: "Project — Jarvis" }] }),
 });
 
-type Tab = "overview" | "preview" | "builds" | "analysis" | "deploy" | "database" | "plugins" | "keys";
+type Tab = "overview" | "preview" | "code" | "builds" | "analysis" | "deploy" | "database" | "plugins" | "keys";
 
 function ProjectPage() {
   const { projectId } = useParams({ from: "/_authenticated/console/projects/$projectId" });
@@ -176,9 +182,21 @@ function ProjectPage() {
   const plugins = pluginsQ.data as any[] | undefined;
   const keys = keysQ.data as any[] | undefined;
 
+  // ── File-editor server fn wrappers ────────────────────────────────────────
+  const fnListFiles = useServerFn(listProjectFiles);
+  const fnReadFile = useServerFn(readProjectFile);
+  const fnWriteFile = useServerFn(writeProjectFile);
+  const fnCreateFile = useServerFn(createProjectFile);
+  const fnDeleteFile = useServerFn(deleteProjectFile);
+
+  // Derive slug from project name or id
+  const projectSlug = (display?.name ?? projectId)
+    .toLowerCase().replace(/[^a-z0-9_\-]/g, "-").replace(/-+/g, "-");
+
   const TABS: Array<{ id: Tab; label: string; icon: typeof Eye }> = [
     { id: "overview", label: "Overview", icon: Eye },
     { id: "preview", label: "Live preview", icon: Play },
+    { id: "code", label: "Code editor", icon: Code2 },
     { id: "builds", label: "Builds", icon: Download },
     { id: "analysis", label: "Analysis", icon: BarChart3 },
     { id: "deploy", label: "Deploy", icon: Rocket },
@@ -329,6 +347,38 @@ function ProjectPage() {
             </ul>
           )}
         </section>
+      )}
+
+      {tab === "code" && (
+        <div className="-mx-8 -mt-2" style={{ height: "calc(100vh - 200px)" }}>
+          <Suspense fallback={
+            <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+              Loading editor…
+            </div>
+          }>
+            <CodeEditor
+              projectSlug={projectSlug}
+              previewUrl={previewUrl}
+              onLoadFiles={async () => {
+                const result = await fnListFiles({ data: { slug: projectSlug } });
+                return (result as any).files ?? [];
+              }}
+              onReadFile={async (filePath) => {
+                const result = await fnReadFile({ data: { slug: projectSlug, filePath } });
+                return result as { content: string; language: string };
+              }}
+              onWriteFile={async (filePath, content) => {
+                await fnWriteFile({ data: { slug: projectSlug, filePath, content } });
+              }}
+              onCreateFile={async (filePath, type) => {
+                await fnCreateFile({ data: { slug: projectSlug, filePath, type } });
+              }}
+              onDeleteFile={async (filePath) => {
+                await fnDeleteFile({ data: { slug: projectSlug, filePath } });
+              }}
+            />
+          </Suspense>
+        </div>
       )}
 
       {tab === "analysis" && (

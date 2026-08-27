@@ -1,0 +1,15 @@
+{
+  "id": "project-deadlines-milestones-tracker-staffu",
+  "name": "Project Deadlines & Milestones Tracker",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Project Deadlines & Milestones Tracker | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/project-deadlines-milestones-tracker-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

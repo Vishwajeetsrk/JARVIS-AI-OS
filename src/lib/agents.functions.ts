@@ -47,7 +47,7 @@ export const listAgents = createServerFn({ method: "GET" })
 
 export const createAgent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         name: z.string().min(1).max(64),
@@ -92,7 +92,7 @@ export const createAgent = createServerFn({ method: "POST" })
 
 export const updateAgent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         id: z.string().uuid(),
@@ -127,7 +127,7 @@ export const updateAgent = createServerFn({ method: "POST" })
 
 export const toggleAgent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({ id: z.string().uuid(), paused: z.boolean(), reason: z.string().max(300).optional() }).parse(data),
   )
   .handler(async ({ data, context }) => {
@@ -151,7 +151,7 @@ export const toggleAgent = createServerFn({ method: "POST" })
 
 export const deleteAgent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as Ctx;
     const open = await supabase
@@ -189,7 +189,7 @@ export const listIssues = createServerFn({ method: "GET" })
 
 export const createIssue = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         title: z.string().min(1).max(300),
@@ -227,7 +227,7 @@ export const createIssue = createServerFn({ method: "POST" })
 
 export const updateIssue = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         id: z.string().uuid(),
@@ -265,7 +265,7 @@ export const updateIssue = createServerFn({ method: "POST" })
 
 export const deleteIssue = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as Ctx;
     const { error } = await supabase.from("issues").delete().eq("id", data.id).eq("user_id", userId);
@@ -275,7 +275,7 @@ export const deleteIssue = createServerFn({ method: "POST" })
 
 export const addIssueComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ issue_id: z.string().uuid(), body: z.string().min(1).max(8000) }).parse(data))
+  .validator((data) => z.object({ issue_id: z.string().uuid(), body: z.string().min(1).max(8000) }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as Ctx;
     const { data: row, error } = await supabase
@@ -293,7 +293,7 @@ export const addIssueComment = createServerFn({ method: "POST" })
 
 export const listRuns = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ agent_id: z.string().uuid().optional() }).parse(data))
+  .validator((data) => z.object({ agent_id: z.string().uuid().optional() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as Ctx;
     let q = supabase
@@ -311,7 +311,7 @@ export const listRuns = createServerFn({ method: "GET" })
 /** Atomically assign the highest-priority open issue to an agent for a run. */
 export const checkoutNextIssue = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ agent_id: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ agent_id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as Ctx;
     const { data: issue, error } = await supabase
@@ -331,7 +331,7 @@ export const checkoutNextIssue = createServerFn({ method: "POST" })
 
 export const triggerAgentRun = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         agent_id: z.string().uuid(),
@@ -475,7 +475,7 @@ export const triggerAgentRun = createServerFn({ method: "POST" })
 
 export const cancelRun = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ run_id: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ run_id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as Ctx;
     const { data: row, error } = await supabase
@@ -555,7 +555,7 @@ export const getBudgetSummary = createServerFn({ method: "GET" })
 
 export const createBudgetPolicy = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         scope_type: z.enum(["user", "agent"]),
@@ -588,7 +588,7 @@ export const createBudgetPolicy = createServerFn({ method: "POST" })
 
 export const resolveBudgetIncident = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({ incident_id: z.string().uuid(), status: z.enum(["resolved", "dismissed"]) }).parse(data),
   )
   .handler(async ({ data, context }) => {
@@ -624,7 +624,7 @@ export const listApprovals = createServerFn({ method: "GET" })
 
 export const decideApproval = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         approval_id: z.string().uuid(),
@@ -694,7 +694,7 @@ export const exportCompanyData = createServerFn({ method: "GET" })
 
 export const importCompanyData = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({ agents: z.array(z.any()).default([]), issues: z.array(z.any()).default([]) }).parse(data),
   )
   .handler(async ({ data, context }) => {

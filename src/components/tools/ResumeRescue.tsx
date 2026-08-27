@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Copy, Check, FileText, Award, Download } from "lucide-react";
-import { generateResumeRescue, ResumeRescueOutput } from "@/server/tools/resumeRescue";
+import { generateResumeRescue, ResumeRescueOutput } from "@/lib/vida-tools/resumeRescue";
 
 export function ResumeRescue() {
   const [name, setName] = useState("Vishwajeet");

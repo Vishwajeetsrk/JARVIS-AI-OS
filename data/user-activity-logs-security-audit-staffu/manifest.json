@@ -1,0 +1,15 @@
+{
+  "id": "user-activity-logs-security-audit-staffu",
+  "name": "User Activity Logs & Security Audit",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page User Activity Logs & Security Audit | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/user-activity-logs-security-audit-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

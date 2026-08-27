@@ -1,0 +1,15 @@
+{
+  "id": "invoice-detail-billing-template-staffu",
+  "name": "Invoice Detail & Billing Template",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Invoice Detail & Billing Template | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/invoice-detail-billing-template-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

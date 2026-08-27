@@ -1,0 +1,15 @@
+{
+  "id": "employee-attendance-tracker-staffu-admin-template",
+  "name": "Employee Attendance Tracker",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Employee Attendance Tracker | Staffu Admin Template design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/employee-attendance-tracker-staffu-admin-template/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

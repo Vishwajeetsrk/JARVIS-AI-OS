@@ -86,21 +86,21 @@ function HowItWorks() {
       {/* Main Interactive Content */}
       <main className="flex-1 flex flex-col">
         {activeTab === "partner" && (
-          <div className="flex-1 flex flex-col w-full h-[calc(100vh-140px)]">
+          <div style={{ height: "calc(100vh - 140px)" }} className="w-full overflow-hidden">
             <iframe
               src="/preset-sites/viskey-vida/index.html"
               title="Viskey & Vida Proactive AI Partner"
-              className="w-full h-full border-none bg-slate-950"
+              style={{ width: "100%", height: "100%", border: "none" }}
             />
           </div>
         )}
 
         {activeTab === "sota" && (
-          <div className="flex-1 flex flex-col w-full h-[calc(100vh-140px)]">
+          <div style={{ height: "calc(100vh - 140px)" }} className="w-full overflow-hidden">
             <iframe
               src="/preset-sites/vida-sota-cases/index.html"
               title="Conquer 100 SOTA Use Cases"
-              className="w-full h-full border-none bg-slate-950"
+              style={{ width: "100%", height: "100%", border: "none" }}
             />
           </div>
         )}
@@ -168,7 +168,8 @@ function HowItWorks() {
         )}
       </main>
 
-      <MarketingFooter />
+      {/* Only show footer when not in iframe tabs */}
+      {(activeTab === "elements" || activeTab === "architecture") && <MarketingFooter />}
     </div>
   );
 }

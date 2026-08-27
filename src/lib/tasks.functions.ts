@@ -1,9 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import * as fs from "node:fs";
-import * as path from "node:path";
 import { z } from "zod";
-
-const TASKS_FILE = path.resolve(process.cwd(), "data", "daily_tasks.json");
 
 export interface DailyTasksData {
   completed_today: string[];
@@ -13,32 +9,40 @@ export interface DailyTasksData {
   office_work: string[];
 }
 
-function readTasks(): DailyTasksData {
-  if (fs.existsSync(TASKS_FILE)) {
-    try {
-      return JSON.parse(fs.readFileSync(TASKS_FILE, "utf-8"));
-    } catch {}
-  }
-  return {
-    completed_today: [],
-    pending_tasks: [],
-    personal_learning: [],
-    personal_projects: [],
-    office_work: [],
-  };
+async function getTasksFilePath(): Promise<string> {
+  const path = await import("node:path");
+  return path.resolve(process.cwd(), "data", "daily_tasks.json");
 }
 
-function writeTasks(data: DailyTasksData) {
-  const dir = path.dirname(TASKS_FILE);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+async function readTasks(): Promise<DailyTasksData> {
+  try {
+    const fs = await import("node:fs/promises");
+    const filePath = await getTasksFilePath();
+    const content = await fs.readFile(filePath, "utf-8");
+    return JSON.parse(content);
+  } catch {
+    return {
+      completed_today: [],
+      pending_tasks: [],
+      personal_learning: [],
+      personal_projects: [],
+      office_work: [],
+    };
   }
-  fs.writeFileSync(TASKS_FILE, JSON.stringify(data, null, 2), "utf-8");
+}
+
+async function writeTasks(data: DailyTasksData): Promise<void> {
+  const fs = await import("node:fs/promises");
+  const path = await import("node:path");
+  const filePath = await getTasksFilePath();
+  const dir = path.dirname(filePath);
+  await fs.mkdir(dir, { recursive: true });
+  await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf-8");
 }
 
 export const getDailyTasks = createServerFn({ method: "GET" })
   .handler(async () => {
-    return readTasks();
+    return await readTasks();
   });
 
 export const mutateDailyTasks = createServerFn({ method: "POST" })
@@ -54,20 +58,20 @@ export const mutateDailyTasks = createServerFn({ method: "POST" })
     }).parse(data)
   )
   .handler(async ({ data }) => {
-    const tasks = readTasks();
+    const tasks = await readTasks();
     const cat = (data.category || "pending_tasks") as keyof DailyTasksData;
 
     if (data.action === "add" && data.item) {
       if (!tasks[cat]) tasks[cat] = [];
       tasks[cat].unshift(data.item.trim());
-      writeTasks(tasks);
+      await writeTasks(tasks);
       return { success: true, tasks };
     }
 
     if (data.action === "delete" && data.item) {
       if (tasks[cat]) {
         tasks[cat] = tasks[cat].filter((t) => t !== data.item);
-        writeTasks(tasks);
+        await writeTasks(tasks);
       }
       return { success: true, tasks };
     }
@@ -77,7 +81,7 @@ export const mutateDailyTasks = createServerFn({ method: "POST" })
         const idx = tasks[cat].indexOf(data.oldItem);
         if (idx !== -1) {
           tasks[cat][idx] = data.newItem.trim();
-          writeTasks(tasks);
+          await writeTasks(tasks);
         }
       }
       return { success: true, tasks };
@@ -91,7 +95,7 @@ export const mutateDailyTasks = createServerFn({ method: "POST" })
       }
       if (!tasks[to]) tasks[to] = [];
       tasks[to].unshift(data.item);
-      writeTasks(tasks);
+      await writeTasks(tasks);
       return { success: true, tasks };
     }
 

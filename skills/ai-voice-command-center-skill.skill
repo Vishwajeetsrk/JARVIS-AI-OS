@@ -10,7 +10,7 @@ version: 1.0.0
 ## Architectural Directives
 - **Category**: web-design
 - **Target Format**: website
-- **Recommended Design System**: Agentic
+- **Recommended Design System**: Acreage × Nike
 - **Primary Aesthetic**: Cyberpunk HUD, Glassmorphism, 3D Canvas Accents, High Contrast Dark Mode
 
 ## Key Requirements

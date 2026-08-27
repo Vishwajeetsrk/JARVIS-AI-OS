@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Copy, Check, Wand2, Terminal } from "lucide-react";
-import { generatePromptRescue, PromptRescueOutput } from "@/server/tools/promptRescue";
+import { generatePromptRescue, PromptRescueOutput } from "@/lib/vida-tools/promptRescue";
 
 export function PromptRescue() {
   const [rawPrompt, setRawPrompt] = useState("Make me an AI assistant with 3D avatar and voice");

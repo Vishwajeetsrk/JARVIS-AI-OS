@@ -228,13 +228,27 @@ steeringCmd
 // ─── memory ───
 program
   .command("memory")
-  .description("Search cross-session memory")
-  .argument("<query>", "Search query")
-  .option("-l, --limit <n>", "Max results", "5")
-  .action((query: string, options: { limit: string }) => {
-    log(`Searching memory for "${query}" (limit: ${options.limit})...`);
-    log("Memory search requires Supabase connection. Use the web console for full memory search.");
+  .description("Search and manage persistent agent memory")
+  .argument("[query]", "Search query")
+  .option("-t, --type <type>", "Filter memory by type (working, episodic, semantic, procedural)")
+  .option("-l, --limit <n>", "Max results", "10")
+  .action(async (query?: string, options?: { type?: "working" | "episodic" | "semantic" | "procedural"; limit?: string }) => {
+    const { recallAgentMemories, getAgentMemoryStats } = await import("../src/mastra/tools/agent-memory");
+    const stats = getAgentMemoryStats();
+    console.log(`\n\x1b[1m\x1b[36m=== JARVIS PERSISTENT AGENT MEMORY ===\x1b[0m`);
+    console.log(`Total Records: ${stats.total} (working: ${stats.working}, episodic: ${stats.episodic}, semantic: ${stats.semantic}, procedural: ${stats.procedural})`);
+
+    if (query || options?.type) {
+      const records = recallAgentMemories({ query, type: options?.type, limit: options?.limit ? parseInt(options.limit, 10) : 10 });
+      console.log(`\n\x1b[1mFound ${records.length} matching memory records:\x1b[0m`);
+      records.forEach((r, i) => {
+        console.log(`\x1b[32m${i + 1}. [${r.type.toUpperCase()}]\x1b[0m \x1b[1m${r.title}\x1b[0m \x1b[90m(${r.createdAt})\x1b[0m`);
+        console.log(`   ${r.content}`);
+      });
+    }
+    console.log("");
   });
+
 
 // ─── update ───
 program
@@ -557,10 +571,16 @@ program
     console.log("");
   });
 
+// ─── cmux ───
+program
+  .command("cmux")
+  .description("Show cmux terminal workspace status and package integrations")
+  .action(async () => {
+    console.log(`\n\x1b[1m\x1b[36m=== CMUX TERMINAL MULTIPLEXER ===\x1b[0m`);
+    console.log(`Package: packages/cmux`);
+    console.log(`Status:  Ready`);
+    console.log(`Features: WebViews, Agent Chat Adapters, Terminal Multiplexing, Native Swift Hooks\n`);
+  });
+
 program.parse();
-
-
-
-
-
 

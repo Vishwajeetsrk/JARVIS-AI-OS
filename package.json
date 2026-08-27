@@ -1,14 +1,14 @@
 {
   "name": "vishwajeet-ai-os",
-  "version": "2.7.0",
-  "description": "JARVIS AI OS - persistent-memory AI operating system with 24 agents, 67 live sites, 27 design systems, 26 capabilities",
+  "version": "3.0.0",
+  "description": "JARVIS AI OS - Autonomous Personal Intelligence Operating System with 8-Bot Fleet, Real-Time Voice Studio, 2-Min Voice Cloning, Universal App Builder, 3D Motion Hub & Supabase Cloud",
   "bin": {
     "jarvis": "./cli/index.ts"
   },
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "dev": "vite dev",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build",
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite dev",
     "dev:mastra": "tsx watch src/mastra/index.ts",
     "start": "vite preview",
     "test": "vitest run",
@@ -16,6 +16,8 @@
     "typecheck": "tsc --noEmit",
     "jarvis": "tsx cli/index.ts",
     "jarvis:status": "tsx cli/index.ts status",
+    "jarvis:memory": "tsx cli/index.ts memory",
+    "jarvis:cmux": "tsx cli/index.ts cmux",
     "jarvis:launch": "powershell -ExecutionPolicy Bypass -File ./Start-Jarvis.ps1",
     "jarvis:gui": "npm run dev",
     "assistant": "python scripts/jarvis_desktop_assistant.py",
@@ -48,6 +50,7 @@
     "@ai-sdk/react": "^4.0.40",
     "@hookform/resolvers": "^5.2.2",
     "@lovable.dev/vite-tanstack-config": "^2.7.7",
+    "@monaco-editor/react": "^4.7.0",
     "@pixiv/three-vrm": "^3.5.5",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -132,6 +135,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.4.1",
     "concurrently": "^9.1.2",
+    "cross-env": "^10.1.0",
     "express": "^5.2.1",
     "nitro": "^3.0.260610-beta",
     "pg": "^8.22.0",

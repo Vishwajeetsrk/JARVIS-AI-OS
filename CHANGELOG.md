@@ -1,7 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.4.0] - 2026-08-04
+## [3.0.0] - 2026-08-27 — Master Autonomous OS Release
+- **Summary**: Major milestone release turning JARVIS AI OS into an autonomous multi-surface personal intelligence operating system.
+- **Highlights**:
+  - **Autonomous Bot Fleet & Chief of Staff Hub (`/console/fleet`)**: 8 specialized bot personas (Chief of Staff, Sales Outbound, Talent Scout, Paid Media, Expense Manager, Product Performance, Bug Repro, Account Health) with schedule routines and priority triage.
+  - **Real-Time Voice Studio & 2-Minute Custom Voice Cloner (`/console/voice`)**: Sub-400ms latency, 30 free custom voice slots from 90–120s audio samples, multilingual timbre retention across 25+ languages, prosody emotion tags, and SIP telephony integration.
+  - **Universal App Builder (`/console/apps`)**: 1-click autonomous code generator and live Monaco editor for Full-Stack SaaS, Cross-Platform Mobile Apps (React Native / Expo), 3D Responsive Websites, AI Chrome Extensions (Manifest V3), and Mastra Agent Workflows.
+  - **Interactive UI Components & 3D Motion Hub (`/console/components`)**: Live interactive code/preview sandboxes for 3D Earth Globe, 3D Book Flip Animation, Pricing Calculators, Testimonials, and 67+ preset template sites.
+  - **Shared Usage Analytics & Cost Attribution (`/console/analytics`)**: Real-time token usage, budget distribution per bot persona, multi-channel ingestion metrics, and 99.4% self-healing error rates.
+  - **Supabase Cloud Production Database**: 15 core tables operational on live Supabase Cloud (`https://tupgfxqkefgntrpgakxk.supabase.co`) with zero Docker prerequisites.
+  - **3D Embodied Companion (Nia VRM 1.0)**: Three.js VRM 1.0 avatar with phonetic lip-sync visemes, eye tracking, and desktop freedom-to-walk.
+- **Author**: Vishwajeet & Open Source Community
+
 - **Summary**: Five-agent upgrades + workspace cleanup + cross-platform installation.
 - **Highlights**:
   - **Local-first AI**: `ai-providers.ts` — Ollama auto-detect + Gemini/Groq cloud fallback chain. Model/provider/fallback response headers.

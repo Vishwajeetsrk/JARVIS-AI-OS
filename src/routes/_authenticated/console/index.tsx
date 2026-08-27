@@ -267,18 +267,7 @@ function ClaudeHome() {
               { slug: "aceternity-cryptgen-marketing", title: "Cryptgen Marketing", accent: "from-cyan-500/20 to-teal-600/10" },
               { slug: "aceternity-playful-marketing", title: "Playful Marketing", accent: "from-pink-500/20 to-rose-600/10" },
             ].map((p) => (
-              <div key={p.slug} className={`flex flex-col rounded-xl border border-zinc-800 bg-gradient-to-b p-3 ${p.accent} hover:border-zinc-700 transition-colors`}>
-                <div className="text-sm font-medium text-white">{p.title}</div>
-                <div className="mt-1 text-[11px] text-zinc-400">/preset-sites/{p.slug}/</div>
-                <div className={`mt-3 overflow-hidden rounded-xl border border-zinc-700 bg-black shadow-lg ${previewDevice === "mobile" ? "mx-auto max-w-[360px]" : previewDevice === "tablet" ? "mx-auto max-w-[600px]" : "w-full"}`} style={{ height: previewDevice === "mobile" ? 320 : previewDevice === "tablet" ? 280 : 240 }}>
-                  <iframe src={`/preset-sites/${p.slug}/`} title={p.title} className="h-full w-full border-0" loading="lazy" />
-                </div>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  <a href={`/preset-sites/${p.slug}/`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-900 hover:bg-zinc-100"><Eye className="h-3 w-3" /> Live</a>
-                  <button onClick={() => handleShowCode(p.slug)} className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-[11px] font-medium text-zinc-200 hover:bg-zinc-700"><Code2 className="h-3 w-3" /> Code</button>
-                  <Link to="/design" className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:bg-zinc-800"><Sparkles className="h-3 w-3" /> Recreate</Link>
-                </div>
-              </div>
+              <PreviewCard key={p.slug} p={p} previewDevice={previewDevice} onShowCode={handleShowCode} />
             ))}
           </div>
           <div className="mt-4 flex justify-center">
@@ -317,4 +306,46 @@ function Pill({ icon: Icon, label, color, to }: { icon: typeof GraduationCap; la
   const inner = <><Icon className={`h-3.5 w-3.5 ${color ?? "text-zinc-400"}`} /> {label}</>;
   const content = to ? <Link to={to} className={cls}>{inner}</Link> : <button className={cls}>{inner}</button>;
   return <motion.div whileHover={{ scale: 1.05, y: -1 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 300 }}>{content}</motion.div>;
+}
+
+/** Lazy iframe — only loads when user hovers the card, preventing browser freeze on mount */
+function PreviewCard({
+  p,
+  previewDevice,
+  onShowCode,
+}: {
+  p: { slug: string; title: string; accent: string };
+  previewDevice: "desktop" | "tablet" | "mobile";
+  onShowCode: (slug: string) => void;
+}) {
+  const [active, setActive] = useState(false);
+  const h = previewDevice === "mobile" ? 320 : previewDevice === "tablet" ? 280 : 240;
+  return (
+    <div
+      className={`flex flex-col rounded-xl border border-zinc-800 bg-gradient-to-b p-3 ${p.accent} hover:border-zinc-700 transition-colors`}
+      onMouseEnter={() => setActive(true)}
+    >
+      <div className="text-sm font-medium text-white">{p.title}</div>
+      <div className="mt-1 text-[11px] text-zinc-400">/preset-sites/{p.slug}/</div>
+      <div
+        className={`mt-3 overflow-hidden rounded-xl border border-zinc-700 bg-black shadow-lg ${
+          previewDevice === "mobile" ? "mx-auto max-w-[360px]" : previewDevice === "tablet" ? "mx-auto max-w-[600px]" : "w-full"
+        }`}
+        style={{ height: h }}
+      >
+        {active ? (
+          <iframe src={`/preset-sites/${p.slug}/`} title={p.title} className="h-full w-full border-0" />
+        ) : (
+          <div className="flex h-full items-center justify-center gap-2 text-[11px] text-zinc-500">
+            <Eye className="h-3.5 w-3.5" /> hover to preview
+          </div>
+        )}
+      </div>
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        <a href={`/preset-sites/${p.slug}/`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-900 hover:bg-zinc-100"><Eye className="h-3 w-3" /> Live</a>
+        <button onClick={() => onShowCode(p.slug)} className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-[11px] font-medium text-zinc-200 hover:bg-zinc-700"><Code2 className="h-3 w-3" /> Code</button>
+        <Link to="/design" className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:bg-zinc-800"><Sparkles className="h-3 w-3" /> Recreate</Link>
+      </div>
+    </div>
+  );
 }

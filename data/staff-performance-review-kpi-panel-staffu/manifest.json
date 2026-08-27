@@ -1,0 +1,15 @@
+{
+  "id": "staff-performance-review-kpi-panel-staffu",
+  "name": "Staff Performance Review & KPI Panel",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Staff Performance Review & KPI Panel | Staffu design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/staff-performance-review-kpi-panel-staffu/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

@@ -18,7 +18,7 @@ export const listThreads = createServerFn({ method: "GET" })
 
 export const createThread = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       title: z.string().optional(),
       project_id: z.string().uuid().nullable().optional(),
@@ -40,7 +40,7 @@ export const createThread = createServerFn({ method: "POST" })
 
 export const deleteThread = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("threads")
@@ -53,7 +53,7 @@ export const deleteThread = createServerFn({ method: "POST" })
 
 export const renameThread = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({ id: z.string().uuid(), title: z.string().min(1).max(200) }).parse(data),
   )
   .handler(async ({ data, context }) => {
@@ -68,7 +68,7 @@ export const renameThread = createServerFn({ method: "POST" })
 
 export const updateThread = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       id: z.string().uuid(),
       starred: z.boolean().optional(),
@@ -92,7 +92,7 @@ export const updateThread = createServerFn({ method: "POST" })
 
 export const loadMessages = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ threadId: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ threadId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("messages")
@@ -158,7 +158,7 @@ export const listWorkspaceProjects = createServerFn({ method: "GET" })
 
 export const createProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       name: z.string().min(1).max(120),
       description: z.string().max(500).optional(),
@@ -182,7 +182,7 @@ export const createProject = createServerFn({ method: "POST" })
 
 export const renameProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({
       id: z.string().uuid(),
       name: z.string().min(1).max(120),
@@ -208,7 +208,7 @@ export const renameProject = createServerFn({ method: "POST" })
 
 export const deleteProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("projects")
@@ -264,7 +264,7 @@ export const getSettings = createServerFn({ method: "GET" })
 
 export const updateSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => SettingsSchema.parse(data))
+  .validator((data) => SettingsSchema.parse(data))
   .handler(async ({ data, context }) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const patch: Record<string, any> = { user_id: context.userId, ...data };

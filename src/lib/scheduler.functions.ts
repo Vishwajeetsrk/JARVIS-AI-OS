@@ -18,7 +18,7 @@ export const listCronJobs = createServerFn({ method: "GET" })
 
 export const createCronJob = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         name: z.string().min(1).max(120),
@@ -48,7 +48,7 @@ export const createCronJob = createServerFn({ method: "POST" })
 
 export const setCronJobEnabled = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({ id: z.string().uuid(), enabled: z.boolean() }).parse(data),
   )
   .handler(async ({ data, context }) => {
@@ -68,7 +68,7 @@ export const setCronJobEnabled = createServerFn({ method: "POST" })
 
 export const deleteCronJob = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { refreshScheduler } = await import("@/lib/scheduler");
     const { supabase, userId } = context;

@@ -60,6 +60,7 @@ export default defineConfig({
           "**/archive/**",
           "**/knowledge/**",
           "**/registries/**",
+          "**/packages/**",
         ],
       },
     },

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Presentation, Table, Download, Check, Sparkles, FileSpreadsheet } from "lucide-react";
-import { generateDeckSheetContent, DeckSheetOutput } from "@/server/tools/deckSheetBuilder";
+import { generateDeckSheetContent, DeckSheetOutput } from "@/lib/vida-tools/deckSheetBuilder";
 import pptxgen from "pptxgenjs";
 import ExcelJS from "exceljs";
 

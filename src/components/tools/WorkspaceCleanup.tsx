@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Trash2, FolderSearch, ShieldCheck, AlertTriangle, RefreshCw, CheckCircle2 } from "lucide-react";
-import { scanWorkspaceSafety, WorkspaceScanResult, CleanupItem } from "@/server/tools/workspaceCleanup";
+import { scanWorkspaceSafety, WorkspaceScanResult, CleanupItem } from "@/lib/vida-tools/workspaceCleanup";
 
 export function WorkspaceCleanup() {
   const [scope, setScope] = useState("Downloads & Temp Directory");

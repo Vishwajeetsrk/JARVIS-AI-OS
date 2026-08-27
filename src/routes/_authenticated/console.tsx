@@ -9,11 +9,13 @@ import {
 } from "@/lib/threads.functions";
 import { JarvisWordmark } from "@/components/jarvis/logo";
 import { StatusBadge } from "@/components/jarvis/status-badge";
+import { CommandBar } from "@/components/jarvis/command-bar";
 import {
   Plus, Trash2, LogOut, MessageSquare, Star, MoreHorizontal, Pencil,
   FolderPlus, Folder, Settings, Puzzle, Cable, Sparkles, GitBranch, Wrench, Menu, Palette, LayoutDashboard,
   Clock, BookOpen, Users, KanbanSquare, Activity, CircleDollarSign, ShieldCheck, ScrollText, ChevronDown,
-  Layers, Code2, SlidersHorizontal, Compass, Ghost, Mic, AudioLines, GraduationCap,
+  Layers, Code2, SlidersHorizontal, Compass, Ghost, Mic, AudioLines, GraduationCap, Brain, Zap,
+  BarChart3, Map,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -256,7 +258,6 @@ function ConsoleShell() {
 
   const sidebarBody = (
     <div className="flex h-full flex-col bg-[#0f0f10] text-zinc-300">
-      {/* Top: brand + New + Claude nav */}
       <div className="px-3 pt-5 pb-3">
         <div className="mb-4 flex items-center px-2">
           <span className="font-serif text-[21px] font-bold tracking-tight text-white">Jarvis</span>
@@ -270,124 +271,40 @@ function ConsoleShell() {
         >
           <Plus className="h-4 w-4" /> New
         </motion.button>
-        <motion.nav
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.08, duration: 0.3 }}
-          className="mt-4 space-y-0.5"
-        >
-          <NavLink to="/console/projects" icon={Folder} label="Projects" />
-          <NavLink to="/console/design" icon={Layers} label="Artifacts" />
-          <NavLink to="/console/skills" icon={Code2} label="Code" badge="Free" />
-          <NavLink to="/console/settings" icon={SlidersHorizontal} label="Customize" />
-        </motion.nav>
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 space-y-6 py-2 scrollbar-thin scrollbar-thumb-zinc-800">
-        {/* Projects */}
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
+          <div className="px-2 pb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">Build</div>
+          <nav className="space-y-0.5">
+            <NavLink to="/console/projects" icon={Folder} label="Projects" />
+            <NavLink to="/console/apps" icon={Layers} label="App Builder" badge="Forge" />
+            <NavLink to="/console/components" icon={Sparkles} label="UI Components" badge="3D" />
+            <NavLink to="/console/design" icon={Palette} label="Design Systems" />
+            <NavLink to="/console/skills" icon={Code2} label="Code Skills" />
+          </nav>
+        </motion.div>
+
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
+          <div className="px-2 pb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">Control</div>
+          <nav className="space-y-0.5">
+            <NavLink to="/console/fleet" icon={Users} label="Bot Fleet" badge="8 Bots" />
+            <NavLink to="/console/voice" icon={Mic} label="Voice Studio" badge="Clone" />
+            <NavLink to="/console/analytics" icon={BarChart3} label="Analytics" badge="Live" />
+            <NavLink to="/console/agents" icon={Brain} label="Crew" />
+            <NavLink to="/console/tools" icon={Wrench} label="Tools" />
+            <NavLink to="/console/connectors" icon={Cable} label="Connectors" />
+            <NavLink to="/console/github" icon={GitBranch} label="GitHub" />
+            <NavLink to="/console/settings" icon={SlidersHorizontal} label="Settings" />
+          </nav>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}>
           <div className="flex items-center justify-between px-2 pb-2">
-            <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Projects</span>
-            <button
-              onClick={() => setNewProjOpen(true)}
-              className="rounded p-1 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
-              aria-label="New project"
-            >
-              <Plus className="h-3.5 w-3.5" />
-            </button>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Recent Chats</span>
+            <button onClick={() => setNewProjOpen(true)} className="rounded p-1 text-zinc-500 hover:bg-zinc-800"><Plus className="h-3 w-3" /></button>
           </div>
-          <ul className="space-y-0.5 max-h-40 overflow-y-auto">
-            {allProjects.length === 0 && (
-              <li className="px-3 py-1 text-xs text-zinc-500">No projects yet</li>
-            )}
-            {allProjects.map((p) => {
-              const active = params.projectId === p.id;
-              return (
-                <li key={p.id} className="group flex items-center gap-1">
-                  <Link
-                    to="/console/projects/$projectId"
-                    params={{ projectId: p.id }}
-                    title={p.name}
-                    className={`flex flex-1 items-center gap-2 overflow-hidden rounded-lg px-2 py-1.5 text-[13px] transition-colors ${
-                      active ? "bg-[#232326] text-zinc-100" : "text-zinc-400 hover:bg-[#1a1a1d] hover:text-zinc-200"
-                    }`}
-                  >
-                    <Folder className="h-3.5 w-3.5 shrink-0 opacity-70" />
-                    <span className="truncate">{p.name}</span>
-                  </Link>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="rounded p-1 opacity-0 hover:bg-zinc-800 group-hover:opacity-100" aria-label={`Actions for ${p.name}`}>
-                        <MoreHorizontal className="h-3.5 w-3.5" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onClick={() => { setRenameProjectId(p.id); setRenameProjectValue((p as any).name); }}>
-                        <Pencil className="mr-2 h-3.5 w-3.5" /> Rename
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setDeleteProjectId(p.id)} className="text-destructive focus:text-destructive">
-                        <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete project
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </li>
-              );
-            })}
-          </ul>
-        </motion.div>
-
-        {starred.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}>
-            <div className="px-2 pb-2 text-[11px] font-medium uppercase tracking-wider text-zinc-500">Pinned</div>
-            <ul className="space-y-0.5">{starred.map(renderThread)}</ul>
-          </motion.div>
-        )}
-
-        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <div className="flex items-center justify-between px-2 pb-2">
-            <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Chats and tasks</span>
-            <button className="rounded p-1 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200">
-              <SlidersHorizontal className="h-3.5 w-3.5" />
-            </button>
-          </div>
-          {unstarred.length === 0 ? (
-            <div className="px-3 py-2 text-xs text-zinc-500">No chats yet.</div>
-          ) : (
-            <ul className="space-y-0.5">{unstarred.map(renderThread)}</ul>
-          )}
-          {/* Collapsible example like screenshot: Website animation */}
-          <button className="mt-2 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] text-zinc-400 hover:bg-[#1a1a1d] hover:text-zinc-200">
-            <span className="h-1.5 w-1.5 rounded-full border border-zinc-500" />
-            <span className="flex-1 truncate text-left">Website animation and 3D motion</span>
-            <ChevronDown className="h-3 w-3 opacity-60" />
-          </button>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }}>
-          <Link to="/console/design" className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] text-zinc-400 hover:bg-[#1a1a1d] hover:text-zinc-200">
-            <Palette className="h-4 w-4" /> Design
-          </Link>
-        </motion.div>
-
-        {/* Hidden: Dashboard / Crew / Tools as secondary */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.28 }} className="pt-2 border-t border-zinc-800/60">
-          <button
-            onClick={toggleMore}
-            aria-expanded={moreOpen}
-            className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] text-zinc-500 hover:bg-[#1a1a1d] hover:text-zinc-300"
-          >
-            <Compass className="h-4 w-4" /> More
-            <ChevronDown className={`ml-auto h-3 w-3 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
-          </button>
-          {moreOpen && (
-            <div className="mt-1 space-y-0.5">
-              <NavLink to="/console" icon={LayoutDashboard} label="Dashboard" />
-              <NavLink to="/console/agents" icon={Users} label="Crew" />
-              <NavLink to="/console/tools" icon={Wrench} label="Tools" />
-              <NavLink to="/console/connectors" icon={Cable} label="Connectors" />
-              <NavLink to="/console/github" icon={GitBranch} label="GitHub" />
-            </div>
-          )}
+          <ul className="space-y-0.5">{unstarred.slice(0, 5).map(renderThread)}</ul>
         </motion.div>
       </div>
 
@@ -465,8 +382,24 @@ function ConsoleShell() {
             <Plus className="h-5 w-5" />
           </button>
         </div>
-        <div className="min-h-0 flex-1 overflow-hidden">
+        <div className="min-h-0 flex-1 overflow-auto">
           <Outlet />
+        </div>
+
+        {/* ── Always-Visible Command Bar ─────────────────────────────── */}
+        <div className="shrink-0 border-t border-white/[0.06] bg-[#09090b] px-4 py-3">
+          <CommandBar
+            onSubmit={async (text) => {
+              const t = await createFn({ data: { project_id: null } });
+              inv();
+              // Navigate with seed so ThreadView auto-sends the message
+              navigate({
+                to: "/console/$threadId",
+                params: { threadId: t.id },
+                search: { seed: text },
+              });
+            }}
+          />
         </div>
       </main>
 

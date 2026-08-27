@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Copy, Check, TrendingUp, ShieldAlert, BookOpen, Layers } from "lucide-react";
-import { generateMarketResearch, MarketResearchOutput } from "@/server/tools/marketResearch";
+import { generateMarketResearch, MarketResearchOutput } from "@/lib/vida-tools/marketResearch";
 
 export function MarketResearch() {
   const [topic, setTopic] = useState("Embodied 3D AI Companions on Edge Desktops");

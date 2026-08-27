@@ -1,0 +1,15 @@
+{
+  "id": "employee-directory-staff-list-staffu-admin-template",
+  "name": "Employee Directory & Staff List",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page Employee Directory & Staff List | Staffu Admin Template design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/employee-directory-staff-list-staffu-admin-template/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}

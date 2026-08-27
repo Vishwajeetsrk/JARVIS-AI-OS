@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+//#region src/hooks/stop.ts
+function isSdkChildContext(payload) {
+	if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+	if (!payload || typeof payload !== "object") return false;
+	return payload.entrypoint === "sdk-ts";
+}
+const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+function authHeaders() {
+	const h = { "Content-Type": "application/json" };
+	if (SECRET) h["Authorization"] = `Bearer ${SECRET}`;
+	return h;
+}
+async function main() {
+	let input = "";
+	for await (const chunk of process.stdin) input += chunk;
+	let data;
+	try {
+		data = JSON.parse(input);
+	} catch {
+		return;
+	}
+	if (!data || typeof data !== "object") return;
+	if (isSdkChildContext(data)) return;
+	const sessionId = data.session_id || data.sessionId || data.conversation_id || "unknown";
+	fetch(`${REST_URL}/agentmemory/session/end`, {
+		method: "POST",
+		headers: authHeaders(),
+		body: JSON.stringify({ sessionId }),
+		signal: AbortSignal.timeout(5e3)
+	}).catch(() => {});
+	setTimeout(() => process.exit(0), 1500).unref();
+}
+main().catch(() => process.exit(0));
+//#endregion
+export {};
+
+//# sourceMappingURL=stop.mjs.map

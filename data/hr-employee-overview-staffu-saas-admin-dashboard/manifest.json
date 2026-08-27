@@ -1,0 +1,15 @@
+{
+  "id": "hr-employee-overview-staffu-saas-admin-dashboard",
+  "name": "HR & Employee Overview",
+  "category": "CRM & Enterprise SaaS",
+  "description": "Interactive full-page HR & Employee Overview | Staffu SaaS Admin Dashboard design system with responsive components, charts, and modern UI tokens.",
+  "previewUrl": "/preset-sites/hr-employee-overview-staffu-saas-admin-dashboard/",
+  "color": "#3B82F6",
+  "tags": [
+    "Woblo",
+    "CRM & SaaS",
+    "Dashboard & UI",
+    "Tailwind CSS",
+    "Responsive Design"
+  ]
+}
