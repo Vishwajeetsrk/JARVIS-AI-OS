@@ -10,7 +10,7 @@ import {
   Laptop, Video, Briefcase, Award, HardDrive, Play, Flame, Layers, Star,
   MessageSquare, Wand2, FileText, Trash2, Calendar, Presentation, FileSpreadsheet,
   Mic, Volume2, Code2, Bot, PlayCircle, BarChart3, ChevronRight, Activity,
-  Check, Copy, BookOpen
+  Check, Copy, BookOpen, Tablet, Eye
 } from "lucide-react";
 import { Earth3DGlobe } from "@/components/ui/earth-3d-globe";
 import { BookFlipAnimation } from "@/components/ui/book-flip-animation";
