@@ -337,3 +337,29 @@
   50%      { transform: translateX(-38%) translateY(14%) scale(1.18); }
 }
 .orb-drift { animation: orb-drift 14s ease-in-out infinite; }
+
+/* ── High-Tech Shimmer & Reactor Animations ─────────── */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes reactor-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.4), inset 0 0 15px rgba(56, 189, 248, 0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 35px rgba(129, 140, 248, 0.7), inset 0 0 25px rgba(129, 140, 248, 0.4);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-reactor {
+  animation: reactor-pulse 3s ease-in-out infinite;
+}
+

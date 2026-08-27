@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { JarvisWordmark, JarvisStar } from "./logo";
-import { Sparkles, Users, Mic, Layers, BarChart3, ArrowRight } from "lucide-react";
+import { JarvisWordmark } from "./logo";
+import {
+  Sparkles, Users, Mic, Layers, BarChart3, ArrowRight,
+  Menu, X, BookOpen, ExternalLink, Terminal, Shield, Zap
+} from "lucide-react";
 
 function GitHubIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -11,153 +15,241 @@ function GitHubIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function MarketingNav() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#06080F]/80 backdrop-blur-2xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+    <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-2xl transition-all">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
-            <JarvisStar />
-            <JarvisWordmark />
-            <span className="hidden sm:inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-cyan-400">
-              v3.0 Master
-            </span>
+            <JarvisWordmark size={24} />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-6 text-[13px] font-medium text-slate-400">
+          <nav className="hidden lg:flex items-center gap-6 text-[13px] font-medium text-slate-300">
             <Link
               to="/console/fleet"
-              className="flex items-center gap-1.5 transition-colors hover:text-cyan-400"
+              className="flex items-center gap-1.5 transition-colors hover:text-cyan-400 py-1 px-2 rounded-lg hover:bg-slate-900/60"
             >
               <Users className="h-3.5 w-3.5 text-cyan-400" />
               <span>Bot Fleet</span>
             </Link>
             <Link
               to="/console/voice"
-              className="flex items-center gap-1.5 transition-colors hover:text-emerald-400"
+              className="flex items-center gap-1.5 transition-colors hover:text-emerald-400 py-1 px-2 rounded-lg hover:bg-slate-900/60"
             >
               <Mic className="h-3.5 w-3.5 text-emerald-400" />
               <span>Voice Studio</span>
             </Link>
             <Link
               to="/console/apps"
-              className="flex items-center gap-1.5 transition-colors hover:text-purple-400"
+              className="flex items-center gap-1.5 transition-colors hover:text-purple-400 py-1 px-2 rounded-lg hover:bg-slate-900/60"
             >
               <Layers className="h-3.5 w-3.5 text-purple-400" />
               <span>App Builder</span>
             </Link>
             <Link
               to="/console/components"
-              className="flex items-center gap-1.5 transition-colors hover:text-amber-400"
+              className="flex items-center gap-1.5 transition-colors hover:text-amber-400 py-1 px-2 rounded-lg hover:bg-slate-900/60"
             >
               <Sparkles className="h-3.5 w-3.5 text-amber-400" />
               <span>3D Motion Hub</span>
             </Link>
             <Link
               to="/blog"
-              className="flex items-center gap-1.5 transition-colors hover:text-purple-300"
+              className="flex items-center gap-1.5 transition-colors hover:text-purple-300 py-1 px-2 rounded-lg hover:bg-slate-900/60"
             >
-              <Layers className="h-3.5 w-3.5 text-purple-400" />
+              <BookOpen className="h-3.5 w-3.5 text-purple-400" />
               <span>Blog &amp; Docs</span>
             </Link>
             <Link
               to="/console/analytics"
-              className="flex items-center gap-1.5 transition-colors hover:text-sky-400"
+              className="flex items-center gap-1.5 transition-colors hover:text-sky-400 py-1 px-2 rounded-lg hover:bg-slate-900/60"
             >
               <BarChart3 className="h-3.5 w-3.5 text-sky-400" />
               <span>Analytics</span>
             </Link>
             <Link
               to="/companion"
-              className="flex items-center gap-1.5 transition-colors hover:text-pink-400"
+              className="flex items-center gap-1.5 transition-colors hover:text-pink-400 py-1 px-2 rounded-lg hover:bg-slate-900/60"
             >
-              <span>🌸 3D Nia</span>
+              <span className="text-xs">🌸</span>
+              <span>3D Nia</span>
             </Link>
           </nav>
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Cloud Health Live Ping */}
+          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-950/40 text-[11px] font-mono text-emerald-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            <span>Supabase Cloud 15/15 OK</span>
+          </div>
+
           <a
             href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS"
             target="_blank"
             rel="noreferrer"
-            className="hidden sm:flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+            className="hidden sm:flex items-center gap-1.5 rounded-xl border border-slate-800 bg-slate-900/80 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
           >
             <GitHubIcon className="h-3.5 w-3.5" />
-            <span>GitHub</span>
+            <span>Star on GitHub</span>
           </a>
+
           <Link
             to="/console"
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 px-4 py-2 text-xs font-bold text-slate-950 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/35 hover:-translate-y-0.5 transition-all"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500 px-4 py-2 text-xs font-black text-slate-950 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
           >
             <span>Open Console</span>
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:text-white"
+            aria-label="Toggle Mobile Navigation"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden border-t border-slate-800/80 bg-slate-950/95 backdrop-blur-2xl px-6 py-5 space-y-4">
+          <div className="grid grid-cols-2 gap-2 text-xs font-medium">
+            <Link
+              to="/console/fleet"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 p-2.5 rounded-xl border border-slate-800/80 bg-slate-900/50 text-slate-200 hover:bg-slate-800"
+            >
+              <Users className="w-4 h-4 text-cyan-400" />
+              <span>Bot Fleet</span>
+            </Link>
+            <Link
+              to="/console/voice"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 p-2.5 rounded-xl border border-slate-800/80 bg-slate-900/50 text-slate-200 hover:bg-slate-800"
+            >
+              <Mic className="w-4 h-4 text-emerald-400" />
+              <span>Voice Studio</span>
+            </Link>
+            <Link
+              to="/console/apps"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 p-2.5 rounded-xl border border-slate-800/80 bg-slate-900/50 text-slate-200 hover:bg-slate-800"
+            >
+              <Layers className="w-4 h-4 text-purple-400" />
+              <span>App Builder</span>
+            </Link>
+            <Link
+              to="/console/components"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 p-2.5 rounded-xl border border-slate-800/80 bg-slate-900/50 text-slate-200 hover:bg-slate-800"
+            >
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>3D Motion Hub</span>
+            </Link>
+            <Link
+              to="/blog"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 p-2.5 rounded-xl border border-slate-800/80 bg-slate-900/50 text-slate-200 hover:bg-slate-800"
+            >
+              <BookOpen className="w-4 h-4 text-purple-400" />
+              <span>Blog &amp; Docs</span>
+            </Link>
+            <Link
+              to="/console/analytics"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 p-2.5 rounded-xl border border-slate-800/80 bg-slate-900/50 text-slate-200 hover:bg-slate-800"
+            >
+              <BarChart3 className="w-4 h-4 text-sky-400" />
+              <span>Analytics</span>
+            </Link>
+          </div>
+
+          <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+            <a
+              href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 text-xs text-slate-400 hover:text-white"
+            >
+              <GitHubIcon className="w-4 h-4" />
+              <span>GitHub v3.0.0</span>
+            </a>
+            <div className="flex items-center gap-1.5 text-[11px] font-mono text-emerald-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+              <span>15 Cloud Tables Active</span>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-slate-800/80 bg-[#04060B] text-slate-400">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <JarvisStar />
-              <JarvisWordmark />
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              Autonomous Personal Intelligence Operating System. 8 specialized bots, real-time voice cloning, universal app generation, and 4-tier persistent memory.
+    <footer className="border-t border-slate-800/80 bg-slate-950 py-16 px-6 relative overflow-hidden">
+      {/* Ambient background glow */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[250px] bg-gradient-to-t from-cyan-500/10 via-purple-500/5 to-transparent rounded-t-full blur-3xl pointer-events-none" />
+
+      <div className="mx-auto max-w-7xl relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
+          <div className="md:col-span-2 space-y-4">
+            <JarvisWordmark size={26} />
+            <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
+              The autonomous personal intelligence operating system. Persistent 4-tier neural memory, 8-bot fleet, 2-minute voice cloning, and universal multi-platform app generator.
             </p>
-            <div className="flex items-center gap-2 pt-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-mono text-[11px] text-emerald-400">Supabase Cloud Online (15 Tables Active)</span>
+            <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-slate-800 bg-slate-900/60 text-xs text-slate-300 font-mono">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Supabase Cloud ap-south-1</span>
+              </div>
             </div>
           </div>
 
           <div>
-            <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-200 mb-3">Autonomous Fleet</h4>
-            <ul className="space-y-2 text-xs">
-              <li><Link to="/console/fleet" className="hover:text-cyan-400 transition-colors">Chief of Staff Priority Digest</Link></li>
-              <li><Link to="/console/fleet" className="hover:text-cyan-400 transition-colors">Sales Outbound Lead Discovery</Link></li>
-              <li><Link to="/console/fleet" className="hover:text-cyan-400 transition-colors">Talent Scout &amp; Tech Screening</Link></li>
-              <li><Link to="/console/fleet" className="hover:text-cyan-400 transition-colors">Bug Reproduction with Playwright</Link></li>
+            <h4 className="text-xs font-mono uppercase tracking-widest text-cyan-400 font-bold mb-4">Core Engines</h4>
+            <ul className="space-y-2.5 text-xs text-slate-400">
+              <li><Link to="/console/fleet" className="hover:text-white transition-colors">8-Bot Autonomous Fleet</Link></li>
+              <li><Link to="/console/voice" className="hover:text-white transition-colors">Real-Time Voice Studio</Link></li>
+              <li><Link to="/console/apps" className="hover:text-white transition-colors">Universal App Builder</Link></li>
+              <li><Link to="/console/analytics" className="hover:text-white transition-colors">Shared Usage Analytics</Link></li>
+              <li><Link to="/companion" className="hover:text-white transition-colors">🌸 3D Nia VRM Companion</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-200 mb-3">Builders &amp; Studio</h4>
-            <ul className="space-y-2 text-xs">
-              <li><Link to="/console/voice" className="hover:text-emerald-400 transition-colors">2-Minute Voice Cloning Studio</Link></li>
-              <li><Link to="/console/apps" className="hover:text-purple-400 transition-colors">Full-Stack SaaS &amp; Mobile Expo</Link></li>
-              <li><Link to="/console/components" className="hover:text-amber-400 transition-colors">3D Earth Globe &amp; Book Flip UI</Link></li>
-              <li><Link to="/companion" className="hover:text-pink-400 transition-colors">3D Nia Companion (VRM 1.0)</Link></li>
+            <h4 className="text-xs font-mono uppercase tracking-widest text-purple-400 font-bold mb-4">Resources &amp; Docs</h4>
+            <ul className="space-y-2.5 text-xs text-slate-400">
+              <li><Link to="/blog" className="hover:text-white transition-colors">Interactive Blog &amp; Docs</Link></li>
+              <li><Link to="/console/components" className="hover:text-white transition-colors">3D Motion UI Showcase</Link></li>
+              <li><a href="/preset-sites/crm-lead-management-panel-staffu-admin-template/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">CRM Lead Preset Demo</a></li>
+              <li><a href="/preset-sites/clucky-the-rooster-alarm-that-gets-you-up/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Audio Alarm Preset Demo</a></li>
+              <li><Link to="/design" className="hover:text-white transition-colors">Design System Tokens</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-200 mb-3">System &amp; Privacy</h4>
-            <ul className="space-y-2 text-xs">
-              <li><Link to="/console/analytics" className="hover:text-sky-400 transition-colors">Shared Usage &amp; Cost Analytics</Link></li>
-              <li><Link to="/how-it-works" className="hover:text-slate-200 transition-colors">100 SOTA Cases &amp; Privacy Rules</Link></li>
-              <li><a href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub Repository (v3.0.0)</a></li>
-              <li><Link to="/console/settings" className="hover:text-slate-200 transition-colors">Data Control &amp; App Exclusion</Link></li>
+            <h4 className="text-xs font-mono uppercase tracking-widest text-emerald-400 font-bold mb-4">Community</h4>
+            <ul className="space-y-2.5 text-xs text-slate-400">
+              <li><a href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub Repository</a></li>
+              <li><a href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/releases" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Release Notes (v3.0.0)</a></li>
+              <li><a href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS/issues" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Report Bug / Issues</a></li>
+              <li><a href="https://github.com/Vishwajeetsrk" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Maintainer Profile</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between border-t border-slate-800/60 pt-6 text-[11px] text-slate-500">
-          <p>© 2026 JARVIS AI OS. Built with ❤️ by Vishwajeet and Open Source Community.</p>
-          <div className="flex items-center gap-4 mt-4 sm:mt-0 font-mono">
-            <span>TypeScript 5.3</span>
-            <span>•</span>
-            <span>React 18</span>
-            <span>•</span>
-            <span>Three.js VRM</span>
-            <span>•</span>
-            <span>MIT License</span>
+        <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div>
+            &copy; 2026 JARVIS AI OS. Built with ❤️ by <span className="text-slate-300 font-medium">Vishwajeet</span> &amp; Open Source Community. MIT Licensed.
+          </div>
+          <div className="flex items-center gap-4 text-slate-400">
+            <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-cyan-400" /> SOC-2 Type II Safe</span>
+            <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-amber-400" /> Sub-400ms Voice S2S</span>
           </div>
         </div>
       </div>
