@@ -272,12 +272,114 @@ export function getDesignSystem(id: string): DesignSystemDetail | null {
   }
 }
 
-// -------- Project sites (live static sites served from /preset-sites/<name>/) --------
-
 export interface ProjectSiteDetail extends DesignSystemSummary {
   kind: "site";
   previewUrl: string;
   source: string;
+}
+
+// Canonical project key mapping & alias resolution
+const PROJECT_ALIASES: Record<string, string> = {
+  "aceternity-minimalist-portfolio": "aceternity-minimal-portfolio",
+  "viskey-vida": "vida-sota-cases",
+  "woblo-vanguard": "woblo-superdesign",
+  "cinematic-stream": "cinematic-cloud",
+  "velorix": "velorah",
+};
+
+export function normalizeProjectKey(id: string): string {
+  const raw = id.replace(/^(site-|learnify-)/, "").toLowerCase();
+  return PROJECT_ALIASES[raw] ?? raw;
+}
+
+export function listUnifiedDesignProjects(): DesignSystemSummary[] {
+  const map = new Map<string, DesignSystemSummary>();
+
+  // 1. Ingest base Design Systems from data/
+  for (const ds of listDesignSystems()) {
+    const key = normalizeProjectKey(ds.id);
+    map.set(key, { ...ds, id: key });
+  }
+
+  // 2. Ingest & merge Live Preset Sites from public/preset-sites/
+  for (const site of listProjectSites()) {
+    const rawKey = site.id.replace(/^site-/, "");
+    const key = normalizeProjectKey(rawKey);
+
+    const existing = map.get(key);
+    if (existing) {
+      // Merge live site preview into existing design system
+      map.set(key, {
+        ...existing,
+        kind: "site",
+        previewUrl: site.previewUrl,
+        componentCount: Math.max(existing.componentCount, site.componentCount),
+      });
+    } else {
+      map.set(key, {
+        ...site,
+        id: key,
+      });
+    }
+  }
+
+  // 3. Ingest & merge Learnify Designs
+  for (const learnify of listLearnifyDesigns()) {
+    const rawKey = learnify.id.replace(/^learnify-/, "");
+    const key = normalizeProjectKey(rawKey);
+
+    const existing = map.get(key);
+    if (existing) {
+      // Enhance category and description if learnify has richer categorization
+      map.set(key, {
+        ...existing,
+        category: existing.category === "Project Sites" ? learnify.category : existing.category,
+        description: existing.description.length < learnify.description.length ? learnify.description : existing.description,
+        previewUrl: existing.previewUrl || learnify.previewUrl,
+        kind: (existing.previewUrl || learnify.previewUrl) ? "site" : existing.kind,
+      });
+    } else {
+      map.set(key, {
+        ...learnify,
+        id: key,
+      });
+    }
+  }
+
+  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export function getUnifiedProjectDetail(id: string): (DesignSystemDetail | ProjectSiteDetail) & { raw?: LearnifyDesign } | null {
+  const canonicalKey = normalizeProjectKey(id);
+
+  // Try direct design system lookup first
+  const dsDetail = getDesignSystem(canonicalKey);
+  const siteDetail = getProjectSite(canonicalKey);
+  const learnifyDetail = getLearnifyDesign(canonicalKey);
+
+  if (siteDetail && dsDetail) {
+    // Merged site + design system tokens
+    return {
+      ...dsDetail,
+      kind: "site",
+      previewUrl: siteDetail.previewUrl,
+      source: siteDetail.source || dsDetail.components,
+    };
+  }
+
+  if (siteDetail) return siteDetail;
+  if (dsDetail) return dsDetail;
+  if (learnifyDetail) return learnifyDetail;
+
+  // Fallback to legacy lookups
+  if (id.startsWith("learnify-")) {
+    return getLearnifyDesign(id);
+  }
+  if (id.startsWith("site-")) {
+    return getProjectSite(id);
+  }
+
+  return null;
 }
 
 export function listProjectSites(): DesignSystemSummary[] {
@@ -339,4 +441,3 @@ export function getProjectSite(id: string): ProjectSiteDetail | null {
     source: html,
   };
 }
-
