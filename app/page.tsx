@@ -1,5 +1,6 @@
 import ApexWorld from "@/components/ApexWorld";
 import ApexOverviewPanel from "@/components/ApexOverviewPanel";
+import PortfolioOverlay from "@/components/PortfolioOverlay";
 
 export default function Home() {
   return (
@@ -21,6 +22,9 @@ export default function Home() {
       <section style={{ position: "relative", height: "100vh", minHeight: 620, width: "100%" }}>
         <ApexWorld />
       </section>
+
+      {/* Interactive Personal Portfolio Triggers */}
+      <PortfolioOverlay />
 
       {/* Top Right Header Controls */}
       <div
