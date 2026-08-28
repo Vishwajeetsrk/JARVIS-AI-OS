@@ -39,6 +39,13 @@
 
 ---
 
+## 🎥 Real-Time Interactive Demo
+Experience the newly integrated Personal Portfolio HUD (Cyber Resume, Mission Log, and GitHub Hub) running directly within the APEX-UI platform:
+
+![APEX-UI HUD Interactive Demo Recording](/C:/Users/vishw/.gemini/antigravity-ide/brain/51ef4dd6-061e-4bc3-9189-29e603614c7a/apex_ui_hud_demo_1787920402591.webp)
+
+---
+
 ## 🚀 Quick Start
 
 Ensure you have Node.js 18+ installed.
