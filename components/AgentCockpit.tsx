@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Sparkles, Send, Play, Terminal, Bot, CheckCircle, Volume2, VolumeX,
-  Maximize2, Minimize2, X, RefreshCw, Copy, Check, ChevronRight, Zap, Brain
+  Maximize2, Minimize2, X, RefreshCw, Copy, Check, ChevronRight, Zap, Brain, Plus
 } from "lucide-react";
 
 export const AI_MODELS = [
@@ -262,6 +262,7 @@ export default function AgentCockpit({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: textToSend,
+          history: messages,
           model,
           agentId: sel.key,
           systemPrompt: spec.systemPrompt,
@@ -611,6 +612,41 @@ export default function AgentCockpit({
           alignItems: "center",
         }}
       >
+        <button
+          type="button"
+          onClick={() => {
+            // Mock handler for Add Image/File/Skills
+            alert("File upload & Skills attachment coming soon!");
+          }}
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            border: `1px solid rgba(255,255,255,0.12)`,
+            borderRadius: "50%",
+            width: 38,
+            height: 38,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "rgba(255,255,255,0.7)",
+            cursor: "pointer",
+            flexShrink: 0,
+            transition: "all 0.2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+            e.currentTarget.style.borderColor = c;
+            e.currentTarget.style.color = c;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.7)";
+          }}
+          title="Attach Image/File/Skill"
+        >
+          <Plus size={18} />
+        </button>
+
         <input
           type="text"
           value={prompt}

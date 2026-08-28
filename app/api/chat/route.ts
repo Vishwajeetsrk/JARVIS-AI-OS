@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, model = "gemini-2.0-flash", agentId, systemPrompt } = await req.json();
+    const { message, model = "gemini-2.0-flash", agentId, systemPrompt, history = [] } = await req.json();
 
     if (!message) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
@@ -16,13 +16,22 @@ export async function POST(req: NextRequest) {
     const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (geminiKey && (!model || model.includes("gemini"))) {
       try {
+        const geminiContents = [
+          ...history.map((h: any) => ({
+            role: h.role === "assistant" ? "model" : "user",
+            parts: [{ text: h.text }]
+          })),
+          { role: "user", parts: [{ text: message }] }
+        ];
+
         const res = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              contents: [{ role: "user", parts: [{ text: `${effectiveSystemPrompt}\n\nUser Request: ${message}` }] }],
+              system_instruction: { parts: [{ text: effectiveSystemPrompt }] },
+              contents: geminiContents,
               generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
             }),
           }
@@ -44,6 +53,13 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Common messages format for OpenAI-compatible APIs (Groq, OpenRouter)
+    const openAiMessages = [
+      { role: "system", content: effectiveSystemPrompt },
+      ...history.map((h: any) => ({ role: h.role, content: h.text })),
+      { role: "user", content: message }
+    ];
+
     // 2. Try Groq (Llama 3.3 70B) if key exists
     const groqKey = process.env.GROQ_API_KEY;
     if (groqKey) {
@@ -56,10 +72,7 @@ export async function POST(req: NextRequest) {
           },
           body: JSON.stringify({
             model: "llama-3.3-70b-versatile",
-            messages: [
-              { role: "system", content: effectiveSystemPrompt },
-              { role: "user", content: message },
-            ],
+            messages: openAiMessages,
             temperature: 0.7,
             max_tokens: 2048,
           }),
@@ -93,10 +106,7 @@ export async function POST(req: NextRequest) {
           },
           body: JSON.stringify({
             model: "deepseek/deepseek-r1:free",
-            messages: [
-              { role: "system", content: effectiveSystemPrompt },
-              { role: "user", content: message },
-            ],
+            messages: openAiMessages,
           }),
         });
         if (res.ok) {
