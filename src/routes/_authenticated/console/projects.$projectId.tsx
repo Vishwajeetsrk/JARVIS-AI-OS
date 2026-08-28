@@ -18,8 +18,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import {
   Plus, Trash2, FileText, Palette, Link2, ExternalLink, Play, Pencil,
   Download, Rocket, Database, Plug, KeyRound, BarChart3, Eye, Copy, Check, Code2,
+  GitBranch, GitPullRequest, RefreshCw, Loader2, ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
+import { githubOverview } from "@/lib/connections.functions";
+import { githubCreateRepo, githubPushProject } from "@/lib/github-actions.functions";
 
 // Lazy-load Monaco so it doesn't bloat the main bundle
 const CodeEditor = lazy(() =>
@@ -33,7 +36,7 @@ export const Route = createFileRoute("/_authenticated/console/projects/$projectI
   head: () => ({ meta: [{ title: "Project — Jarvis" }] }),
 });
 
-type Tab = "overview" | "preview" | "code" | "builds" | "analysis" | "deploy" | "database" | "plugins" | "keys";
+type Tab = "overview" | "preview" | "code" | "builds" | "analysis" | "deploy" | "github" | "database" | "plugins" | "keys";
 
 function ProjectPage() {
   const { projectId } = useParams({ from: "/_authenticated/console/projects/$projectId" });
@@ -162,6 +165,45 @@ function ProjectPage() {
     },
   });
 
+  const fnGithubOverview = useServerFn(githubOverview);
+  const githubQ = useQuery({
+    queryKey: ["githubOverview"],
+    queryFn: () => fnGithubOverview({}),
+  });
+  const fnGithubCreate = useServerFn(githubCreateRepo);
+  const fnGithubPush = useServerFn(githubPushProject);
+
+  const [pushRepoName, setPushRepoName] = useState("");
+  const [pushCommitMsg, setPushCommitMsg] = useState("Update from JARVIS Workspace");
+  const [createRepoOpen, setCreateRepoOpen] = useState(false);
+  const [newRepoName, setNewRepoName] = useState("");
+  const [newRepoDesc, setNewRepoDesc] = useState("");
+
+  const mCreateRepo = useMutation({
+    mutationFn: () => fnGithubCreate({ data: { name: newRepoName || projectSlug, description: newRepoDesc || `Repository for ${display?.name}`, private: false } }),
+    onSuccess: (r: any) => {
+      if (r?.ok) {
+        toast.success(`Repository created: ${r.fullName}`);
+        setCreateRepoOpen(false);
+        qc.invalidateQueries({ queryKey: ["githubOverview"] });
+      } else {
+        toast.error(r?.error ?? "Create failed");
+      }
+    },
+  });
+
+  const mPushRepo = useMutation({
+    mutationFn: () => fnGithubPush({ data: { repoFullName: pushRepoName, commitMessage: pushCommitMsg, slug: projectSlug } }),
+    onSuccess: (r: any) => {
+      if (r?.ok) {
+        toast.success(`Pushed to GitHub: ${pushRepoName}`);
+        qc.invalidateQueries({ queryKey: ["githubOverview"] });
+      } else {
+        toast.error(r?.error ?? "Push failed");
+      }
+    },
+  });
+
   const openBuild = async (buildId: string) => {
     const b = await getBuild({ data: { buildId } });
     if (b?.html) setPreviewBuild({ id: b.id, html: b.html });
@@ -200,6 +242,7 @@ function ProjectPage() {
     { id: "builds", label: "Builds", icon: Download },
     { id: "analysis", label: "Analysis", icon: BarChart3 },
     { id: "deploy", label: "Deploy", icon: Rocket },
+    { id: "github", label: "GitHub", icon: GitBranch },
     { id: "database", label: "Database", icon: Database },
     { id: "plugins", label: "Plugins", icon: Plug },
     { id: "keys", label: "API keys", icon: KeyRound },
@@ -431,6 +474,88 @@ function ProjectPage() {
         </section>
       )}
 
+      {tab === "github" && (
+        <section>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-mono-xs opacity-60">GitHub Repository Sync</h2>
+            {githubQ.data?.connected && (
+              <Button size="sm" onClick={() => { setNewRepoName(projectSlug); setCreateRepoOpen(true); }}>
+                <GitBranch className="mr-1.5 h-3.5 w-3.5" /> Create repository
+              </Button>
+            )}
+          </div>
+
+          {!githubQ.data?.connected ? (
+            <div className="rounded-xl border border-dashed border-border p-10 text-center">
+              <GitBranch className="mx-auto mb-3 h-8 w-8 text-muted-foreground/50" />
+              <p className="text-sm text-muted-foreground mb-3">
+                GitHub is not connected yet. Connect your GitHub account to sync this project with repositories.
+              </p>
+              <Button variant="outline" onClick={() => nav({ to: "/console/github" })}>
+                <ExternalLink className="mr-1.5 h-3.5 w-3.5" /> Go to GitHub Settings
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="rounded-xl border border-border bg-card p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/10 text-green-500">
+                    <ShieldCheck className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-medium">Connected as @{githubQ.data.login}</p>
+                    <p className="text-mono-xs opacity-60">{githubQ.data.repos?.length ?? 0} repositories available</p>
+                  </div>
+                </div>
+                <Button size="sm" variant="outline" onClick={() => qc.invalidateQueries({ queryKey: ["githubOverview"] })}>
+                  <RefreshCw className="mr-1.5 h-3 w-3" /> Refresh
+                </Button>
+              </div>
+
+              {/* Push current project build */}
+              <div className="rounded-xl border border-border bg-card p-4">
+                <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                  <GitPullRequest className="h-4 w-4 text-primary" /> Push project code to repository
+                </h3>
+                <p className="text-xs text-muted-foreground mb-4">
+                  Commit and push files or generated builds for <strong>{display.name}</strong> directly to GitHub.
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="text-[11px] font-mono opacity-70 mb-1 block">Target Repository (owner/repo)</label>
+                    <Input
+                      value={pushRepoName}
+                      onChange={(e) => setPushRepoName(e.target.value)}
+                      placeholder={`${githubQ.data.login ?? "owner"}/${projectSlug}`}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-mono opacity-70 mb-1 block">Commit Message</label>
+                    <Input
+                      value={pushCommitMsg}
+                      onChange={(e) => setPushCommitMsg(e.target.value)}
+                      placeholder="Commit message"
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </div>
+                <div className="mt-3 flex justify-end">
+                  <Button
+                    size="sm"
+                    disabled={!pushRepoName.trim() || mPushRepo.isPending}
+                    onClick={() => mPushRepo.mutate()}
+                  >
+                    {mPushRepo.isPending ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <GitBranch className="mr-1.5 h-3.5 w-3.5" />}
+                    {mPushRepo.isPending ? "Pushing…" : "Push to GitHub"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
       {tab === "database" && (
         <section>
           <h2 className="mb-3 text-mono-xs opacity-60">Connected databases</h2>
@@ -617,6 +742,42 @@ function ProjectPage() {
               mRename.mutate({ name: editName.trim(), description: editDesc.trim(), color: editColor });
               setEditOpen(false);
             }}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create repository dialog */}
+      <Dialog open={createRepoOpen} onOpenChange={setCreateRepoOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Create GitHub repository</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs font-medium text-foreground mb-1 block">Repository name</label>
+              <Input
+                value={newRepoName}
+                onChange={(e) => setNewRepoName(e.target.value)}
+                placeholder="Repository name"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-foreground mb-1 block">Description</label>
+              <Input
+                value={newRepoDesc}
+                onChange={(e) => setNewRepoDesc(e.target.value)}
+                placeholder="Repository description"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setCreateRepoOpen(false)}>Cancel</Button>
+            <Button
+              disabled={!newRepoName.trim() || mCreateRepo.isPending}
+              onClick={() => mCreateRepo.mutate()}
+            >
+              {mCreateRepo.isPending ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <GitBranch className="mr-1.5 h-3.5 w-3.5" />}
+              {mCreateRepo.isPending ? "Creating…" : "Create repository"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

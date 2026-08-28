@@ -2,34 +2,38 @@
 
 ## Supported Versions
 
-We actively provide security patches and updates for the following versions:
+We actively release security patches and updates for the following versions:
 
 | Version | Supported          |
-| :--- | :--- |
-| 2.6.x   | :white_check_mark: |
-| 2.5.x   | :white_check_mark: |
-| < 2.5   | :x:                |
+| ------- | ------------------ |
+| 4.x     | :white_check_mark: |
+| 3.x     | :white_check_mark: |
+| < 3.0   | :x:                |
 
 ---
 
-## 🔒 Reporting a Vulnerability
+## Reporting a Vulnerability
 
-We take the security and privacy of **JARVIS AI OS** users seriously. If you discover a security vulnerability, please follow responsible disclosure guidelines:
+The safety and security of **JARVIS AI OS** users and their private workspaces is our highest priority.
 
-1. **Do NOT open a public issue.**
-2. Send an email with full details, reproduction steps, and proof of concept to **security@jarvisaios.dev** or contact the maintainers privately via GitHub Security Advisories.
-3. We will acknowledge receipt within 48 hours and provide a timeline for a patch.
+If you discover a security vulnerability, **please DO NOT open a public GitHub issue**. Instead, report it privately:
+
+1. **GitHub Security Advisory**: Go to the repository's [Security Tab](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/security/advisories) and click **"Report a vulnerability"**.
+2. **Direct Email**: Send details to **vishwajeet@jarvis-ai.org**.
+
+Please include:
+* Description of the vulnerability and attack vector.
+* Step-by-step instructions or proof-of-concept (PoC).
+* Any suggested remediations or patches.
+
+### Our Response Commitment
+* **Initial Response**: Within 24 hours.
+* **Triage & Validation**: Within 72 hours.
+* **Patch & Disclosure**: Coordinated disclosure within 14 days of fix deployment.
 
 ---
 
-## 🛡️ Core Security & Privacy Principles
-
-1. **Local-First Data Isolation**:
-   - User identity, personal notes, custom configurations, and API keys remain stored **strictly on the user's local device** in `data/` and `.env`.
-   - JARVIS never transmits private credentials or local memory to unauthorized third-party telemetry servers.
-
-2. **Non-Destructive Storage Intelligence**:
-   - The Laptop Storage & Safe Cleanup Agent enforces a strict confirmation gate and **never deletes user files permanently by default**; all operations move candidate files safely to the OS Recycle Bin.
-
-3. **Audio & Video Guard**:
-   - Microphones and cameras are never silently activated in the background. The visual HUD always displays live status (`🎤 ON`, `📷 ON`, `● REC`).
+## Security Principles & Sandboxing
+* **Zero Client Exposure**: Database service role keys, connector OAuth secrets, and AI provider tokens are strictly executed within encrypted server runtime functions (`src/lib/connectors.server.ts`).
+* **Path Validation**: Execution commands and file operations strictly prevent path traversal outside designated workspace bounds.
+* **Row-Level Security (RLS)**: Enforced across all 15 Supabase cloud database tables.

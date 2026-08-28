@@ -2,164 +2,156 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  Plus,
-  Mic,
-  AudioLines,
-  GraduationCap,
-  Code2,
-  HardDrive,
-  CalendarDays,
-  Mail,
-  Sparkles,
-  ChevronDown,
-  LayoutDashboard,
-  ExternalLink,
-  Eye,
-  Palette,
-  Monitor,
-  Tablet,
-  Smartphone,
-  Copy,
-  Check,
-  Users,
-  Layers,
-  BarChart3,
-  Bot,
-  Zap,
-  ArrowRight
+  Mic, AudioLines, Code2, Sparkles, Eye, Palette, Monitor, Tablet,
+  Smartphone, Copy, Check, Layers, BarChart3, Bot, ArrowRight, Folder,
+  GitBranch, ChevronRight
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { createThread } from "@/lib/threads.functions";
-import { DashboardView } from "@/components/jarvis/dashboard-view";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MODELS } from "@/lib/models";
 import { toast } from "sonner";
 
+
 export const Route = createFileRoute("/_authenticated/console/")({
-  component: TabbedHome,
+  component: HomePage,
   head: () => ({
     meta: [
-      { title: "Jarvis — Autonomous Console" },
-      { name: "description", content: "Jarvis AI OS · Chat with your autonomous OS. 8-bot fleet, voice studio & live app builder." },
+      { title: "Home — JARVIS AI OS" },
+      { name: "description", content: "JARVIS AI OS · Intelligent command center for AI-powered work." },
     ],
   }),
 });
 
 function greetingForHour(h: number) {
-  if (h < 12) return "Morning thoughts";
-  if (h < 18) return "Afternoon thoughts";
-  return "Evening thoughts";
+  if (h < 5)  return "Good night";
+  if (h < 12) return "Good morning";
+  if (h < 18) return "Good afternoon";
+  return "Good evening";
 }
 
-function TabbedHome() {
-  const [tab, setTab] = useState<"chat" | "dashboard">(() => {
-    try {
-      const v = localStorage.getItem("jarvis-console-tab");
-      return v === "dashboard" ? "dashboard" : "chat";
-    } catch {
-      return "chat";
-    }
-  });
-  useEffect(() => {
-    try {
-      localStorage.setItem("jarvis-console-tab", tab);
-    } catch {}
-  }, [tab]);
+// ── Quick action chips ────────────────────────────────────────────────────
+const QUICK_ACTIONS = [
+  {
+    label: "Daily Digest",
+    icon: "☀️",
+    prompt: "@chief_of_staff scan my priorities, schedule, and dropped threads for today.",
+  },
+  {
+    label: "Scaffold App",
+    icon: "🏗️",
+    prompt: "Create a cross-platform React Native app with Expo Router and offline sync.",
+  },
+  {
+    label: "Lead Discovery",
+    icon: "🎯",
+    prompt: "@sales_outbound find ICP leads and generate personalized outreach sequences.",
+  },
+  {
+    label: "Voice Clone",
+    icon: "🎙️",
+    prompt: "Open Voice Studio to clone a reference audio into a custom voice profile.",
+  },
+  {
+    label: "Code Review",
+    icon: "🔍",
+    prompt: "Review my latest code changes for bugs, security issues, and improvements.",
+  },
+];
 
-  return (
-    <div className="flex h-full flex-col bg-[#09090b]">
-      {/* Tab switcher — Chat ↔ Dashboard */}
-      <div className="flex items-center justify-between border-b border-zinc-800/40 bg-[#09090b] px-6 py-2.5">
-        <div className="flex rounded-full border border-zinc-800 bg-zinc-900/80 p-1 text-xs">
-          <button
-            onClick={() => setTab("chat")}
-            className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 font-semibold transition-all ${tab === "chat" ? "bg-white text-zinc-900 shadow-md" : "text-zinc-400 hover:text-zinc-200"}`}
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Chat &amp; Cowork</span>
-          </button>
-          <button
-            onClick={() => setTab("dashboard")}
-            className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 font-semibold transition-all ${tab === "dashboard" ? "bg-white text-zinc-900 shadow-md" : "text-zinc-400 hover:text-zinc-200"}`}
-          >
-            <LayoutDashboard className="h-3.5 w-3.5" />
-            <span>Activity Dashboard</span>
-          </button>
-        </div>
+// ── Feature shortcuts (the 6-card grid replacing the busy old dashboard) ──
+const FEATURE_CARDS = [
+  {
+    to: "/console/projects",
+    icon: Folder,
+    label: "Projects",
+    description: "Active workspaces",
+    color: "var(--color-intelligence)",
+    accent: "oklch(0.712 0.132 42 / 0.1)",
+  },
+  {
+    to: "/console/fleet",
+    icon: Bot,
+    label: "Bot Fleet",
+    description: "8 autonomous agents",
+    color: "var(--color-info)",
+    accent: "oklch(0.72 0.16 230 / 0.1)",
+    badge: "LIVE",
+  },
+  {
+    to: "/console/voice",
+    icon: Mic,
+    label: "Voice Studio",
+    description: "Clone & synthesize",
+    color: "var(--color-success)",
+    accent: "oklch(0.681 0.128 145 / 0.1)",
+  },
+  {
+    to: "/console/apps",
+    icon: Layers,
+    label: "App Builder",
+    description: "Scaffold & deploy",
+    color: "var(--color-creative)",
+    accent: "oklch(0.72 0.16 300 / 0.1)",
+  },
+  {
+    to: "/console/github",
+    icon: GitBranch,
+    label: "GitHub",
+    description: "Repos & automation",
+    color: "var(--color-warning)",
+    accent: "oklch(0.771 0.145 68 / 0.1)",
+  },
+  {
+    to: "/console/analytics",
+    icon: BarChart3,
+    label: "Analytics",
+    description: "Usage & costs",
+    color: "var(--color-intelligence)",
+    accent: "oklch(0.712 0.132 42 / 0.08)",
+    badge: "LIVE",
+  },
+];
 
-        <div className="hidden sm:flex items-center gap-3 text-xs">
-          <Link to="/console/fleet" className="flex items-center gap-1 text-cyan-400 hover:text-cyan-300 font-medium">
-            <Users className="h-3.5 w-3.5" /> 8-Bot Fleet
-          </Link>
-          <span className="text-zinc-700">·</span>
-          <Link to="/console/voice" className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-medium">
-            <Mic className="h-3.5 w-3.5" /> Voice Cloner
-          </Link>
-          <span className="text-zinc-700">·</span>
-          <Link to="/console/apps" className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium">
-            <Layers className="h-3.5 w-3.5" /> App Builder
-          </Link>
-        </div>
-      </div>
-
-      <div className="min-h-0 flex-1 overflow-hidden">
-        <AnimatePresence mode="wait">
-          {tab === "chat" ? (
-            <motion.div key="chat" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }} className="h-full">
-              <ClaudeHome />
-            </motion.div>
-          ) : (
-            <motion.div key="dashboard" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }} className="h-full overflow-y-auto">
-              <DashboardView />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-}
-
-function ClaudeHome() {
+// ─────────────────────────────────────────────────────────────────────────────
+function HomePage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const createFn = useServerFn(createThread);
   const [now, setNow] = useState(() => new Date());
   const [input, setInput] = useState("");
-  const [mode, setMode] = useState<"chat" | "cowork">("chat");
   const [modelId, setModelId] = useState("gemini-flash-latest");
   const [focused, setFocused] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const selectedModel = MODELS.find((m) => m.id === modelId) ?? MODELS[0];
+  const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [codeSite, setCodeSite] = useState<string | null>(null);
   const [codeContent, setCodeContent] = useState("");
   const [copied, setCopied] = useState(false);
-  const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
+
+  const selectedModel = MODELS.find((m) => m.id === modelId) ?? MODELS[0];
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 60_000);
     return () => clearInterval(t);
   }, []);
 
-  const greeting = greetingForHour(now.getHours());
-
   const mCreate = useMutation({
     mutationFn: (text: string) => createFn({ data: { project_id: null } }).then((t) => ({ t, text })),
     onSuccess: ({ t, text }) => {
       qc.invalidateQueries({ queryKey: ["threads"] });
-      const seed = mode === "cowork" && text.trim() ? `Cowork task: ${text.trim()}` : text.trim();
-      if (seed) {
-        navigate({ to: "/console/$threadId", params: { threadId: t.id }, search: { seed } as any });
+      if (text.trim()) {
+        navigate({ to: "/console/$threadId", params: { threadId: t.id }, search: { seed: text.trim() } as any });
       } else {
         navigate({ to: "/console/$threadId", params: { threadId: t.id } });
       }
     },
-    onError: () => toast.error("Could not start chat."),
+    onError: () => toast.error("Could not start conversation."),
   });
 
   const handleSend = () => {
-    if (!input.trim() || mCreate.isPending) return;
+    if (mCreate.isPending) return;
     mCreate.mutate(input);
   };
 
@@ -172,7 +164,6 @@ function ClaudeHome() {
 
   const toggleMic = () => {
     if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
-      toast.info("Opening Voice Studio with 2-Minute Cloner...");
       navigate({ to: "/console/voice" });
       return;
     }
@@ -181,21 +172,14 @@ function ClaudeHome() {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = false;
-      recognition.onstart = () => {
-        setIsListening(true);
-        toast.info("Listening... speak now.");
-      };
+      recognition.onstart = () => { setIsListening(true); toast.info("Listening…"); };
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
         setInput((prev) => (prev ? prev + " " + transcript : transcript));
         setIsListening(false);
-        toast.success("Speech captured!");
+        toast.success("Captured!");
       };
-      recognition.onerror = () => {
-        setIsListening(false);
-        toast.error("Microphone error. Opening Voice Studio.");
-        navigate({ to: "/console/voice" });
-      };
+      recognition.onerror = () => { setIsListening(false); navigate({ to: "/console/voice" }); };
       recognition.onend = () => setIsListening(false);
       recognition.start();
     } catch {
@@ -215,38 +199,39 @@ function ClaudeHome() {
     }
   };
 
-  const quickPrompts = [
-    { label: "👔 Daily Priority Digest", prompt: "@chief_of_staff scan my priorities, schedule, and dropped threads for today." },
-    { label: "🎯 Lead Discovery Sequence", prompt: "@sales_outbound find ICP leads and generate automated personalized email outreach." },
-    { label: "🏗️ Scaffold React Native App", prompt: "Create a cross-platform React Native 0.74 mobile app with Expo Router and SQLite offline sync." },
-    { label: "🎙️ 2-Min Custom Voice Clone", prompt: "Open Voice Studio to clone a reference audio sample into a 30-slot custom voice profile." },
-  ];
+  const hour = now.getHours();
+  const greeting = greetingForHour(hour);
+  const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const dateStr = now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
 
   return (
-    <div className="flex h-full flex-col overflow-y-auto bg-[#09090b]">
-      <div className="mx-auto flex w-full max-w-[760px] flex-1 flex-col px-6 py-8">
+    <div className="flex h-full flex-col overflow-y-auto scrollbar-jarvis" style={{ background: "var(--background)" }}>
+      <div className="mx-auto flex w-full max-w-[780px] flex-1 flex-col px-6 py-8 gap-8">
+
+        {/* ── Greeting ─────────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.2, 0, 0, 1] }}
-          className="flex flex-1 flex-col items-center justify-center py-6 text-center"
+          className="pt-4"
         >
-          <h1 className="flex items-center gap-3 font-serif text-[42px] font-normal tracking-tight text-white sm:text-[54px]">
-            <span className="inline-flex h-8 w-8 items-center justify-center text-[#e87a3a] sm:h-9 sm:w-9">
-              <svg viewBox="0 0 24 24" className="h-8 w-8 sm:h-9 sm:w-9" fill="none" aria-hidden>
-                <g stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
-                  <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M19.1 4.9l-2.8 2.8M7.7 16.3l-2.8 2.8M6 12a6 6 0 0 0 12 0 6 6 0 0 0-12 0Z" />
-                </g>
-              </svg>
-            </span>
-            {greeting}
+          <h1 className="home-greeting">
+            {greeting}, <em>Vishwajeet</em>
           </h1>
+          <p className="mt-1 text-[13px]" style={{ color: "var(--muted-foreground)" }}>
+            {dateStr} · {timeStr}
+          </p>
+        </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.1, duration: 0.35, ease: [0.2, 0, 0, 1] }}
-            className={`mt-8 w-full rounded-[28px] border bg-[#1a1a1d] p-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all ${focused ? "border-cyan-500/50 ring-1 ring-cyan-500/30" : "border-zinc-800"}`}
+        {/* ── AI Composer ───────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12, scale: 0.99 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.1, duration: 0.35, ease: [0.2, 0, 0, 1] }}
+        >
+          <div
+            className="composer-wrap"
+            style={focused ? { borderColor: "oklch(0.712 0.132 42 / 0.5)", boxShadow: "0 0 0 3px oklch(0.712 0.132 42 / 0.08)" } : {}}
           >
             <textarea
               value={input}
@@ -255,140 +240,264 @@ function ClaudeHome() {
               onBlur={() => setFocused(false)}
               onKeyDown={handleKeyDown}
               rows={1}
-              placeholder={mode === "cowork" ? "Describe an autonomous task or prompt (e.g., @sales_outbound find 5 leads)..." : "How can JARVIS assist your workspace today?"}
-              className="min-h-[44px] w-full resize-none bg-transparent px-3 py-3 text-[15px] leading-6 text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+              placeholder="Ask JARVIS anything, or describe a task…"
+              className="min-h-[52px] w-full resize-none bg-transparent px-4 py-4 text-[15px] leading-6 text-foreground placeholder:text-muted-foreground focus:outline-none"
               style={{ fieldSizing: "content" } as any}
             />
-            <div className="mt-2 flex items-center justify-between gap-2">
+            {/* Composer toolbar */}
+            <div className="flex items-center justify-between gap-2 px-3 pb-3">
               <div className="flex items-center gap-2">
+                {/* Voice */}
                 <button
                   type="button"
-                  onClick={() => navigate({ to: "/console/apps" })}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 transition-colors"
-                  aria-label="New App"
-                  title="Scaffold New App"
+                  onClick={toggleMic}
+                  className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors ${
+                    isListening
+                      ? "bg-destructive/20 text-destructive border border-destructive/40 animate-pulse"
+                      : "text-muted-foreground hover:bg-surface-1 hover:text-foreground"
+                  }`}
+                  aria-label="Voice input"
+                  title="Voice input"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Mic className="h-3.5 w-3.5" />
                 </button>
-                <div className="flex items-center rounded-full border border-zinc-800 bg-zinc-900 p-1 text-xs">
-                  <button onClick={() => setMode("chat")} className={`rounded-full px-3 py-1 font-medium transition-colors ${mode === "chat" ? "bg-zinc-700 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-200"}`}>Chat</button>
-                  <button onClick={() => setMode("cowork")} className={`rounded-full px-3 py-1 font-medium transition-colors ${mode === "cowork" ? "bg-cyan-600 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-200"}`}>Cowork</button>
-                </div>
+                {/* Voice Studio shortcut */}
+                <Link
+                  to="/console/voice"
+                  className="hidden sm:flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Voice Studio"
+                >
+                  <AudioLines className="h-3.5 w-3.5" />
+                </Link>
               </div>
+
               <div className="flex items-center gap-2">
+                {/* Model selector */}
                 <Select value={modelId} onValueChange={setModelId}>
-                  <SelectTrigger className="hidden h-7 w-[160px] border-zinc-700 bg-zinc-900 text-xs text-zinc-300 sm:flex">
+                  <SelectTrigger
+                    className="hidden h-7 w-[156px] border-[var(--border)] bg-[var(--surface-1)] text-[12px] text-muted-foreground sm:flex"
+                  >
                     <SelectValue>
-                      <span className="flex items-center gap-1.5">
-                        <span>{selectedModel.icon}</span> {selectedModel.label}
+                      <span className="flex items-center gap-1.5 truncate">
+                        <span>{selectedModel.icon}</span>
+                        <span className="truncate">{selectedModel.label}</span>
                       </span>
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="max-h-[280px]">
-                    {MODELS.slice(0, 8).map((m) => (
+                    {MODELS.slice(0, 10).map((m) => (
                       <SelectItem key={m.id} value={m.id} className="text-xs">
                         <span className="flex items-center gap-1.5">
-                          <span>{m.icon}</span> {m.label} <span className="text-[10px] text-muted-foreground">{m.provider}</span>
+                          <span>{m.icon}</span>
+                          <span>{m.label}</span>
+                          <span className="text-[10px] text-muted-foreground">{m.provider}</span>
                         </span>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+
+                {/* Send */}
                 <button
-                  type="button"
-                  onClick={toggleMic}
-                  className={`h-8 w-8 flex items-center justify-center rounded-full transition-colors ${isListening ? "bg-red-500/20 text-red-400 border border-red-500/50 animate-pulse" : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"}`}
-                  aria-label="Mic"
-                  title="Voice Dictation"
+                  onClick={handleSend}
+                  disabled={mCreate.isPending}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-semibold transition-colors disabled:opacity-40"
+                  style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+                  aria-label="Send"
                 >
-                  <Mic className="h-4 w-4" />
-                </button>
-                <Link
-                  to="/console/voice"
-                  className="hidden h-8 w-8 items-center justify-center rounded-full text-emerald-400 hover:bg-emerald-950/40 hover:text-emerald-300 sm:flex"
-                  aria-label="Voice Studio"
-                  title="Open Voice Studio"
-                >
-                  <AudioLines className="h-4 w-4" />
-                </Link>
-                <button onClick={handleSend} disabled={!input.trim() || mCreate.isPending} className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md" aria-label="Send">
-                  <Sparkles className="h-4 w-4 fill-current" />
+                  {mCreate.isPending ? (
+                    <span className="flex gap-0.5">
+                      <span className="typing-dot h-1.5 w-1.5 rounded-full bg-current" />
+                      <span className="typing-dot h-1.5 w-1.5 rounded-full bg-current" />
+                      <span className="typing-dot h-1.5 w-1.5 rounded-full bg-current" />
+                    </span>
+                  ) : (
+                    <>
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Send</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Quick Action Suggestion Chips */}
-          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.35 }} className="mt-5 flex flex-wrap items-center justify-center gap-2">
-            {quickPrompts.map((qp) => (
-              <button
-                key={qp.label}
-                onClick={() => setInput(qp.prompt)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-zinc-800/80 bg-zinc-900/60 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:border-cyan-500/40 hover:bg-zinc-800 hover:text-white transition-all shadow-sm"
+          {/* Quick action chips */}
+          <div className="mt-3 flex flex-wrap gap-2">
+            {QUICK_ACTIONS.map((qa) => (
+              <motion.button
+                key={qa.label}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => setInput(qa.prompt)}
+                className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors"
+                style={{
+                  borderColor: "var(--border)",
+                  background: "var(--surface-1)",
+                  color: "var(--muted-foreground)",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.color = "var(--foreground)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "oklch(0.712 0.132 42 / 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.color = "var(--muted-foreground)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                }}
               >
-                <span>{qp.label}</span>
-              </button>
+                <span>{qa.icon}</span>
+                <span>{qa.label}</span>
+              </motion.button>
             ))}
-          </motion.div>
-
-          <p className="mt-2 text-[11px] text-zinc-500">{mode === "cowork" ? "Cowork mode enables autonomous tools, code generation & multi-step execution." : "Chat mode is conversational for fast Q&A."}</p>
+          </div>
         </motion.div>
 
-        {/* Featured Showcase: 67 Live Preset Sites + Code Inspection */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }} className="mt-4 rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 shadow-xl">
+        {/* ── Feature Cards Grid ─────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.35 }}
+        >
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-[11px] font-mono font-bold uppercase tracking-widest" style={{ color: "var(--muted-foreground)" }}>
+              Quick Access
+            </h2>
+            <Link
+              to="/console/projects"
+              className="flex items-center gap-1 text-[12px] transition-colors hover:opacity-80"
+              style={{ color: "var(--primary)" }}
+            >
+              View all <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {FEATURE_CARDS.map((card) => {
+              const Icon = card.icon;
+              return (
+                <Link key={card.to} to={card.to}>
+                  <motion.div
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="project-card flex flex-col gap-3 p-4 cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div
+                        className="flex h-8 w-8 items-center justify-center rounded-lg"
+                        style={{ background: card.accent }}
+                      >
+                        <Icon className="h-4 w-4" style={{ color: card.color }} />
+                      </div>
+                      {card.badge && (
+                        <span className="badge-pill badge-live">{card.badge}</span>
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-[13px] font-semibold" style={{ color: "var(--foreground)" }}>
+                        {card.label}
+                      </div>
+                      <div className="text-[11px]" style={{ color: "var(--muted-foreground)" }}>
+                        {card.description}
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* ── Template Preview ───────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.35 }}
+          className="rounded-2xl border p-5"
+          style={{ borderColor: "var(--border)", background: "var(--surface-1)" }}
+        >
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-300"><Palette className="h-4 w-4 text-cyan-400" /> Featured Template Sites &amp; Live Code Studio</h3>
-            <div className="flex items-center gap-1 text-xs text-zinc-500">
-              <button onClick={() => setPreviewDevice("desktop")} className={`p-1 rounded ${previewDevice === "desktop" ? "text-cyan-400 bg-zinc-800" : "hover:text-zinc-300"}`}><Monitor className="h-3.5 w-3.5" /></button>
-              <button onClick={() => setPreviewDevice("tablet")} className={`p-1 rounded ${previewDevice === "tablet" ? "text-cyan-400 bg-zinc-800" : "hover:text-zinc-300"}`}><Tablet className="h-3.5 w-3.5" /></button>
-              <button onClick={() => setPreviewDevice("mobile")} className={`p-1 rounded ${previewDevice === "mobile" ? "text-cyan-400 bg-zinc-800" : "hover:text-zinc-300"}`}><Smartphone className="h-3.5 w-3.5" /></button>
+            <h2 className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "var(--foreground)" }}>
+              <Palette className="h-3.5 w-3.5" style={{ color: "var(--primary)" }} />
+              Live Template Previews
+            </h2>
+            <div className="flex items-center gap-0.5 rounded-lg border p-0.5" style={{ borderColor: "var(--border)" }}>
+              {(["desktop", "tablet", "mobile"] as const).map((d) => {
+                const DIcon = d === "desktop" ? Monitor : d === "tablet" ? Tablet : Smartphone;
+                return (
+                  <button
+                    key={d}
+                    onClick={() => setPreviewDevice(d)}
+                    className="rounded p-1.5 transition-colors"
+                    style={{
+                      background: previewDevice === d ? "var(--surface-2)" : "transparent",
+                      color: previewDevice === d ? "var(--primary)" : "var(--muted-foreground)",
+                    }}
+                  >
+                    <DIcon className="h-3.5 w-3.5" />
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <PreviewCard
-              p={{ slug: "crm-lead-management-panel-staffu-admin-template", title: "CRM Lead Pipeline & Analytics Panel", accent: "from-blue-950/40 to-slate-950" }}
+              p={{ slug: "crm-lead-management-panel-staffu-admin-template", title: "CRM Lead Pipeline", accent: "oklch(0.72 0.16 230 / 0.08)" }}
               previewDevice={previewDevice}
               onShowCode={handleShowCode}
             />
             <PreviewCard
-              p={{ slug: "clucky-the-rooster-alarm-that-gets-you-up", title: "Clucky Rooster Interactive Audio Alarm", accent: "from-amber-950/40 to-slate-950" }}
+              p={{ slug: "clucky-the-rooster-alarm-that-gets-you-up", title: "Clucky Rooster Alarm", accent: "oklch(0.771 0.145 68 / 0.08)" }}
               previewDevice={previewDevice}
               onShowCode={handleShowCode}
             />
           </div>
 
-          <Dialog open={!!codeSite} onOpenChange={(o) => !o && setCodeSite(null)}>
-            <DialogContent className="max-w-3xl bg-[#0f0f12] border-zinc-800">
-              <DialogHeader><DialogTitle className="text-white font-mono text-sm">Code Inspector — {codeSite}</DialogTitle></DialogHeader>
-              <div className="relative">
-                <button onClick={() => { navigator.clipboard.writeText(codeContent); setCopied(true); setTimeout(() => setCopied(false), 1500); }} className="absolute right-2 top-2 inline-flex items-center gap-1 rounded bg-zinc-800 px-2.5 py-1 text-xs text-zinc-200 hover:bg-zinc-700">
-                  {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />} {copied ? "Copied" : "Copy Source"}
-                </button>
-                <pre className="max-h-[60vh] overflow-auto rounded-lg bg-black p-4 font-mono text-xs text-zinc-300 scrollbar-thin">{codeContent}</pre>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-500 border-t border-zinc-800/60 pt-3">
-            <div className="flex items-center gap-3">
-              <Link to="/console/components" className="inline-flex items-center gap-1 text-cyan-400 hover:text-cyan-300 font-medium">
-                <Sparkles className="h-3 w-3" /> 3D Motion Components
-              </Link>
-              <span>·</span>
-              <Link to="/console/apps" className="hover:text-zinc-300 font-medium">Universal App Builder</Link>
-            </div>
-            <span className="font-mono text-[10px] text-zinc-600">67+ Live Presets • 100% Client-Side Rendered</span>
+          <div className="mt-4 flex items-center justify-between text-[11px]" style={{ color: "var(--muted-foreground)" }}>
+            <span>67+ Live Preset Sites</span>
+            <Link to="/console/apps" className="flex items-center gap-1 transition-colors hover:opacity-80" style={{ color: "var(--primary)" }}>
+              Open App Builder <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
         </motion.div>
 
-        <div className="py-4 text-center text-[11px] text-zinc-600">JARVIS AI OS v3.0 Master Release · <Link to="/how-it-works" className="underline decoration-zinc-700 underline-offset-4 hover:text-zinc-400">100 SOTA Use Cases</Link></div>
+        {/* Footer */}
+        <div className="pb-4 text-center text-[11px]" style={{ color: "var(--muted-foreground)" }}>
+          JARVIS AI OS v3.0 ·{" "}
+          <Link to="/how-it-works" className="underline decoration-current/30 underline-offset-4 hover:opacity-80">
+            100 SOTA Use Cases
+          </Link>
+        </div>
       </div>
+
+      {/* Code Inspector Dialog */}
+      <Dialog open={!!codeSite} onOpenChange={(o) => !o && setCodeSite(null)}>
+        <DialogContent className="max-w-3xl" style={{ background: "var(--surface-1)", borderColor: "var(--border)" }}>
+          <DialogHeader>
+            <DialogTitle className="font-mono text-sm">Code Inspector — {codeSite}</DialogTitle>
+          </DialogHeader>
+          <div className="relative">
+            <button
+              onClick={() => { navigator.clipboard.writeText(codeContent); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
+              className="absolute right-2 top-2 inline-flex items-center gap-1 rounded px-2.5 py-1 text-xs transition-colors"
+              style={{ background: "var(--surface-2)", color: "var(--foreground)" }}
+            >
+              {copied ? <Check className="h-3.5 w-3.5 text-green-400" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? "Copied" : "Copy"}
+            </button>
+            <pre
+              className="scrollbar-jarvis max-h-[60vh] overflow-auto rounded-lg p-4 font-mono text-xs"
+              style={{ background: "var(--background)", color: "var(--foreground)" }}
+            >
+              {codeContent}
+            </pre>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
-/** Lazy iframe preview card */
+// ── Preview card component ─────────────────────────────────────────────────
 function PreviewCard({
   p,
   previewDevice,
@@ -399,32 +508,59 @@ function PreviewCard({
   onShowCode: (slug: string) => void;
 }) {
   const [active, setActive] = useState(false);
-  const h = previewDevice === "mobile" ? 300 : previewDevice === "tablet" ? 260 : 220;
+  const h = previewDevice === "mobile" ? 280 : previewDevice === "tablet" ? 240 : 200;
+
   return (
     <div
-      className={`flex flex-col rounded-xl border border-zinc-800/80 bg-gradient-to-b p-3.5 ${p.accent} hover:border-zinc-700 transition-all shadow-md`}
+      className="flex flex-col rounded-xl border p-3 transition-colors"
+      style={{ background: p.accent, borderColor: "var(--border)" }}
       onMouseEnter={() => setActive(true)}
     >
-      <div className="text-xs font-bold text-white truncate">{p.title}</div>
-      <div className="mt-0.5 text-[10px] text-zinc-400 font-mono">/preset-sites/{p.slug}/</div>
+      <div className="text-[12px] font-semibold truncate" style={{ color: "var(--foreground)" }}>{p.title}</div>
+      <div className="mt-0.5 text-[10px] font-mono" style={{ color: "var(--muted-foreground)" }}>
+        /preset-sites/{p.slug}/
+      </div>
       <div
-        className={`mt-2.5 overflow-hidden rounded-xl border border-zinc-800 bg-black shadow-inner ${
-          previewDevice === "mobile" ? "mx-auto max-w-[320px]" : previewDevice === "tablet" ? "mx-auto max-w-[500px]" : "w-full"
-        }`}
-        style={{ height: h }}
+        className="mt-2.5 overflow-hidden rounded-lg border"
+        style={{
+          height: h,
+          borderColor: "var(--border)",
+          background: "var(--background)",
+          ...(previewDevice === "mobile" ? { maxWidth: 280, margin: "0 auto" } : {}),
+        }}
       >
         {active ? (
           <iframe src={`/preset-sites/${p.slug}/`} title={p.title} className="h-full w-full border-0" />
         ) : (
-          <div className="flex h-full items-center justify-center gap-2 text-[11px] text-zinc-500">
-            <Eye className="h-3.5 w-3.5 text-zinc-400" /> Hover to preview live
+          <div className="flex h-full items-center justify-center gap-2 text-[11px]" style={{ color: "var(--muted-foreground)" }}>
+            <Eye className="h-3.5 w-3.5" /> Hover to preview
           </div>
         )}
       </div>
-      <div className="mt-3 flex flex-wrap items-center gap-1.5">
-        <a href={`/preset-sites/${p.slug}/`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-zinc-900 hover:bg-zinc-100 shadow-sm"><Eye className="h-3 w-3" /> Live Demo</a>
-        <button onClick={() => onShowCode(p.slug)} className="inline-flex items-center gap-1 rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-[10px] font-medium text-zinc-200 hover:bg-zinc-700"><Code2 className="h-3 w-3" /> Code</button>
-        <Link to="/console/apps" className="inline-flex items-center gap-1 rounded-full border border-purple-500/30 bg-purple-950/40 px-2.5 py-1 text-[10px] font-medium text-purple-300 hover:bg-purple-900/50"><Sparkles className="h-3 w-3" /> Fork in Builder</Link>
+      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+        <a
+          href={`/preset-sites/${p.slug}/`}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors"
+          style={{ background: "var(--foreground)", color: "var(--background)" }}
+        >
+          <Eye className="h-3 w-3" /> Live Demo
+        </a>
+        <button
+          onClick={() => onShowCode(p.slug)}
+          className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-medium transition-colors"
+          style={{ borderColor: "var(--border)", background: "var(--surface-2)", color: "var(--foreground)" }}
+        >
+          <Code2 className="h-3 w-3" /> Code
+        </button>
+        <Link
+          to="/console/apps"
+          className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-medium transition-colors"
+          style={{ borderColor: "oklch(0.712 0.132 42 / 0.4)", background: "oklch(0.712 0.132 42 / 0.1)", color: "var(--primary)" }}
+        >
+          <Sparkles className="h-3 w-3" /> Fork
+        </Link>
       </div>
     </div>
   );

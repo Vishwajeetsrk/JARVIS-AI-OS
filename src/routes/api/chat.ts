@@ -1905,11 +1905,15 @@ export const Route = createFileRoute("/api/chat")({
               : ""
             : "";
           if (_lastText && isSimpleRAG(_lastText)) {
+            console.log("[chat] fast-path RAG:", _lastText.slice(0, 80));
             const fastResult = streamText({
               model: aiModel as any,
               system,
               messages: await convertToModelMessages(requestMessages),
               stopWhen: isStepCount(1),
+              onError: (err) => {
+                console.error("[fastPath.onError]", JSON.stringify(err));
+              },
             });
             return fastResult.toUIMessageStreamResponse({
               originalMessages: requestMessages,
@@ -1917,17 +1921,19 @@ export const Route = createFileRoute("/api/chat")({
             });
           }
 
+          const modelMessages = await convertToModelMessages(requestMessages);
+          console.log("[chat] model:", resolved.modelId, "provider:", resolved.provider, "msgs:", modelMessages.length, "system:", system.length);
           const result = streamText({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             model: aiModel as any,
             system,
-            messages: await convertToModelMessages(requestMessages),
+            messages: modelMessages,
             tools: tools as any,
             toolChoice: "auto",
-            // Allow tool → answer round trips (default stopWhen is 1 step,
-            // which ends the stream right after the first tool call with no
-            // final answer).
             stopWhen: isStepCount(5),
+            onError: (err) => {
+              console.error("[streamText.onError]", JSON.stringify(err));
+            },
           });
 
           const streamResponse = result.toUIMessageStreamResponse({
@@ -2017,9 +2023,9 @@ export const Route = createFileRoute("/api/chat")({
             if (resolved.usedFallback) streamResponse.headers.set("x-jarvis-fallback", "1");
           } catch {}
           return streamResponse;
-        } catch (err) {
-          console.error("[chat.error]", err);
-          return new Response(JSON.stringify({ error: String(err) }), {
+        } catch (err: any) {
+          console.error("[chat.error]", err?.message ?? err, err?.stack ?? "");
+          return new Response(JSON.stringify({ error: String(err?.message ?? err) }), {
             status: 500,
             headers: { "content-type": "application/json" },
           });

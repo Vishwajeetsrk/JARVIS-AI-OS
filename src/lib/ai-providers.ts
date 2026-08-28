@@ -23,8 +23,20 @@ export interface ResolvedModel {
 }
 
 // Legacy ids are remapped (see remapGemini) to currently-serving models.
+// The ONLY currently-working free Gemini models (Aug 2026).
+// All Groq models are decommissioned. All OpenRouter free tier models are deprecated.
+// gemini-flash-latest and gemini-pro-latest hit rate limits — use 3.5/3.6 as primary.
 const GEMINI_IDS = new Set([
+  "gemini-3.5-flash",
+  "gemini-3.6-flash",
+  "gemini-flash-lite-latest",
+  "gemini-3-flash-preview",
+  "gemini-3.1-flash-lite-preview",
+  "gemini-3.1-flash-lite",
+  "gemini-3.5-flash-lite",
   "gemini-flash-latest",
+  "gemini-flash-lite-latest",
+  // Retired but remapped via remapGemini
   "gemini-flash-lite-latest",
   "gemini-3.6-flash",
   "gemini-3-flash-preview",
