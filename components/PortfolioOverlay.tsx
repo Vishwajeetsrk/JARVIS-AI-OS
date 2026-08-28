@@ -5,9 +5,10 @@ import { User, Target, Github } from "lucide-react";
 import CyberResume from "./CyberResume";
 import MissionLog from "./MissionLog";
 import GithubProjectsPanel from "./GithubProjectsPanel";
+import GrowthCenter from "./GrowthCenter";
 
 export default function PortfolioOverlay() {
-  const [activePanel, setActivePanel] = useState<"resume" | "mission" | "github" | null>(null);
+  const [activePanel, setActivePanel] = useState<"resume" | "mission" | "github" | "growth" | null>(null);
 
   return (
     <>
@@ -99,12 +100,37 @@ export default function PortfolioOverlay() {
         >
           <Github size={16} /> GitHub Hub
         </button>
+
+        <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.1)" }} />
+
+        <button
+          onClick={() => setActivePanel(activePanel === "growth" ? null : "growth")}
+          style={{
+            background: activePanel === "growth" ? "rgba(139, 92, 246, 0.15)" : "transparent",
+            border: activePanel === "growth" ? "1px solid rgba(139, 92, 246, 0.4)" : "1px solid transparent",
+            color: activePanel === "growth" ? "#8b5cf6" : "rgba(240,237,232,0.8)",
+            padding: "8px 16px",
+            borderRadius: 20,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.8rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+            transition: "all 0.2s"
+          }}
+        >
+          <Target size={16} /> Upgrades
+        </button>
       </div>
 
       {/* Render Active Panel */}
       {activePanel === "resume" && <CyberResume onClose={() => setActivePanel(null)} />}
       {activePanel === "mission" && <MissionLog onClose={() => setActivePanel(null)} />}
       {activePanel === "github" && <GithubProjectsPanel onClose={() => setActivePanel(null)} />}
+      {activePanel === "growth" && <GrowthCenter onClose={() => setActivePanel(null)} />}
     </>
   );
 }

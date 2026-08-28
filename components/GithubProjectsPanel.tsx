@@ -11,12 +11,14 @@ export interface Repo {
   forks_count: number;
   language: string;
   html_url: string;
+  homepage: string | null;
   updated_at: string;
 }
 
 export default function GithubProjectsPanel({ onClose }: { onClose?: () => void }) {
   const [repos, setRepos] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch real repos from Vishwajeetsrk
@@ -145,11 +147,102 @@ export default function GithubProjectsPanel({ onClose }: { onClose?: () => void 
                     <GitFork size={14} /> {repo.forks_count}
                   </div>
                 </div>
+                
+                {repo.homepage && (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setPreviewUrl(repo.homepage!.startsWith("http") ? repo.homepage! : `https://${repo.homepage}`);
+                    }}
+                    style={{
+                      marginTop: 12,
+                      padding: "8px 16px",
+                      background: "rgba(0, 229, 255, 0.15)",
+                      border: "1px solid rgba(0, 229, 255, 0.4)",
+                      borderRadius: 12,
+                      color: "#00e5ff",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "0.8rem",
+                      textTransform: "uppercase",
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "rgba(0, 229, 255, 0.3)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(0, 229, 255, 0.15)";
+                    }}
+                  >
+                    Launch Live Preview
+                  </button>
+                )}
               </a>
             ))}
           </div>
         )}
       </div>
+
+      {/* Live Preview Modal */}
+      {previewUrl && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          background: "rgba(0,0,0,0.8)",
+          backdropFilter: "blur(8px)",
+          zIndex: 200,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 40
+        }}>
+          <div style={{
+            width: "100%",
+            height: "100%",
+            background: "#04080f",
+            border: "1px solid rgba(0, 229, 255, 0.4)",
+            borderRadius: 24,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            boxShadow: "0 0 40px rgba(0, 229, 255, 0.2)"
+          }}>
+            <div style={{
+              padding: "16px 24px",
+              background: "rgba(0, 229, 255, 0.1)",
+              borderBottom: "1px solid rgba(0, 229, 255, 0.2)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, color: "#00e5ff", fontFamily: "var(--font-mono)", fontSize: "0.9rem" }}>
+                <Activity size={18} className="animate-pulse" />
+                Live Preview: {previewUrl}
+              </div>
+              <button
+                onClick={() => setPreviewUrl(null)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#f0ede8",
+                  cursor: "pointer",
+                }}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <iframe
+              src={previewUrl}
+              style={{ width: "100%", height: "100%", border: "none" }}
+              title="Live Preview"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
