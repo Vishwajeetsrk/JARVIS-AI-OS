@@ -28,7 +28,15 @@ const WCODE: Record<number, string> = {
   99: "Heavy Hail Thunderstorm",
 };
 
-type Tile = { key: string; icon: any; label: string; href: string; badge?: string; desc?: string };
+type Tile = {
+  key: string;
+  icon: any;
+  label: string;
+  href?: string;
+  action?: string;
+  badge?: string;
+  desc?: string;
+};
 
 const TILES: Tile[] = [
   {
