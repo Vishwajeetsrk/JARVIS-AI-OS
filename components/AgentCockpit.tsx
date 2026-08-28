@@ -3,8 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Sparkles, Send, Play, Terminal, Bot, CheckCircle, Volume2, VolumeX,
-  Maximize2, Minimize2, X, RefreshCw, Copy, Check, ChevronRight, Zap
+  Maximize2, Minimize2, X, RefreshCw, Copy, Check, ChevronRight, Zap, Brain
 } from "lucide-react";
+
+export const AI_MODELS = [
+  { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash", icon: Sparkles, color: "#10b981" },
+  { id: "llama-3.3-70b", name: "Groq LLaMA 3.3 70B", icon: Zap, color: "#f5a623" },
+  { id: "deepseek-r1", name: "DeepSeek R1", icon: Brain, color: "#3b82f6" },
+  // You can easily add more AI models and keys here.
+];
 
 export type AgentNodeSel = { name: string; key: string; color: string };
 
@@ -376,25 +383,32 @@ export default function AgentCockpit({
         </div>
 
         {/* Model Selector */}
-        <select
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          style={{
-            background: "rgba(0,0,0,0.6)",
-            border: `1px solid ${c}44`,
-            borderRadius: 10,
-            color: "#f1f5f9",
-            fontSize: 11,
-            padding: "5px 9px",
-            outline: "none",
-            cursor: "pointer",
-            fontFamily: "var(--font-mono)",
-          }}
-        >
-          <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-          <option value="llama-3.3-70b">Groq LLaMA 3.3 70B</option>
-          <option value="deepseek-r1">DeepSeek R1</option>
-        </select>
+        <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 8, background: "rgba(0,0,0,0.6)", border: `1px solid ${c}44`, borderRadius: 12, padding: "4px 8px 4px 12px", boxShadow: `inset 0 0 10px rgba(0,0,0,0.5)` }}>
+          {(() => {
+            const SelectedIcon = AI_MODELS.find(m => m.id === model)?.icon || Sparkles;
+            const selectedColor = AI_MODELS.find(m => m.id === model)?.color || c;
+            return <SelectedIcon size={14} style={{ color: selectedColor }} />;
+          })()}
+          <select
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "#f1f5f9",
+              fontSize: 11,
+              outline: "none",
+              cursor: "pointer",
+              fontFamily: "var(--font-mono)",
+              appearance: "none",
+              paddingRight: 12,
+            }}
+          >
+            {AI_MODELS.map(m => (
+              <option key={m.id} value={m.id} style={{ background: "#050b18", color: "#f1f5f9" }}>{m.name}</option>
+            ))}
+          </select>
+        </div>
 
         {/* Audio Toggle & Controls */}
         <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
@@ -485,69 +499,93 @@ export default function AgentCockpit({
           gap: 16,
         }}
       >
-        {messages.map((m, idx) => (
-          <div
-            key={idx}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignSelf: m.role === "user" ? "flex-end" : "flex-start",
-              maxWidth: "88%",
-            }}
-          >
+        {messages.map((m, idx) => {
+          const isUser = m.role === "user";
+          const modelData = AI_MODELS.find(modelObj => modelObj.id === m.model) || AI_MODELS.find(modelObj => modelObj.id === model) || AI_MODELS[0];
+          const ModelIcon = modelData.icon;
+          
+          return (
             <div
+              key={idx}
               style={{
-                position: "relative",
-                padding: "12px 16px",
-                borderRadius: m.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-                background: m.role === "user" ? `linear-gradient(135deg, ${c}ee 0%, ${c}99 100%)` : "rgba(255,255,255,0.05)",
-                border: `1px solid ${m.role === "user" ? c : "rgba(255,255,255,0.12)"}`,
-                color: m.role === "user" ? "#02050b" : "#f8fafc",
-                fontWeight: m.role === "user" ? 600 : 400,
-                fontSize: 13,
-                lineHeight: 1.65,
-                wordBreak: "break-word",
-                whiteSpace: "pre-wrap",
-                boxShadow: m.role === "user" ? `0 0 20px ${c}33` : "none",
-              }}
-            >
-              {m.text}
-              {m.role === "assistant" && (
-                <button
-                  onClick={() => copyToClipboard(m.text, idx)}
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    right: 8,
-                    background: "rgba(0,0,0,0.3)",
-                    border: "none",
-                    borderRadius: 6,
-                    color: "rgba(255,255,255,0.4)",
-                    cursor: "pointer",
-                    padding: 4,
-                  }}
-                  title="Copy text"
-                >
-                  {copiedIdx === idx ? <Check size={12} style={{ color: "#34d399" }} /> : <Copy size={12} />}
-                </button>
-              )}
-            </div>
-            <div
-              style={{
-                fontSize: 10,
-                color: "rgba(255,255,255,0.4)",
-                marginTop: 4,
-                alignSelf: m.role === "user" ? "flex-end" : "flex-start",
                 display: "flex",
-                gap: 6,
-                fontFamily: "var(--font-mono)",
+                flexDirection: "column",
+                alignSelf: isUser ? "flex-end" : "flex-start",
+                maxWidth: "88%",
               }}
             >
-              <span>{m.time}</span>
-              {m.model && <span style={{ color: `${c}cc` }}>· {m.model}</span>}
+              <div
+                style={{
+                  position: "relative",
+                  padding: isUser ? "12px 16px" : "16px 20px",
+                  borderRadius: isUser ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                  background: isUser ? `linear-gradient(135deg, ${c}dd 0%, ${c}88 100%)` : "rgba(10, 15, 30, 0.7)",
+                  backdropFilter: isUser ? "none" : "blur(12px)",
+                  border: `1px solid ${isUser ? c : "rgba(255,255,255,0.08)"}`,
+                  color: isUser ? "#02050b" : "#f8fafc",
+                  fontWeight: isUser ? 600 : 400,
+                  fontSize: 13.5,
+                  lineHeight: 1.7,
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-wrap",
+                  boxShadow: isUser ? `0 8px 24px ${c}33` : "0 8px 32px rgba(0,0,0,0.4)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                }}
+              >
+                {/* Assistant Model Header inside Bubble */}
+                {!isUser && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, paddingBottom: 8, borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: 4 }}>
+                    <div style={{ background: `${modelData.color}22`, padding: 4, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <ModelIcon size={14} color={modelData.color} />
+                    </div>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: modelData.color, fontFamily: "var(--font-mono)", letterSpacing: "0.05em" }}>
+                      {modelData.name.toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                
+                {m.text}
+                
+                {!isUser && (
+                  <button
+                    onClick={() => copyToClipboard(m.text, idx)}
+                    style={{
+                      position: "absolute",
+                      top: 12,
+                      right: 12,
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: 6,
+                      color: "rgba(255,255,255,0.6)",
+                      cursor: "pointer",
+                      padding: 6,
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
+                    title="Copy response"
+                  >
+                    {copiedIdx === idx ? <Check size={14} style={{ color: "#34d399" }} /> : <Copy size={14} />}
+                  </button>
+                )}
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  color: "rgba(255,255,255,0.3)",
+                  marginTop: 6,
+                  alignSelf: isUser ? "flex-end" : "flex-start",
+                  fontFamily: "var(--font-mono)",
+                  padding: "0 4px"
+                }}
+              >
+                {m.time}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "rgba(255,255,255,0.04)", borderRadius: 14, alignSelf: "flex-start" }}>
