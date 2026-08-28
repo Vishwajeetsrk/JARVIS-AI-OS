@@ -169,33 +169,58 @@ export const AGENT_REGISTRY: Record<string, AgentSpec> = {
   },
   analytics: {
     role: "Real-Time Telemetry & Metric Engine",
-    status: "integration",
-    caps: ["Ingests multi-channel events across Slack, GitHub, and Supabase", "Tracks sub-second voice latency (<500ms target) and self-heals errors"],
-    asks: ["Display live telemetry overview"],
+    status: "online",
+    caps: [
+      "Ingests multi-channel events across Slack, GitHub, and Supabase",
+      "Tracks sub-second voice latency (<500ms target) and self-heals errors",
+      "Generates predictive growth and retention models"
+    ],
+    asks: ["Display live telemetry overview", "Analyze user retention drop-off", "Plot latency metrics for last 24h"],
+    systemPrompt: "You are the Data Analytics Engine. Provide sharp, data-driven insights and quantitative metric analysis.",
   },
   crm: {
     role: "Enterprise Pipeline & Client State Store",
-    status: "integration",
-    caps: ["Synchronizes customer lifecycle stages from lead to active deployment"],
-    asks: ["List active CRM pipeline stages"],
+    status: "online",
+    caps: [
+      "Synchronizes customer lifecycle stages from lead to active deployment",
+      "Scores leads based on intent signals and engagement",
+      "Drafts quarterly business reviews for key accounts"
+    ],
+    asks: ["List active CRM pipeline stages", "Score inbound leads from yesterday", "Draft QBR for top client"],
+    systemPrompt: "You are the CRM & Client Success Manager. Optimize sales pipelines and ensure white-glove customer success.",
   },
   calendar: {
     role: "Time Coordination & Schedule Sense",
-    status: "integration",
-    caps: ["Orchestrates meetings, cron jobs, and scheduled agent runs"],
-    asks: ["Review today's upcoming scheduled tasks"],
+    status: "online",
+    caps: [
+      "Orchestrates meetings, cron jobs, and scheduled agent runs",
+      "Resolves timezone conflicts and auto-schedules focus blocks",
+      "Sends automated meeting prep briefs"
+    ],
+    asks: ["Review today's upcoming scheduled tasks", "Find 30m for team sync next week", "Generate meeting prep for 2PM"],
+    systemPrompt: "You are the Executive Calendar Assistant. Protect the user's time, resolve scheduling conflicts, and prepare meeting contexts.",
   },
   email: {
     role: "Multi-Inbox Scanner & Reply Dispatcher",
-    status: "integration",
-    caps: ["Categorizes inbound communications and drafts contextual responses"],
-    asks: ["Draft response to latest inquiry"],
+    status: "online",
+    caps: [
+      "Categorizes inbound communications and drafts contextual responses",
+      "Unsubscribes from noise and highlights high-priority threads",
+      "Follows up on dormant high-value outbound emails"
+    ],
+    asks: ["Draft response to latest inquiry", "Summarize unread priority emails", "Find pending follow-ups"],
+    systemPrompt: "You are the Email Inbox Manager. Keep communication crisp, professional, and zero-inbox focused.",
   },
   drive: {
     role: "Document Parser & Workspace Artifact Vault",
-    status: "integration",
-    caps: ["Indexes local PDF, Markdown, and source code repositories"],
-    asks: ["Search documents for API specs"],
+    status: "online",
+    caps: [
+      "Indexes local PDF, Markdown, and source code repositories",
+      "Extracts semantic knowledge from disorganized folders",
+      "Generates unified project wikis from scattered docs"
+    ],
+    asks: ["Search documents for API specs", "Summarize Q3 financial PDF", "Find all design assets for landing page"],
+    systemPrompt: "You are the Workspace Drive Vault. Retrieve documents, extract context, and synthesize file knowledge quickly.",
   },
 };
 

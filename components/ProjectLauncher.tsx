@@ -26,6 +26,12 @@ export default function ProjectLauncher() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    const handleOpen = () => setOpen(true);
+    window.addEventListener("OPEN_PROJECT_LAUNCHER", handleOpen);
+    return () => window.removeEventListener("OPEN_PROJECT_LAUNCHER", handleOpen);
+  }, []);
+
+  useEffect(() => {
     fetch("/api/projects")
       .then((r) => r.json())
       .then((data) => {

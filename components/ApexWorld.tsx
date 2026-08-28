@@ -79,6 +79,12 @@ export default function ApexWorld() {
     return () => mq.removeEventListener("change", apply);
   }, []);
 
+  useEffect(() => {
+    const handleOpenFleet = () => openAgent(ROSTER[0]);
+    window.addEventListener("OPEN_FLEET", handleOpenFleet);
+    return () => window.removeEventListener("OPEN_FLEET", handleOpenFleet);
+  }, []);
+
   const webState = orbState === "thinking" ? "processing" : orbState === "speaking" ? "speaking" : "standby";
 
   return (

@@ -51,7 +51,7 @@ const TILES: Tile[] = [
     key: "local-console",
     icon: Terminal,
     label: "Full JARVIS Workspace Console",
-    href: "https://jarvisaios.vercel.app/console",
+    action: "OPEN_PROJECT_LAUNCHER",
     badge: "Cloud Console",
     desc: "Universal project builder, code editor & fleet hub",
   },
@@ -67,7 +67,7 @@ const TILES: Tile[] = [
     key: "fleet-runtime",
     icon: Cpu,
     label: "Autonomous 8-Bot Fleet & Org Chart",
-    href: "https://jarvisaios.vercel.app/console/fleet",
+    action: "OPEN_FLEET",
     badge: "Active",
     desc: "Executive Chief of Staff & multi-persona orchestration",
   },
@@ -309,7 +309,61 @@ export default function ApexOverviewPanel() {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {TILES.map((t) => {
               const Icon = t.icon;
-              return (
+              return t.action ? (
+                <button
+                  key={t.key}
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent(t.action as string));
+                    setOpen(false);
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "12px 16px",
+                    background: "rgba(6, 16, 32, 0.75)",
+                    border: `1px solid ${ACCENT}25`,
+                    borderRadius: 14,
+                    color: "#ffffff",
+                    cursor: "pointer",
+                    transition: "all .2s cubic-bezier(0.16, 1, 0.3, 1)",
+                    textAlign: "left",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = `${ACCENT}88`;
+                    e.currentTarget.style.background = "rgba(0, 229, 255, 0.12)";
+                    e.currentTarget.style.transform = "translateX(4px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = `${ACCENT}25`;
+                    e.currentTarget.style.background = "rgba(6, 16, 32, 0.75)";
+                    e.currentTarget.style.transform = "translateX(0)";
+                  }}
+                >
+                  <Icon size={18} style={{ color: ACCENT, flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 12.5, fontWeight: 600 }}>{t.label}</div>
+                    {t.desc && <div style={{ fontSize: 10.5, color: "rgba(255,255,255,0.45)", marginTop: 1 }}>{t.desc}</div>}
+                  </div>
+                  {t.badge && (
+                    <span
+                      style={{
+                        fontSize: 9.5,
+                        padding: "3px 8px",
+                        borderRadius: 8,
+                        background: "rgba(255,255,255,0.08)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        color: "rgba(255,255,255,0.75)",
+                        fontFamily: "var(--font-mono)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {t.badge}
+                    </span>
+                  )}
+                  <ArrowUpRight size={14} style={{ color: `${ACCENT}99`, flexShrink: 0 }} />
+                </button>
+              ) : (
                 <a
                   key={t.key}
                   href={t.href}

@@ -32,10 +32,11 @@
 3. **Personal Portfolio HUD**: Interactive overlays displaying live GitHub Projects, professional Cyber Resume, and a Daily Mission Log tracker directly over the 3D world.
 4. **Interactive Agent Cockpit**: Click any agent node to launch a focused AI cockpit with real-time prompt streaming, one-click action triggers, model selector, and speech synthesis.
 5. **Universal Projects Hub**: Instant access to all active workspace projects (JARVIS AI OS, Learnify, StaffU CRM, Voice Cloner, Algorithmic Art, MCP Protocol Hub).
+6. **Native OS Device Bridge**: True localhost OS integration! Launch VS Code, Chrome, Terminal, and execute PowerShell commands securely via the `/api/os` bridge.
+7. **18-Bot Autonomous Fleet**: The Agent Cockpit now features 18 specialized AI personas (including Chief of Staff, Design, DevOps, Finance, Analytics) configured with detailed system prompts and multi-modal capabilities.
 
 ### 🎙️ Audio & Execution
-6. **PC Device & Application Bridge**: 1-click launcher for VS Code, Windows Terminal, Chrome, File Explorer, Slack, Discord, and PowerShell command execution directly from the web interface.
-7. **Real-Time Hybrid Voice Pipeline**: Continuous speech-to-text with Web Speech API and Groq Whisper, hands-free action execution, and neural speech synthesis.
+8. **Real-Time Hybrid Voice Pipeline**: Continuous speech-to-text with Web Speech API and Groq Whisper, hands-free action execution, and neural speech synthesis.
 
 ---
 

@@ -13,15 +13,18 @@ function Waveform({ active, cx, cy, width = 240, color = CYAN }) {
   return (
     <g>
       {Array.from({ length: barCount }, (_, i) => {
-        const x = cx - width / 2 + i * (barW + gap);
+        const xRaw = cx - width / 2 + i * (barW + gap);
         const baseH = 4 + Math.abs(Math.sin(i * 0.5)) * 6;
         const activeH = 10 + Math.abs(Math.sin(i * 0.75)) * 32;
-        const h = active ? activeH : baseH;
+        const hRaw = active ? activeH : baseH;
+        const x = Number(xRaw.toFixed(3));
+        const h = Number(hRaw.toFixed(3));
+        const y = Number((cy - h / 2).toFixed(3));
         return (
           <rect
             key={i}
             x={x}
-            y={cy - h / 2}
+            y={y}
             width={barW}
             height={h}
             rx={1.5}
