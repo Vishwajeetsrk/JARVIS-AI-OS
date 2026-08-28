@@ -20,13 +20,39 @@ export default function GithubProjectsPanel({ onClose }: { onClose?: () => void 
   const [loading, setLoading] = useState(true);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  // Hardcoded overrides for top priority projects based on user input
+  const VIP_REPOS: Record<string, string> = {
+    "LUXURY-LAUNDRY": "https://luxurylaundry.vercel.app/",
+    "learnifyai": "https://www.learnifyai.in/",
+    "DreamSync": "https://dream-sync-nine.vercel.app/",
+    "JARVIS-AI-OS": "https://jarvisaios.vercel.app/",
+    "vishwajeetsrk.github.io": "https://vishwajeetsrk.github.io/"
+  };
+
   useEffect(() => {
     // Fetch real repos from Vishwajeetsrk
-    fetch("https://api.github.com/users/Vishwajeetsrk/repos?sort=updated&per_page=6")
+    fetch("https://api.github.com/users/Vishwajeetsrk/repos?sort=updated&per_page=12")
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          setRepos(data);
+          // Apply the hardcoded overrides and prioritize VIP repos
+          const processedRepos = data.map(repo => {
+            if (VIP_REPOS[repo.name]) {
+              return { ...repo, homepage: VIP_REPOS[repo.name] };
+            }
+            return repo;
+          });
+          
+          // Sort so VIP repos appear first
+          processedRepos.sort((a, b) => {
+            const isAVip = !!VIP_REPOS[a.name];
+            const isBVip = !!VIP_REPOS[b.name];
+            if (isAVip && !isBVip) return -1;
+            if (!isAVip && isBVip) return 1;
+            return 0;
+          });
+
+          setRepos(processedRepos.slice(0, 6)); // Keep top 6
         }
         setLoading(false);
       })

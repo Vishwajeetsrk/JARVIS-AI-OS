@@ -9,46 +9,56 @@ export default function GrowthCenter({ onClose }: { onClose?: () => void }) {
   // Curated list based on Vishwajeet's Resume (React, Next.js, Supabase, WebGL, AI Agents)
   const COURSES = [
     {
-      title: "Official Next.js Learn (App Router)",
-      provider: "Vercel / Next.js",
-      tags: ["Next.js 15", "React Server Components"],
-      desc: "The gold standard project-based tutorial for mastering modern Next.js.",
-      url: "https://nextjs.org/learn"
+      title: "Next.js 15 Full Course 2026 (Hindi)",
+      provider: "YouTube - Free",
+      tags: ["Next.js", "Hindi", "Video"],
+      desc: "Complete project-based Next.js 15 App Router tutorial explained in Hindi.",
+      url: "https://www.youtube.com/results?search_query=Next.js+15+full+course+hindi"
     },
     {
-      title: "Full-Stack RAG with Next.js & Supabase",
-      provider: "FreeAcademy.ai",
-      tags: ["AI Agents", "Supabase", "pgvector"],
-      desc: "Build production-ready AI applications using Supabase vector storage and Gemini API.",
-      url: "https://freeacademy.ai/"
+      title: "Build AI Agents with LangChain & OpenAI (English)",
+      provider: "YouTube - Free",
+      tags: ["AI Agents", "English", "Video"],
+      desc: "Learn to build autonomous AI agents from scratch using modern frameworks.",
+      url: "https://www.youtube.com/results?search_query=build+ai+agents+full+course+2026"
     },
     {
-      title: "Agentic AI Full Course (2026)",
-      provider: "Intellipaat",
-      tags: ["LangChain", "MCP", "AI Design Patterns"],
-      desc: "Comprehensive foundation for understanding AI agent design patterns and Model Context Protocol.",
-      url: "https://intellipaat.com/"
+      title: "React & Three.js / WebGL Masterclass (Hindi)",
+      provider: "YouTube - Free",
+      tags: ["React", "WebGL", "Hindi"],
+      desc: "Master 3D web development, perfect for upgrading the APEX-UI core.",
+      url: "https://www.youtube.com/results?search_query=react+three+fiber+hindi"
+    },
+    {
+      title: "Supabase Vector Database Crash Course (English)",
+      provider: "YouTube - Free",
+      tags: ["Supabase", "pgvector", "English"],
+      desc: "Store and query AI embeddings using Supabase for your RAG applications.",
+      url: "https://www.youtube.com/results?search_query=supabase+vector+database+crash+course"
     }
   ];
 
   const JOBS = [
     {
       role: "AI Software Engineer",
-      company: "Wellfound (Angellist) Startups",
+      company: "Wellfound (Startups)",
       match: "98% Match",
-      desc: "Ideal for your experience building AI-powered SaaS and automation workflows."
+      desc: "Ideal for your experience building AI-powered SaaS and automation workflows.",
+      url: "https://wellfound.com/jobs?role=Software%20Engineer&keywords=AI%20Agent"
     },
     {
       role: "Frontend Architect (React/WebGL)",
-      company: "Remote Global Roles",
-      match: "92% Match",
-      desc: "Leverages your skills in 3D WebGL (APEX-UI) and modern glassmorphic design systems."
+      company: "LinkedIn Remote",
+      match: "95% Match",
+      desc: "Leverages your skills in 3D WebGL (APEX-UI) and modern glassmorphic design systems.",
+      url: "https://www.linkedin.com/jobs/search/?keywords=Frontend%20Architect%20React%20WebGL&f_WT=2"
     },
     {
       role: "Full Stack Developer (Next.js/Supabase)",
-      company: "Tech LinkedIn Curated",
-      match: "95% Match",
-      desc: "Perfect fit for your stack: React 19, Next.js, Tailwind, and Supabase."
+      company: "YCombinator Startups",
+      match: "92% Match",
+      desc: "Perfect fit for your stack: React 19, Next.js, Tailwind, and Supabase.",
+      url: "https://www.workatastartup.com/companies?query=Next.js%20Supabase"
     }
   ];
 
@@ -212,9 +222,14 @@ export default function GrowthCenter({ onClose }: { onClose?: () => void }) {
                       <h4 style={{ margin: 0, fontSize: "1.1rem", color: "#fff" }}>{j.role}</h4>
                       <div style={{ color: "#8b5cf6", fontSize: "0.9rem", margin: "4px 0 8px 0" }}>{j.company}</div>
                       <p style={{ margin: "0 0 12px 0", color: "rgba(240,237,232,0.7)", fontSize: "0.9rem", lineHeight: 1.5 }}>{j.desc}</p>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(16, 185, 129, 0.1)", color: "#10b981", padding: "4px 10px", borderRadius: 12, fontSize: "0.8rem", fontFamily: "var(--font-mono)" }}>
-                        <Award size={14} /> {j.match}
-                      </span>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(16, 185, 129, 0.1)", color: "#10b981", padding: "4px 10px", borderRadius: 12, fontSize: "0.8rem", fontFamily: "var(--font-mono)" }}>
+                          <Award size={14} /> {j.match}
+                        </span>
+                        <a href={j.url} target="_blank" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", background: "rgba(139, 92, 246, 0.15)", border: "1px solid rgba(139, 92, 246, 0.4)", borderRadius: 12, color: "#8b5cf6", fontSize: "0.8rem", textDecoration: "none", transition: "all 0.2s" }}>
+                          View Matches <ExternalLink size={14} />
+                        </a>
+                      </div>
                     </div>
                   </div>
                 ))}
