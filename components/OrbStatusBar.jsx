@@ -172,7 +172,7 @@ export default function OrbStatusBar({ state = "idle" }) {
             fontSize="8.5"
             fontFamily="'JetBrains Mono', monospace"
             letterSpacing="0.16em"
-            textTransform="uppercase"
+            style={{ textTransform: "uppercase" }}
           >
             TAP ORB TO CYCLE STATE · CLICK AGENT NODE FOR COCKPIT · USE VOICE ASSISTANT
           </text>
