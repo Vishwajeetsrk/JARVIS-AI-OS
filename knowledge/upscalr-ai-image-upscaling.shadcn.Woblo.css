@@ -1,0 +1,23 @@
+/* shadcn theme generated from UPSCALR: AI image upscaling */
+:root {
+    --background: #ffffff;
+    --foreground: #070707;
+    --card: #ffffff;
+    --card-foreground: #070707;
+    --popover: #ffffff;
+    --popover-foreground: #070707;
+    --primary: #00a64c;
+    --primary-foreground: #070707;
+    --ring: #00a64c;
+    --secondary: #009cac;
+    --secondary-foreground: #070707;
+    --muted: #ebebeb;
+    --muted-foreground: #898989;
+    --accent: #009cac;
+    --accent-foreground: #070707;
+    --destructive: #ef4444;
+    --destructive-foreground: #f5f5f5;
+    --border: #dedede;
+    --input: #dedede;
+    --radius: 0.5625rem;
+}

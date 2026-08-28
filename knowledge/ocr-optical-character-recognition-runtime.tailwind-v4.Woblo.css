@@ -1,0 +1,74 @@
+/* Design system extracted from OCR - Optical Character Recognition Runtime */
+@theme {
+
+    /* Colors */
+    --color-brand-50: oklch(0.9558 0.0722 150.9);
+    --color-brand-100: oklch(0.9392 0.0918 150.2);
+    --color-brand-200: oklch(0.9002 0.1036 150.1);
+    --color-brand-300: oklch(0.8309 0.1152 150.2);
+    --color-brand-400: oklch(0.7397 0.126 150.3);
+    --color-brand-500: oklch(0.6309 0.1372 150.1);
+    --color-brand-600: oklch(0.5273 0.1371 150.1);
+    --color-brand-700: oklch(0.4214 0.1157 149.9);
+    --color-brand-800: oklch(0.3235 0.097 146.7);
+    --color-brand-900: oklch(0.2292 0.078 142.5);
+    --color-brand-950: oklch(0.1378 0.0469 142.5);
+
+    --color-secondary-50: oklch(0.9571 0.0429 83.2);
+    --color-secondary-100: oklch(0.9283 0.0637 78.4);
+    --color-secondary-200: oklch(0.8868 0.0932 74);
+    --color-secondary-300: oklch(0.8291 0.1307 67.8);
+    --color-secondary-400: oklch(0.7074 0.1564 67);
+    --color-secondary-500: oklch(0.6317 0.145 62.3);
+    --color-secondary-600: oklch(0.5215 0.1223 60);
+    --color-secondary-700: oklch(0.4206 0.0998 58.8);
+    --color-secondary-800: oklch(0.3221 0.0778 57.2);
+    --color-secondary-900: oklch(0.223 0.0569 52.6);
+    --color-secondary-950: oklch(0.1305 0.0378 44.3);
+
+    --color-neutral-50: oklch(0.9688 0.0091 258.3);
+    --color-neutral-100: oklch(0.939 0.0104 261.8);
+    --color-neutral-200: oklch(0.8991 0.0122 259.8);
+    --color-neutral-300: oklch(0.8305 0.013 255.5);
+    --color-neutral-400: oklch(0.74 0.0141 262.4);
+    --color-neutral-500: oklch(0.631 0.0139 255.5);
+    --color-neutral-600: oklch(0.5192 0.014 259.8);
+    --color-neutral-700: oklch(0.4191 0.0127 261.8);
+    --color-neutral-800: oklch(0.3196 0.0121 258.4);
+    --color-neutral-900: oklch(0.2207 0.0091 255.6);
+    --color-neutral-950: oklch(0.1293 0.0099 271.9);
+
+    /* Spacing */
+    --spacing-1: 0.125rem;
+    --spacing-2: 0.25rem;
+    --spacing-3: 0.375rem;
+    --spacing-4: 0.5rem;
+    --spacing-5: 0.625rem;
+    --spacing-6: 0.75rem;
+    --spacing-8: 1rem;
+    --spacing-12: 1.5rem;
+    --spacing-24: 3rem;
+
+    /* Border Radius */
+    --radius-sm: 0.3rem;
+    --radius-md: 0.375rem;
+
+    /* Shadows */
+    --shadow-xs: oklab(0.792997 -0.161777 0.078918 / 0.0110518) 0px 0px 0.589432px -0.196477px, oklab(0.792997 -0.161777 0.078918 / 0.00982386) 0px 0px 0.491193px -0.343835px inset;
+    --shadow-2xl: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.1) 0px 8px 10px -6px;
+
+    /* Typography */
+    --text-8.5px: 0.5313rem;
+    --text-8.8px: 0.55rem;
+    --text-9px: 0.5625rem;
+    --text-10px: 0.625rem;
+    --text-11px: 0.6875rem;
+    --text-12px: 0.75rem;
+    --text-12.8px: 0.8rem;
+    --text-14px: 0.875rem;
+    --text-16px: 1rem;
+    --text-18px: 1.125rem;
+    --text-24px: 1.5rem;
+    --text-30px: 1.875rem;
+    --text-36px: 2.25rem;
+}

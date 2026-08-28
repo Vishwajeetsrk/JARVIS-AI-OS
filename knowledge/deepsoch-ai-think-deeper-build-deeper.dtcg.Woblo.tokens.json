@@ -1,0 +1,851 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/tokens.json",
+  "$description": "Deepsoch AI builds AI infrastructure and products for businesses, creators and enterprises, so you own your AI stack, your data and the content you create.",
+  "color": {
+    "neutral": {
+      "50": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.9702,
+            0.0159,
+            239.1
+          ],
+          "alpha": 1,
+          "hex": "#ecf7ff"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "100": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.94,
+            0.0187,
+            243
+          ],
+          "alpha": 1,
+          "hex": "#e1edf7"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "200": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.8994,
+            0.0213,
+            241.4
+          ],
+          "alpha": 1,
+          "hex": "#d2e0eb"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "300": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.8309,
+            0.0225,
+            239.5
+          ],
+          "alpha": 1,
+          "hex": "#bbcad5"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "400": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.739,
+            0.025,
+            240.2
+          ],
+          "alpha": 1,
+          "hex": "#9dadb9"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "500": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.6305,
+            0.0267,
+            238.7
+          ],
+          "alpha": 1,
+          "hex": "#7b8c98"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "600": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.5193,
+            0.0252,
+            239.8
+          ],
+          "alpha": 1,
+          "hex": "#5c6b76"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "700": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.4197,
+            0.0223,
+            238.3
+          ],
+          "alpha": 1,
+          "hex": "#424f58"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "800": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.3191,
+            0.0197,
+            242.4
+          ],
+          "alpha": 1,
+          "hex": "#2a343c"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "900": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.2205,
+            0.0176,
+            237.8
+          ],
+          "alpha": 1,
+          "hex": "#131c22"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "950": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.1298,
+            0.0164,
+            240.2
+          ],
+          "alpha": 1,
+          "hex": "#03080d"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      }
+    },
+    "brand": {
+      "primary": {
+        "50": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9656,
+              0.0171,
+              248
+            ],
+            "alpha": 1,
+            "hex": "#ebf5ff"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "100": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9357,
+              0.031,
+              257.2
+            ],
+            "alpha": 1,
+            "hex": "#ddebff"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "200": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.895,
+              0.0508,
+              263.2
+            ],
+            "alpha": 1,
+            "hex": "#cbddff"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "300": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.8247,
+              0.0869,
+              265.8
+            ],
+            "alpha": 1,
+            "hex": "#abc5ff"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.7325,
+              0.1375,
+              267.8
+            ],
+            "alpha": 1,
+            "hex": "#83a4ff"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.6197,
+              0.2043,
+              268.5
+            ],
+            "alpha": 1,
+            "hex": "#5478ff"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.5627,
+              0.2383,
+              268.9
+            ],
+            "alpha": 1,
+            "hex": "#405efe"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.4201,
+              0.2009,
+              268.8
+            ],
+            "alpha": 1,
+            "hex": "#2537b8"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "800": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.3207,
+              0.1814,
+              268.9
+            ],
+            "alpha": 1,
+            "hex": "#15198d"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "900": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.2328,
+              0.154,
+              268.9
+            ],
+            "alpha": 1,
+            "hex": "#0a0064"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        },
+        "950": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.1473,
+              0.0967,
+              269.8
+            ],
+            "alpha": 1,
+            "hex": "#030032"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-563-238-2689",
+            "com.tikki.role": "brand.primary",
+            "com.tikki.confidence": 0.022
+          }
+        }
+      },
+      "secondary": {
+        "50": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9622,
+              0.0548,
+              165.8
+            ],
+            "alpha": 1,
+            "hex": "#d1ffea"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "100": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9386,
+              0.0691,
+              163.5
+            ],
+            "alpha": 1,
+            "hex": "#c1fade"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "200": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9006,
+              0.0774,
+              163.4
+            ],
+            "alpha": 1,
+            "hex": "#afefd0"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "300": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.8296,
+              0.0847,
+              163.5
+            ],
+            "alpha": 1,
+            "hex": "#93d9b8"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.7409,
+              0.0942,
+              163
+            ],
+            "alpha": 1,
+            "hex": "#70be9a"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.6291,
+              0.1011,
+              163.7
+            ],
+            "alpha": 1,
+            "hex": "#459c78"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.4833,
+              0.1018,
+              163.4
+            ],
+            "alpha": 1,
+            "hex": "#07704e"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.4193,
+              0.0849,
+              163.8
+            ],
+            "alpha": 1,
+            "hex": "#0c5b40"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "800": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.3245,
+              0.0729,
+              160.5
+            ],
+            "alpha": 1,
+            "hex": "#003f27"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "900": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.2289,
+              0.0556,
+              155.9
+            ],
+            "alpha": 1,
+            "hex": "#002411"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        },
+        "950": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.1393,
+              0.0369,
+              151.6
+            ],
+            "alpha": 1,
+            "hex": "#000d03"
+          },
+          "$extensions": {
+            "com.tikki.cluster-id": "oklch-483-102-1634",
+            "com.tikki.role": "brand.secondary",
+            "com.tikki.confidence": 0.008
+          }
+        }
+      },
+      "tertiary-1": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.5995,
+            0.0378,
+            236.3
+          ],
+          "alpha": 1,
+          "hex": "#6b8494"
+        },
+        "$extensions": {
+          "com.tikki.cluster-id": "oklch-599-38-2363",
+          "com.tikki.usage-count": 21,
+          "com.tikki.weight": 4.401,
+          "com.tikki.weight-share": 0.0426,
+          "com.tikki.confidence": 0.057,
+          "com.tikki.sources": {
+            "text": 3.617911927695563,
+            "border": 0.7831301719711705
+          },
+          "com.tikki.css-properties": [
+            "color",
+            "border-color"
+          ],
+          "com.tikki.element-tags": [
+            "A",
+            "P",
+            "I",
+            "SECTION"
+          ]
+        }
+      },
+      "tertiary-2": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.4735,
+            0.0402,
+            233
+          ],
+          "alpha": 1,
+          "hex": "#45606f"
+        },
+        "$extensions": {
+          "com.tikki.cluster-id": "oklch-474-40-2330",
+          "com.tikki.usage-count": 16,
+          "com.tikki.weight": 2.933,
+          "com.tikki.weight-share": 0.0284,
+          "com.tikki.confidence": 0.035,
+          "com.tikki.sources": {
+            "text": 2.932963585086003
+          },
+          "com.tikki.css-properties": [
+            "color"
+          ],
+          "com.tikki.element-tags": [
+            "B",
+            "P",
+            "SPAN",
+            "LI"
+          ]
+        }
+      }
+    }
+  },
+  "dimension": {
+    "spacing": {
+      "4": {
+        "$type": "dimension",
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      },
+      "6": {
+        "$type": "dimension",
+        "$value": {
+          "value": 6,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      },
+      "8": {
+        "$type": "dimension",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      },
+      "9": {
+        "$type": "dimension",
+        "$value": {
+          "value": 9,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      },
+      "10": {
+        "$type": "dimension",
+        "$value": {
+          "value": 10,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      },
+      "11": {
+        "$type": "dimension",
+        "$value": {
+          "value": 11,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      },
+      "12": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      },
+      "13": {
+        "$type": "dimension",
+        "$value": {
+          "value": 13,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      },
+      "16": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      },
+      "17": {
+        "$type": "dimension",
+        "$value": {
+          "value": 17,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": null,
+          "com.tikki.scale-fit": "custom"
+        }
+      }
+    },
+    "radius": {
+      "xs": {
+        "$type": "dimension",
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "typography": {
+    "size": {
+      "11px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 11,
+          "unit": "px"
+        }
+      },
+      "12px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "14px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 14,
+          "unit": "px"
+        }
+      },
+      "16px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "17px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 17,
+          "unit": "px"
+        }
+      },
+      "28px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 28,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "semantic": {
+    "color": {
+      "text": {
+        "primary": {
+          "$type": "color",
+          "$value": "{color.neutral.fg}"
+        }
+      },
+      "surface": {
+        "canvas": {
+          "$type": "color",
+          "$value": "{color.neutral.bg}"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "{color.neutral.100}"
+        }
+      },
+      "interactive": {
+        "primary": {
+          "$type": "color",
+          "$value": "{color.brand.primary.500}"
+        },
+        "secondary": {
+          "$type": "color",
+          "$value": "{color.brand.secondary.500}"
+        }
+      }
+    }
+  }
+}

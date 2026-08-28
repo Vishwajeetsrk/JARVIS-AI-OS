@@ -1,0 +1,380 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/tokens.json",
+  "$description": "Drop an image or paste a YouTube link, pick a look, and get a restyled thumbnail back.",
+  "color": {
+    "neutral": {
+      "50": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.9691,
+            0.0093,
+            286.2
+          ],
+          "alpha": 1,
+          "hex": "#f4f4fb"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "100": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.9391,
+            0.0094,
+            286.2
+          ],
+          "alpha": 1,
+          "hex": "#eaeaf1"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "200": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.8999,
+            0.0108,
+            286.2
+          ],
+          "alpha": 1,
+          "hex": "#dddde5"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "300": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.8293,
+            0.0124,
+            286.1
+          ],
+          "alpha": 1,
+          "hex": "#c6c6cf"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "400": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.7408,
+            0.0128,
+            286.1
+          ],
+          "alpha": 1,
+          "hex": "#aaaab3"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "500": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.6297,
+            0.0133,
+            286
+          ],
+          "alpha": 1,
+          "hex": "#888891"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "600": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.52,
+            0.0125,
+            286
+          ],
+          "alpha": 1,
+          "hex": "#686870"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "700": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.4191,
+            0.0115,
+            285.9
+          ],
+          "alpha": 1,
+          "hex": "#4c4c53"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "800": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.3195,
+            0.0106,
+            285.8
+          ],
+          "alpha": 1,
+          "hex": "#323238"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "900": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.22,
+            0.0097,
+            285.6
+          ],
+          "alpha": 1,
+          "hex": "#1a1a1f"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      },
+      "950": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.1303,
+            0.0073,
+            285.3
+          ],
+          "alpha": 1,
+          "hex": "#07070a"
+        },
+        "$extensions": {
+          "com.tikki.source": "neutralRamp"
+        }
+      }
+    }
+  },
+  "dimension": {
+    "spacing": {
+      "2": {
+        "$type": "dimension",
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": 2,
+          "com.tikki.scale-fit": "detected"
+        }
+      },
+      "3": {
+        "$type": "dimension",
+        "$value": {
+          "value": 6,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": 2,
+          "com.tikki.scale-fit": "detected"
+        }
+      },
+      "4": {
+        "$type": "dimension",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": 2,
+          "com.tikki.scale-fit": "detected"
+        }
+      },
+      "7": {
+        "$type": "dimension",
+        "$value": {
+          "value": 14,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": 2,
+          "com.tikki.scale-fit": "detected"
+        }
+      },
+      "8": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": 2,
+          "com.tikki.scale-fit": "detected"
+        }
+      },
+      "10": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": 2,
+          "com.tikki.scale-fit": "detected"
+        }
+      },
+      "12": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": 2,
+          "com.tikki.scale-fit": "detected"
+        }
+      },
+      "16": {
+        "$type": "dimension",
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": 2,
+          "com.tikki.scale-fit": "detected"
+        }
+      },
+      "24": {
+        "$type": "dimension",
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.tikki.scale-base": 2,
+          "com.tikki.scale-fit": "detected"
+        }
+      }
+    },
+    "radius": {
+      "sm": {
+        "$type": "dimension",
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": {
+          "value": 6,
+          "unit": "px"
+        }
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "typography": {
+    "size": {
+      "11.5px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 11.5,
+          "unit": "px"
+        }
+      },
+      "12px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "12.5px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12.5,
+          "unit": "px"
+        }
+      },
+      "13px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 13,
+          "unit": "px"
+        }
+      },
+      "16px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "18px": {
+        "$type": "dimension",
+        "$value": {
+          "value": 18,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "semantic": {
+    "color": {
+      "text": {
+        "primary": {
+          "$type": "color",
+          "$value": "{color.neutral.950}"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "{color.neutral.500}"
+        }
+      },
+      "surface": {
+        "canvas": {
+          "$type": "color",
+          "$value": "{color.neutral.bg}"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "{color.neutral.100}"
+        }
+      }
+    }
+  }
+}

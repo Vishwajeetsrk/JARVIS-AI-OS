@@ -1,0 +1,70 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { cn } from "@/lib/utils";
+
+export const LayoutTextFlip = ({
+  text = "Build Amazing",
+  words = ["Landing Pages", "Component Blocks", "Page Sections", "3D Shaders"],
+  duration = 3000,
+}: {
+  text: string;
+  words: string[];
+  duration?: number;
+}) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % words.length);
+    }, duration);
+
+    return () => clearInterval(interval);
+  }, [words, duration]);
+
+  return (
+    <>
+      <motion.span
+        layoutId="subtext"
+        className="text-2xl font-bold tracking-tight drop-shadow text-black dark:text-white md:text-4xl"
+      >
+        {text}
+      </motion.span>
+
+      <motion.span
+        layout
+        className="relative w-fit overflow-hidden rounded-md border border-transparent bg-white px-4 py-2 font-sans text-2xl font-bold tracking-tight text-black shadow-sm ring-1 ring-black/10 drop-shadow md:text-4xl dark:bg-neutral-900 dark:text-white"
+      >
+        <AnimatePresence mode="popLayout">
+          <motion.span
+            key={currentIndex}
+            initial={{ y: -150, opacity: 0, filter: "blur(8px)" }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+              transition: {
+                y: { type: "spring", stiffness: 250, damping: 30 },
+                opacity: { duration: 0.3 },
+                filter: { duration: 0.3 },
+              },
+            }}
+            exit={{
+              y: 50,
+              opacity: 0,
+              filter: "blur(8px)",
+              transition: {
+                y: { type: "spring", stiffness: 250, damping: 30 },
+                opacity: { duration: 0.3 },
+                filter: { duration: 0.3 },
+              },
+            }}
+            className={cn("inline-block whitespace-nowrap")}
+          >
+            {words[currentIndex]}
+          </motion.span>
+        </AnimatePresence>
+      </motion.span>
+    </>
+  );
+};

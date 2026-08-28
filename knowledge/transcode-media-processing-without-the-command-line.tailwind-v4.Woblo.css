@@ -1,0 +1,61 @@
+/* Design system extracted from transcode · Media processing without the command line */
+@theme {
+
+    /* Colors */
+    --color-brand-50: oklch(0.954 0.0755 150.6);
+    --color-brand-100: oklch(0.9286 0.123 150.1);
+    --color-brand-200: oklch(0.8997 0.146 149.6);
+    --color-brand-300: oklch(0.8301 0.161 149.6);
+    --color-brand-400: oklch(0.7227 0.192 149.6);
+    --color-brand-500: oklch(0.6351 0.1848 147.8);
+    --color-brand-600: oklch(0.5277 0.1622 145.8);
+    --color-brand-700: oklch(0.4281 0.1346 145);
+    --color-brand-800: oklch(0.3291 0.1069 143.9);
+    --color-brand-900: oklch(0.2292 0.078 142.5);
+    --color-brand-950: oklch(0.1378 0.0469 142.5);
+
+    --color-neutral-50: oklch(0.9702 0 0);
+    --color-neutral-100: oklch(0.9401 0 0);
+    --color-neutral-200: oklch(0.9006 0 0);
+    --color-neutral-300: oklch(0.8297 0 0);
+    --color-neutral-400: oklch(0.7412 0 0);
+    --color-neutral-500: oklch(0.6301 0 0);
+    --color-neutral-600: oklch(0.5208 0 0);
+    --color-neutral-700: oklch(0.4202 0 0);
+    --color-neutral-800: oklch(0.3211 0 0);
+    --color-neutral-900: oklch(0.2221 0 0);
+    --color-neutral-950: oklch(0.1286 0 0);
+
+    /* Spacing */
+    --spacing-1: 0.125rem;
+    --spacing-2: 0.25rem;
+    --spacing-3: 0.375rem;
+    --spacing-4: 0.5rem;
+    --spacing-5: 0.625rem;
+    --spacing-6: 0.75rem;
+    --spacing-8: 1rem;
+    --spacing-10: 1.25rem;
+    --spacing-12: 1.5rem;
+    --spacing-48: 6rem;
+
+    /* Border Radius */
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.875rem;
+    --radius-2xl: 1.125rem;
+
+    /* Shadows */
+    --shadow-md: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px;
+    --shadow-xl: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0 0 0 / 0.15) 0px 10px 15px -3px, oklab(0 0 0 / 0.15) 0px 4px 6px -4px;
+    --shadow-2xl: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0 0 0 / 0.05) 0px 25px 50px -12px;
+
+    /* Typography */
+    --text-11px: 0.6875rem;
+    --text-12px: 0.75rem;
+    --text-14px: 0.875rem;
+    --text-16px: 1rem;
+    --text-18px: 1.125rem;
+    --text-20px: 1.25rem;
+    --text-24px: 1.5rem;
+    --text-30px: 1.875rem;
+    --text-36px: 2.25rem;
+}

@@ -1,0 +1,23 @@
+/* shadcn theme generated from Deepsoch AI | Think Deeper. Build Deeper. */
+:root {
+    --background: #fafbfc;
+    --foreground: #000000;
+    --card: #fafbfc;
+    --card-foreground: #000000;
+    --popover: #fafbfc;
+    --popover-foreground: #000000;
+    --primary: #5478ff;
+    --primary-foreground: #03080d;
+    --ring: #5478ff;
+    --secondary: #459c78;
+    --secondary-foreground: #03080d;
+    --muted: #e7ebff;
+    --muted-foreground: #7b8c98;
+    --accent: #459c78;
+    --accent-foreground: #03080d;
+    --destructive: #ef4444;
+    --destructive-foreground: #ecf7ff;
+    --border: #c7d6de;
+    --input: #c7d6de;
+    --radius: 0.125rem;
+}

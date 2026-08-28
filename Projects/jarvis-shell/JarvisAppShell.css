@@ -1,0 +1,124 @@
+/* Claude Official Design Tokens */
+:root {
+  --claude-bg-root: #181816;
+  --claude-bg-surface: #22211E;
+  --claude-bg-card: #282724;
+  --claude-border: #383632;
+  --claude-terracotta: #D97757;
+  --claude-amber: #E69D45;
+  --claude-sage: #58A65C;
+  --text-primary: #F3F1EA;
+  --text-muted: #9E9B92;
+}
+
+.jarvis-shell-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.shell-state-switcher {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-state {
+  background: var(--claude-bg-surface);
+  border: 1px solid var(--claude-border);
+  color: var(--text-muted);
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+.btn-state.active { border-color: var(--claude-terracotta); color: var(--claude-terracotta); }
+.btn-state.active-amber { border-color: var(--claude-amber); color: var(--claude-amber); }
+.btn-state.active-mobile { border-color: #60A5FA; color: #60A5FA; }
+
+.jarvis-app-shell {
+  width: 100%;
+  max-width: 1000px;
+  background: var(--claude-bg-surface);
+  border: 1px solid var(--claude-border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Mobile Frame Override */
+.is-mobile-frame .jarvis-app-shell {
+  max-width: 380px;
+  border-radius: 36px;
+  border: 4px solid var(--claude-border);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.6);
+}
+
+.shell-header {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--claude-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.claude-star { width: 20px; height: 20px; color: var(--claude-terracotta); }
+.app-title { font-weight: 600; font-family: serif; font-size: 1.05rem; }
+.model-tag { font-family: monospace; font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem; }
+
+.header-right { display: flex; gap: 0.6rem; font-family: monospace; font-size: 0.75rem; }
+.status-dot { padding: 0.25rem 0.6rem; border-radius: 12px; }
+.dot-sage { background: rgba(88, 166, 92, 0.15); color: #7bc77f; border: 1px solid var(--claude-sage); }
+.dot-amber { background: rgba(230, 157, 69, 0.15); color: var(--claude-amber); border: 1px solid var(--claude-amber); }
+.dot-terracotta { background: rgba(217, 119, 87, 0.15); color: var(--claude-terracotta); border: 1px solid var(--claude-terracotta); }
+
+.shell-body { display: flex; flex: 1; }
+
+.shell-sidebar {
+  width: 220px;
+  background: var(--claude-bg-card);
+  border-right: 1px solid var(--claude-border);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.btn-new-chat {
+  background: var(--claude-terracotta);
+  color: #fff;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.section-title { font-family: monospace; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+.nav-item { padding: 0.35rem 0.5rem; border-radius: 6px; font-size: 0.85rem; color: var(--text-primary); cursor: pointer; }
+.nav-item.active-item { background: rgba(255,255,255,0.08); font-weight: 600; }
+
+.shell-main { flex: 1; display: flex; flex-direction: column; padding: 1.25rem; gap: 1rem; }
+
+.mode-tabs { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--claude-border); padding-bottom: 0.6rem; }
+.mode-tab { background: none; border: none; color: var(--text-muted); font-family: monospace; font-size: 0.8rem; cursor: pointer; padding: 0.3rem 0.6rem; }
+.mode-tab.active-tab { color: var(--claude-terracotta); border-bottom: 2px solid var(--claude-terracotta); font-weight: 600; }
+
+.chat-timeline { flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+.chat-card { background: var(--claude-bg-card); border: 1px solid var(--claude-border); border-radius: 10px; padding: 1rem; }
+.amber-input-card { border-color: var(--claude-amber); background: rgba(230, 157, 69, 0.08); }
+.card-tag { font-family: monospace; font-size: 0.75rem; color: var(--claude-terracotta); margin-bottom: 0.4rem; }
+.tag-amber { color: var(--claude-amber); }
+
+.composer-toolbar { display: flex; gap: 0.5rem; overflow-x: auto; }
+.toolbar-btn { background: var(--claude-bg-card); border: 1px solid var(--claude-border); color: var(--text-muted); font-family: monospace; font-size: 0.75rem; padding: 0.3rem 0.6rem; border-radius: 6px; }
+
+.composer-bar { display: flex; gap: 0.6rem; background: var(--claude-bg-card); border: 1px solid var(--claude-border); padding: 0.5rem; border-radius: 10px; }
+.mic-btn, .send-btn { background: var(--claude-terracotta); border: none; color: #fff; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; }
+.mic-btn { background: rgba(217, 119, 87, 0.15); color: var(--claude-terracotta); border: 1px solid var(--claude-terracotta); }
+.composer-input { flex: 1; background: transparent; border: none; color: var(--text-primary); outline: none; }
+
+.home-indicator { width: 120px; height: 4px; background: var(--text-muted); border-radius: 2px; align-self: center; margin: 0.5rem 0; }

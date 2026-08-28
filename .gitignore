@@ -1,61 +1,11 @@
-# Node & Environment
 node_modules/
-.env
-.env.*
-!.env.example
-*.log
-dist/
-dist-ssr/
-.output/
-.output/
-.vinxi/
-.nitro/
-.tanstack/**
-.wrangler/
-.dev.vars
-.vercel/
-
-# System files
+.next/
+out/
+build/
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
 .DS_Store
-Thumbs.db
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Editor directories
-.vscode/*
-.idea
-
-# Large media / cache
-.cache/
-__pycache__/
-*.pyc
-
-# Temporary skills downloads
-data/temp_skills/
-temp_skills/
-
-# Nested third-party repos & projects
-GitHub Repo/
-Projects/
-
-# Oversized files (>100MB)
-agent-team-source/skills/memory-agent/templates/README-templates.md
-
-# Dev logs
-*.log
-dev-*.txt
-build-*.log
-
 .vercel
-
-# Third-party design captures (Woblo references — keep local, not committed)
-knowledge/
-
-# Tauri desktop build artifacts
 src-tauri/target/
-src-tauri/gen/
-*.exe
-*.msi
+legacy_frontend/

@@ -1,0 +1,23 @@
+/* shadcn theme generated from YT Thumbnail Enhancer */
+:root {
+    --background: #fdfdfd;
+    --foreground: #08080a;
+    --card: #fdfdfd;
+    --card-foreground: #08080a;
+    --popover: #fdfdfd;
+    --popover-foreground: #08080a;
+    --primary: #1a1a1f;
+    --primary-foreground: #f4f4fb;
+    --ring: #1a1a1f;
+    --secondary: #e1e1e4;
+    --secondary-foreground: #1a1a1f;
+    --muted: #e1e1e4;
+    --muted-foreground: #71717a;
+    --accent: #e1e1e4;
+    --accent-foreground: #1a1a1f;
+    --destructive: #ef4444;
+    --destructive-foreground: #f4f4fb;
+    --border: #dddde5;
+    --input: #dddde5;
+    --radius: 0.375rem;
+}

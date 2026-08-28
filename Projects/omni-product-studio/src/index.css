@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  @apply bg-zinc-950 text-zinc-50 antialiased;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Uploaded-image rows hide the scrollbar on desktop, but show a thin one on
+   mobile so it's obvious the row scrolls horizontally. */
+.uploads-scroll {
+  scrollbar-width: none;
+}
+.uploads-scroll::-webkit-scrollbar {
+  display: none;
+}
+@media (max-width: 767px) {
+  .uploads-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #52525b transparent;
+  }
+  .uploads-scroll::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+  }
+  .uploads-scroll::-webkit-scrollbar-thumb {
+    background-color: #52525b;
+    border-radius: 9999px;
+  }
+  .uploads-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

@@ -1,0 +1,23 @@
+/* shadcn theme generated from OCR - Optical Character Recognition Runtime */
+:root {
+    --background: #f7f8f9;
+    --foreground: #06070b;
+    --card: #f7f8f9;
+    --card-foreground: #06070b;
+    --popover: #f7f8f9;
+    --popover-foreground: #06070b;
+    --primary: #3fa05b;
+    --primary-foreground: #06070b;
+    --ring: #3fa05b;
+    --secondary: #c67200;
+    --secondary-foreground: #06070b;
+    --muted: #e7ebf2;
+    --muted-foreground: #848a92;
+    --accent: #c67200;
+    --accent-foreground: #06070b;
+    --destructive: #ef4444;
+    --destructive-foreground: #f1f5fb;
+    --border: #c9cdd3;
+    --input: #c9cdd3;
+    --radius: 0.375rem;
+}

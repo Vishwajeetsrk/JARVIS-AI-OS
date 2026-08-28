@@ -1,0 +1,72 @@
+/* Design system extracted from UPSCALR: AI image upscaling */
+@theme {
+
+    /* Colors */
+    --color-brand-50: oklch(0.9541 0.0734 153.2);
+    --color-brand-100: oklch(0.9304 0.1167 152.3);
+    --color-brand-200: oklch(0.8993 0.1374 151.8);
+    --color-brand-300: oklch(0.8003 0.1821 151.7);
+    --color-brand-400: oklch(0.7404 0.1677 151.7);
+    --color-brand-500: oklch(0.6338 0.1744 150);
+    --color-brand-600: oklch(0.5289 0.1538 147.8);
+    --color-brand-700: oklch(0.4292 0.1271 147.1);
+    --color-brand-800: oklch(0.3298 0.1013 145.8);
+    --color-brand-900: oklch(0.2295 0.0751 143.7);
+    --color-brand-950: oklch(0.1378 0.0469 142.5);
+
+    --color-secondary-50: oklch(0.9568 0.0646 196.1);
+    --color-secondary-100: oklch(0.9385 0.0772 199.9);
+    --color-secondary-200: oklch(0.8651 0.1153 207.1);
+    --color-secondary-300: oklch(0.8293 0.0964 207.2);
+    --color-secondary-400: oklch(0.7414 0.1061 206.9);
+    --color-secondary-500: oklch(0.6334 0.1088 207.6);
+    --color-secondary-600: oklch(0.5278 0.0912 209.8);
+    --color-secondary-700: oklch(0.4286 0.0742 210.4);
+    --color-secondary-800: oklch(0.3301 0.0573 211);
+    --color-secondary-900: oklch(0.2279 0.0402 214.6);
+    --color-secondary-950: oklch(0.1384 0.0253 220.6);
+
+    --color-neutral-50: oklch(0.9702 0 0);
+    --color-neutral-100: oklch(0.9401 0 0);
+    --color-neutral-200: oklch(0.9006 0 0);
+    --color-neutral-300: oklch(0.8297 0 0);
+    --color-neutral-400: oklch(0.7412 0 0);
+    --color-neutral-500: oklch(0.6301 0 0);
+    --color-neutral-600: oklch(0.5208 0 0);
+    --color-neutral-700: oklch(0.4202 0 0);
+    --color-neutral-800: oklch(0.3211 0 0);
+    --color-neutral-900: oklch(0.2221 0 0);
+    --color-neutral-950: oklch(0.1286 0 0);
+
+    /* Spacing */
+    --spacing-1: 0.125rem;
+    --spacing-2: 0.25rem;
+    --spacing-3: 0.375rem;
+    --spacing-4: 0.5rem;
+    --spacing-6: 0.75rem;
+    --spacing-8: 1rem;
+    --spacing-10: 1.25rem;
+    --spacing-12: 1.5rem;
+    --spacing-40: 5rem;
+
+    /* Border Radius */
+    --radius-lg: 0.5625rem;
+    --radius-xl: 0.75rem;
+    --radius-3xl: 1.5rem;
+
+    /* Shadows */
+    --shadow-md: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px;
+    --shadow-2xl: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0 0 0 / 0.2) 0px 0px 0px 1px, rgba(0, 0, 0, 0.45) 0px 8px 30px 0px;
+
+    /* Typography */
+    --text-11px: 0.6875rem;
+    --text-12px: 0.75rem;
+    --text-14px: 0.875rem;
+    --text-15px: 0.9375rem;
+    --text-16px: 1rem;
+    --text-18px: 1.125rem;
+    --text-20px: 1.25rem;
+    --text-30px: 1.875rem;
+    --text-36px: 2.25rem;
+    --text-62.9px: 3.9312rem;
+}

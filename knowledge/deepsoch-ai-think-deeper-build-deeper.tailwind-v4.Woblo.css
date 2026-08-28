@@ -1,0 +1,63 @@
+/* Design system extracted from Deepsoch AI | Think Deeper. Build Deeper. */
+@theme {
+
+    /* Colors */
+    --color-brand-50: oklch(0.9656 0.0171 248);
+    --color-brand-100: oklch(0.9357 0.031 257.2);
+    --color-brand-200: oklch(0.895 0.0508 263.2);
+    --color-brand-300: oklch(0.8247 0.0869 265.8);
+    --color-brand-400: oklch(0.7325 0.1375 267.8);
+    --color-brand-500: oklch(0.6197 0.2043 268.5);
+    --color-brand-600: oklch(0.5627 0.2383 268.9);
+    --color-brand-700: oklch(0.4201 0.2009 268.8);
+    --color-brand-800: oklch(0.3207 0.1814 268.9);
+    --color-brand-900: oklch(0.2328 0.154 268.9);
+    --color-brand-950: oklch(0.1473 0.0967 269.8);
+
+    --color-secondary-50: oklch(0.9622 0.0548 165.8);
+    --color-secondary-100: oklch(0.9386 0.0691 163.5);
+    --color-secondary-200: oklch(0.9006 0.0774 163.4);
+    --color-secondary-300: oklch(0.8296 0.0847 163.5);
+    --color-secondary-400: oklch(0.7409 0.0942 163);
+    --color-secondary-500: oklch(0.6291 0.1011 163.7);
+    --color-secondary-600: oklch(0.4833 0.1018 163.4);
+    --color-secondary-700: oklch(0.4193 0.0849 163.8);
+    --color-secondary-800: oklch(0.3245 0.0729 160.5);
+    --color-secondary-900: oklch(0.2289 0.0556 155.9);
+    --color-secondary-950: oklch(0.1393 0.0369 151.6);
+
+    --color-neutral-50: oklch(0.9702 0.0159 239.1);
+    --color-neutral-100: oklch(0.94 0.0187 243);
+    --color-neutral-200: oklch(0.8994 0.0213 241.4);
+    --color-neutral-300: oklch(0.8309 0.0225 239.5);
+    --color-neutral-400: oklch(0.739 0.025 240.2);
+    --color-neutral-500: oklch(0.6305 0.0267 238.7);
+    --color-neutral-600: oklch(0.5193 0.0252 239.8);
+    --color-neutral-700: oklch(0.4197 0.0223 238.3);
+    --color-neutral-800: oklch(0.3191 0.0197 242.4);
+    --color-neutral-900: oklch(0.2205 0.0176 237.8);
+    --color-neutral-950: oklch(0.1298 0.0164 240.2);
+
+    /* Spacing */
+    --spacing-4: 0.25rem;
+    --spacing-6: 0.375rem;
+    --spacing-8: 0.5rem;
+    --spacing-9: 0.5625rem;
+    --spacing-10: 0.625rem;
+    --spacing-11: 0.6875rem;
+    --spacing-12: 0.75rem;
+    --spacing-13: 0.8125rem;
+    --spacing-16: 1rem;
+    --spacing-17: 1.0625rem;
+
+    /* Border Radius */
+    --radius-xs: 0.125rem;
+
+    /* Typography */
+    --text-11px: 0.6875rem;
+    --text-12px: 0.75rem;
+    --text-14px: 0.875rem;
+    --text-16px: 1rem;
+    --text-17px: 1.0625rem;
+    --text-28px: 1.75rem;
+}

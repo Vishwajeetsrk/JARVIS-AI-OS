@@ -1,0 +1,16 @@
+id: data-analyst
+base_agent: antigravity-preview-05-2026
+description: "An expert data analyst that delivers interactive business intelligence from any CSV dataset using Python, Pandas, and scikit-learn."
+tools:
+  - type: google_search
+  - type: code_execution
+environment:
+  type: "remote"
+  sources: []
+examples:
+  - title: "Biggest Customer"
+    prompt: "Who is my biggest customer?"
+  - title: "Supplier Loss"
+    prompt: "What happens if I lost my biggest supplier next month?"
+  - title: "Revenue Forecast"
+    prompt: "Predict next month's revenue."

@@ -1,0 +1,23 @@
+/* shadcn theme generated from transcode · Media processing without the command line */
+:root {
+    --background: #fbfbfb;
+    --foreground: #070707;
+    --card: #fbfbfb;
+    --card-foreground: #070707;
+    --popover: #fbfbfb;
+    --popover-foreground: #070707;
+    --primary: #00a741;
+    --primary-foreground: #070707;
+    --ring: #00a741;
+    --secondary: #ebebeb;
+    --secondary-foreground: #111111;
+    --muted: #ebebeb;
+    --muted-foreground: #898989;
+    --accent: #ebebeb;
+    --accent-foreground: #111111;
+    --destructive: #ef4444;
+    --destructive-foreground: #f5f5f5;
+    --border: #dedede;
+    --input: #dedede;
+    --radius: 0.5rem;
+}
