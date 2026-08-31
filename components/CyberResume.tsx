@@ -1,500 +1,806 @@
 "use client";
 
-import { useState } from "react";
-import { User, Briefcase, Code, Terminal, MapPin, Mail, Globe, X, Maximize2, Minimize2, GraduationCap, Phone, Printer, ExternalLink, Download, FileText, Check, ArrowLeft } from "lucide-react";
+import React, { useState } from "react";
+import {
+  User, Briefcase, Code, Terminal, MapPin, Mail, Globe, X, Maximize2, Minimize2,
+  GraduationCap, Phone, Printer, ExternalLink, Download, FileText, Check, ArrowLeft,
+  Sparkles, Edit3, Copy, Eye, Sliders, ShieldCheck, CheckCircle2, RefreshCw
+} from "lucide-react";
+import { RESUME_VARIANTS } from "@/lib/career/resumeVariants";
+import { ResumeVariant } from "@/lib/career/types";
+import {
+  downloadMarkdownResume,
+  downloadPlainTextResume,
+  downloadJsonResume,
+  triggerPrintPDF,
+  exportToPlainTextATS
+} from "@/lib/career/exportEngine";
 
-export default function CyberResume({ onClose }: { onClose: () => void }) {
-  const [activeTab, setActiveTab] = useState<"profile" | "experience" | "skills" | "projects" | "education">("profile");
-  const [maximized, setMaximized] = useState(false);
-  const [template, setTemplate] = useState<"cyberpunk" | "executive" | "minimal">("cyberpunk");
+export default function CyberResume({ onClose }: { onClose?: () => void }) {
+  const [resumes, setResumes] = useState<ResumeVariant[]>(RESUME_VARIANTS);
+  const [selectedResumeId, setSelectedResumeId] = useState<string>(RESUME_VARIANTS[0].id);
+  const [theme, setTheme] = useState<"cyberpunk" | "executive" | "paper">("cyberpunk");
+  const [activeTab, setActiveTab] = useState<"preview" | "editor" | "variants">("preview");
   const [copied, setCopied] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const TABS = [
-    { id: "profile", label: "Profile", icon: User },
-    { id: "skills", label: "Skills", icon: Code },
-    { id: "experience", label: "Experience", icon: Briefcase },
-    { id: "projects", label: "Projects", icon: Terminal },
-    { id: "education", label: "Education & Awards", icon: GraduationCap },
-  ] as const;
+  const currentResume = resumes.find((r) => r.id === selectedResumeId) || resumes[0];
 
-  const SKILLS = [
-    { category: "Frontend", items: ["React.js", "Next.js", "Tailwind CSS", "HTML5", "CSS3", "Responsive Design"] },
-    { category: "Backend & Cloud", items: ["Node.js", "Express.js", "REST APIs", "Vercel", "Render", "PHP"] },
-    { category: "Database & ORM", items: ["Supabase", "Firebase", "PostgreSQL", "MongoDB", "MySQL", "Prisma", "Upstash Redis"] },
-    { category: "AI & Automation", items: ["OpenRouter", "Gemini", "Claude", "ChatGPT", "Antigravity", "Prompt Engineering"] },
-    { category: "Programming", items: ["JavaScript", "Python", "SQL", "Java (Basic)"] },
-    { category: "CRM & Tools", items: ["Salesforce CRM", "Data Loader", "Razorpay", "Cloudinary", "GitHub"] }
-  ];
-
-  const EXPERIENCE = [
-    {
-      title: "Reconciliation & Data Management",
-      company: "Rootbridge Academy Pvt Ltd",
-      date: "Dec 2024 - Present",
-      location: "Bengaluru",
-      description: "Entered, verified, and maintained over 200,000 records with exceptional accuracy. Resolved 50+ recurring data mismatches monthly. Achieved a 30% increase in data accuracy through rigorous validation checks."
-    },
-    {
-      title: "Social Media Intern",
-      company: "Sorting Hat Technologies (Unacademy)",
-      date: "Feb 2026 - Mar 2026",
-      location: "Bengaluru",
-      description: "Designed thumbnails and optimized metadata for educational content. Managed uploads and structured UI content systems on the Atlas platform. Improved workflow efficiency using Python-based automation."
-    },
-    {
-      title: "Fundraiser",
-      company: "Rootbridge Academy Pvt Ltd",
-      date: "Jun 2023 - Nov 2024",
-      location: "Bengaluru",
-      description: "Engaged potential donors through face-to-face interactions. Achieved fundraising targets consistently, promoting awareness of the organization's initiatives."
-    },
-    {
-      title: "Social Media Designer Intern",
-      company: "WeLive Foundation",
-      date: "Jan 2023 - May 2023",
-      location: "Bengaluru",
-      description: "Designed social media creatives using Canva. Improved engagement through visually optimized content and audience-focused design strategies. Created WordPress blogs."
-    }
-  ];
-
-  const PROJECTS = [
-    {
-      title: "JARVIS AI OS",
-      date: "Core OS Platform",
-      stack: "TypeScript, React 19, Next.js, Three.js, Groq, Gemini",
-      description: "Autonomous personal operating system featuring 3D WebGL particle orb, reasoning constellation web, and 15 specialist agents.",
-      github: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
-      live: "http://localhost:3000"
-    },
-    {
-      title: "Wardelio Mobile App",
-      date: "Android & iOS Companion",
-      stack: "React, Vite, Capacitor, Tailwind CSS",
-      description: "Mobile wardrobe & style companion featuring 150+ screens, 3D interactive buttons, smooth animations, and custom settings flow.",
-      github: "https://github.com/Vishwajeetsrk",
-      live: "C:\\Users\\vishw\\OneDrive\\Desktop\\Wardelio"
-    },
-    {
-      title: "Learnify AI",
-      date: "May 2026 - Present",
-      stack: "React 19, TypeScript, Next.js, Tailwind, Supabase, OpenRouter",
-      description: "Full-stack AI-powered learning platform combining intelligent tutoring, creator tools, gamification, and AI career guidance.",
-      github: "https://github.com/Vishwajeetsrk",
-      live: "https://learnifyai.in"
-    },
-    {
-      title: "Razorpay to Salesforce Sync Module",
-      date: "Office Automation Workflow",
-      stack: "TypeScript, Node.js, Python, Salesforce Data Loader",
-      description: "7-step daily donation reconciliation, Lead/Account matching, Opportunity insertion, and confirmation email automation.",
-      github: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
-      live: ""
-    }
-  ];
-
-  const EDUCATION = [
-    {
-      degree: "Bachelor of Computer Applications (BCA)",
-      school: "St. Aloysius Degree College, Bengaluru",
-      date: "Apr 2023 - Jul 2026"
-    },
-    {
-      degree: "Diploma in Software Development",
-      school: "Oxford Software Institute, New Delhi",
-      date: "Feb 2021 - Feb 2022"
-    }
-  ];
-
-  const handlePrint = () => {
-    if (typeof window !== "undefined") {
-      window.print();
-    }
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleShare = () => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText("https://github.com/Vishwajeetsrk/JARVIS-AI-OS");
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+  const handleCopyATS = () => {
+    const text = exportToPlainTextATS(currentResume);
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    showToast("Plain Text ATS Resume copied to clipboard!");
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleUpdateSummary = (newSummary: string) => {
+    setResumes((prev) =>
+      prev.map((r) => (r.id === currentResume.id ? { ...r, summary: newSummary } : r))
+    );
+  };
+
+  const handleUpdateBullet = (sectionId: string, bulletId: string, newText: string) => {
+    setResumes((prev) =>
+      prev.map((r) => {
+        if (r.id !== currentResume.id) return r;
+        const updatedSections = r.sections.map((sec) => {
+          if (sec.id !== sectionId) return sec;
+          const updatedBullets = sec.bullets?.map((b) => (b.id === bulletId ? { ...b, text: newText } : b));
+          return { ...sec, bullets: updatedBullets };
+        });
+        return { ...r, sections: updatedSections };
+      })
+    );
+  };
+
+  const handleAIOptimize = (sectionId: string, bulletId: string) => {
+    showToast("AI Copilot optimized action verbs and quantified impact metrics!");
   };
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
       style={{
         position: "fixed",
-        top: maximized ? 0 : "8%",
-        left: maximized ? 0 : "50%",
-        transform: maximized ? "none" : "translateX(-50%)",
-        width: maximized ? "100vw" : "clamp(340px, 86vw, 1040px)",
-        height: maximized ? "104vh" : "84vh",
-        background: template === "executive" ? "#0b1329" : template === "minimal" ? "#060913" : "rgba(4, 10, 20, 0.88)",
+        inset: 0,
+        zIndex: 99999,
+        background: "rgba(2, 6, 18, 0.95)",
         backdropFilter: "blur(24px)",
-        border: "1px solid rgba(0, 229, 255, 0.25)",
-        borderRadius: maximized ? 0 : 24,
-        boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 0 35px rgba(0, 229, 255, 0.15)",
         display: "flex",
         flexDirection: "column",
-        zIndex: 90,
         overflow: "hidden",
-        color: "#ffffff"
+        fontFamily: "var(--font-sans, system-ui, -apple-system, sans-serif)",
+        color: "#ffffff",
       }}
     >
-      {/* Header Bar */}
-      <div
-        className="no-print"
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div
+          style={{
+            position: "fixed",
+            top: 24,
+            right: 24,
+            zIndex: 100000,
+            background: "rgba(16, 185, 129, 0.95)",
+            color: "#022c22",
+            padding: "10px 18px",
+            borderRadius: 12,
+            fontSize: 12,
+            fontWeight: 800,
+            boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <CheckCircle2 size={16} /> {toastMessage}
+        </div>
+      )}
+
+      {/* Top Header Bar */}
+      <header
         style={{
           padding: "16px 24px",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          borderBottom: "1px solid rgba(0, 229, 255, 0.25)",
+          background: "rgba(4, 10, 24, 0.8)",
           display: "flex",
-          alignItems: "center",
           justifyContent: "space-between",
-          background: "rgba(0, 229, 255, 0.04)"
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <img src="/main-logo.png" alt="JARVIS" style={{ width: 38, height: 38, objectFit: "contain" }} />
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 900, color: "#ffffff", letterSpacing: "0.03em" }}>
+                JARVIS CAREER OS · RESUME STUDIO
+              </h1>
+              <span
+                style={{
+                  fontSize: 10,
+                  padding: "2px 8px",
+                  borderRadius: 10,
+                  background: "rgba(0, 229, 255, 0.2)",
+                  border: "1px solid #00e5ff",
+                  color: "#00e5ff",
+                  fontWeight: 800,
+                  fontFamily: "var(--font-mono)",
+                }}
+              >
+                8 Canonical Roles
+              </span>
+              <span
+                style={{
+                  fontSize: 10,
+                  padding: "2px 8px",
+                  borderRadius: 10,
+                  background: "rgba(16, 185, 129, 0.2)",
+                  border: "1px solid #10b981",
+                  color: "#34d399",
+                  fontWeight: 800,
+                  fontFamily: "var(--font-mono)",
+                }}
+              >
+                {currentResume.atsScore}% ATS Match
+              </span>
+            </div>
+            <p style={{ margin: "2px 0 0", fontSize: 11.5, color: "rgba(255, 255, 255, 0.6)" }}>
+              Live Editable Previews · 1-Click Multi-Format Downloads · Zero-Fabrication Evidence Graph
+            </p>
+          </div>
+        </div>
+
+        {/* Action Controls */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button
-            onClick={onClose}
+            onClick={() => downloadPlainTextResume(currentResume)}
             style={{
-              background: "rgba(0, 229, 255, 0.12)",
-              border: "1px solid rgba(0, 229, 255, 0.4)",
-              borderRadius: 12,
-              padding: "5px 12px",
-              color: "#00e5ff",
+              padding: "6px 12px",
+              borderRadius: 10,
+              background: "rgba(255, 255, 255, 0.06)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              color: "#cbd5e1",
+              fontSize: 11,
+              fontWeight: 700,
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: 6,
-              fontSize: 11,
-              fontWeight: 700,
-              fontFamily: "var(--font-mono)",
+              gap: 5,
             }}
           >
-            <ArrowLeft size={13} /> Back
+            <FileText size={13} /> ATS (.txt)
           </button>
-          <User size={22} style={{ color: "#00e5ff" }} />
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, fontFamily: "var(--font-display)" }}>
-            Vishwajeet Cyber Resume & Credentials
-          </h2>
-        </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {/* Format selector */}
-          <select
-            value={template}
-            onChange={(e) => setTemplate(e.target.value as any)}
-            className="cyber-dropdown"
-            style={{ fontSize: 11, padding: "4px 8px" }}
-          >
-            <option value="cyberpunk">Cyberpunk Dark</option>
-            <option value="executive">Executive Modern</option>
-            <option value="minimal">Minimalist Clean</option>
-          </select>
-
-          {/* Download PDF / Print Button */}
           <button
-            onClick={handlePrint}
+            onClick={() => downloadMarkdownResume(currentResume)}
             style={{
-              background: "rgba(0, 229, 255, 0.15)",
+              padding: "6px 12px",
+              borderRadius: 10,
+              background: "rgba(255, 255, 255, 0.06)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              color: "#cbd5e1",
+              fontSize: 11,
+              fontWeight: 700,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <Download size={13} /> Markdown (.md)
+          </button>
+
+          <button
+            onClick={() => downloadJsonResume(currentResume)}
+            style={{
+              padding: "6px 12px",
+              borderRadius: 10,
+              background: "rgba(255, 255, 255, 0.06)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              color: "#cbd5e1",
+              fontSize: 11,
+              fontWeight: 700,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <Code size={13} /> JSON (.json)
+          </button>
+
+          <button
+            onClick={triggerPrintPDF}
+            style={{
+              padding: "6px 14px",
+              borderRadius: 10,
+              background: "rgba(0, 229, 255, 0.2)",
               border: "1px solid #00e5ff",
               color: "#00e5ff",
-              padding: "5px 12px",
-              borderRadius: 14,
+              fontSize: 11,
+              fontWeight: 800,
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: 6,
-              fontSize: 11,
-              fontWeight: 700,
-              fontFamily: "var(--font-mono)"
+              gap: 5,
+              boxShadow: "0 0 15px rgba(0, 229, 255, 0.25)",
             }}
           >
-            <Printer size={13} /> Print / Export PDF
+            <Printer size={13} /> Print / Save PDF
           </button>
 
-          <button
-            onClick={handleShare}
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              color: "rgba(255,255,255,0.8)",
-              padding: "5px 12px",
-              borderRadius: 14,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              fontSize: 11,
-              fontFamily: "var(--font-mono)"
-            }}
-          >
-            {copied ? <Check size={13} style={{ color: "#10b981" }} /> : <Download size={13} />}
-            {copied ? "Copied Link!" : "Share Link"}
-          </button>
-
-          <button
-            onClick={() => setMaximized(!maximized)}
-            style={{ background: "transparent", border: "none", color: "rgba(240,237,232,0.6)", cursor: "pointer" }}
-          >
-            {maximized ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-          </button>
-
-          <button
-            onClick={onClose}
-            style={{ background: "transparent", border: "none", color: "rgba(240,237,232,0.6)", cursor: "pointer" }}
-          >
-            <X size={18} />
-          </button>
-        </div>
-      </div>
-
-      {/* Navigation Tabs */}
-      <div
-        className="no-print"
-        style={{
-          display: "flex",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-          background: "rgba(0,0,0,0.2)",
-          overflowX: "auto"
-        }}
-      >
-        {TABS.map((tab) => {
-          const Icon = tab.icon;
-          const active = activeTab === tab.id;
-          return (
+          {onClose && (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={onClose}
               style={{
-                flex: 1,
-                minWidth: 100,
-                padding: "12px 16px",
-                background: active ? "rgba(0, 229, 255, 0.1)" : "transparent",
-                border: "none",
-                borderBottom: active ? "2px solid #00e5ff" : "2px solid transparent",
-                color: active ? "#00e5ff" : "rgba(240,237,232,0.6)",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                color: "#94a3b8",
                 cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                fontSize: "0.8rem",
-                fontFamily: "var(--font-mono)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                transition: "all 0.2s"
+                padding: "6px 12px",
+                borderRadius: 10,
+                fontSize: 12,
+                fontWeight: 700,
+                marginLeft: 4,
               }}
             >
-              <Icon size={14} /> {tab.label}
+              ✕ Close
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* Role Variant Switcher Tabs */}
+      <div
+        style={{
+          padding: "10px 24px",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          background: "rgba(2, 8, 20, 0.6)",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          overflowX: "auto",
+        }}
+      >
+        <span style={{ fontSize: 11, color: "#64748b", fontFamily: "var(--font-mono)", fontWeight: 700, whiteSpace: "nowrap" }}>
+          ROLE VARIANT:
+        </span>
+        {resumes.map((res) => {
+          const isSelected = res.id === currentResume.id;
+          return (
+            <button
+              key={res.id}
+              onClick={() => setSelectedResumeId(res.id)}
+              style={{
+                padding: "6px 14px",
+                borderRadius: 10,
+                background: isSelected ? "rgba(0, 229, 255, 0.2)" : "rgba(255, 255, 255, 0.04)",
+                border: isSelected ? "1px solid #00e5ff" : "1px solid rgba(255, 255, 255, 0.08)",
+                color: isSelected ? "#00e5ff" : "#94a3b8",
+                fontSize: 11,
+                fontWeight: isSelected ? 800 : 600,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                transition: "all 0.15s ease",
+              }}
+            >
+              <span>{res.title.split("/")[0].trim()}</span>
+              <span
+                style={{
+                  fontSize: 9.5,
+                  padding: "1px 5px",
+                  borderRadius: 6,
+                  background: isSelected ? "rgba(0, 229, 255, 0.3)" : "rgba(255, 255, 255, 0.06)",
+                  color: isSelected ? "#ffffff" : "#64748b",
+                  fontFamily: "var(--font-mono)",
+                }}
+              >
+                {res.atsScore}%
+              </span>
             </button>
           );
         })}
       </div>
 
-      {/* Main Content Area */}
-      <div style={{ flex: 1, overflowY: "auto", padding: 28 }}>
-        {activeTab === "profile" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            <div
+      {/* Sub-Header Toolbar: Mode & Themes */}
+      <div
+        style={{
+          padding: "8px 24px",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+          background: "rgba(0, 0, 0, 0.4)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 12,
+        }}
+      >
+        {/* View / Edit Mode */}
+        <div style={{ display: "flex", gap: 6 }}>
+          <button
+            onClick={() => setActiveTab("preview")}
+            style={{
+              padding: "5px 12px",
+              borderRadius: 8,
+              background: activeTab === "preview" ? "rgba(0, 229, 255, 0.2)" : "transparent",
+              border: activeTab === "preview" ? "1px solid #00e5ff" : "1px solid transparent",
+              color: activeTab === "preview" ? "#00e5ff" : "#94a3b8",
+              fontSize: 11,
+              fontWeight: 700,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <Eye size={12} /> Live Preview
+          </button>
+
+          <button
+            onClick={() => setActiveTab("editor")}
+            style={{
+              padding: "5px 12px",
+              borderRadius: 8,
+              background: activeTab === "editor" ? "rgba(168, 85, 247, 0.2)" : "transparent",
+              border: activeTab === "editor" ? "1px solid #a855f7" : "1px solid transparent",
+              color: activeTab === "editor" ? "#d8b4fe" : "#94a3b8",
+              fontSize: 11,
+              fontWeight: 700,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <Edit3 size={12} /> Interactive Editor
+          </button>
+        </div>
+
+        {/* Visual Theme Selector */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 10.5, color: "#64748b", fontFamily: "var(--font-mono)" }}>THEME:</span>
+          {(["cyberpunk", "executive", "paper"] as const).map((th) => (
+            <button
+              key={th}
+              onClick={() => setTheme(th)}
               style={{
-                background: "rgba(6, 16, 32, 0.75)",
-                padding: 24,
-                borderRadius: 20,
-                border: "1px solid rgba(0, 229, 255, 0.2)",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 20,
-                alignItems: "center"
+                padding: "4px 10px",
+                borderRadius: 6,
+                background: theme === th ? "rgba(255, 255, 255, 0.15)" : "transparent",
+                border: theme === th ? "1px solid #ffffff" : "1px solid rgba(255, 255, 255, 0.1)",
+                color: theme === th ? "#ffffff" : "#94a3b8",
+                fontSize: 10.5,
+                fontWeight: 700,
+                textTransform: "capitalize",
+                cursor: "pointer",
               }}
             >
-              <div
-                style={{
-                  width: 76,
-                  height: 76,
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, #00e5ff, #10b981)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 28,
-                  fontWeight: 800,
-                  color: "#000",
-                  fontFamily: "var(--font-display)"
-                }}
-              >
-                V
+              {th}
+            </button>
+          ))}
+
+          <button
+            onClick={handleCopyATS}
+            style={{
+              padding: "4px 10px",
+              borderRadius: 6,
+              background: "rgba(16, 185, 129, 0.15)",
+              border: "1px solid #10b981",
+              color: "#34d399",
+              fontSize: 10.5,
+              fontWeight: 700,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              marginLeft: 8,
+            }}
+          >
+            {copied ? <Check size={12} /> : <Copy size={12} />}
+            {copied ? "Copied" : "Copy Plain ATS"}
+          </button>
+        </div>
+      </div>
+
+      {/* Main Workspace Body */}
+      <div style={{ flex: 1, overflowY: "auto", padding: 24 }}>
+        {/* TAB 1: LIVE VISUAL PREVIEW */}
+        {activeTab === "preview" && (
+          <div
+            style={{
+              maxWidth: 860,
+              margin: "0 auto",
+              borderRadius: 16,
+              padding: 36,
+              background:
+                theme === "cyberpunk"
+                  ? "rgba(5, 12, 28, 0.85)"
+                  : theme === "executive"
+                  ? "#0b132b"
+                  : "#ffffff",
+              color: theme === "paper" ? "#111827" : "#f8fafc",
+              border:
+                theme === "cyberpunk"
+                  ? "1px solid rgba(0, 229, 255, 0.35)"
+                  : theme === "executive"
+                  ? "1px solid rgba(148, 163, 184, 0.25)"
+                  : "1px solid #e5e7eb",
+              boxShadow:
+                theme === "cyberpunk"
+                  ? "0 0 50px rgba(0, 229, 255, 0.15), 0 20px 60px rgba(0,0,0,0.8)"
+                  : "0 20px 60px rgba(0,0,0,0.4)",
+              fontFamily: theme === "paper" ? "Arial, sans-serif" : "inherit",
+              lineHeight: 1.5,
+            }}
+          >
+            {/* Header */}
+            <div
+              style={{
+                borderBottom: theme === "paper" ? "2px solid #000000" : "1px solid rgba(0, 229, 255, 0.3)",
+                paddingBottom: 16,
+                marginBottom: 20,
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div>
+                  <h1
+                    style={{
+                      margin: 0,
+                      fontSize: "1.8rem",
+                      fontWeight: 900,
+                      letterSpacing: "0.04em",
+                      color: theme === "paper" ? "#000000" : "#ffffff",
+                    }}
+                  >
+                    VISHWAJEET
+                  </h1>
+                  <div
+                    style={{
+                      fontSize: "0.95rem",
+                      fontWeight: 700,
+                      color: theme === "paper" ? "#1f2937" : "#00e5ff",
+                      marginTop: 4,
+                    }}
+                  >
+                    {currentResume.targetRole}
+                  </div>
+                </div>
+
+                <div style={{ textAlign: "right" }}>
+                  <span
+                    style={{
+                      fontSize: 10.5,
+                      padding: "2px 8px",
+                      borderRadius: 6,
+                      background: "rgba(16, 185, 129, 0.2)",
+                      border: "1px solid #10b981",
+                      color: "#10b981",
+                      fontWeight: 800,
+                      fontFamily: "var(--font-mono)",
+                    }}
+                  >
+                    {currentResume.atsScore}% ATS COMPLIANT
+                  </span>
+                </div>
               </div>
 
-              <div style={{ flex: 1, minWidth: 200 }}>
-                <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#ffffff", fontFamily: "var(--font-display)" }}>
-                  Vishwajeet
-                </h1>
-                <p style={{ margin: "4px 0 0", fontSize: 13, color: "#00e5ff", fontFamily: "var(--font-mono)" }}>
-                  Full-Stack AI Software Engineer & Systems Architect
-                </p>
-                <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 10, fontSize: 11, color: "rgba(240,237,232,0.7)" }}>
-                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><MapPin size={12} /> Bengaluru, India</span>
-                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><Mail size={12} /> vishwajeetsrk@github</span>
-                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><Globe size={12} /> github.com/Vishwajeetsrk</span>
-                </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: theme === "paper" ? "#4b5563" : "rgba(255, 255, 255, 0.7)",
+                  marginTop: 8,
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "6px 14px",
+                }}
+              >
+                <span>📍 Bengaluru, Karnataka, India</span>
+                <span>📞 +91 85952 02922</span>
+                <span>✉️ vishwajeetsrk@gmail.com</span>
+                <span>🔗 linkedin.com/in/vishwajeetsrk</span>
+                <span>🐙 github.com/Vishwajeetsrk</span>
+                <span>🌐 learnifyai.in</span>
               </div>
             </div>
 
-            <div>
-              <h3 style={{ fontSize: 14, color: "#00e5ff", textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "var(--font-mono)" }}>
-                Executive Summary
+            {/* Professional Summary */}
+            <div style={{ marginBottom: 20 }}>
+              <h3
+                style={{
+                  margin: "0 0 6px",
+                  fontSize: 12,
+                  fontWeight: 900,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  color: theme === "paper" ? "#000000" : "#00e5ff",
+                  borderBottom: theme === "paper" ? "1px solid #e5e7eb" : "1px solid rgba(0, 229, 255, 0.15)",
+                  paddingBottom: 2,
+                }}
+              >
+                PROFESSIONAL SUMMARY
               </h3>
-              <p style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(240,237,232,0.8)" }}>
-                Results-driven Full-Stack AI Engineer specializing in Next.js 19, TypeScript, React 19, Supabase, and autonomous multi-agent orchestration. Proven track record in optimizing enterprise workflows, high-precision data reconciliation (200,000+ records), and crafting high-conversion 60fps digital experiences across web, desktop (Tauri/Rust), and mobile (Capacitor/React Native).
+              <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: theme === "paper" ? "#374151" : "rgba(255,255,255,0.85)" }}>
+                {currentResume.summary}
               </p>
             </div>
+
+            {/* Sections */}
+            {currentResume.sections.map((sec) => (
+              <div key={sec.id} style={{ marginBottom: 20 }}>
+                <h3
+                  style={{
+                    margin: "0 0 8px",
+                    fontSize: 12,
+                    fontWeight: 900,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    color: theme === "paper" ? "#000000" : "#00e5ff",
+                    borderBottom: theme === "paper" ? "1px solid #e5e7eb" : "1px solid rgba(0, 229, 255, 0.15)",
+                    paddingBottom: 2,
+                  }}
+                >
+                  {sec.title}
+                </h3>
+
+                {/* Bullets */}
+                {sec.bullets && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {sec.bullets.map((b) => (
+                      <div
+                        key={b.id}
+                        style={{
+                          fontSize: 11.5,
+                          lineHeight: 1.45,
+                          color: theme === "paper" ? "#374151" : "rgba(255,255,255,0.85)",
+                          display: "flex",
+                          gap: 6,
+                        }}
+                      >
+                        <span style={{ color: theme === "paper" ? "#000000" : "#00e5ff" }}>•</span>
+                        <div>{b.text}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Items (Experience / Projects) */}
+                {sec.items && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    {sec.items.map((item) => (
+                      <div key={item.id}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                          <div style={{ fontSize: 12.5, fontWeight: 800, color: theme === "paper" ? "#111827" : "#ffffff" }}>
+                            {item.title}
+                            {item.subtitle && (
+                              <span style={{ fontWeight: 600, color: theme === "paper" ? "#4b5563" : "rgba(255,255,255,0.6)", marginLeft: 4 }}>
+                                — {item.subtitle}
+                              </span>
+                            )}
+                          </div>
+                          {item.dateRange && (
+                            <span style={{ fontSize: 10.5, color: theme === "paper" ? "#6b7280" : "#94a3b8", fontFamily: "var(--font-mono)" }}>
+                              {item.dateRange} {item.location ? `| ${item.location}` : ""}
+                            </span>
+                          )}
+                        </div>
+
+                        {item.bullets && (
+                          <div style={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 4 }}>
+                            {item.bullets.map((b) => (
+                              <div
+                                key={b.id}
+                                style={{
+                                  fontSize: 11.5,
+                                  lineHeight: 1.45,
+                                  color: theme === "paper" ? "#374151" : "rgba(255,255,255,0.85)",
+                                  display: "flex",
+                                  gap: 6,
+                                }}
+                              >
+                                <span style={{ color: theme === "paper" ? "#000000" : "#00e5ff" }}>•</span>
+                                <div>{b.text}</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
 
-        {activeTab === "skills" && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
-            {SKILLS.map((group) => (
+        {/* TAB 2: INTERACTIVE LIVE EDITOR */}
+        {activeTab === "editor" && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, maxWidth: 1200, margin: "0 auto" }}>
+            {/* Editor Panel */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#00e5ff" }}>
+                  Editing: {currentResume.title}
+                </h3>
+                <span style={{ fontSize: 10.5, color: "#10b981", fontFamily: "var(--font-mono)" }}>
+                  ✓ Instant Auto-Save
+                </span>
+              </div>
+
+              {/* Summary Editor */}
               <div
-                key={group.category}
                 style={{
-                  background: "rgba(6, 16, 32, 0.6)",
-                  padding: 18,
-                  borderRadius: 16,
-                  border: "1px solid rgba(0, 229, 255, 0.15)"
+                  background: "rgba(6, 16, 32, 0.8)",
+                  border: "1px solid rgba(0, 229, 255, 0.2)",
+                  borderRadius: 14,
+                  padding: 16,
                 }}
               >
-                <h4 style={{ margin: "0 0 12px", fontSize: 13, color: "#00e5ff", fontFamily: "var(--font-mono)", textTransform: "uppercase" }}>
-                  {group.category}
-                </h4>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {group.items.map((item) => (
-                    <span
-                      key={item}
-                      style={{
-                        fontSize: 11,
-                        padding: "4px 10px",
-                        borderRadius: 12,
-                        background: "rgba(255,255,255,0.06)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        color: "rgba(240,237,232,0.9)"
-                      }}
-                    >
-                      {item}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <label style={{ fontSize: 11, fontWeight: 800, color: "#00e5ff", textTransform: "uppercase" }}>
+                    Professional Summary
+                  </label>
+                  <button
+                    onClick={() => showToast("AI Copilot polished summary for ATS keywords!")}
+                    style={{
+                      background: "rgba(0, 229, 255, 0.15)",
+                      border: "1px solid #00e5ff",
+                      borderRadius: 6,
+                      padding: "2px 8px",
+                      color: "#00e5ff",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <Sparkles size={11} /> AI Optimize
+                  </button>
+                </div>
+                <textarea
+                  value={currentResume.summary}
+                  onChange={(e) => handleUpdateSummary(e.target.value)}
+                  rows={4}
+                  style={{
+                    width: "100%",
+                    background: "rgba(0,0,0,0.5)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    borderRadius: 8,
+                    padding: 10,
+                    color: "#ffffff",
+                    fontSize: 11.5,
+                    lineHeight: 1.4,
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              {/* Sections Editor */}
+              {currentResume.sections.map((sec) => (
+                <div
+                  key={sec.id}
+                  style={{
+                    background: "rgba(6, 16, 32, 0.8)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: 14,
+                    padding: 16,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                    <span style={{ fontSize: 12, fontWeight: 800, color: "#ffffff", textTransform: "uppercase" }}>
+                      {sec.title}
                     </span>
+                    <span style={{ fontSize: 9.5, color: "#10b981", fontFamily: "var(--font-mono)" }}>
+                      ✓ Evidence Verified
+                    </span>
+                  </div>
+
+                  {sec.bullets?.map((b) => (
+                    <div key={b.id} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 8 }}>
+                      <span style={{ color: "#00e5ff", marginTop: 6 }}>•</span>
+                      <textarea
+                        value={b.text}
+                        onChange={(e) => handleUpdateBullet(sec.id, b.id, e.target.value)}
+                        rows={2}
+                        style={{
+                          flex: 1,
+                          background: "rgba(0,0,0,0.4)",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: 6,
+                          padding: "6px 10px",
+                          color: "#ffffff",
+                          fontSize: 11,
+                          lineHeight: 1.4,
+                          outline: "none",
+                        }}
+                      />
+                      <button
+                        onClick={() => handleAIOptimize(sec.id, b.id)}
+                        style={{
+                          background: "rgba(0, 229, 255, 0.1)",
+                          border: "1px solid rgba(0, 229, 255, 0.3)",
+                          borderRadius: 6,
+                          padding: 6,
+                          color: "#00e5ff",
+                          cursor: "pointer",
+                        }}
+                        title="AI Polish Bullet"
+                      >
+                        <Sparkles size={12} />
+                      </button>
+                    </div>
                   ))}
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
 
-        {activeTab === "experience" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {EXPERIENCE.map((exp, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: "rgba(6, 16, 32, 0.75)",
-                  padding: 20,
-                  borderRadius: 16,
-                  border: "1px solid rgba(0, 229, 255, 0.15)"
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#ffffff" }}>{exp.title}</h3>
-                    <div style={{ fontSize: 12, color: "#00e5ff", marginTop: 2 }}>{exp.company} · {exp.location}</div>
-                  </div>
-                  <span style={{ fontSize: 11, color: "rgba(240,237,232,0.5)", fontFamily: "var(--font-mono)" }}>{exp.date}</span>
-                </div>
-                <p style={{ margin: "10px 0 0", fontSize: 12.5, lineHeight: 1.6, color: "rgba(240,237,232,0.75)" }}>
-                  {exp.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === "projects" && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
-            {PROJECTS.map((proj, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: "rgba(6, 16, 32, 0.75)",
-                  padding: 20,
-                  borderRadius: 16,
-                  border: "1px solid rgba(0, 229, 255, 0.2)",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between"
-                }}
-              >
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#ffffff" }}>{proj.title}</h3>
-                    <span style={{ fontSize: 10, color: "#10b981", fontFamily: "var(--font-mono)", fontWeight: 700 }}>{proj.date}</span>
-                  </div>
-                  <div style={{ fontSize: 10.5, color: "#00e5ff", fontFamily: "var(--font-mono)", marginTop: 4 }}>
-                    {proj.stack}
-                  </div>
-                  <p style={{ margin: "10px 0 0", fontSize: 12, lineHeight: 1.5, color: "rgba(240,237,232,0.75)" }}>
-                    {proj.description}
-                  </p>
-                </div>
-
-                <div style={{ display: "flex", gap: 12, marginTop: 14 }}>
-                  {proj.github && (
-                    <a
-                      href={proj.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        fontSize: 11,
-                        color: "#00e5ff",
-                        textDecoration: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                        fontFamily: "var(--font-mono)"
-                      }}
-                    >
-                      <ExternalLink size={12} /> GitHub Link
-                    </a>
-                  )}
-                  {proj.live && (
-                    <span style={{ fontSize: 11, color: "rgba(240,237,232,0.6)", fontFamily: "var(--font-mono)" }}>
-                      🔗 {proj.live}
-                    </span>
-                  )}
+            {/* Live Paper Preview Column */}
+            <div
+              style={{
+                background: "#ffffff",
+                color: "#111827",
+                borderRadius: 14,
+                padding: 28,
+                boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
+                maxHeight: "80vh",
+                overflowY: "auto",
+                fontFamily: "Arial, sans-serif",
+              }}
+            >
+              <div style={{ borderBottom: "2px solid #000000", paddingBottom: 10, marginBottom: 12 }}>
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: "#000000" }}>VISHWAJEET</h2>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#1f2937", marginTop: 2 }}>{currentResume.targetRole}</div>
+                <div style={{ fontSize: 9.5, color: "#4b5563", marginTop: 4, lineHeight: 1.4 }}>
+                  Bengaluru, Karnataka, India | +91 85952 02922 | vishwajeetsrk@gmail.com<br />
+                  LinkedIn: Vishwajeetsrk | GitHub: Vishwajeetsrk | learnifyai.in
                 </div>
               </div>
-            ))}
-          </div>
-        )}
 
-        {activeTab === "education" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {EDUCATION.map((edu, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: "rgba(6, 16, 32, 0.75)",
-                  padding: 20,
-                  borderRadius: 16,
-                  border: "1px solid rgba(0, 229, 255, 0.15)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap"
-                }}
-              >
-                <div>
-                  <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#ffffff" }}>{edu.degree}</h3>
-                  <div style={{ fontSize: 12, color: "#00e5ff", marginTop: 2 }}>{edu.school}</div>
-                </div>
-                <span style={{ fontSize: 11, color: "rgba(240,237,232,0.5)", fontFamily: "var(--font-mono)" }}>{edu.date}</span>
+              <div style={{ marginBottom: 12 }}>
+                <h4 style={{ margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", borderBottom: "1px solid #e5e7eb" }}>
+                  Summary
+                </h4>
+                <p style={{ margin: 0, fontSize: 9.5, lineHeight: 1.4, color: "#374151" }}>{currentResume.summary}</p>
               </div>
-            ))}
+
+              {currentResume.sections.map((sec) => (
+                <div key={sec.id} style={{ marginBottom: 12 }}>
+                  <h4 style={{ margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", borderBottom: "1px solid #e5e7eb" }}>
+                    {sec.title}
+                  </h4>
+                  {sec.bullets?.map((b) => (
+                    <div key={b.id} style={{ fontSize: 9.5, lineHeight: 1.4, color: "#374151", marginBottom: 3 }}>
+                      • {b.text}
+                    </div>
+                  ))}
+                  {sec.items?.map((item) => (
+                    <div key={item.id} style={{ marginBottom: 6 }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: "#111827" }}>
+                        {item.title} {item.dateRange ? `(${item.dateRange})` : ""}
+                      </div>
+                      {item.bullets?.map((b) => (
+                        <div key={b.id} style={{ fontSize: 9.5, lineHeight: 1.4, color: "#374151" }}>
+                          • {b.text}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

@@ -32,6 +32,7 @@ import {
   BarChart3,
   MessageSquareCode,
   Check,
+  Code,
 } from "lucide-react";
 
 import { ResumeVariant, JobItem, ApplicationItem, ATSBreakdown, InterviewItem, ApplicationAnswer } from "../lib/career/types";
@@ -41,7 +42,14 @@ import { calculateATSScore, recommendBestResume } from "../lib/career/atsMatcher
 import { MASTER_EVIDENCE_GRAPH } from "../lib/career/evidenceGraph";
 import { INITIAL_QUESTION_BANK } from "../lib/career/questionBank";
 import { INITIAL_INTERVIEWS, MASTER_STAR_STORIES } from "../lib/career/interviewCoach";
-import { exportToMarkdown, exportToPlainTextATS, triggerPrintPDF } from "../lib/career/exportEngine";
+import {
+  exportToMarkdown,
+  exportToPlainTextATS,
+  triggerPrintPDF,
+  downloadMarkdownResume,
+  downloadPlainTextResume,
+  downloadJsonResume,
+} from "../lib/career/exportEngine";
 
 export default function CareerOS({ onClose }: { onClose: () => void }) {
   // Navigation
@@ -553,12 +561,12 @@ export default function CareerOS({ onClose }: { onClose: () => void }) {
                       {res.summary.slice(0, 130)}...
                     </p>
 
-                    <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
                       <button
                         onClick={() => { setSelectedResume(res); setActiveTab("editor"); }}
                         style={{
-                          flex: 1,
-                          padding: "5px 10px",
+                          flex: "1 1 120px",
+                          padding: "6px 10px",
                           background: "rgba(0, 229, 255, 0.15)",
                           border: "1px solid rgba(0, 229, 255, 0.4)",
                           borderRadius: 6,
@@ -572,17 +580,16 @@ export default function CareerOS({ onClose }: { onClose: () => void }) {
                           gap: 4,
                         }}
                       >
-                        <Edit3 size={11} /> Edit in Studio
+                        <Edit3 size={11} /> Edit & Preview
                       </button>
                       <button
                         onClick={() => {
-                          const txt = exportToPlainTextATS(res);
-                          navigator.clipboard.writeText(txt);
-                          setCopilotActionStatus(`Copied Plain Text ATS version of ${res.title}`);
+                          downloadPlainTextResume(res);
+                          setCopilotActionStatus(`Downloaded Plain Text ATS: ${res.slug || res.id}.txt`);
                           setTimeout(() => setCopilotActionStatus(null), 3000);
                         }}
                         style={{
-                          padding: "5px 10px",
+                          padding: "6px 10px",
                           background: "rgba(255,255,255,0.06)",
                           border: "1px solid rgba(255,255,255,0.15)",
                           borderRadius: 6,
@@ -593,8 +600,76 @@ export default function CareerOS({ onClose }: { onClose: () => void }) {
                           alignItems: "center",
                           gap: 4,
                         }}
+                        title="Download Plain Text ATS"
                       >
-                        <Copy size={11} /> ATS Text
+                        <FileText size={11} /> .txt
+                      </button>
+                      <button
+                        onClick={() => {
+                          downloadMarkdownResume(res);
+                          setCopilotActionStatus(`Downloaded Markdown Resume: ${res.slug || res.id}.md`);
+                          setTimeout(() => setCopilotActionStatus(null), 3000);
+                        }}
+                        style={{
+                          padding: "6px 10px",
+                          background: "rgba(255,255,255,0.06)",
+                          border: "1px solid rgba(255,255,255,0.15)",
+                          borderRadius: 6,
+                          color: "rgba(255,255,255,0.8)",
+                          fontSize: 10.5,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                        title="Download Markdown"
+                      >
+                        <Download size={11} /> .md
+                      </button>
+                      <button
+                        onClick={() => {
+                          downloadJsonResume(res);
+                          setCopilotActionStatus(`Downloaded JSON Resume: ${res.slug || res.id}.json`);
+                          setTimeout(() => setCopilotActionStatus(null), 3000);
+                        }}
+                        style={{
+                          padding: "6px 10px",
+                          background: "rgba(255,255,255,0.06)",
+                          border: "1px solid rgba(255,255,255,0.15)",
+                          borderRadius: 6,
+                          color: "rgba(255,255,255,0.8)",
+                          fontSize: 10.5,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                        title="Download JSON Data"
+                      >
+                        <Code size={11} /> .json
+                      </button>
+                      <button
+                        onClick={() => {
+                          const txt = exportToPlainTextATS(res);
+                          navigator.clipboard.writeText(txt);
+                          setCopilotActionStatus(`Copied Plain Text ATS version of ${res.title}`);
+                          setTimeout(() => setCopilotActionStatus(null), 3000);
+                        }}
+                        style={{
+                          padding: "6px 10px",
+                          background: "rgba(16,185,129,0.1)",
+                          border: "1px solid rgba(16,185,129,0.3)",
+                          borderRadius: 6,
+                          color: "#34d399",
+                          fontSize: 10.5,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                        title="Copy Plain Text ATS to Clipboard"
+                      >
+                        <Copy size={11} /> Copy
                       </button>
                     </div>
                   </div>
@@ -715,14 +790,112 @@ export default function CareerOS({ onClose }: { onClose: () => void }) {
                   background: "#ffffff",
                   color: "#111827",
                   borderRadius: 12,
-                  padding: 28,
+                  padding: 24,
                   boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
                   overflowY: "auto",
-                  maxHeight: "75vh",
+                  maxHeight: "78vh",
                   fontFamily: "Arial, sans-serif",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
                 }}
               >
-                <div style={{ borderBottom: "2px solid #000000", paddingBottom: 10, marginBottom: 14 }}>
+                {/* Download Actions Toolbar */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingBottom: 12,
+                    borderBottom: "1px solid #e5e7eb",
+                    flexWrap: "wrap",
+                    gap: 6,
+                  }}
+                >
+                  <span style={{ fontSize: 10, fontWeight: 800, color: "#10b981", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    ● ATS Preview ({selectedResume.atsScore}% Match)
+                  </span>
+
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <button
+                      onClick={() => {
+                        downloadPlainTextResume(selectedResume);
+                        setCopilotActionStatus(`Downloaded Plain Text ATS`);
+                        setTimeout(() => setCopilotActionStatus(null), 3000);
+                      }}
+                      style={{
+                        padding: "4px 8px",
+                        background: "#f3f4f6",
+                        border: "1px solid #d1d5db",
+                        borderRadius: 6,
+                        color: "#374151",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                      }}
+                    >
+                      .txt
+                    </button>
+                    <button
+                      onClick={() => {
+                        downloadMarkdownResume(selectedResume);
+                        setCopilotActionStatus(`Downloaded Markdown`);
+                        setTimeout(() => setCopilotActionStatus(null), 3000);
+                      }}
+                      style={{
+                        padding: "4px 8px",
+                        background: "#f3f4f6",
+                        border: "1px solid #d1d5db",
+                        borderRadius: 6,
+                        color: "#374151",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                      }}
+                    >
+                      .md
+                    </button>
+                    <button
+                      onClick={() => {
+                        downloadJsonResume(selectedResume);
+                        setCopilotActionStatus(`Downloaded JSON`);
+                        setTimeout(() => setCopilotActionStatus(null), 3000);
+                      }}
+                      style={{
+                        padding: "4px 8px",
+                        background: "#f3f4f6",
+                        border: "1px solid #d1d5db",
+                        borderRadius: 6,
+                        color: "#374151",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                      }}
+                    >
+                      .json
+                    </button>
+                    <button
+                      onClick={triggerPrintPDF}
+                      style={{
+                        padding: "4px 10px",
+                        background: "#0284c7",
+                        border: "none",
+                        borderRadius: 6,
+                        color: "#ffffff",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                      }}
+                    >
+                      <Printer size={11} /> Print PDF
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ borderBottom: "2px solid #000000", paddingBottom: 10, marginBottom: 8 }}>
                   <h1 style={{ margin: 0, fontSize: 20, fontWeight: 900, letterSpacing: "0.05em", color: "#000000" }}>VISHWAJEET</h1>
                   <div style={{ fontSize: 11, fontWeight: 700, color: "#1f2937", marginTop: 2 }}>{selectedResume.targetRole}</div>
                   <div style={{ fontSize: 9.5, color: "#4b5563", marginTop: 4, lineHeight: 1.4 }}>

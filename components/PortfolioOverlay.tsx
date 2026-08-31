@@ -1,15 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { User, Target, Github, FolderGit2, Briefcase, Video, Building2, Sparkles, Layers } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User, Target, Github, FolderGit2, Briefcase, Video, Building2, Sparkles, Layers, FileText } from "lucide-react";
 import CareerOS from "./CareerOS";
+import CyberResume from "./CyberResume";
 import MissionLog from "./MissionLog";
 import GithubProjectsPanel from "./GithubProjectsPanel";
 import GrowthCenter from "./GrowthCenter";
 import WorkspaceProjectsPanel from "./WorkspaceProjectsPanel";
 
 export default function PortfolioOverlay() {
-  const [activePanel, setActivePanel] = useState<"career" | "mission" | "github" | "growth" | "workspace" | null>(null);
+  const [activePanel, setActivePanel] = useState<"career" | "resume" | "mission" | "github" | "growth" | "workspace" | null>(null);
+
+  useEffect(() => {
+    const handleOpenResume = () => setActivePanel("resume");
+    const handleOpenCareer = () => setActivePanel("career");
+    window.addEventListener("OPEN_RESUME_STUDIO", handleOpenResume);
+    window.addEventListener("OPEN_CYBER_RESUME", handleOpenResume);
+    window.addEventListener("OPEN_CAREER_OS", handleOpenCareer);
+    return () => {
+      window.removeEventListener("OPEN_RESUME_STUDIO", handleOpenResume);
+      window.removeEventListener("OPEN_CYBER_RESUME", handleOpenResume);
+      window.removeEventListener("OPEN_CAREER_OS", handleOpenCareer);
+    };
+  }, []);
 
   const handleOpenUIStudio = () => {
     window.dispatchEvent(new CustomEvent("OPEN_UI_STUDIO"));
@@ -147,6 +161,33 @@ export default function PortfolioOverlay() {
 
         <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
 
+        {/* 3.5 Resume Studio (8 Canonical Resumes) */}
+        <button
+          onClick={() => setActivePanel(activePanel === "resume" ? null : "resume")}
+          style={{
+            background: activePanel === "resume" ? "rgba(16, 185, 129, 0.25)" : "rgba(16, 185, 129, 0.08)",
+            border: activePanel === "resume" ? "1px solid #10b981" : "1px solid rgba(16, 185, 129, 0.35)",
+            color: "#34d399",
+            padding: "7px 14px",
+            borderRadius: 20,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 7,
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.75rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+            fontWeight: 800,
+            boxShadow: "0 0 14px rgba(16,185,129,0.15)",
+            transition: "all 0.2s",
+          }}
+        >
+          <FileText size={15} /> Resume Studio
+        </button>
+
+        <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
+
         {/* 4. Content & Video Studio */}
         <button
           onClick={handleOpenContentStudio}
@@ -269,6 +310,7 @@ export default function PortfolioOverlay() {
       {/* Render Active Panels */}
       {activePanel === "workspace" && <WorkspaceProjectsPanel onClose={() => setActivePanel(null)} />}
       {activePanel === "career" && <CareerOS onClose={() => setActivePanel(null)} />}
+      {activePanel === "resume" && <CyberResume onClose={() => setActivePanel(null)} />}
       {activePanel === "mission" && <MissionLog onClose={() => setActivePanel(null)} />}
       {activePanel === "github" && <GithubProjectsPanel onClose={() => setActivePanel(null)} />}
       {activePanel === "growth" && <GrowthCenter onClose={() => setActivePanel(null)} />}
