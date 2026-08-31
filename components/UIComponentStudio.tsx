@@ -58,6 +58,8 @@ import { TracingBeam } from "@/components/ui/tracing-beam";
 import { ThreeDMarquee } from "@/components/ui/3d-marquee";
 import { Modal, ModalTrigger, ModalBody, ModalContent, ModalFooter } from "@/components/ui/animated-modal";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 export interface UIComponentItem {
   id: string;
   name: string;
@@ -74,6 +76,20 @@ export interface UIComponentItem {
   defaultParams?: Record<string, any>;
 }
 
+// ─── Category config (icon + accent color) ────────────────────────────────────
+
+const CATEGORY_META: Record<string, { icon: string; color: string; glow: string }> = {
+  "All":                  { icon: "◈", color: "#00e5ff", glow: "rgba(0,229,255,0.25)" },
+  "WebGL & Shaders":      { icon: "⬡", color: "#a78bfa", glow: "rgba(167,139,250,0.25)" },
+  "Hardware & 3D":        { icon: "◻", color: "#38bdf8", glow: "rgba(56,189,248,0.25)" },
+  "Kinetic Typography":   { icon: "Aa", color: "#fb923c", glow: "rgba(251,146,60,0.25)" },
+  "Controls & Inputs":    { icon: "⊞", color: "#34d399", glow: "rgba(52,211,153,0.25)" },
+  "Cards & Navigation":   { icon: "▣", color: "#f472b6", glow: "rgba(244,114,182,0.25)" },
+  "Ambient FX & Loaders": { icon: "✦", color: "#fbbf24", glow: "rgba(251,191,36,0.25)" },
+};
+
+// ─── Error Boundary ───────────────────────────────────────────────────────────
+
 class SafeDemoErrorBoundary extends React.Component<
   { name: string; children: React.ReactNode },
   { hasError: boolean; errorMsg: string }
@@ -88,34 +104,18 @@ class SafeDemoErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div
-          style={{
-            height: "100%",
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 16,
-            textAlign: "center",
-            background: "rgba(220, 38, 38, 0.08)",
-            borderRadius: 12,
-            border: "1px solid rgba(220, 38, 38, 0.3)",
-          }}
-        >
-          <span style={{ fontSize: "1.2rem", marginBottom: 4 }}>⚠️</span>
-          <span style={{ fontSize: "0.78rem", fontWeight: "bold", color: "#f87171" }}>
-            {this.props.name} WebGL Preview Standby
-          </span>
-          <span style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.6)", marginTop: 4, maxWidth: 260 }}>
-            {this.state.errorMsg}
-          </span>
+        <div className="uis-error-boundary">
+          <span style={{ fontSize: "1.4rem" }}>⚠️</span>
+          <span className="uis-error-title">{this.props.name} Preview Standby</span>
+          <span className="uis-error-msg">{this.state.errorMsg}</span>
         </div>
       );
     }
     return this.props.children;
   }
 }
+
+// ─── Lazy Demo Loader ─────────────────────────────────────────────────────────
 
 function LazyDemoCard({ comp, params }: { comp: UIComponentItem; params: Record<string, any> }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -124,75 +124,32 @@ function LazyDemoCard({ comp, params }: { comp: UIComponentItem; params: Record<
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-
-    if (typeof IntersectionObserver === "undefined") {
-      setIsVisible(true);
-      return;
-    }
-
+    if (typeof IntersectionObserver === "undefined") { setIsVisible(true); return; }
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        } else {
-          setIsVisible(false);
-        }
-      },
+      ([entry]) => setIsVisible(entry.isIntersecting),
       { rootMargin: "300px 0px" }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        position: "relative",
-        height: "100%",
-        width: "100%",
-        minHeight: 180,
-        borderRadius: 12,
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <div ref={containerRef} className="uis-demo-container">
       {isVisible ? (
         <SafeDemoErrorBoundary name={comp.name}>
           {comp.renderDemo(params)}
         </SafeDemoErrorBoundary>
       ) : (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            color: "rgba(0, 229, 255, 0.7)",
-          }}
-        >
-          <div
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: "50%",
-              border: "2px solid rgba(0, 229, 255, 0.3)",
-              borderTopColor: "#00e5ff",
-              animation: "spin 1s linear infinite",
-            }}
-          />
-          <span style={{ fontSize: "0.68rem", fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.5)" }}>
-            Loading {comp.name}...
-          </span>
+        <div className="uis-loading-state">
+          <div className="uis-spinner" />
+          <span className="uis-loading-text">Loading {comp.name}…</span>
         </div>
       )}
     </div>
   );
 }
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const [mounted, setMounted] = useState(false);
@@ -204,10 +161,10 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
   const [fullscreenComponentId, setFullscreenComponentId] = useState<string | null>(null);
   const [skillInstallToast, setSkillInstallToast] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const catScrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const handleOpen = () => setInternalOpen(true);
@@ -225,11 +182,8 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isModalOpen) {
-        if (fullscreenComponentId) {
-          setFullscreenComponentId(null);
-        } else {
-          handleClose();
-        }
+        if (fullscreenComponentId) setFullscreenComponentId(null);
+        else handleClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -245,6 +199,8 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
     "Cards & Navigation",
     "Ambient FX & Loaders",
   ];
+
+  // ─── Component Catalog ──────────────────────────────────────────────────────
 
   const componentsCatalog: UIComponentItem[] = useMemo(() => [
     {
@@ -312,7 +268,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       renderDemo: (p) => (
         <div className="flex h-48 w-full items-center justify-center p-6 bg-neutral-950 rounded-2xl border border-neutral-800">
           <h2 className="text-3xl font-bold text-white text-center">
-            Build applications at <SquigglyText className="text-amber-400 font-extrabold">{p?.highlight || "warp speed"}</SquigglyText>
+            Build at <SquigglyText className="text-amber-400 font-extrabold">{p?.highlight || "warp speed"}</SquigglyText>
           </h2>
         </div>
       ),
@@ -342,7 +298,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
     },
     {
       id: "tooltip-card",
-      name: "Tooltip Card (Tyler Durden)",
+      name: "Tooltip Card",
       category: "Cards & Navigation",
       description: "Rich interactive hover card with profile picture and bio preview.",
       codeSnippet: `import { Tooltip } from "@/components/ui/tooltip-card";\n\nexport function Demo() {\n  return (\n    <Tooltip content={<Card />}>\n      <span className="font-bold text-cyan-400">Tyler Durden</span>\n    </Tooltip>\n  );\n}`,
@@ -352,11 +308,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
           <Tooltip
             content={
               <div className="space-y-2">
-                <img
-                  src="https://assets.aceternity.com/screenshots/tyler.webp"
-                  alt="Tyler"
-                  className="h-28 w-full rounded-lg object-cover"
-                />
+                <img src="https://assets.aceternity.com/screenshots/tyler.webp" alt="Tyler" className="h-28 w-full rounded-lg object-cover" />
                 <h4 className="font-bold text-white">{p?.name || "Tyler Durden"}</h4>
                 <p className="text-xs text-neutral-400">{p?.role || "Soap Developer & Project Mayhem Lead."}</p>
               </div>
@@ -404,26 +356,14 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       renderDemo: (p) => (
         <CardContainer>
           <CardBody className="relative h-auto w-80 rounded-2xl border border-neutral-700 bg-neutral-900 p-6 shadow-2xl">
-            <CardItem translateZ={40} className="text-lg font-bold text-white">
-              {p?.title || "Float Elements in 3D Air"}
-            </CardItem>
-            <CardItem translateZ={50} as="p" className="mt-2 text-xs text-neutral-400">
-              {p?.subtitle || "Hover over this card to activate the perspective matrix."}
-            </CardItem>
+            <CardItem translateZ={40} className="text-lg font-bold text-white">{p?.title || "Float Elements in 3D Air"}</CardItem>
+            <CardItem translateZ={50} as="p" className="mt-2 text-xs text-neutral-400">{p?.subtitle || "Hover over this card to activate the perspective matrix."}</CardItem>
             <CardItem translateZ={70} className="mt-4 w-full">
-              <img
-                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1000&auto=format&fit=crop"
-                alt="thumbnail"
-                className="h-36 w-full rounded-xl object-cover"
-              />
+              <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1000&auto=format&fit=crop" alt="thumbnail" className="h-36 w-full rounded-xl object-cover" />
             </CardItem>
             <div className="mt-6 flex items-center justify-between">
-              <CardItem translateZ={30} as="span" className="text-xs text-cyan-400">
-                Explore →
-              </CardItem>
-              <CardItem translateZ={40} as="button" className="rounded-lg bg-white px-3 py-1 text-xs font-bold text-black">
-                Launch
-              </CardItem>
+              <CardItem translateZ={30} as="span" className="text-xs text-cyan-400">Explore →</CardItem>
+              <CardItem translateZ={40} as="button" className="rounded-lg bg-white px-3 py-1 text-xs font-bold text-black">Launch</CardItem>
             </div>
           </CardBody>
         </CardContainer>
@@ -569,7 +509,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
     },
     {
       id: "images-badge",
-      name: "Images Badge Hover Fan",
+      name: "Images Badge Fan",
       category: "Cards & Navigation",
       description: "Interactive floating image stack that fans out on hover.",
       codeSnippet: `import { ImagesBadge } from "@/components/ui/images-badge";\n\nexport function Demo() {\n  return <ImagesBadge text="Introducing Pro Features" images={images} />;\n}`,
@@ -597,9 +537,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       renderDemo: () => (
         <div className="relative h-64 w-full overflow-hidden rounded-2xl bg-neutral-950 flex items-center justify-center border border-neutral-800">
           <WebcamPixelGrid gridCols={35} gridRows={25} />
-          <h3 className="relative z-10 text-lg font-bold text-white backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/20">
-            Realtime Pixel Matrix
-          </h3>
+          <h3 className="relative z-10 text-lg font-bold text-white backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/20">Realtime Pixel Matrix</h3>
         </div>
       ),
     },
@@ -612,18 +550,8 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       renderDemo: () => (
         <AnimatedTestimonials
           testimonials={[
-            {
-              quote: "The autonomous agent constellation completely automated our deployment pipeline.",
-              name: "Sarah Chen",
-              designation: "Head of AI Architecture",
-              src: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=800&auto=format&fit=crop",
-            },
-            {
-              quote: "Zero fabrication verification with Level 6 Human approval is revolutionary.",
-              name: "Michael Rodriguez",
-              designation: "CTO, CloudScale",
-              src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop",
-            },
+            { quote: "The autonomous agent constellation completely automated our deployment pipeline.", name: "Sarah Chen", designation: "Head of AI Architecture", src: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=800&auto=format&fit=crop" },
+            { quote: "Zero fabrication verification with Level 6 Human approval is revolutionary.", name: "Michael Rodriguez", designation: "CTO, CloudScale", src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop" },
           ]}
         />
       ),
@@ -739,15 +667,13 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       codeSnippet: `import { ExpandableCardList } from "@/components/ui/expandable-card";\n\nexport function Demo() {\n  return <ExpandableCardList items={items} />;\n}`,
       renderDemo: () => (
         <ExpandableCardList
-          items={[
-            {
-              title: "Autonomous Fleet Orchestration",
-              description: "18 specialized agent personas with real-time reasoning traces.",
-              src: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
-              ctaText: "Deploy",
-              content: () => <p className="text-xs text-neutral-300">Full multi-tier execution tree with Level 6 Human Approval Gate.</p>,
-            },
-          ]}
+          items={[{
+            title: "Autonomous Fleet Orchestration",
+            description: "18 specialized agent personas with real-time reasoning traces.",
+            src: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
+            ctaText: "Deploy",
+            content: () => <p className="text-xs text-neutral-300">Full multi-tier execution tree with Level 6 Human Approval Gate.</p>,
+          }]}
         />
       ),
     },
@@ -781,11 +707,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       codeSnippet: `import { Lens } from "@/components/ui/lens";\n\nexport function Demo() {\n  return <Lens><img src="diagram.png" /></Lens>;\n}`,
       renderDemo: () => (
         <Lens className="h-56 w-full max-w-sm mx-auto overflow-hidden rounded-2xl border border-neutral-800">
-          <img
-            src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=800&auto=format&fit=crop"
-            alt="mesh"
-            className="h-full w-full object-cover"
-          />
+          <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=800&auto=format&fit=crop" alt="mesh" className="h-full w-full object-cover" />
         </Lens>
       ),
     },
@@ -797,9 +719,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       codeSnippet: `import { LoaderOne, LoaderThree, LoaderFour } from "@/components/ui/loader";\n\nexport function Demo() {\n  return <div className="flex gap-4"><LoaderOne /><LoaderThree /><LoaderFour /></div>;\n}`,
       renderDemo: () => (
         <div className="flex h-36 w-full items-center justify-around bg-neutral-950 rounded-2xl border border-neutral-800 p-6">
-          <LoaderOne />
-          <LoaderThree />
-          <LoaderFour />
+          <LoaderOne /><LoaderThree /><LoaderFour />
         </div>
       ),
     },
@@ -834,9 +754,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       renderDemo: (p) => (
         <div className="flex h-40 w-full items-center justify-center bg-neutral-950 rounded-2xl border border-neutral-800 p-6">
           <PointerHighlight>
-            <span className="p-3 rounded-xl bg-neutral-900 border border-neutral-800 text-sm font-bold text-white">
-              {p?.label || "Collaborative Cursor Focus"}
-            </span>
+            <span className="p-3 rounded-xl bg-neutral-900 border border-neutral-800 text-sm font-bold text-white">{p?.label || "Collaborative Cursor Focus"}</span>
           </PointerHighlight>
         </div>
       ),
@@ -847,7 +765,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       name: "Floating Resizable Navbar",
       category: "Cards & Navigation",
       description: "Adaptive scroll-responsive navigation dock.",
-      codeSnippet: `import { Navbar, NavBody, NavItems, NavbarLogo, NavbarButton } from "@/components/ui/resizable-navbar";\n\nexport function Demo() {\n  return <Navbar><NavBody><NavbarLogo />...</NavBody></Navbar>;\n}`,
+      codeSnippet: `import { Navbar, NavBody, NavItems, NavbarLogo, NavbarButton } from "@/components/ui/resizable-navbar";\n\nexport function Demo() {\n  return <Navbar><NavBody><NavbarLogo />...<\/NavBody><\/Navbar>;\n}`,
       renderDemo: () => (
         <div className="relative h-44 w-full bg-neutral-950 rounded-2xl p-4 flex items-center justify-center border border-neutral-800">
           <Navbar>
@@ -953,9 +871,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       codeSnippet: `import { Button } from "@/components/ui/stateful-button";\n\nexport function Demo() {\n  return <Button onClick={async () => await fetch('/api')}>Deploy App</Button>;\n}`,
       renderDemo: (p) => (
         <div className="flex h-36 w-full items-center justify-center bg-neutral-950 rounded-2xl border border-neutral-800">
-          <StatefulButton
-            onClick={() => new Promise((resolve) => setTimeout(resolve, 2000))}
-          >
+          <StatefulButton onClick={() => new Promise((resolve) => setTimeout(resolve, 2000))}>
             {p?.label || "Execute Agent Mission"}
           </StatefulButton>
         </div>
@@ -964,7 +880,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
     },
     {
       id: "gemini-effect",
-      name: "Google Gemini Curves Effect",
+      name: "Google Gemini Curves",
       category: "Ambient FX & Loaders",
       description: "Generative multi-strand glowing curve waves.",
       codeSnippet: `import { GoogleGeminiEffect } from "@/components/ui/google-gemini-effect";\n\nexport function Demo() {\n  return <GoogleGeminiEffect />;\n}`,
@@ -991,14 +907,10 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
             <ModalBody>
               <ModalContent>
                 <h3 className="text-xl font-bold">{p?.modalTitle || "Autonomous Deployment Protocol"}</h3>
-                <p className="text-sm text-neutral-300">
-                  Ready to deploy 18 autonomous agents across connected cloud infrastructure.
-                </p>
+                <p className="text-sm text-neutral-300">Ready to deploy 18 autonomous agents across connected cloud infrastructure.</p>
               </ModalContent>
               <ModalFooter>
-                <button className="rounded-lg bg-cyan-500 px-4 py-2 font-bold text-black">
-                  Confirm & Execute
-                </button>
+                <button className="rounded-lg bg-cyan-500 px-4 py-2 font-bold text-black">Confirm & Execute</button>
               </ModalFooter>
             </ModalBody>
           </Modal>
@@ -1008,7 +920,8 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
     },
   ], []);
 
-  // Filtered components
+  // ─── Filtering ─────────────────────────────────────────────────────────────
+
   const filteredComponents = useMemo(() => {
     return componentsCatalog.filter((c: UIComponentItem) => {
       const matchCat = selectedCategory === "All" || c.category === selectedCategory;
@@ -1019,6 +932,8 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       return matchCat && matchSearch;
     });
   }, [componentsCatalog, selectedCategory, searchQuery]);
+
+  // ─── Actions ───────────────────────────────────────────────────────────────
 
   const handleInstallSkill = (comp: UIComponentItem) => {
     setSkillInstallToast(`✨ Skill [${comp.name}] installed into .agents/skills/ & ready for pair programming!`);
@@ -1036,592 +951,624 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
   if (!isModalOpen || !mounted || typeof document === "undefined") return null;
 
   const fullscreenComp = componentsCatalog.find((c: UIComponentItem) => c.id === fullscreenComponentId);
+  const activeCatMeta = CATEGORY_META[selectedCategory] || CATEGORY_META["All"];
+
+  // ─── Portal Content ────────────────────────────────────────────────────────
 
   const modalContent = (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 999999,
-        background: "rgba(3, 7, 18, 0.98)",
-        backdropFilter: "blur(32px)",
-        color: "#ffffff",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-      }}
-    >
-      {/* Toast Notification */}
-      {skillInstallToast && (
-        <div
-          style={{
-            position: "fixed",
-            top: 24,
-            right: 24,
-            zIndex: 1000000,
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            background: "rgba(6, 78, 59, 0.95)",
-            border: "1px solid #10b981",
-            borderRadius: 14,
-            padding: "12px 20px",
-            color: "#6ee7b7",
-            fontWeight: "bold",
-            fontSize: "0.85rem",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(16, 185, 129, 0.4)",
-            backdropFilter: "blur(16px)",
-          }}
-        >
-          <span>{skillInstallToast}</span>
-        </div>
-      )}
+    <>
+      {/* ── Scoped CSS (injected once into the portal) ────────────────────── */}
+      <style>{`
+        /* Reset & base */
+        .uis-root *, .uis-root *::before, .uis-root *::after { box-sizing: border-box; }
 
-      {/* Fullscreen Isolated View Modal */}
-      {fullscreenComp && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 1000001,
-            background: "#02040a",
-            display: "flex",
-            flexDirection: "column",
-            padding: 24,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-              paddingBottom: 16,
-              marginBottom: 20,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ fontSize: "1.3rem", fontWeight: 900, color: "#00e5ff", letterSpacing: "0.04em" }}>
-                {fullscreenComp.name}
-              </span>
-              <span
-                style={{
-                  fontSize: "0.72rem",
-                  padding: "3px 10px",
-                  borderRadius: 12,
-                  background: "rgba(0, 229, 255, 0.15)",
-                  border: "1px solid rgba(0, 229, 255, 0.35)",
-                  color: "#00e5ff",
-                  fontWeight: 700,
-                }}
-              >
-                {fullscreenComp.category}
-              </span>
-            </div>
-            <button
-              onClick={() => setFullscreenComponentId(null)}
-              style={{
-                padding: "8px 18px",
-                borderRadius: 12,
-                background: "rgba(255, 255, 255, 0.08)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                color: "#ffffff",
-                fontSize: "0.82rem",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              ✕ Exit Fullscreen
-            </button>
+        /* Root shell */
+        .uis-root {
+          position: fixed; inset: 0; z-index: 999999;
+          background: rgba(3, 7, 18, 0.97);
+          backdrop-filter: blur(40px);
+          -webkit-backdrop-filter: blur(40px);
+          color: #fff;
+          display: flex; flex-direction: column;
+          overflow: hidden;
+          font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* ── Header ─────────────────────────────── */
+        .uis-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 12px 20px;
+          background: rgba(6, 12, 28, 0.96);
+          border-bottom: 1px solid rgba(0,229,255,0.18);
+          flex-shrink: 0;
+          min-height: 64px;
+        }
+        .uis-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+        .uis-logo-box {
+          width: 40px; height: 40px; flex-shrink: 0;
+          border-radius: 12px;
+          background: rgba(0,229,255,0.1);
+          border: 1px solid rgba(0,229,255,0.35);
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 0 18px rgba(0,229,255,0.2);
+        }
+        .uis-logo-box img { width: 28px; height: 28px; object-fit: contain; }
+        .uis-title-group { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .uis-title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .uis-title {
+          font-size: clamp(0.8rem, 2.5vw, 1.1rem);
+          font-weight: 900; letter-spacing: 0.05em; color: #fff; margin: 0;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .uis-count-pill {
+          font-size: 0.62rem; padding: 2px 8px; border-radius: 99px;
+          background: linear-gradient(90deg, #00e5ff 0%, #3b82f6 100%);
+          color: #020617; font-weight: 900; letter-spacing: 0.06em;
+          text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
+        }
+        .uis-subtitle {
+          font-size: clamp(0.6rem, 1.5vw, 0.74rem);
+          color: rgba(255,255,255,0.5); margin: 0;
+          display: none;
+        }
+        @media (min-width: 480px) { .uis-subtitle { display: block; } }
+
+        .uis-close-btn {
+          width: 40px; height: 40px; flex-shrink: 0;
+          border-radius: 12px;
+          background: rgba(255,255,255,0.06);
+          border: 1px solid rgba(255,255,255,0.15);
+          color: #fff; font-size: 1rem; font-weight: bold;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; transition: all 0.2s;
+        }
+        .uis-close-btn:hover { background: rgba(239,68,68,0.2); border-color: #ef4444; }
+
+        /* ── Search & Filter bar ────────────────── */
+        .uis-filter-bar {
+          display: flex; flex-direction: column; gap: 10px;
+          padding: 12px 20px 10px;
+          background: rgba(4,9,20,0.88);
+          border-bottom: 1px solid rgba(255,255,255,0.07);
+          flex-shrink: 0;
+        }
+        .uis-search-row {
+          display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+        }
+        .uis-search-wrap { position: relative; flex: 1; min-width: 160px; max-width: 520px; }
+        .uis-search-icon {
+          position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+          font-size: 0.85rem; opacity: 0.5; pointer-events: none;
+        }
+        .uis-search-input {
+          width: 100%; padding: 9px 12px 9px 36px;
+          background: rgba(10,18,36,0.9);
+          border: 1px solid rgba(0,229,255,0.25);
+          border-radius: 12px; color: #fff;
+          font-size: clamp(14px, 2vw, 0.82rem);
+          outline: none; transition: border-color 0.2s;
+        }
+        .uis-search-input:focus { border-color: rgba(0,229,255,0.55); }
+        .uis-search-input::placeholder { color: rgba(255,255,255,0.35); }
+        .uis-result-count {
+          font-size: 0.72rem; color: rgba(255,255,255,0.45);
+          font-family: monospace; white-space: nowrap; flex-shrink: 0;
+        }
+
+        /* Category pills – horizontal scroll on mobile */
+        .uis-cat-scroll {
+          display: flex; gap: 6px;
+          overflow-x: auto; padding-bottom: 4px;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          -webkit-overflow-scrolling: touch;
+        }
+        .uis-cat-scroll::-webkit-scrollbar { display: none; }
+        .uis-cat-pill {
+          display: inline-flex; align-items: center; gap: 5px;
+          padding: 6px 13px; border-radius: 99px;
+          font-size: 0.72rem; font-weight: 600;
+          font-family: monospace; white-space: nowrap;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.1);
+          color: rgba(255,255,255,0.65);
+          cursor: pointer; transition: all 0.18s; flex-shrink: 0;
+          touch-action: manipulation;
+        }
+        .uis-cat-pill:hover { background: rgba(255,255,255,0.09); }
+        .uis-cat-pill.active {
+          font-weight: 800;
+        }
+
+        /* ── Grid scroll area ───────────────────── */
+        .uis-grid-area {
+          flex: 1; overflow-y: auto; padding: 20px 20px 32px;
+        }
+        .uis-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+          gap: 18px;
+          max-width: 1800px; margin: 0 auto;
+        }
+        @media (max-width: 480px) {
+          .uis-grid { grid-template-columns: 1fr; gap: 14px; }
+          .uis-grid-area { padding: 14px 12px 28px; }
+        }
+
+        /* ── Component Card ─────────────────────── */
+        .uis-card {
+          background: rgba(8, 14, 30, 0.92);
+          border: 1px solid rgba(0,229,255,0.14);
+          border-radius: 18px;
+          padding: 16px;
+          display: flex; flex-direction: column; gap: 12px;
+          box-shadow: 0 6px 28px rgba(0,0,0,0.4);
+          transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+        }
+        .uis-card:hover {
+          border-color: rgba(0,229,255,0.32);
+          box-shadow: 0 8px 40px rgba(0,0,0,0.55), 0 0 24px rgba(0,229,255,0.1);
+          transform: translateY(-2px);
+        }
+
+        .uis-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+        .uis-card-info { flex: 1; min-width: 0; }
+        .uis-card-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .uis-card-name { margin: 0; font-size: 0.92rem; font-weight: 800; color: #fff; }
+        .uis-card-cat-badge {
+          font-size: 0.6rem; padding: 2px 7px; border-radius: 8px;
+          background: rgba(0,229,255,0.1);
+          border: 1px solid rgba(0,229,255,0.25);
+          color: #00e5ff; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+        }
+        .uis-card-desc {
+          margin: 4px 0 0; font-size: 0.71rem;
+          color: rgba(255,255,255,0.5); line-height: 1.45;
+        }
+
+        .uis-fullscreen-btn {
+          display: flex; align-items: center; gap: 4px;
+          padding: 6px 10px; border-radius: 8px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          color: rgba(255,255,255,0.65);
+          font-size: 0.65rem; font-weight: 600;
+          cursor: pointer; flex-shrink: 0; white-space: nowrap;
+          touch-action: manipulation; min-height: 34px;
+          transition: all 0.18s;
+        }
+        .uis-fullscreen-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+        /* Preview viewport */
+        .uis-preview-box {
+          height: 220px; width: 100%;
+          border-radius: 13px;
+          background: #02050b;
+          border: 1px solid rgba(255,255,255,0.07);
+          position: relative; overflow: hidden;
+          display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Code view */
+        .uis-code-box {
+          height: 220px; width: 100%;
+          border-radius: 13px;
+          background: #010409;
+          border: 1px solid rgba(255,255,255,0.07);
+          display: flex; flex-direction: column; overflow: hidden;
+        }
+        .uis-code-header {
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 7px 12px;
+          border-bottom: 1px solid rgba(255,255,255,0.06);
+          background: rgba(255,255,255,0.02);
+        }
+        .uis-code-lang { font-size: 0.66rem; font-family: monospace; color: rgba(255,255,255,0.45); }
+        .uis-copy-btn {
+          padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: bold;
+          cursor: pointer; transition: all 0.15s; touch-action: manipulation;
+        }
+        .uis-copy-btn.idle {
+          background: rgba(0,229,255,0.12);
+          border: 1px solid rgba(0,229,255,0.35);
+          color: #00e5ff;
+        }
+        .uis-copy-btn.copied {
+          background: #10b981; border: 1px solid #10b981; color: #000;
+        }
+        .uis-code-pre {
+          flex: 1; margin: 0; padding: 12px; overflow: auto;
+          font-size: 0.72rem; font-family: monospace;
+          color: #7dd3fc; line-height: 1.55;
+        }
+
+        /* Customize view */
+        .uis-customize-box {
+          height: 220px; width: 100%;
+          border-radius: 13px;
+          background: #030712;
+          border: 1px solid rgba(255,255,255,0.07);
+          padding: 14px; overflow-y: auto;
+          display: flex; flex-direction: column; gap: 12px;
+        }
+        .uis-param-label-head { font-size: 0.68rem; font-weight: bold; color: #00e5ff; text-transform: uppercase; }
+        .uis-param-key { font-size: 0.66rem; color: rgba(255,255,255,0.65); font-family: monospace; margin-bottom: 3px; display: block; }
+        .uis-param-text {
+          width: 100%; padding: 6px 10px; border-radius: 8px;
+          background: rgba(15,23,42,0.9);
+          border: 1px solid rgba(255,255,255,0.13);
+          color: #fff; font-size: 0.72rem; outline: none;
+        }
+
+        /* Card footer */
+        .uis-card-footer {
+          display: flex; align-items: center; justify-content: space-between;
+          gap: 8px; flex-wrap: wrap;
+          border-top: 1px solid rgba(255,255,255,0.06);
+          padding-top: 10px;
+        }
+        .uis-tab-group {
+          display: flex; gap: 2px;
+          background: rgba(0,0,0,0.4);
+          padding: 3px; border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.06);
+        }
+        .uis-tab-btn {
+          padding: 5px 10px; border-radius: 7px;
+          font-size: 0.64rem; font-weight: 700;
+          text-transform: uppercase; font-family: monospace;
+          background: transparent; border: 1px solid transparent;
+          color: rgba(255,255,255,0.45);
+          cursor: pointer; transition: all 0.15s; min-height: 30px;
+          touch-action: manipulation;
+        }
+        .uis-tab-btn.active {
+          background: rgba(0,229,255,0.2);
+          border-color: rgba(0,229,255,0.45);
+          color: #00e5ff;
+        }
+        .uis-install-btn {
+          display: flex; align-items: center; gap: 5px;
+          padding: 6px 12px; border-radius: 9px;
+          background: rgba(16,185,129,0.13);
+          border: 1px solid rgba(16,185,129,0.35);
+          color: #34d399; font-size: 0.68rem; font-weight: 700;
+          cursor: pointer; transition: all 0.2s;
+          touch-action: manipulation; min-height: 34px;
+        }
+        .uis-install-btn:hover { background: rgba(16,185,129,0.25); border-color: #34d399; }
+
+        /* ── Lazy loader states ─────────────────── */
+        .uis-demo-container {
+          position: relative; height: 100%; width: 100%;
+          min-height: 180px; border-radius: 12px; overflow: hidden;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .uis-loading-state {
+          display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .uis-spinner {
+          width: 22px; height: 22px; border-radius: 50%;
+          border: 2px solid rgba(0,229,255,0.2);
+          border-top-color: #00e5ff;
+          animation: uis-spin 0.9s linear infinite;
+        }
+        @keyframes uis-spin { to { transform: rotate(360deg); } }
+        .uis-loading-text { font-size: 0.66rem; font-family: monospace; color: rgba(255,255,255,0.45); }
+
+        /* ── Error boundary ─────────────────────── */
+        .uis-error-boundary {
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          gap: 6px; padding: 16px; text-align: center;
+          background: rgba(220,38,38,0.08); border-radius: 12px;
+          border: 1px solid rgba(220,38,38,0.3);
+          width: 100%; height: 100%;
+        }
+        .uis-error-title { font-size: 0.78rem; font-weight: bold; color: #f87171; }
+        .uis-error-msg { font-size: 0.66rem; color: rgba(255,255,255,0.55); max-width: 280px; }
+
+        /* ── Toast ──────────────────────────────── */
+        .uis-toast {
+          position: fixed; top: 20px; right: 20px; z-index: 1000002;
+          display: flex; align-items: center; gap: 10px;
+          background: rgba(6,78,59,0.97);
+          border: 1px solid #10b981;
+          border-radius: 14px; padding: 12px 20px;
+          color: #6ee7b7; font-weight: bold; font-size: 0.82rem;
+          box-shadow: 0 8px 36px rgba(0,0,0,0.8), 0 0 20px rgba(16,185,129,0.35);
+          backdrop-filter: blur(16px); max-width: calc(100vw - 40px);
+        }
+        @media (max-width: 480px) {
+          .uis-toast { top: auto; bottom: 80px; right: 12px; left: 12px; font-size: 0.75rem; }
+        }
+
+        /* ── Fullscreen view ────────────────────── */
+        .uis-fullscreen-overlay {
+          position: fixed; inset: 0; z-index: 1000001;
+          background: #02040a;
+          display: flex; flex-direction: column;
+          padding: 20px;
+        }
+        .uis-fullscreen-header {
+          display: flex; align-items: center; justify-content: space-between;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+          padding-bottom: 14px; margin-bottom: 18px; gap: 12px; flex-wrap: wrap;
+        }
+        .uis-fullscreen-name { font-size: clamp(1rem,3vw,1.3rem); font-weight: 900; color: #00e5ff; }
+        .uis-fullscreen-cat {
+          font-size: 0.72rem; padding: 3px 10px; border-radius: 12px;
+          background: rgba(0,229,255,0.14); border: 1px solid rgba(0,229,255,0.3);
+          color: #00e5ff; font-weight: 700;
+        }
+        .uis-fullscreen-exit {
+          padding: 8px 18px; border-radius: 12px;
+          background: rgba(255,255,255,0.07);
+          border: 1px solid rgba(255,255,255,0.18);
+          color: #fff; font-size: 0.82rem; font-weight: bold;
+          cursor: pointer; white-space: nowrap;
+          touch-action: manipulation; min-height: 40px;
+        }
+        .uis-fullscreen-body {
+          flex: 1; display: flex; align-items: center; justify-content: center;
+          overflow: auto; padding: 16px;
+          background: radial-gradient(ellipse at center, rgba(0,229,255,0.05) 0%, #010308 100%);
+          border-radius: 14px; border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* ── Empty state ────────────────────────── */
+        .uis-empty {
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          gap: 12px; padding: 60px 20px; text-align: center;
+          color: rgba(255,255,255,0.35);
+        }
+        .uis-empty-icon { font-size: 3rem; opacity: 0.5; }
+        .uis-empty-title { font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,0.5); }
+        .uis-empty-sub { font-size: 0.8rem; max-width: 280px; line-height: 1.5; }
+      `}</style>
+
+      <div className="uis-root" role="dialog" aria-modal="true" aria-label="NEXORA UI Component Studio">
+
+        {/* ── Toast ──────────────────────────────── */}
+        {skillInstallToast && (
+          <div className="uis-toast" role="status" aria-live="polite">
+            <span>{skillInstallToast}</span>
           </div>
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "auto",
-              padding: 20,
-              background: "radial-gradient(ellipse at center, rgba(0, 229, 255, 0.05) 0%, #010308 100%)",
-              borderRadius: 16,
-              border: "1px solid rgba(255, 255, 255, 0.06)",
-            }}
-          >
-            <SafeDemoErrorBoundary name={fullscreenComp.name}>
-              {fullscreenComp.renderDemo(customParams[fullscreenComp.id] || fullscreenComp.defaultParams || {})}
-            </SafeDemoErrorBoundary>
-          </div>
-        </div>
-      )}
+        )}
 
-      {/* Top Header Bar */}
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "14px 28px",
-          background: "rgba(6, 12, 24, 0.94)",
-          backdropFilter: "blur(24px)",
-          borderBottom: "1px solid rgba(0, 229, 255, 0.22)",
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 12,
-              background: "rgba(0, 229, 255, 0.12)",
-              border: "1px solid rgba(0, 229, 255, 0.4)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              boxShadow: "0 0 16px rgba(0, 229, 255, 0.25)",
-            }}
-          >
-            <img src="/main-logo.png" alt="NEXORA" style={{ width: 28, height: 28, objectFit: "contain" }} />
-          </div>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <h1 style={{ margin: 0, fontSize: "1.12rem", fontWeight: 900, letterSpacing: "0.06em", color: "#ffffff" }}>
-                NEXORA UI COMPONENT STUDIO
-              </h1>
-              <span
-                style={{
-                  fontSize: "0.68rem",
-                  padding: "2px 8px",
-                  borderRadius: 12,
-                  background: "linear-gradient(90deg, #00e5ff 0%, #3b82f6 100%)",
-                  color: "#020617",
-                  fontWeight: 900,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                }}
-              >
-                53 PRO COMPONENTS
-              </span>
-            </div>
-            <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "rgba(255, 255, 255, 0.6)" }}>
-              Live Interactive Previews · 1-Click Code Copy · Parameter Customizer · Agent Skill Exporter
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={handleClose}
-          aria-label="Close UI Studio"
-          style={{
-            width: 38,
-            height: 38,
-            borderRadius: 12,
-            background: "rgba(255, 255, 255, 0.06)",
-            border: "1px solid rgba(255, 255, 255, 0.18)",
-            color: "#ffffff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "1.1rem",
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "all 0.2s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(239, 68, 68, 0.2)";
-            e.currentTarget.style.borderColor = "#ef4444";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255, 255, 255, 0.06)";
-            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.18)";
-          }}
-        >
-          ✕
-        </button>
-      </header>
-
-      {/* Search & Filter Categories */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-          padding: "14px 28px",
-          background: "rgba(4, 9, 18, 0.8)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 14 }}>
-          <div style={{ position: "relative", flex: 1, maxWidth: 480 }}>
-            <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: "0.85rem", opacity: 0.6 }}>
-              🔍
-            </span>
-            <input
-              type="text"
-              placeholder="Search 53+ shaders, 3D cards, inputs, typography & FX..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "9px 14px 9px 38px",
-                background: "rgba(12, 20, 36, 0.9)",
-                border: "1px solid rgba(0, 229, 255, 0.3)",
-                borderRadius: 12,
-                color: "#ffffff",
-                fontSize: "0.82rem",
-                outline: "none",
-                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)",
-              }}
-            />
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: "0.75rem", color: "rgba(255, 255, 255, 0.5)", fontFamily: "monospace" }}>
-              Showing {filteredComponents.length} of {componentsCatalog.length}
-            </span>
-          </div>
-        </div>
-
-        {/* Categories Bar */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {categories.map((cat) => {
-            const active = selectedCategory === cat;
-            const count = cat === "All" ? componentsCatalog.length : componentsCatalog.filter((c: UIComponentItem) => c.category === cat).length;
-            return (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                style={{
-                  padding: "6px 14px",
-                  borderRadius: 20,
-                  fontSize: "0.72rem",
-                  fontWeight: active ? 800 : 600,
-                  fontFamily: "monospace",
-                  background: active ? "rgba(0, 229, 255, 0.2)" : "rgba(255, 255, 255, 0.04)",
-                  border: active ? "1px solid #00e5ff" : "1px solid rgba(255, 255, 255, 0.12)",
-                  color: active ? "#00e5ff" : "rgba(255, 255, 255, 0.7)",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  boxShadow: active ? "0 0 14px rgba(0, 229, 255, 0.25)" : "none",
-                }}
-              >
-                {cat} ({count})
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Component Grid Scroll View */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "24px 28px",
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))",
-            gap: 22,
-            maxWidth: 1720,
-            margin: "0 auto",
-          }}
-        >
-          {filteredComponents.map((comp: UIComponentItem) => {
-            const activeTab = activeTabMap[comp.id] || "preview";
-            const params = customParams[comp.id] || comp.defaultParams || {};
-
-            return (
-              <div
-                key={comp.id}
-                style={{
-                  background: "rgba(8, 14, 28, 0.88)",
-                  backdropFilter: "blur(20px)",
-                  border: "1px solid rgba(0, 229, 255, 0.18)",
-                  borderRadius: 20,
-                  padding: 18,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 14,
-                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.45)",
-                  transition: "all 0.25s ease",
-                }}
-              >
-                {/* Card Header */}
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-                  <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 800, color: "#ffffff" }}>
-                        {comp.name}
-                      </h3>
-                      <span
-                        style={{
-                          fontSize: "0.62rem",
-                          padding: "2px 7px",
-                          borderRadius: 8,
-                          background: "rgba(0, 229, 255, 0.12)",
-                          border: "1px solid rgba(0, 229, 255, 0.3)",
-                          color: "#00e5ff",
-                          fontWeight: 700,
-                        }}
-                      >
-                        {comp.category}
-                      </span>
-                    </div>
-                    <p style={{ margin: "4px 0 0 0", fontSize: "0.72rem", color: "rgba(255, 255, 255, 0.55)", lineHeight: 1.4 }}>
-                      {comp.description}
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => setFullscreenComponentId(comp.id)}
-                    title="Fullscreen Mode"
-                    style={{
-                      padding: "5px 9px",
-                      borderRadius: 8,
-                      background: "rgba(255, 255, 255, 0.05)",
-                      border: "1px solid rgba(255, 255, 255, 0.12)",
-                      color: "rgba(255, 255, 255, 0.7)",
-                      fontSize: "0.68rem",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                    }}
-                  >
-                    <span>⛶</span> Fullscreen
-                  </button>
-                </div>
-
-                {/* Card Body - Content Switcher */}
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
-                  {activeTab === "preview" && (
-                    <div
-                      style={{
-                        height: 220,
-                        width: "100%",
-                        borderRadius: 14,
-                        background: "#02050b",
-                        border: "1px solid rgba(255, 255, 255, 0.08)",
-                        position: "relative",
-                        overflow: "hidden",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <LazyDemoCard comp={comp} params={params} />
-                    </div>
-                  )}
-
-                  {activeTab === "code" && (
-                    <div
-                      style={{
-                        height: 220,
-                        width: "100%",
-                        borderRadius: 14,
-                        background: "#010409",
-                        border: "1px solid rgba(255, 255, 255, 0.08)",
-                        position: "relative",
-                        overflow: "hidden",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          padding: "8px 12px",
-                          borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
-                          background: "rgba(255, 255, 255, 0.02)",
-                        }}
-                      >
-                        <span style={{ fontSize: "0.68rem", fontFamily: "monospace", color: "rgba(255, 255, 255, 0.5)" }}>
-                          React + TypeScript
-                        </span>
-                        <button
-                          onClick={() => copyCode(comp.codeSnippet, comp.id)}
-                          style={{
-                            padding: "4px 10px",
-                            borderRadius: 6,
-                            background: copiedId === comp.id ? "#10b981" : "rgba(0, 229, 255, 0.15)",
-                            border: copiedId === comp.id ? "1px solid #10b981" : "1px solid rgba(0, 229, 255, 0.4)",
-                            color: copiedId === comp.id ? "#000000" : "#00e5ff",
-                            fontSize: "0.65rem",
-                            fontWeight: "bold",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {copiedId === comp.id ? "✓ Copied!" : "📋 Copy Code"}
-                        </button>
-                      </div>
-                      <pre
-                        style={{
-                          flex: 1,
-                          margin: 0,
-                          padding: 12,
-                          overflow: "auto",
-                          fontSize: "0.72rem",
-                          fontFamily: "monospace",
-                          color: "#7dd3fc",
-                          lineHeight: 1.5,
-                        }}
-                      >
-                        <code>{comp.codeSnippet}</code>
-                      </pre>
-                    </div>
-                  )}
-
-                  {activeTab === "customize" && (
-                    <div
-                      style={{
-                        height: 220,
-                        width: "100%",
-                        borderRadius: 14,
-                        background: "#030712",
-                        border: "1px solid rgba(255, 255, 255, 0.08)",
-                        padding: 14,
-                        overflowY: "auto",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 12,
-                      }}
-                    >
-                      <div style={{ fontSize: "0.72rem", fontWeight: "bold", color: "#00e5ff", textTransform: "uppercase" }}>
-                        Live Parameters
-                      </div>
-                      {comp.defaultParams &&
-                        Object.keys(comp.defaultParams).map((key) => (
-                          <div key={key} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                            <label style={{ fontSize: "0.68rem", color: "rgba(255, 255, 255, 0.7)", fontFamily: "monospace" }}>
-                              {key}:
-                            </label>
-                            {typeof comp.defaultParams![key] === "number" ? (
-                              <input
-                                type="range"
-                                min={0.1}
-                                max={5}
-                                step={0.1}
-                                value={params[key] ?? comp.defaultParams![key]}
-                                onChange={(e) =>
-                                  setCustomParams((prev: Record<string, Record<string, any>>) => ({
-                                    ...prev,
-                                    [comp.id]: {
-                                      ...(prev[comp.id] || {}),
-                                      [key]: parseFloat(e.target.value),
-                                    },
-                                  }))
-                                }
-                                style={{ accentColor: "#00e5ff" }}
-                              />
-                            ) : (
-                              <input
-                                type="text"
-                                value={params[key] ?? comp.defaultParams![key]}
-                                onChange={(e) =>
-                                  setCustomParams((prev: Record<string, Record<string, any>>) => ({
-                                    ...prev,
-                                    [comp.id]: {
-                                      ...(prev[comp.id] || {}),
-                                      [key]: e.target.value,
-                                    },
-                                  }))
-                                }
-                                style={{
-                                  padding: "6px 10px",
-                                  borderRadius: 8,
-                                  background: "rgba(15, 23, 42, 0.9)",
-                                  border: "1px solid rgba(255, 255, 255, 0.15)",
-                                  color: "#ffffff",
-                                  fontSize: "0.72rem",
-                                  outline: "none",
-                                }}
-                              />
-                            )}
-                          </div>
-                        ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Card Footer Segmented Tabs & Action */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
-                    paddingTop: 10,
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 3,
-                      background: "rgba(0, 0, 0, 0.45)",
-                      padding: 3,
-                      borderRadius: 10,
-                      border: "1px solid rgba(255, 255, 255, 0.06)",
-                    }}
-                  >
-                    {(["preview", "code", "customize"] as const).map((tab) => (
-                      <button
-                        key={tab}
-                        onClick={() => setActiveTabMap((prev: Record<string, "preview" | "code" | "customize">) => ({ ...prev, [comp.id]: tab }))}
-                        style={{
-                          padding: "4px 9px",
-                          borderRadius: 8,
-                          fontSize: "0.65rem",
-                          fontWeight: 700,
-                          textTransform: "uppercase",
-                          fontFamily: "monospace",
-                          background: activeTab === tab ? "rgba(0, 229, 255, 0.22)" : "transparent",
-                          border: activeTab === tab ? "1px solid rgba(0, 229, 255, 0.5)" : "1px solid transparent",
-                          color: activeTab === tab ? "#00e5ff" : "rgba(255, 255, 255, 0.5)",
-                          cursor: "pointer",
-                          transition: "all 0.15s ease",
-                        }}
-                      >
-                        {tab}
-                      </button>
-                    ))}
-                  </div>
-
-                  <button
-                    onClick={() => handleInstallSkill(comp)}
-                    style={{
-                      padding: "5px 11px",
-                      borderRadius: 9,
-                      background: "rgba(16, 185, 129, 0.15)",
-                      border: "1px solid rgba(16, 185, 129, 0.4)",
-                      color: "#34d399",
-                      fontSize: "0.68rem",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      transition: "all 0.2s",
-                    }}
-                  >
-                    <span>✨</span> Install Skill
-                  </button>
-                </div>
+        {/* ── Fullscreen overlay ─────────────────── */}
+        {fullscreenComp && (
+          <div className="uis-fullscreen-overlay" role="dialog" aria-modal="true" aria-label={`${fullscreenComp.name} fullscreen preview`}>
+            <div className="uis-fullscreen-header">
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                <span className="uis-fullscreen-name">{fullscreenComp.name}</span>
+                <span className="uis-fullscreen-cat">{fullscreenComp.category}</span>
               </div>
-            );
-          })}
+              <button className="uis-fullscreen-exit" onClick={() => setFullscreenComponentId(null)} aria-label="Exit fullscreen">
+                ✕ Exit Fullscreen
+              </button>
+            </div>
+            <div className="uis-fullscreen-body">
+              <SafeDemoErrorBoundary name={fullscreenComp.name}>
+                {fullscreenComp.renderDemo(customParams[fullscreenComp.id] || fullscreenComp.defaultParams || {})}
+              </SafeDemoErrorBoundary>
+            </div>
+          </div>
+        )}
+
+        {/* ── Header ─────────────────────────────── */}
+        <header className="uis-header">
+          <div className="uis-header-left">
+            <div className="uis-logo-box" aria-hidden="true">
+              <img src="/main-logo.png" alt="NEXORA" />
+            </div>
+            <div className="uis-title-group">
+              <div className="uis-title-row">
+                <h1 className="uis-title">NEXORA UI STUDIO</h1>
+                <span className="uis-count-pill">{componentsCatalog.length} COMPONENTS</span>
+              </div>
+              <p className="uis-subtitle">
+                Live Previews · Code Copy · Parameter Customizer · Skill Exporter
+              </p>
+            </div>
+          </div>
+          <button
+            className="uis-close-btn"
+            onClick={handleClose}
+            aria-label="Close UI Studio"
+            title="Close (Esc)"
+          >
+            ✕
+          </button>
+        </header>
+
+        {/* ── Search & Categories ────────────────── */}
+        <div className="uis-filter-bar" role="search">
+          <div className="uis-search-row">
+            <div className="uis-search-wrap">
+              <span className="uis-search-icon" aria-hidden="true">🔍</span>
+              <input
+                id="uis-search"
+                type="search"
+                className="uis-search-input"
+                placeholder="Search shaders, 3D cards, typography, FX…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoComplete="off"
+                spellCheck={false}
+                aria-label="Search components"
+              />
+            </div>
+            <span className="uis-result-count" aria-live="polite" aria-atomic="true">
+              {filteredComponents.length} of {componentsCatalog.length}
+            </span>
+          </div>
+
+          {/* Category horizontal scroll */}
+          <div className="uis-cat-scroll" ref={catScrollRef} role="tablist" aria-label="Filter by category">
+            {categories.map((cat) => {
+              const active = selectedCategory === cat;
+              const meta = CATEGORY_META[cat] || CATEGORY_META["All"];
+              const count = cat === "All" ? componentsCatalog.length : componentsCatalog.filter((c: UIComponentItem) => c.category === cat).length;
+              return (
+                <button
+                  key={cat}
+                  role="tab"
+                  aria-selected={active}
+                  className={`uis-cat-pill${active ? " active" : ""}`}
+                  onClick={() => setSelectedCategory(cat)}
+                  style={active ? {
+                    background: `${meta.glow.replace("0.25", "0.18")}`,
+                    border: `1px solid ${meta.color}`,
+                    color: meta.color,
+                    boxShadow: `0 0 14px ${meta.glow}`,
+                  } : undefined}
+                >
+                  <span aria-hidden="true">{meta.icon}</span>
+                  {cat === "All" ? "All" : cat.split(" & ")[0]}
+                  <span style={{ opacity: 0.6 }}>({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Component Grid ─────────────────────── */}
+        <div className="uis-grid-area" role="main">
+          {filteredComponents.length === 0 ? (
+            <div className="uis-empty" role="status">
+              <span className="uis-empty-icon">🔭</span>
+              <span className="uis-empty-title">No components found</span>
+              <span className="uis-empty-sub">Try a different search term or clear the category filter.</span>
+            </div>
+          ) : (
+            <div className="uis-grid">
+              {filteredComponents.map((comp: UIComponentItem) => {
+                const activeTab = activeTabMap[comp.id] || "preview";
+                const params = customParams[comp.id] || comp.defaultParams || {};
+                const catMeta = CATEGORY_META[comp.category] || CATEGORY_META["All"];
+
+                return (
+                  <article key={comp.id} className="uis-card" aria-label={comp.name}>
+                    {/* Card header */}
+                    <div className="uis-card-header">
+                      <div className="uis-card-info">
+                        <div className="uis-card-name-row">
+                          <h3 className="uis-card-name">{comp.name}</h3>
+                          <span
+                            className="uis-card-cat-badge"
+                            style={{ borderColor: `${catMeta.color}55`, color: catMeta.color, background: `${catMeta.glow.replace("0.25", "0.12")}` }}
+                          >
+                            {catMeta.icon} {comp.category.split(" & ")[0]}
+                          </span>
+                        </div>
+                        <p className="uis-card-desc">{comp.description}</p>
+                      </div>
+                      <button
+                        className="uis-fullscreen-btn"
+                        onClick={() => setFullscreenComponentId(comp.id)}
+                        title="Open in fullscreen"
+                        aria-label={`View ${comp.name} in fullscreen`}
+                      >
+                        ⛶ <span className="hide-on-mobile">Fullscreen</span>
+                      </button>
+                    </div>
+
+                    {/* Content view */}
+                    {activeTab === "preview" && (
+                      <div className="uis-preview-box" aria-label={`${comp.name} preview`}>
+                        <LazyDemoCard comp={comp} params={params} />
+                      </div>
+                    )}
+
+                    {activeTab === "code" && (
+                      <div className="uis-code-box" aria-label={`${comp.name} code`}>
+                        <div className="uis-code-header">
+                          <span className="uis-code-lang">React + TypeScript</span>
+                          <button
+                            className={`uis-copy-btn ${copiedId === comp.id ? "copied" : "idle"}`}
+                            onClick={() => copyCode(comp.codeSnippet, comp.id)}
+                            aria-label={copiedId === comp.id ? "Code copied!" : "Copy code to clipboard"}
+                          >
+                            {copiedId === comp.id ? "✓ Copied!" : "📋 Copy"}
+                          </button>
+                        </div>
+                        <pre className="uis-code-pre"><code>{comp.codeSnippet}</code></pre>
+                      </div>
+                    )}
+
+                    {activeTab === "customize" && (
+                      <div className="uis-customize-box" aria-label={`${comp.name} parameter controls`}>
+                        <div className="uis-param-label-head">Live Parameters</div>
+                        {comp.defaultParams ? (
+                          Object.keys(comp.defaultParams).map((key) => (
+                            <div key={key} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                              <label className="uis-param-key" htmlFor={`uis-param-${comp.id}-${key}`}>{key}:</label>
+                              {typeof comp.defaultParams![key] === "number" ? (
+                                <input
+                                  id={`uis-param-${comp.id}-${key}`}
+                                  type="range" min={0.1} max={5} step={0.1}
+                                  value={params[key] ?? comp.defaultParams![key]}
+                                  onChange={(e) => setCustomParams((prev: Record<string, Record<string, any>>) => ({
+                                    ...prev,
+                                    [comp.id]: { ...(prev[comp.id] || {}), [key]: parseFloat(e.target.value) },
+                                  }))}
+                                  style={{ accentColor: "#00e5ff" }}
+                                />
+                              ) : (
+                                <input
+                                  id={`uis-param-${comp.id}-${key}`}
+                                  type="text"
+                                  className="uis-param-text"
+                                  value={params[key] ?? comp.defaultParams![key]}
+                                  onChange={(e) => setCustomParams((prev: Record<string, Record<string, any>>) => ({
+                                    ...prev,
+                                    [comp.id]: { ...(prev[comp.id] || {}), [key]: e.target.value },
+                                  }))}
+                                />
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.4)" }}>No configurable parameters for this component.</span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Footer */}
+                    <div className="uis-card-footer">
+                      <div className="uis-tab-group" role="tablist" aria-label={`${comp.name} view tabs`}>
+                        {(["preview", "code", "customize"] as const).map((tab) => (
+                          <button
+                            key={tab}
+                            role="tab"
+                            aria-selected={activeTab === tab}
+                            className={`uis-tab-btn${activeTab === tab ? " active" : ""}`}
+                            onClick={() => setActiveTabMap((prev: Record<string, "preview" | "code" | "customize">) => ({ ...prev, [comp.id]: tab }))}
+                          >
+                            {tab === "preview" ? "▶ Preview" : tab === "code" ? "{ } Code" : "⚙ Params"}
+                          </button>
+                        ))}
+                      </div>
+
+                      <button
+                        className="uis-install-btn"
+                        onClick={() => handleInstallSkill(comp)}
+                        aria-label={`Install ${comp.name} as a skill`}
+                      >
+                        <span aria-hidden="true">✨</span> Install Skill
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 
   return createPortal(modalContent, document.body);
