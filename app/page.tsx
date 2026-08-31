@@ -62,23 +62,22 @@ export default function Home() {
       {/* Top-left overview HUD: live clock + weather + user profile links */}
       <ApexOverviewPanel />
 
-      {/* Top Center Master Brand Logo */}
+      {/* Top Left Master Brand Logo */}
       <div
         style={{
-          position: "absolute",
+          position: "fixed",
           top: 14,
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 40,
+          left: "clamp(12px, 1.8vw, 24px)",
+          zIndex: 70,
           display: "flex",
           alignItems: "center",
           gap: 10,
           padding: "6px 14px",
-          background: "rgba(4, 10, 22, 0.75)",
+          background: "rgba(4, 10, 22, 0.88)",
           backdropFilter: "blur(20px)",
-          border: "1px solid rgba(0, 229, 255, 0.25)",
+          border: "1px solid rgba(0, 229, 255, 0.35)",
           borderRadius: 24,
-          boxShadow: "0 0 25px rgba(0, 229, 255, 0.12)",
+          boxShadow: "0 0 25px rgba(0, 229, 255, 0.2)",
           pointerEvents: "auto",
         }}
       >
@@ -130,77 +129,6 @@ export default function Home() {
           gap: 6,
         }}
       >
-        <button
-          onClick={handleOpenUIStudio}
-          aria-label="Open UI Studio"
-          title="Open UI Component Studio (50+ Pro Components)"
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.68rem",
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
-            color: "#c084fc",
-            border: "1px solid rgba(192, 132, 252, 0.45)",
-            borderRadius: 20,
-            padding: "6px 12px",
-            background: "rgba(168, 85, 247, 0.15)",
-            backdropFilter: "blur(8px)",
-            boxShadow: "0 0 16px rgba(168, 85, 247, 0.25)",
-            fontWeight: 700,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 5,
-            transition: "all 0.2s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(168, 85, 247, 0.35)";
-            e.currentTarget.style.borderColor = "#c084fc";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(168, 85, 247, 0.15)";
-            e.currentTarget.style.borderColor = "rgba(192, 132, 252, 0.45)";
-          }}
-        >
-          <Sparkles size={13} color="#c084fc" />
-          <span className="hide-on-mobile">UI Studio</span>
-        </button>
-
-        <button
-          onClick={handleOpenResumeStudio}
-          aria-label="Open Resume Studio"
-          title="Open Career OS Resume Studio (8 Canonical Resumes)"
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.68rem",
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
-            color: "#34d399",
-            border: "1px solid rgba(16, 185, 129, 0.45)",
-            borderRadius: 20,
-            padding: "6px 12px",
-            background: "rgba(16, 185, 129, 0.15)",
-            backdropFilter: "blur(8px)",
-            boxShadow: "0 0 16px rgba(16, 185, 129, 0.25)",
-            fontWeight: 700,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 5,
-            transition: "all 0.2s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(16, 185, 129, 0.35)";
-            e.currentTarget.style.borderColor = "#34d399";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(16, 185, 129, 0.15)";
-            e.currentTarget.style.borderColor = "rgba(16, 185, 129, 0.45)";
-          }}
-        >
-          <FileText size={13} color="#34d399" />
-          <span className="hide-on-mobile">Resume Studio</span>
-        </button>
 
         <button
           onClick={handleOpenConsole}

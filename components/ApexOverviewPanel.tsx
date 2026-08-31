@@ -204,7 +204,7 @@ export default function ApexOverviewPanel() {
       <div
         style={{
           position: "absolute",
-          top: 14,
+          top: 56,
           left: 8,
           width: "min(520px, 94vw)",
           height: 260,
@@ -228,7 +228,7 @@ export default function ApexOverviewPanel() {
         tabIndex={0}
         aria-label="Toggle overview panel"
         aria-expanded={open}
-        style={{ position: "relative", height: 44, cursor: "pointer", pointerEvents: "auto", userSelect: "none" }}
+        style={{ position: "relative", top: 44, height: 44, cursor: "pointer", pointerEvents: "auto", userSelect: "none" }}
       >
         <div
           style={{
@@ -279,7 +279,7 @@ export default function ApexOverviewPanel() {
       <div
         style={{
           position: "absolute",
-          top: 54,
+          top: 96,
           left: 10,
           width: "min(480px, calc(100vw - 20px))",
           pointerEvents: open ? "auto" : "none",
