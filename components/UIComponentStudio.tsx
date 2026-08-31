@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { CloudShader } from "@/components/ui/cloud-shader";
 import { MacbookScroll } from "@/components/ui/macbook-scroll";
 import { Notch, type NotchItem } from "@/components/ui/notch";
@@ -95,6 +95,44 @@ class SafeDemoErrorBoundary extends React.Component<
     }
     return this.props.children;
   }
+}
+
+function LazyDemoCard({ comp, params }: { comp: UIComponentItem; params: any }) {
+  const [isInView, setIsInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setIsInView(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+        }
+      },
+      { rootMargin: "300px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef} className="w-full flex items-center justify-center min-h-[140px]">
+      {isInView ? (
+        <SafeDemoErrorBoundary name={comp.name}>
+          {comp.renderDemo(params)}
+        </SafeDemoErrorBoundary>
+      ) : (
+        <div className="flex flex-col items-center justify-center p-8 text-center text-neutral-500">
+          <div className="h-5 w-5 rounded-full border-2 border-cyan-500/40 border-t-cyan-400 animate-spin mb-2" />
+          <span className="text-[11px] font-mono">Loading {comp.name}...</span>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
@@ -1136,11 +1174,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
                 {/* Content Area */}
                 <div className="flex-1 p-4 flex flex-col justify-center">
                   {activeTab === "preview" && (
-                    <div className="w-full flex items-center justify-center">
-                      <SafeDemoErrorBoundary name={comp.name}>
-                        {comp.renderDemo(params)}
-                      </SafeDemoErrorBoundary>
-                    </div>
+                    <LazyDemoCard comp={comp} params={params} />
                   )}
 
                   {activeTab === "code" && (
