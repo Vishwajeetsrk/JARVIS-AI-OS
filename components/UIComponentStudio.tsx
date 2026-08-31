@@ -58,38 +58,57 @@ import { TracingBeam } from "@/components/ui/tracing-beam";
 import { ThreeDMarquee } from "@/components/ui/3d-marquee";
 import { Modal, ModalTrigger, ModalBody, ModalContent, ModalFooter } from "@/components/ui/animated-modal";
 
-interface UIComponentItem {
+export interface UIComponentItem {
   id: string;
   name: string;
-  category: "WebGL & Shaders" | "Hardware & 3D" | "Kinetic Typography" | "Controls & Inputs" | "Cards & Navigation" | "Ambient FX & Loaders";
+  category:
+    | "WebGL & Shaders"
+    | "Hardware & 3D"
+    | "Kinetic Typography"
+    | "Controls & Inputs"
+    | "Cards & Navigation"
+    | "Ambient FX & Loaders";
   description: string;
   codeSnippet: string;
-  renderDemo: (params: any) => React.ReactNode;
+  renderDemo: (params?: Record<string, any>) => React.ReactNode;
   defaultParams?: Record<string, any>;
 }
 
 class SafeDemoErrorBoundary extends React.Component<
-  { children: React.ReactNode; name: string },
+  { name: string; children: React.ReactNode },
   { hasError: boolean; errorMsg: string }
 > {
-  constructor(props: any) {
+  constructor(props: { name: string; children: React.ReactNode }) {
     super(props);
     this.state = { hasError: false, errorMsg: "" };
   }
   static getDerivedStateFromError(error: any) {
-    return { hasError: true, errorMsg: error?.message || "Render issue" };
-  }
-  componentDidCatch(error: any) {
-    console.warn(`[UIStudio] Error rendering demo for ${this.props.name}:`, error);
+    return { hasError: true, errorMsg: error?.message || "Demo render unavailable" };
   }
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center p-6 text-center rounded-2xl bg-neutral-900/80 border border-neutral-800 text-neutral-400">
-          <span className="text-xl mb-1">⚡</span>
-          <span className="text-xs font-bold text-neutral-300">Live Preview Ready</span>
-          <span className="text-[10px] text-neutral-500 mt-1">
-            Check the "Code" tab to view ready-to-use TypeScript code for {this.props.name}.
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+            textAlign: "center",
+            background: "rgba(220, 38, 38, 0.08)",
+            borderRadius: 12,
+            border: "1px solid rgba(220, 38, 38, 0.3)",
+          }}
+        >
+          <span style={{ fontSize: "1.2rem", marginBottom: 4 }}>⚠️</span>
+          <span style={{ fontSize: "0.78rem", fontWeight: "bold", color: "#f87171" }}>
+            {this.props.name} WebGL Preview Standby
+          </span>
+          <span style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.6)", marginTop: 4, maxWidth: 260 }}>
+            {this.state.errorMsg}
           </span>
         </div>
       );
@@ -98,38 +117,77 @@ class SafeDemoErrorBoundary extends React.Component<
   }
 }
 
-function LazyDemoCard({ comp, params }: { comp: UIComponentItem; params: any }) {
-  const [isInView, setIsInView] = useState(false);
+function LazyDemoCard({ comp, params }: { comp: UIComponentItem; params: Record<string, any> }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") {
-      setIsInView(true);
+    if (!el) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      setIsVisible(true);
       return;
     }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsInView(true);
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
         }
       },
-      { rootMargin: "300px" }
+      { rootMargin: "300px 0px" }
     );
+
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full flex items-center justify-center min-h-[140px]">
-      {isInView ? (
+    <div
+      ref={containerRef}
+      style={{
+        position: "relative",
+        height: "100%",
+        width: "100%",
+        minHeight: 180,
+        borderRadius: 12,
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {isVisible ? (
         <SafeDemoErrorBoundary name={comp.name}>
           {comp.renderDemo(params)}
         </SafeDemoErrorBoundary>
       ) : (
-        <div className="flex flex-col items-center justify-center p-8 text-center text-neutral-500">
-          <div className="h-5 w-5 rounded-full border-2 border-cyan-500/40 border-t-cyan-400 animate-spin mb-2" />
-          <span className="text-[11px] font-mono">Loading {comp.name}...</span>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            color: "rgba(0, 229, 255, 0.7)",
+          }}
+        >
+          <div
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: "50%",
+              border: "2px solid rgba(0, 229, 255, 0.3)",
+              borderTopColor: "#00e5ff",
+              animation: "spin 1s linear infinite",
+            }}
+          />
+          <span style={{ fontSize: "0.68rem", fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.5)" }}>
+            Loading {comp.name}...
+          </span>
         </div>
       )}
     </div>
@@ -145,6 +203,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
   const [customParams, setCustomParams] = useState<Record<string, Record<string, any>>>({});
   const [fullscreenComponentId, setFullscreenComponentId] = useState<string | null>(null);
   const [skillInstallToast, setSkillInstallToast] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -951,7 +1010,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
 
   // Filtered components
   const filteredComponents = useMemo(() => {
-    return componentsCatalog.filter((c) => {
+    return componentsCatalog.filter((c: UIComponentItem) => {
       const matchCat = selectedCategory === "All" || c.category === selectedCategory;
       const matchSearch =
         c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -962,45 +1021,133 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
   }, [componentsCatalog, selectedCategory, searchQuery]);
 
   const handleInstallSkill = (comp: UIComponentItem) => {
-    setSkillInstallToast(`Skill [${comp.name}] installed into .agents/skills/ & ready for pair programming!`);
+    setSkillInstallToast(`✨ Skill [${comp.name}] installed into .agents/skills/ & ready for pair programming!`);
     setTimeout(() => setSkillInstallToast(null), 4000);
+  };
+
+  const copyCode = (code: string, id: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(code);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2500);
+    }
   };
 
   if (!isModalOpen || !mounted || typeof document === "undefined") return null;
 
-  const fullscreenComp = componentsCatalog.find((c) => c.id === fullscreenComponentId);
+  const fullscreenComp = componentsCatalog.find((c: UIComponentItem) => c.id === fullscreenComponentId);
 
   const modalContent = (
     <div
-      className="fixed inset-0 flex flex-col bg-neutral-950/98 text-white backdrop-blur-2xl overflow-hidden animate-in fade-in duration-200"
-      style={{ position: "fixed", inset: 0, zIndex: 999999, pointerEvents: "auto" }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 999999,
+        background: "rgba(3, 7, 18, 0.98)",
+        backdropFilter: "blur(32px)",
+        color: "#ffffff",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      }}
     >
       {/* Toast Notification */}
       {skillInstallToast && (
-        <div className="fixed top-6 right-6 z-50 flex items-center gap-3 rounded-2xl border border-emerald-500/50 bg-emerald-950/90 px-5 py-3 text-sm font-bold text-emerald-200 shadow-2xl backdrop-blur-xl animate-in slide-in-from-top-4 duration-300">
-          <span>✨</span>
+        <div
+          style={{
+            position: "fixed",
+            top: 24,
+            right: 24,
+            zIndex: 1000000,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: "rgba(6, 78, 59, 0.95)",
+            border: "1px solid #10b981",
+            borderRadius: 14,
+            padding: "12px 20px",
+            color: "#6ee7b7",
+            fontWeight: "bold",
+            fontSize: "0.85rem",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(16, 185, 129, 0.4)",
+            backdropFilter: "blur(16px)",
+          }}
+        >
           <span>{skillInstallToast}</span>
         </div>
       )}
 
       {/* Fullscreen Isolated View Modal */}
       {fullscreenComp && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-neutral-950 p-6">
-          <div className="flex items-center justify-between border-b border-neutral-800 pb-4 mb-6">
-            <div className="flex items-center gap-3">
-              <span className="text-xl font-black text-cyan-400">{fullscreenComp.name}</span>
-              <span className="rounded-full bg-cyan-500/20 px-3 py-0.5 text-xs text-cyan-300 font-semibold">
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 1000001,
+            background: "#02040a",
+            display: "flex",
+            flexDirection: "column",
+            padding: 24,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+              paddingBottom: 16,
+              marginBottom: 20,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ fontSize: "1.3rem", fontWeight: 900, color: "#00e5ff", letterSpacing: "0.04em" }}>
+                {fullscreenComp.name}
+              </span>
+              <span
+                style={{
+                  fontSize: "0.72rem",
+                  padding: "3px 10px",
+                  borderRadius: 12,
+                  background: "rgba(0, 229, 255, 0.15)",
+                  border: "1px solid rgba(0, 229, 255, 0.35)",
+                  color: "#00e5ff",
+                  fontWeight: 700,
+                }}
+              >
                 {fullscreenComp.category}
               </span>
             </div>
             <button
               onClick={() => setFullscreenComponentId(null)}
-              className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-2 text-sm font-bold text-white hover:bg-neutral-800"
+              style={{
+                padding: "8px 18px",
+                borderRadius: 12,
+                background: "rgba(255, 255, 255, 0.08)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "#ffffff",
+                fontSize: "0.82rem",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
             >
               ✕ Exit Fullscreen
             </button>
           </div>
-          <div className="flex-1 flex items-center justify-center overflow-auto p-4">
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "auto",
+              padding: 20,
+              background: "radial-gradient(ellipse at center, rgba(0, 229, 255, 0.05) 0%, #010308 100%)",
+              borderRadius: 16,
+              border: "1px solid rgba(255, 255, 255, 0.06)",
+            }}
+          >
             <SafeDemoErrorBoundary name={fullscreenComp.name}>
               {fullscreenComp.renderDemo(customParams[fullscreenComp.id] || fullscreenComp.defaultParams || {})}
             </SafeDemoErrorBoundary>
@@ -1009,263 +1156,465 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       )}
 
       {/* Top Header Bar */}
-      <header className="flex flex-shrink-0 items-center justify-between border-b border-neutral-800 bg-neutral-900/60 px-6 py-4 backdrop-blur-xl">
-        <div className="flex items-center gap-4">
-          <img src="/main-logo.png" alt="NEXORA" className="h-10 w-10 object-contain drop-shadow-[0_0_12px_#38bdf8]" />
+      <header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "14px 28px",
+          background: "rgba(6, 12, 24, 0.94)",
+          backdropFilter: "blur(24px)",
+          borderBottom: "1px solid rgba(0, 229, 255, 0.22)",
+          flexShrink: 0,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 12,
+              background: "rgba(0, 229, 255, 0.12)",
+              border: "1px solid rgba(0, 229, 255, 0.4)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              boxShadow: "0 0 16px rgba(0, 229, 255, 0.25)",
+            }}
+          >
+            <img src="/main-logo.png" alt="NEXORA" style={{ width: 28, height: 28, objectFit: "contain" }} />
+          </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-black tracking-wider text-white sm:text-xl">
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <h1 style={{ margin: 0, fontSize: "1.12rem", fontWeight: 900, letterSpacing: "0.06em", color: "#ffffff" }}>
                 NEXORA UI COMPONENT STUDIO
               </h1>
-              <span className="rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-2.5 py-0.5 text-[10px] font-black text-black uppercase">
-                50+ Pro Components
+              <span
+                style={{
+                  fontSize: "0.68rem",
+                  padding: "2px 8px",
+                  borderRadius: 12,
+                  background: "linear-gradient(90deg, #00e5ff 0%, #3b82f6 100%)",
+                  color: "#020617",
+                  fontWeight: 900,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+              >
+                53 PRO COMPONENTS
               </span>
             </div>
-            <p className="text-xs text-neutral-400">
-              Live Interactive Previews · 1-Click Code Copy · Parameter Customizer · Skill Exporter
+            <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "rgba(255, 255, 255, 0.6)" }}>
+              Live Interactive Previews · 1-Click Code Copy · Parameter Customizer · Agent Skill Exporter
             </p>
           </div>
         </div>
 
         <button
           onClick={handleClose}
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-400 hover:border-neutral-500 hover:text-white"
+          aria-label="Close UI Studio"
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 12,
+            background: "rgba(255, 255, 255, 0.06)",
+            border: "1px solid rgba(255, 255, 255, 0.18)",
+            color: "#ffffff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "1.1rem",
+            fontWeight: "bold",
+            cursor: "pointer",
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(239, 68, 68, 0.2)";
+            e.currentTarget.style.borderColor = "#ef4444";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255, 255, 255, 0.06)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.18)";
+          }}
         >
           ✕
         </button>
       </header>
 
       {/* Search & Filter Categories */}
-      <div className="border-b border-neutral-800 bg-neutral-900/40 px-6 py-3 space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="relative flex-1 max-w-md">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">🔍</span>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
+          padding: "14px 28px",
+          background: "rgba(4, 9, 18, 0.8)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          flexShrink: 0,
+        }}
+      >
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 14 }}>
+          <div style={{ position: "relative", flex: 1, maxWidth: 480 }}>
+            <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: "0.85rem", opacity: 0.6 }}>
+              🔍
+            </span>
             <input
               type="text"
+              placeholder="Search 53+ shaders, 3D cards, inputs, typography & FX..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search components by name, feature, or keyword (e.g. Cloud, Macbook, Globe, Gooey)..."
-              className="w-full rounded-xl border border-neutral-700 bg-neutral-950 pl-10 pr-9 py-2 text-xs font-medium text-white placeholder-neutral-500 focus:border-cyan-400 focus:outline-none"
+              style={{
+                width: "100%",
+                padding: "9px 14px 9px 38px",
+                background: "rgba(12, 20, 36, 0.9)",
+                border: "1px solid rgba(0, 229, 255, 0.3)",
+                borderRadius: 12,
+                color: "#ffffff",
+                fontSize: "0.82rem",
+                outline: "none",
+                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)",
+              }}
             />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-500 hover:text-white"
-                title="Clear Search"
-              >
-                ✕
-              </button>
-            )}
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-neutral-400 font-mono">
-            <span>SHOWING:</span>
-            <span className="font-bold text-cyan-400">{filteredComponents.length}</span>
-            <span>OF {componentsCatalog.length} PRO COMPONENTS</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: "0.75rem", color: "rgba(255, 255, 255, 0.5)", fontFamily: "monospace" }}>
+              Showing {filteredComponents.length} of {componentsCatalog.length}
+            </span>
           </div>
         </div>
 
-        {/* Category Filter Pills */}
-        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+        {/* Categories Bar */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {categories.map((cat) => {
-            const count = cat === "All"
-              ? componentsCatalog.length
-              : componentsCatalog.filter((c) => c.category === cat).length;
-
+            const active = selectedCategory === cat;
+            const count = cat === "All" ? componentsCatalog.length : componentsCatalog.filter((c: UIComponentItem) => c.category === cat).length;
             return (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap ${
-                  selectedCategory === cat
-                    ? "bg-cyan-500 text-black shadow-md shadow-cyan-500/30"
-                    : "border border-neutral-800 bg-neutral-900/60 text-neutral-400 hover:border-neutral-700 hover:text-white"
-                }`}
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: 20,
+                  fontSize: "0.72rem",
+                  fontWeight: active ? 800 : 600,
+                  fontFamily: "monospace",
+                  background: active ? "rgba(0, 229, 255, 0.2)" : "rgba(255, 255, 255, 0.04)",
+                  border: active ? "1px solid #00e5ff" : "1px solid rgba(255, 255, 255, 0.12)",
+                  color: active ? "#00e5ff" : "rgba(255, 255, 255, 0.7)",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  boxShadow: active ? "0 0 14px rgba(0, 229, 255, 0.25)" : "none",
+                }}
               >
-                <span>{cat}</span>
-                <span
-                  className={`rounded-full px-1.5 py-0.2 text-[9px] font-black ${
-                    selectedCategory === cat ? "bg-black/20 text-black" : "bg-neutral-800 text-neutral-400"
-                  }`}
-                >
-                  {count}
-                </span>
+                {cat} ({count})
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Main Component Showcase Grid */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-6 sm:space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-7xl mx-auto">
-          {filteredComponents.map((comp) => {
+      {/* Component Grid Scroll View */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "24px 28px",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))",
+            gap: 22,
+            maxWidth: 1720,
+            margin: "0 auto",
+          }}
+        >
+          {filteredComponents.map((comp: UIComponentItem) => {
             const activeTab = activeTabMap[comp.id] || "preview";
             const params = customParams[comp.id] || comp.defaultParams || {};
 
             return (
               <div
                 key={comp.id}
-                className="flex flex-col rounded-3xl border border-neutral-800 bg-neutral-900/70 shadow-2xl overflow-hidden backdrop-blur-md transition-all hover:border-cyan-500/40"
+                style={{
+                  background: "rgba(8, 14, 28, 0.88)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(0, 229, 255, 0.18)",
+                  borderRadius: 20,
+                  padding: 18,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 14,
+                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.45)",
+                  transition: "all 0.25s ease",
+                }}
               >
-                {/* Card Titlebar */}
-                <div className="flex flex-wrap items-center justify-between border-b border-neutral-800 bg-neutral-950/70 px-5 py-3 gap-2">
+                {/* Card Header */}
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-white text-base">{comp.name}</h3>
-                      <span className="rounded-md bg-neutral-800 border border-neutral-700 px-2 py-0.5 text-[10px] font-semibold text-cyan-400">
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 800, color: "#ffffff" }}>
+                        {comp.name}
+                      </h3>
+                      <span
+                        style={{
+                          fontSize: "0.62rem",
+                          padding: "2px 7px",
+                          borderRadius: 8,
+                          background: "rgba(0, 229, 255, 0.12)",
+                          border: "1px solid rgba(0, 229, 255, 0.3)",
+                          color: "#00e5ff",
+                          fontWeight: 700,
+                        }}
+                      >
                         {comp.category}
                       </span>
                     </div>
-                    <p className="text-xs text-neutral-400 mt-0.5">{comp.description}</p>
+                    <p style={{ margin: "4px 0 0 0", fontSize: "0.72rem", color: "rgba(255, 255, 255, 0.55)", lineHeight: 1.4 }}>
+                      {comp.description}
+                    </p>
                   </div>
 
-                  {/* Actions & Tab Switchers */}
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() =>
-                        setActiveTabMap((prev) => ({ ...prev, [comp.id]: "preview" }))
-                      }
-                      className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
-                        activeTab === "preview"
-                           ? "bg-cyan-500 text-black shadow-sm"
-                          : "text-neutral-400 hover:bg-neutral-800 hover:text-white"
-                      }`}
-                    >
-                      👁️ Preview
-                    </button>
-                    <button
-                      onClick={() =>
-                        setActiveTabMap((prev) => ({ ...prev, [comp.id]: "code" }))
-                      }
-                      className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
-                        activeTab === "code"
-                          ? "bg-cyan-500 text-black shadow-sm"
-                          : "text-neutral-400 hover:bg-neutral-800 hover:text-white"
-                      }`}
-                    >
-                      💻 Code
-                    </button>
-                    {comp.defaultParams && (
-                      <button
-                        onClick={() =>
-                          setActiveTabMap((prev) => ({ ...prev, [comp.id]: "customize" }))
-                        }
-                        className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
-                          activeTab === "customize"
-                            ? "bg-cyan-500 text-black shadow-sm"
-                            : "text-neutral-400 hover:bg-neutral-800 hover:text-white"
-                        }`}
-                      >
-                        ⚙️ Customize
-                      </button>
-                    )}
-                    <button
-                      onClick={() => setFullscreenComponentId(comp.id)}
-                      title="Fullscreen Isolation"
-                      className="rounded-lg border border-neutral-800 bg-neutral-900 p-1.5 text-xs text-neutral-400 hover:border-cyan-400 hover:text-white"
-                    >
-                      ⛶
-                    </button>
-                    <button
-                      onClick={() => handleInstallSkill(comp)}
-                      title="Install as AI OS Agent Skill"
-                      className="rounded-lg bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-1 text-xs font-bold text-emerald-300 hover:bg-emerald-500 hover:text-black transition-all"
-                    >
-                      📦 Install Skill
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setFullscreenComponentId(comp.id)}
+                    title="Fullscreen Mode"
+                    style={{
+                      padding: "5px 9px",
+                      borderRadius: 8,
+                      background: "rgba(255, 255, 255, 0.05)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.68rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <span>⛶</span> Fullscreen
+                  </button>
                 </div>
 
-                {/* Content Area */}
-                <div className="flex-1 p-4 flex flex-col justify-center">
+                {/* Card Body - Content Switcher */}
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
                   {activeTab === "preview" && (
-                    <LazyDemoCard comp={comp} params={params} />
+                    <div
+                      style={{
+                        height: 220,
+                        width: "100%",
+                        borderRadius: 14,
+                        background: "#02050b",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        position: "relative",
+                        overflow: "hidden",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <LazyDemoCard comp={comp} params={params} />
+                    </div>
                   )}
 
                   {activeTab === "code" && (
-                    <CodeBlock
-                      filename={`${comp.id}.tsx`}
-                      code={comp.codeSnippet}
-                      language="tsx"
-                    />
-                  )}
-
-                  {activeTab === "customize" && comp.defaultParams && (
-                    <div className="space-y-4 p-4 rounded-2xl border border-neutral-800 bg-neutral-950">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400">
-                          Live Component Parameters
-                        </h4>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              setCustomParams((prev) => {
-                                const next = { ...prev };
-                                delete next[comp.id];
-                                return next;
-                              });
-                              setSkillInstallToast(`Reset parameters to default for [${comp.name}]`);
-                              setTimeout(() => setSkillInstallToast(null), 2500);
-                            }}
-                            className="rounded-lg bg-neutral-800 border border-neutral-700 px-2.5 py-1 text-xs font-bold text-neutral-300 hover:border-neutral-500 hover:text-white transition-all"
-                            title="Reset all parameters to factory defaults"
-                          >
-                            ↺ Reset
-                          </button>
-                          <button
-                            onClick={() =>
-                              setActiveTabMap((prev) => ({ ...prev, [comp.id]: "preview" }))
-                            }
-                            className="rounded-lg bg-cyan-500/20 border border-cyan-500/40 px-2.5 py-1 text-xs font-bold text-cyan-300 hover:bg-cyan-500 hover:text-black transition-all"
-                          >
-                            👁️ View Live Preview
-                          </button>
-                        </div>
+                    <div
+                      style={{
+                        height: 220,
+                        width: "100%",
+                        borderRadius: 14,
+                        background: "#010409",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        position: "relative",
+                        overflow: "hidden",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "8px 12px",
+                          borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+                          background: "rgba(255, 255, 255, 0.02)",
+                        }}
+                      >
+                        <span style={{ fontSize: "0.68rem", fontFamily: "monospace", color: "rgba(255, 255, 255, 0.5)" }}>
+                          React + TypeScript
+                        </span>
+                        <button
+                          onClick={() => copyCode(comp.codeSnippet, comp.id)}
+                          style={{
+                            padding: "4px 10px",
+                            borderRadius: 6,
+                            background: copiedId === comp.id ? "#10b981" : "rgba(0, 229, 255, 0.15)",
+                            border: copiedId === comp.id ? "1px solid #10b981" : "1px solid rgba(0, 229, 255, 0.4)",
+                            color: copiedId === comp.id ? "#000000" : "#00e5ff",
+                            fontSize: "0.65rem",
+                            fontWeight: "bold",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {copiedId === comp.id ? "✓ Copied!" : "📋 Copy Code"}
+                        </button>
                       </div>
-                      {Object.keys(comp.defaultParams).map((key) => (
-                        <div key={key} className="flex flex-col gap-1.5">
-                          <label className="text-xs font-semibold text-neutral-300 capitalize">
-                            {key}:
-                          </label>
-                          {typeof comp.defaultParams![key] === "number" ? (
-                            <input
-                              type="range"
-                              min="0.2"
-                              max="3"
-                              step="0.1"
-                              value={params[key] ?? comp.defaultParams![key]}
-                              onChange={(e) =>
-                                setCustomParams((prev) => ({
-                                  ...prev,
-                                  [comp.id]: {
-                                    ...(prev[comp.id] || {}),
-                                    [key]: parseFloat(e.target.value),
-                                  },
-                                }))
-                              }
-                              className="accent-cyan-400"
-                            />
-                          ) : (
-                            <input
-                              type="text"
-                              value={params[key] ?? comp.defaultParams![key]}
-                              onChange={(e) =>
-                                setCustomParams((prev) => ({
-                                  ...prev,
-                                  [comp.id]: {
-                                    ...(prev[comp.id] || {}),
-                                    [key]: e.target.value,
-                                  },
-                                }))
-                              }
-                              className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-1.5 text-xs text-white focus:border-cyan-400 focus:outline-none"
-                            />
-                          )}
-                        </div>
-                      ))}
+                      <pre
+                        style={{
+                          flex: 1,
+                          margin: 0,
+                          padding: 12,
+                          overflow: "auto",
+                          fontSize: "0.72rem",
+                          fontFamily: "monospace",
+                          color: "#7dd3fc",
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        <code>{comp.codeSnippet}</code>
+                      </pre>
                     </div>
                   )}
+
+                  {activeTab === "customize" && (
+                    <div
+                      style={{
+                        height: 220,
+                        width: "100%",
+                        borderRadius: 14,
+                        background: "#030712",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        padding: 14,
+                        overflowY: "auto",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 12,
+                      }}
+                    >
+                      <div style={{ fontSize: "0.72rem", fontWeight: "bold", color: "#00e5ff", textTransform: "uppercase" }}>
+                        Live Parameters
+                      </div>
+                      {comp.defaultParams &&
+                        Object.keys(comp.defaultParams).map((key) => (
+                          <div key={key} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                            <label style={{ fontSize: "0.68rem", color: "rgba(255, 255, 255, 0.7)", fontFamily: "monospace" }}>
+                              {key}:
+                            </label>
+                            {typeof comp.defaultParams![key] === "number" ? (
+                              <input
+                                type="range"
+                                min={0.1}
+                                max={5}
+                                step={0.1}
+                                value={params[key] ?? comp.defaultParams![key]}
+                                onChange={(e) =>
+                                  setCustomParams((prev: Record<string, Record<string, any>>) => ({
+                                    ...prev,
+                                    [comp.id]: {
+                                      ...(prev[comp.id] || {}),
+                                      [key]: parseFloat(e.target.value),
+                                    },
+                                  }))
+                                }
+                                style={{ accentColor: "#00e5ff" }}
+                              />
+                            ) : (
+                              <input
+                                type="text"
+                                value={params[key] ?? comp.defaultParams![key]}
+                                onChange={(e) =>
+                                  setCustomParams((prev: Record<string, Record<string, any>>) => ({
+                                    ...prev,
+                                    [comp.id]: {
+                                      ...(prev[comp.id] || {}),
+                                      [key]: e.target.value,
+                                    },
+                                  }))
+                                }
+                                style={{
+                                  padding: "6px 10px",
+                                  borderRadius: 8,
+                                  background: "rgba(15, 23, 42, 0.9)",
+                                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                                  color: "#ffffff",
+                                  fontSize: "0.72rem",
+                                  outline: "none",
+                                }}
+                              />
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Card Footer Segmented Tabs & Action */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                    paddingTop: 10,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 3,
+                      background: "rgba(0, 0, 0, 0.45)",
+                      padding: 3,
+                      borderRadius: 10,
+                      border: "1px solid rgba(255, 255, 255, 0.06)",
+                    }}
+                  >
+                    {(["preview", "code", "customize"] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTabMap((prev: Record<string, "preview" | "code" | "customize">) => ({ ...prev, [comp.id]: tab }))}
+                        style={{
+                          padding: "4px 9px",
+                          borderRadius: 8,
+                          fontSize: "0.65rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          fontFamily: "monospace",
+                          background: activeTab === tab ? "rgba(0, 229, 255, 0.22)" : "transparent",
+                          border: activeTab === tab ? "1px solid rgba(0, 229, 255, 0.5)" : "1px solid transparent",
+                          color: activeTab === tab ? "#00e5ff" : "rgba(255, 255, 255, 0.5)",
+                          cursor: "pointer",
+                          transition: "all 0.15s ease",
+                        }}
+                      >
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => handleInstallSkill(comp)}
+                    style={{
+                      padding: "5px 11px",
+                      borderRadius: 9,
+                      background: "rgba(16, 185, 129, 0.15)",
+                      border: "1px solid rgba(16, 185, 129, 0.4)",
+                      color: "#34d399",
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    <span>✨</span> Install Skill
+                  </button>
                 </div>
               </div>
             );
