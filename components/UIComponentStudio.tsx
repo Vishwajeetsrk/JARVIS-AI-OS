@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import { CloudShader } from "@/components/ui/cloud-shader";
 import { MacbookScroll } from "@/components/ui/macbook-scroll";
 import { Notch, type NotchItem } from "@/components/ui/notch";
@@ -136,6 +137,7 @@ function LazyDemoCard({ comp, params }: { comp: UIComponentItem; params: any }) 
 }
 
 export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
+  const [mounted, setMounted] = useState(false);
   const [internalOpen, setInternalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -143,6 +145,10 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
   const [customParams, setCustomParams] = useState<Record<string, Record<string, any>>>({});
   const [fullscreenComponentId, setFullscreenComponentId] = useState<string | null>(null);
   const [skillInstallToast, setSkillInstallToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleOpen = () => setInternalOpen(true);
@@ -960,14 +966,14 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
     setTimeout(() => setSkillInstallToast(null), 4000);
   };
 
-  if (!isModalOpen) return null;
+  if (!isModalOpen || !mounted || typeof document === "undefined") return null;
 
   const fullscreenComp = componentsCatalog.find((c) => c.id === fullscreenComponentId);
 
-  return (
+  const modalContent = (
     <div
       className="fixed inset-0 flex flex-col bg-neutral-950/98 text-white backdrop-blur-2xl overflow-hidden animate-in fade-in duration-200"
-      style={{ position: "fixed", inset: 0, zIndex: 99999, pointerEvents: "auto" }}
+      style={{ position: "fixed", inset: 0, zIndex: 999999, pointerEvents: "auto" }}
     >
       {/* Toast Notification */}
       {skillInstallToast && (
@@ -1268,6 +1274,8 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
 
 export default UIComponentStudio;

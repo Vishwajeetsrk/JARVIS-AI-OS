@@ -20,10 +20,78 @@ export interface ProjectData {
   };
 }
 
+const DEFAULT_PROJECTS: ProjectData[] = [
+  {
+    id: "jarvis-ai-os",
+    name: "JARVIS AI OS (This System)",
+    category: "core",
+    description: "Autonomous Personal Operating System with 18 specialist agents, 3D WebGL particle constellation, multi-tier task runtime, and voice pipeline.",
+    status: "production",
+    tags: ["React 19", "Next.js 15", "TypeScript", "Three.js", "Supabase", "Groq", "Gemini"],
+    repoUrl: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
+    demoUrl: "https://jarvisaios.vercel.app",
+    stats: { components: 142, files: 420, linesOfCode: "48.2k" },
+  },
+  {
+    id: "learnify-platform",
+    name: "Learnify AI — Adaptive Learning Platform",
+    category: "saas",
+    description: "Full-stack intelligent education platform combining AI tutoring, creator toolkits, gamification engine, and automated career roadmaps.",
+    status: "production",
+    tags: ["React 19", "Next.js", "TypeScript", "Supabase", "OpenRouter", "Cashfree", "Tailwind"],
+    repoUrl: "https://github.com/Vishwajeetsrk",
+    demoUrl: "https://learnifyai.in",
+    stats: { components: 68, files: 120, linesOfCode: "18.5k" },
+  },
+  {
+    id: "wardelio-mobile-app",
+    name: "Wardelio Mobile App",
+    category: "mobile",
+    description: "Personal wardrobe styling and outfit coordination mobile app featuring 150+ interactive screens, 3D controls, and smooth animations for Android & iOS.",
+    status: "active",
+    tags: ["React", "Vite", "Capacitor", "Tailwind CSS", "Android", "iOS", "Mobile UX"],
+    repoUrl: "https://github.com/Vishwajeetsrk",
+    demoUrl: "https://vishwajeetsrk.github.io",
+    stats: { components: 154, files: 210, linesOfCode: "32.4k" },
+  },
+  {
+    id: "dreamsync-career-platform",
+    name: "DreamSync — AI Career Intelligence Platform",
+    category: "ai",
+    description: "AI-powered career engine featuring AI Resume Builder, ATS Checker, LinkedIn Profile Optimizer, and Portfolio Generator.",
+    status: "production",
+    tags: ["Next.js", "React", "Firebase", "OpenRouter", "Gemini", "Upstash Redis"],
+    repoUrl: "https://github.com/Vishwajeetsrk",
+    demoUrl: "https://vishwajeetsrk.github.io",
+    stats: { components: 52, files: 96, linesOfCode: "16.8k" },
+  },
+  {
+    id: "luxury-laundry-saas",
+    name: "Luxury Laundry — SaaS Platform",
+    category: "saas",
+    description: "Full-stack laundry management SaaS with customer booking portals, admin analytics dashboards, and real-time order tracking via WebSockets.",
+    status: "ready",
+    tags: ["Next.js", "Express.js", "PostgreSQL", "Prisma", "Socket.io", "Tailwind"],
+    repoUrl: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
+    demoUrl: "https://jarvisaios.vercel.app",
+    stats: { components: 48, files: 85, linesOfCode: "14.6k" },
+  },
+  {
+    id: "salesforce-rootbridge-role",
+    name: "Salesforce & Razorpay Donation Reconciliation",
+    category: "office",
+    description: "Professional job responsibilities at Rootbridge Academy: 7-step daily reconciliation matching 200,000+ CRM records with Razorpay, boosting accuracy by 30%.",
+    status: "production",
+    tags: ["Rootbridge Academy", "Salesforce CRM", "Data Loader", "Razorpay API", "Python ETL", "Office Work"],
+    demoUrl: "https://jarvisaios.vercel.app",
+    stats: { components: 18, files: 34, linesOfCode: "6.2k" },
+  },
+];
+
 export default function ProjectLauncher() {
   const [open, setOpen] = useState(false);
   const [activeView, setActiveView] = useState<"projects" | "console">("projects");
-  const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [projects, setProjects] = useState<ProjectData[]>(DEFAULT_PROJECTS);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
 
@@ -40,11 +108,16 @@ export default function ProjectLauncher() {
 
   const loadProjects = () => {
     fetch("/api/projects")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.projects) setProjects(data.projects);
+      .then((r) => {
+        if (!r.ok) throw new Error("API route unavailable");
+        return r.json();
       })
-      .catch(() => {});
+      .then((data) => {
+        if (data.projects && data.projects.length > 0) setProjects(data.projects);
+      })
+      .catch(() => {
+        setProjects(DEFAULT_PROJECTS);
+      });
   };
 
   useEffect(() => {
