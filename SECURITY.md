@@ -1,56 +1,51 @@
-# Security Policy — JARVIS AI OS
+<div align="center">
+  <img src="public/logo.png" alt="JARVIS AI OS Logo" width="380" />
 
-## Supported Versions
+  # 🛡️ Security Policy & Threat Model
+  ### JARVIS AI OS · Defense-in-Depth Security Invariants
 
-We actively maintain and provide security patches for the following releases:
-
-| Version | Supported |
-|---|:---:|
-| **4.x (APEX)** | 🟢 Supported (Active) |
-| **3.x** | 🟡 Security Fixes Only |
-| **< 3.0** | 🔴 End of Life |
-
----
-
-## Reporting a Vulnerability
-
-The safety of **JARVIS AI OS** users, private workspaces, API keys, and database integrity is our top priority.
-
-If you identify any security issue or vulnerability, **please DO NOT open a public GitHub issue**. Instead, report it responsibly via one of the following channels:
-
-1. **GitHub Security Advisory**: Go to [Security Advisories](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/security/advisories) and click **"Report a vulnerability"**.
-2. **Direct Email**: Send encrypted or detailed reports to **vishwajeetsrk@gmail.com**.
-
-### Information to Include
-- Detailed description of the vulnerability and potential attack vectors.
-- Step-by-step reproduction steps or a minimal proof-of-concept (PoC).
-- Affected component(s) (e.g. `/api/os`, `/api/connectors`, `/api/chat`).
-- Suggested remediation or patch (if available).
-
-### Response SLA
-- **Initial Acknowledgment**: Within 24 hours.
-- **Triage & Risk Assessment**: Within 48 hours.
-- **Remediation & Patch Release**: Within 7 business days.
+  [![Security](https://img.shields.io/badge/Security-Strict_Isolation-10b981?style=for-the-badge&logo=shield)](SECURITY.md)
+  [![Gate](https://img.shields.io/badge/Human_Gate-Level_6_HITL-f59e0b?style=for-the-badge)](docs/architecture/ADR/ADR-004-permission-engine.md)
+  [![RLS](https://img.shields.io/badge/Database-PostgreSQL_RLS-00e5ff?style=for-the-badge&logo=postgresql)](supabase/migrations/)
+</div>
 
 ---
 
-## Security Architecture & Invariant Rules
+## 🔒 Supported Versions
 
-JARVIS AI OS enforces several layers of defense-in-depth:
+We actively provide security patches and dependency updates for:
 
-### 1. Level 6 Human Approval Gate
-All high-risk, destructive, or external dispatch actions require explicit user confirmation before execution:
-- Automated job submissions and resume dispatches.
-- External email sending via the Email Agent.
-- Database write/delete operations outside designated sandbox namespaces.
+| Version | Supported | Security SLA |
+|---|:---:|:---:|
+| **4.x (APEX)** | 🟢 Active Support | < 48 Hours Triage |
+| **3.x** | 🟡 Critical Fixes Only | < 7 Days |
+| **< 3.0** | 🔴 End of Life | Unsupported |
 
-### 2. Server-Side Secret Isolation
-- All API keys (Google Gemini, Groq, OpenRouter, GitHub Token, Salesforce credentials) and Supabase Service Role keys are executed strictly in server-side Next.js route handlers (`app/api/`).
-- Zero API credentials or sensitive tokens are ever exposed to the client-side JavaScript bundle.
+---
 
-### 3. Sandboxed PC Device Bridge
-- Local shell execution via `/api/os` enforces working directory boundaries within the active workspace.
-- Destructive root-level commands (`format`, `rmdir /s /q c:\`, `del /f /s /q c:\`) are strictly intercepted and rejected.
+## 🚨 Reporting a Vulnerability
 
-### 4. Database Row-Level Security (RLS)
-- All 15 Supabase database tables enforce granular PostgreSQL Row-Level Security policies to prevent unauthorized data access.
+The security of our users' personal data, workspace credentials, and server environments is paramount.
+
+If you identify any security issue, **please do NOT report it via public GitHub issues**. Instead:
+
+1. 🔒 **GitHub Confidential Advisory**: [Report a Security Vulnerability](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/security/advisories/new)
+2. 📧 **Direct Lead Email**: [vishwajeetsrk@gmail.com](mailto:vishwajeetsrk@gmail.com)
+
+### What to Include:
+- Detailed description of the attack vector or vulnerability.
+- Minimal proof of concept (PoC) or reproduction steps.
+- Affected component(s) (e.g. `/api/chat`, `/api/connectors`, `/api/os`).
+
+---
+
+## 🏛️ Security Architecture & Invariants
+
+### 1. 🛡️ Level 6 Human-in-the-Loop Gate
+Destructive or external actions (submitting job applications, external emails, code pushes, database drops) are gated behind an interactive Level 6 approval dialog.
+
+### 2. 🔐 Server-Side Secret Isolation
+All API keys (Gemini, Groq, OpenRouter, GitHub, Salesforce) and database service roles are isolated inside server-side Next.js route handlers. Zero sensitive tokens are bundled in client JavaScript.
+
+### 3. 🗄️ Row-Level Security (RLS)
+Every database table in Supabase PostgreSQL enforces strict Row-Level Security policies to prevent unauthorized data access or leaks.

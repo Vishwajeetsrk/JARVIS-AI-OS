@@ -1,6 +1,16 @@
-# Contributor Covenant Code of Conduct
+<div align="center">
+  <img src="public/logo.png" alt="JARVIS AI OS Logo" width="380" />
 
-## Our Pledge
+  # 📜 Contributor Covenant Code of Conduct
+  ### JARVIS AI OS · Open Source Community Standards
+
+  [![Community](https://img.shields.io/badge/Community-JARVIS_OS-00e5ff?style=for-the-badge&logo=github)](https://github.com/Vishwajeetsrk/JARVIS-AI-OS)
+  [![Standard](https://img.shields.io/badge/Contributor_Covenant-v2.1-10b981?style=for-the-badge)](https://www.contributor-covenant.org)
+</div>
+
+---
+
+## 🌟 Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in the **JARVIS AI OS** community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, caste, color, religion, or sexual identity and orientation.
 
@@ -8,44 +18,35 @@ We pledge to act and interact in ways that contribute to an open, welcoming, div
 
 ---
 
-## Our Standards
+## 💎 Our Standards
 
-Examples of behavior that contributes to a positive environment for our community include:
+### Positive Behaviors We Encourage:
+- **Empathy & Kindness**: Treating everyone with dignity, warmth, and mutual respect.
+- **Architectural Constructiveness**: Providing objective, data-backed rationale during code and system architecture discussions.
+- **Graceful Feedback**: Giving and receiving technical critiques with openness and intellectual honesty.
+- **Accountability**: Acknowledging errors promptly, learning from them, and improving our collective engineering practices.
+- **Ecosystem First**: Prioritizing the long-term reliability and safety of the open-source agent ecosystem.
 
-* Demonstrating empathy and kindness toward other people
-* Being respectful of differing opinions, viewpoints, and architectural approaches
-* Giving and gracefully accepting constructive feedback
-* Accepting responsibility and apologizing to those affected by our mistakes, and learning from the experience
-* Focusing on what is best not just for us as individuals, but for the overall open-source AI community
-
-Examples of unacceptable behavior include:
-
-* The use of sexualized language or imagery, and sexual attention or advances of any kind
-* Trolling, insulting or derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or email address, without their explicit permission
-* Other conduct which could reasonably be considered inappropriate in a professional setting
+### Unacceptable Behaviors:
+- The use of sexualized language or imagery, and unwelcome sexual attention or advances.
+- Trolling, insulting or derogatory comments, and personal or political attacks.
+- Public or private harassment of any kind.
+- Publishing others' private information, such as physical addresses or private API keys, without explicit written consent.
+- Conduct that undermines community safety, inclusivity, or professional collaboration.
 
 ---
 
-## Enforcement Responsibilities
+## 🛡️ Enforcement & Reporting
 
-Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.
+Community leaders are dedicated to upholding these principles. Instances of abusive, harassing, or otherwise unacceptable behavior may be reported directly to:
 
----
+- 📧 **Direct Lead Email**: [vishwajeetsrk@gmail.com](mailto:vishwajeetsrk@gmail.com)
+- 🔒 **Confidential GitHub Advisory**: [Report a Security Advisory](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/security/advisories)
 
-## Scope
-
-This Code of Conduct applies within all community spaces, including the GitHub organization, repositories, issue trackers, discussions, Discord servers, and anywhere an individual is representing the project.
-
----
-
-## Enforcement Guidelines
-
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leadership at **vishwajeetsrk@gmail.com** or by opening a confidential security advisory on GitHub. All complaints will be reviewed and investigated promptly and fairly.
+All reports will be reviewed promptly and investigated with confidentiality.
 
 ---
 
-## Attribution
+## ⚖️ Attribution
 
 This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 2.1.

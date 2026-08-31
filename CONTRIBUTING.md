@@ -1,75 +1,90 @@
-# Contributing to JARVIS AI OS
+<div align="center">
+  <img src="public/logo.png" alt="JARVIS AI OS Logo" width="380" />
 
-First off, thank you for taking the time to contribute to **JARVIS AI OS**! 🎉
+  # 🤝 Contributing to JARVIS AI OS
+  ### Guidelines for Engineers, AI Researchers, and Open-Source Builders
 
-We welcome contributions from software engineers, AI researchers, UI/UX designers, and open-source contributors of all backgrounds.
+  [![GitHub PRs](https://img.shields.io/badge/PRs-Welcome-10b981?style=for-the-badge&logo=github)](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/pulls)
+  [![Architecture](https://img.shields.io/badge/Architecture-v4.0.0_APEX-00e5ff?style=for-the-badge)](docs/audit/RUNTIME-TRUTH-MAP.md)
+  [![License](https://img.shields.io/badge/License-MIT-a855f7?style=for-the-badge)](LICENSE)
+</div>
 
 ---
 
-## Code of Conduct
+## 🚀 Welcome Builders!
 
-By participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
+Thank you for your interest in contributing to **JARVIS AI OS**! We welcome contributions from developers, researchers, designers, and systems architects across the world.
 
 ---
 
-## How Can I Contribute?
+## 📐 Core Architectural Invariants
 
-### 1. Reporting Bugs
-- Check the [GitHub Issues](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/issues) to see if the bug has already been reported.
-- If not, open a new issue with a clear title, description, reproduction steps, environment details, and console logs.
+Before submitting code, please review our foundational architecture rules:
 
-### 2. Suggesting Enhancements
-- Open an issue with the label `enhancement`.
-- Describe the feature, why it is useful, and how it fits into the **JARVIS AI OS v4.0** architectural contract.
+1. **Zero-Fabrication Policy**: Any career data, resume statements, or benchmarks must be backed by verified, empirical evidence in the Evidence Graph.
+2. **Level 6 Human Approval Gate**: All high-risk or external operations (sending emails, committing code, deleting resources) require explicit human confirmation.
+3. **Strict Type Safety**: All TypeScript code must compile with `npx tsc --noEmit` and pass with 0 errors.
+4. **Decoupled Architecture**: Subsystems communicate via the Universal `ExecutionContext` and unified event bus.
 
-### 3. Submitting Pull Requests
-1. Fork the repository (`https://github.com/Vishwajeetsrk/JARVIS-AI-OS`).
-2. Create a feature branch:
+---
+
+## 🛠️ Local Development Setup
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git
+cd JARVIS-AI-OS
+```
+
+### 2. Install Dependencies
+```bash
+npm install --legacy-peer-deps
+```
+
+### 3. Setup Environment Variables
+Copy the example environment file and add your API keys:
+```bash
+cp .env.example .env.local
+```
+*(Never commit `.env` or `.env.local` to git — always keep your keys secure).*
+
+### 4. Start the Dev Server
+```bash
+npm run dev
+```
+Open **[http://localhost:3000](http://localhost:3000)** in your browser.
+
+---
+
+## 🔄 Pull Request Workflow
+
+1. **Fork the repo** and create a feature branch:
    ```bash
    git checkout -b feat/your-feature-name
    ```
-3. Follow the **Core Architectural Invariants**:
-   - **Zero-Fabrication Policy**: Any resume or career evidence must be backed by verifiable data.
-   - **Level 6 Human Approval Gate**: All high-risk or external dispatch actions require explicit user confirmation.
-   - **Type Safety**: Strictly typed TypeScript with zero compilation errors.
-4. Test your changes:
+
+2. **Make your changes** following our component conventions and design system tokens.
+
+3. **Verify compilation & build**:
    ```bash
-   npm run build
    npx tsc --noEmit
+   npm run build
    ```
-5. Commit with clean semantic commit messages:
-   ```bash
-   git commit -m "feat(content): add tiktok viral hook synthesizer"
-   ```
-6. Push to your fork and submit a Pull Request on GitHub.
 
----
-
-## Local Development Setup
-
-1. **Clone your fork**:
+4. **Commit with semantic commit messages**:
    ```bash
-   git clone https://github.com/your-username/JARVIS-AI-OS.git
-   cd JARVIS-AI-OS
+   git commit -m "feat(agent): add multi-modal vision handler"
    ```
-2. **Install dependencies**:
+
+5. **Push and open a PR** on GitHub:
    ```bash
-   npm install --legacy-peer-deps
-   ```
-3. **Configure Environment Variables**:
-   Copy `.env.example` to `.env.local` and configure your API keys (Gemini, Groq, OpenRouter, Supabase).
-4. **Start the local server**:
-   ```bash
-   npm run dev
+   git push origin feat/your-feature-name
    ```
 
 ---
 
-## Coding Standards & Style
+## 💬 Community & Help
 
-- **Framework**: Next.js 15 App Router with React 19 and TypeScript 5.
-- **Styling**: Vanilla CSS, design tokens, and OKLCH color palettes with glassmorphic aesthetic.
-- **Three.js / WebGL**: Decouple 3D render loops from React state tree updates to preserve steady 60 FPS performance.
-- **Security**: Never expose API keys or service role secrets in client-side code.
-
-Thank you for helping us build the future of autonomous personal intelligence! 🚀
+- **Discussions**: [GitHub Discussions](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/discussions)
+- **Issues**: [GitHub Issues](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/issues)
+- **Lead Contact**: [vishwajeetsrk@gmail.com](mailto:vishwajeetsrk@gmail.com)
