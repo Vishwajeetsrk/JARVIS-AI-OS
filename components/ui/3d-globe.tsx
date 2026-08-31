@@ -1,125 +1,306 @@
 "use client";
-
-import React, { useEffect, useRef } from "react";
+import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
+import * as THREE from "three";
 import { cn } from "@/lib/utils";
 
 export interface GlobeMarker {
   lat: number;
   lng: number;
   src?: string;
-  label: string;
+  label?: string;
+  size?: number;
 }
 
-interface Globe3DProps {
+export interface Globe3DConfig {
+  radius?: number;
+  globeColor?: string;
+  textureUrl?: string;
+  bumpMapUrl?: string;
+  showAtmosphere?: boolean;
+  atmosphereColor?: string;
+  atmosphereIntensity?: number;
+  atmosphereBlur?: number;
+  bumpScale?: number;
+  autoRotateSpeed?: number;
+  enableZoom?: boolean;
+  enablePan?: boolean;
+  minDistance?: number;
+  maxDistance?: number;
+  initialRotation?: { x: number; y: number };
+  markerSize?: number;
+  showWireframe?: boolean;
+  wireframeColor?: string;
+  ambientIntensity?: number;
+  pointLightIntensity?: number;
+  backgroundColor?: string | null;
+}
+
+export interface Globe3DProps {
   markers?: GlobeMarker[];
-  config?: {
-    atmosphereColor?: string;
-    atmosphereIntensity?: number;
-    bumpScale?: number;
-    autoRotateSpeed?: number;
-  };
-  onMarkerClick?: (m: GlobeMarker) => void;
-  onMarkerHover?: (m: GlobeMarker | null) => void;
+  config?: Globe3DConfig;
   className?: string;
+  onMarkerClick?: (marker: GlobeMarker) => void;
+  onMarkerHover?: (marker: GlobeMarker | null) => void;
+}
+
+function latLngToVector3(lat: number, lng: number, radius: number): THREE.Vector3 {
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lng + 180) * (Math.PI / 180);
+
+  const x = -(radius * Math.sin(phi) * Math.cos(theta));
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+  const y = radius * Math.cos(phi);
+
+  return new THREE.Vector3(x, y, z);
 }
 
 export function Globe3D({
   markers = [],
-  config,
-  onMarkerClick,
+  config = {},
   className,
+  onMarkerClick,
+  onMarkerHover,
 }: Globe3DProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mountRef = useRef<HTMLDivElement>(null);
+  const [hoveredMarker, setHoveredMarker] = useState<GlobeMarker | null>(null);
+
+  const radius = config.radius || 2;
+  const autoRotateSpeed = config.autoRotateSpeed !== undefined ? config.autoRotateSpeed : 0.3;
+  const atmosphereColor = config.atmosphereColor || "#4da6ff";
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const container = mountRef.current;
+    if (!container) return;
 
-    let animId: number;
-    let rotation = 0;
+    let width = container.clientWidth || 400;
+    let height = container.clientHeight || 400;
 
-    const render = () => {
-      rotation += (config?.autoRotateSpeed || 0.3) * 0.02;
-      const w = (canvas.width = 400);
-      const h = (canvas.height = 400);
-      const cx = w / 2;
-      const cy = h / 2;
-      const r = 140;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    camera.position.z = radius * 3.4;
 
-      ctx.clearRect(0, 0, w, h);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    container.innerHTML = "";
+    container.appendChild(renderer.domElement);
 
-      // Atmosphere Glow
-      const glow = ctx.createRadialGradient(cx, cy, r * 0.8, cx, cy, r * 1.3);
-      glow.addColorStop(0, "rgba(56, 189, 248, 0.4)");
-      glow.addColorStop(1, "rgba(0, 0, 0, 0)");
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r * 1.3, 0, Math.PI * 2);
-      ctx.fill();
+    // Globe Group
+    const globeGroup = new THREE.Group();
+    scene.add(globeGroup);
 
-      // Globe Sphere
-      const sphereGrad = ctx.createRadialGradient(cx - 40, cy - 40, 20, cx, cy, r);
-      sphereGrad.addColorStop(0, "#1e293b");
-      sphereGrad.addColorStop(1, "#090d16");
-      ctx.fillStyle = sphereGrad;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fill();
+    // Earth Sphere
+    const sphereGeometry = new THREE.SphereGeometry(radius, 64, 64);
+    const textureLoader = new THREE.TextureLoader();
 
-      // Latitude lines
-      ctx.strokeStyle = "rgba(56, 189, 248, 0.15)";
-      ctx.lineWidth = 1;
-      for (let lat = -60; lat <= 60; lat += 30) {
-        const y = cy + (lat / 90) * r;
-        const rad = Math.sqrt(Math.max(0, r * r - (y - cy) * (y - cy)));
-        ctx.beginPath();
-        ctx.ellipse(cx, y, rad, rad * 0.25, 0, 0, Math.PI * 2);
-        ctx.stroke();
-      }
+    const earthTexture = textureLoader.load(
+      config.textureUrl || "https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg",
+      () => renderer.render(scene, camera)
+    );
 
-      // Longitude lines with rotation
-      for (let lng = 0; lng < 360; lng += 45) {
-        const angle = (lng * Math.PI) / 180 + rotation;
-        const xOffset = Math.sin(angle) * r;
-        if (Math.cos(angle) > 0) {
-          ctx.beginPath();
-          ctx.ellipse(cx, cy, Math.abs(xOffset), r, 0, 0, Math.PI * 2);
-          ctx.stroke();
+    const sphereMaterial = new THREE.MeshStandardMaterial({
+      map: earthTexture,
+      roughness: 0.6,
+      metalness: 0.1,
+    });
+    const globeMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    globeGroup.add(globeMesh);
+
+    // Wireframe Grid
+    const wireframeGeom = new THREE.SphereGeometry(radius * 1.002, 32, 16);
+    const wireframeMat = new THREE.MeshBasicMaterial({
+      color: config.wireframeColor || "#00e5ff",
+      wireframe: true,
+      transparent: true,
+      opacity: 0.08,
+    });
+    globeGroup.add(new THREE.Mesh(wireframeGeom, wireframeMat));
+
+    // Atmosphere Glow
+    const atmosphereGeom = new THREE.SphereGeometry(radius * 1.12, 64, 32);
+    const atmosphereMat = new THREE.ShaderMaterial({
+      uniforms: {
+        color: { value: new THREE.Color(atmosphereColor) },
+      },
+      vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
-      }
-
-      // Render Markers
-      markers.forEach((m) => {
-        const phi = (90 - m.lat) * (Math.PI / 180);
-        const theta = (m.lng * Math.PI) / 180 + rotation;
-        const x = cx + r * Math.sin(phi) * Math.sin(theta);
-        const y = cy - r * Math.cos(phi);
-        const z = Math.sin(phi) * Math.cos(theta);
-
-        if (z > 0) {
-          ctx.fillStyle = "#38bdf8";
-          ctx.beginPath();
-          ctx.arc(x, y, 4, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-          ctx.font = "10px sans-serif";
-          ctx.fillText(m.label, x + 6, y + 3);
+      `,
+      fragmentShader: `
+        uniform vec3 color;
+        varying vec3 vNormal;
+        void main() {
+          float intensity = pow(0.6 - dot(vNormal, vec3(0, 0, 1.0)), 2.0);
+          gl_FragColor = vec4(color, intensity * 0.8);
         }
+      `,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      transparent: true,
+    });
+    scene.add(new THREE.Mesh(atmosphereGeom, atmosphereMat));
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight1.position.set(5, 3, 5);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0x00e5ff, 0.6);
+    dirLight2.position.set(-5, -2, -5);
+    scene.add(dirLight2);
+
+    // Markers
+    const markerMeshes: { mesh: THREE.Mesh; marker: GlobeMarker }[] = [];
+    markers.forEach((m) => {
+      const pos = latLngToVector3(m.lat, m.lng, radius);
+      const pinGeom = new THREE.CylinderGeometry(0.015, 0.015, 0.25, 8);
+      pinGeom.translate(0, 0.125, 0);
+      pinGeom.rotateX(Math.PI / 2);
+
+      const pinMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
+      const pinMesh = new THREE.Mesh(pinGeom, pinMat);
+      pinMesh.position.copy(pos);
+      pinMesh.lookAt(0, 0, 0);
+
+      // Pin head sphere
+      const headGeom = new THREE.SphereGeometry(0.05, 16, 16);
+      const headMat = new THREE.MeshStandardMaterial({
+        color: 0xff3b30,
+        emissive: 0xff3b30,
+        emissiveIntensity: 0.5,
       });
+      const headMesh = new THREE.Mesh(headGeom, headMat);
+      const headPos = latLngToVector3(m.lat, m.lng, radius * 1.09);
+      headMesh.position.copy(headPos);
 
-      animId = requestAnimationFrame(render);
+      globeGroup.add(pinMesh);
+      globeGroup.add(headMesh);
+      markerMeshes.push({ mesh: headMesh, marker: m });
+    });
+
+    // Mouse Interaction
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+
+    const onMouseDown = (e: MouseEvent) => {
+      isDragging = true;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
     };
 
-    render();
-    return () => cancelAnimationFrame(animId);
-  }, [markers, config]);
+    const onMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        const deltaX = e.clientX - previousMousePosition.x;
+        const deltaY = e.clientY - previousMousePosition.y;
+
+        globeGroup.rotation.y += deltaX * 0.005;
+        globeGroup.rotation.x += deltaY * 0.005;
+
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      }
+
+      // Raycaster for markers
+      const rect = container.getBoundingClientRect();
+      const mouse = new THREE.Vector2(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
+      );
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(markerMeshes.map((m) => m.mesh));
+
+      if (intersects.length > 0) {
+        const hit = markerMeshes.find((m) => m.mesh === intersects[0].object);
+        if (hit) {
+          setHoveredMarker(hit.marker);
+          onMarkerHover?.(hit.marker);
+          container.style.cursor = "pointer";
+          return;
+        }
+      }
+      setHoveredMarker(null);
+      onMarkerHover?.(null);
+      container.style.cursor = isDragging ? "grabbing" : "grab";
+    };
+
+    const onMouseUp = () => {
+      isDragging = false;
+      container.style.cursor = "grab";
+    };
+
+    const onClick = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const mouse = new THREE.Vector2(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
+      );
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(markerMeshes.map((m) => m.mesh));
+
+      if (intersects.length > 0) {
+        const hit = markerMeshes.find((m) => m.mesh === intersects[0].object);
+        if (hit) onMarkerClick?.(hit.marker);
+      }
+    };
+
+    container.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    container.addEventListener("click", onClick);
+
+    // Animation Loop
+    let animationFrameId: number;
+    const animate = () => {
+      if (!isDragging) {
+        globeGroup.rotation.y += autoRotateSpeed * 0.005;
+      }
+      renderer.render(scene, camera);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+    animate();
+
+    // Resize Observer
+    const resizeObserver = new ResizeObserver(() => {
+      if (!container) return;
+      width = container.clientWidth;
+      height = container.clientHeight;
+      if (width === 0 || height === 0) return;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+    resizeObserver.observe(container);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      resizeObserver.disconnect();
+      container.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+      container.removeEventListener("click", onClick);
+      renderer.dispose();
+    };
+  }, [radius, autoRotateSpeed, atmosphereColor, markers, onMarkerClick, onMarkerHover, config]);
 
   return (
-    <div className={cn("relative flex items-center justify-center p-4", className)}>
-      <canvas ref={canvasRef} className="h-80 w-80 sm:h-96 sm:w-96 cursor-pointer" />
+    <div className={cn("relative h-[480px] w-full select-none overflow-hidden", className)}>
+      <div ref={mountRef} className="h-full w-full cursor-grab" />
+      {hoveredMarker && (
+        <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-cyan-400/50 bg-neutral-950/90 px-4 py-1.5 text-xs font-bold text-cyan-300 shadow-xl backdrop-blur-md">
+          📍 {hoveredMarker.label || "Marker"}
+        </div>
+      )}
     </div>
   );
 }
+
+export default Globe3D;
