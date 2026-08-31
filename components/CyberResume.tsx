@@ -9,6 +9,7 @@ import {
 import { RESUME_VARIANTS } from "@/lib/career/resumeVariants";
 import { ResumeVariant } from "@/lib/career/types";
 import {
+  downloadWordResume,
   downloadMarkdownResume,
   downloadPlainTextResume,
   downloadJsonResume,
@@ -162,6 +163,29 @@ export default function CyberResume({ onClose }: { onClose?: () => void }) {
         {/* Action Controls */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button
+            onClick={() => {
+              downloadWordResume(currentResume);
+              showToast(`Downloaded Microsoft Word Resume (${currentResume.slug || "resume"}.doc)`);
+            }}
+            style={{
+              padding: "6px 12px",
+              borderRadius: 10,
+              background: "rgba(59, 130, 246, 0.15)",
+              border: "1px solid rgba(59, 130, 246, 0.4)",
+              color: "#60a5fa",
+              fontSize: 11,
+              fontWeight: 700,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+            }}
+            title="Download formatted Microsoft Word document (.doc)"
+          >
+            <FileText size={13} /> Word (.doc)
+          </button>
+
+          <button
             onClick={() => downloadPlainTextResume(currentResume)}
             style={{
               padding: "6px 12px",
@@ -234,8 +258,9 @@ export default function CyberResume({ onClose }: { onClose?: () => void }) {
               gap: 5,
               boxShadow: "0 0 15px rgba(0, 229, 255, 0.25)",
             }}
+            title="Clean PDF / Print View"
           >
-            <Printer size={13} /> Print / Save PDF
+            <Printer size={13} /> Print / PDF
           </button>
 
           {onClose && (
@@ -419,6 +444,8 @@ export default function CyberResume({ onClose }: { onClose?: () => void }) {
         {/* TAB 1: LIVE VISUAL PREVIEW */}
         {activeTab === "preview" && (
           <div
+            id="printable-resume"
+            className="printable-sheet"
             style={{
               maxWidth: 860,
               margin: "0 auto",

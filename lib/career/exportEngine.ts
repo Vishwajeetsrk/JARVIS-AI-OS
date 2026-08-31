@@ -3,7 +3,12 @@ import { ResumeVariant } from "./types";
 /**
  * MULTI-FORMAT RESUME EXPORT ENGINE
  *
- * Generates Markdown, Plain Text ATS format, JSON, and triggers browser PDF printing / direct downloads.
+ * Generates:
+ * 1. Microsoft Word (.doc / .docx compatible)
+ * 2. Markdown (.md)
+ * 3. Plain Text ATS (.txt)
+ * 4. Structured JSON (.json)
+ * 5. Clean PDF Print
  */
 
 export function exportToMarkdown(resume: ResumeVariant): string {
@@ -66,6 +71,142 @@ export function exportToPlainTextATS(resume: ResumeVariant): string {
   return txt;
 }
 
+export function exportToWordDoc(resume: ResumeVariant): string {
+  let html = `<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>${resume.title}</title>
+<style>
+  @page {
+    size: 8.5in 11in;
+    margin: 0.5in 0.5in 0.5in 0.5in;
+    mso-header-margin: 0.3in;
+    mso-footer-margin: 0.3in;
+  }
+  body {
+    font-family: 'Calibri', 'Arial', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.35;
+    color: #111827;
+    margin: 0;
+    padding: 0;
+  }
+  h1 {
+    font-size: 20pt;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #000000;
+    margin: 0 0 2pt 0;
+  }
+  .role-title {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #1f2937;
+    margin: 0 0 4pt 0;
+  }
+  .contact-info {
+    font-size: 9.5pt;
+    color: #4b5563;
+    margin-bottom: 10pt;
+    border-bottom: 2pt solid #000000;
+    padding-bottom: 6pt;
+  }
+  h2 {
+    font-size: 11pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #000000;
+    border-bottom: 1pt solid #cccccc;
+    padding-bottom: 2pt;
+    margin: 10pt 0 4pt 0;
+  }
+  .summary-text {
+    font-size: 10pt;
+    line-height: 1.4;
+    color: #374151;
+    margin-bottom: 8pt;
+  }
+  ul {
+    margin: 2pt 0 6pt 16pt;
+    padding: 0;
+  }
+  li {
+    font-size: 9.5pt;
+    line-height: 1.35;
+    color: #374151;
+    margin-bottom: 3pt;
+  }
+  .item-header {
+    font-size: 10.5pt;
+    font-weight: bold;
+    color: #111827;
+    margin-top: 6pt;
+    margin-bottom: 2pt;
+  }
+  .item-date {
+    float: right;
+    font-size: 9.5pt;
+    font-weight: normal;
+    color: #6b7280;
+  }
+  .item-subtitle {
+    font-size: 9.5pt;
+    font-style: italic;
+    color: #4b5563;
+    margin-bottom: 2pt;
+  }
+</style>
+</head>
+<body>
+  <h1>VISHWAJEET</h1>
+  <div class="role-title">${resume.targetRole}</div>
+  <div class="contact-info">
+    Bengaluru, Karnataka, India | +91 85952 02922 | vishwajeetsrk@gmail.com<br/>
+    LinkedIn: linkedin.com/in/vishwajeetsrk | GitHub: github.com/Vishwajeetsrk | Portfolio: learnifyai.in
+  </div>
+
+  <h2>Professional Summary</h2>
+  <p class="summary-text">${resume.summary}</p>
+`;
+
+  resume.sections.forEach((sec) => {
+    html += `  <h2>${sec.title.toUpperCase()}</h2>\n`;
+    if (sec.bullets) {
+      html += `  <ul>\n`;
+      sec.bullets.forEach((b) => {
+        html += `    <li>${b.text}</li>\n`;
+      });
+      html += `  </ul>\n`;
+    }
+    if (sec.items) {
+      sec.items.forEach((item) => {
+        html += `  <div class="item-header">\n`;
+        if (item.dateRange) {
+          html += `    <span class="item-date">${item.dateRange}${item.location ? ` | ${item.location}` : ""}</span>\n`;
+        }
+        html += `    <span>${item.title}</span>\n`;
+        html += `  </div>\n`;
+        if (item.subtitle) {
+          html += `  <div class="item-subtitle">${item.subtitle}</div>\n`;
+        }
+        if (item.bullets) {
+          html += `  <ul>\n`;
+          item.bullets.forEach((b) => {
+            html += `    <li>${b.text}</li>\n`;
+          });
+          html += `  </ul>\n`;
+        }
+      });
+    }
+  });
+
+  html += `</body>\n</html>`;
+  return html;
+}
+
 export function downloadFile(filename: string, content: string, mimeType = "text/plain"): void {
   if (typeof window === "undefined") return;
   const blob = new Blob([content], { type: mimeType });
@@ -77,6 +218,12 @@ export function downloadFile(filename: string, content: string, mimeType = "text
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+export function downloadWordResume(resume: ResumeVariant): void {
+  const content = exportToWordDoc(resume);
+  const slug = resume.slug || "vishwajeet-resume";
+  downloadFile(`${slug}.doc`, content, "application/msword;charset=utf-8;");
 }
 
 export function downloadMarkdownResume(resume: ResumeVariant): void {

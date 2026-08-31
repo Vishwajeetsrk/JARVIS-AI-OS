@@ -955,8 +955,17 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search components by name, feature, or keyword (e.g. Cloud, Macbook, Globe, Gooey)..."
-              className="w-full rounded-xl border border-neutral-700 bg-neutral-950 pl-10 pr-4 py-2 text-xs font-medium text-white placeholder-neutral-500 focus:border-cyan-400 focus:outline-none"
+              className="w-full rounded-xl border border-neutral-700 bg-neutral-950 pl-10 pr-9 py-2 text-xs font-medium text-white placeholder-neutral-500 focus:border-cyan-400 focus:outline-none"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-500 hover:text-white"
+                title="Clear Search"
+              >
+                ✕
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-2 text-xs text-neutral-400 font-mono">
@@ -968,19 +977,32 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
 
         {/* Category Filter Pills */}
         <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all whitespace-nowrap ${
-                selectedCategory === cat
-                  ? "bg-cyan-500 text-black shadow-md shadow-cyan-500/30"
-                  : "border border-neutral-800 bg-neutral-900/60 text-neutral-400 hover:border-neutral-700 hover:text-white"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const count = cat === "All"
+              ? componentsCatalog.length
+              : componentsCatalog.filter((c) => c.category === cat).length;
+
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap ${
+                  selectedCategory === cat
+                    ? "bg-cyan-500 text-black shadow-md shadow-cyan-500/30"
+                    : "border border-neutral-800 bg-neutral-900/60 text-neutral-400 hover:border-neutral-700 hover:text-white"
+                }`}
+              >
+                <span>{cat}</span>
+                <span
+                  className={`rounded-full px-1.5 py-0.2 text-[9px] font-black ${
+                    selectedCategory === cat ? "bg-black/20 text-black" : "bg-neutral-800 text-neutral-400"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -1087,14 +1109,31 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
                         <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400">
                           Live Component Parameters
                         </h4>
-                        <button
-                          onClick={() =>
-                            setActiveTabMap((prev) => ({ ...prev, [comp.id]: "preview" }))
-                          }
-                          className="rounded-lg bg-cyan-500/20 border border-cyan-500/40 px-2.5 py-1 text-xs font-bold text-cyan-300 hover:bg-cyan-500 hover:text-black"
-                        >
-                          👁️ View Live Preview
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setCustomParams((prev) => {
+                                const next = { ...prev };
+                                delete next[comp.id];
+                                return next;
+                              });
+                              setSkillInstallToast(`Reset parameters to default for [${comp.name}]`);
+                              setTimeout(() => setSkillInstallToast(null), 2500);
+                            }}
+                            className="rounded-lg bg-neutral-800 border border-neutral-700 px-2.5 py-1 text-xs font-bold text-neutral-300 hover:border-neutral-500 hover:text-white transition-all"
+                            title="Reset all parameters to factory defaults"
+                          >
+                            ↺ Reset
+                          </button>
+                          <button
+                            onClick={() =>
+                              setActiveTabMap((prev) => ({ ...prev, [comp.id]: "preview" }))
+                            }
+                            className="rounded-lg bg-cyan-500/20 border border-cyan-500/40 px-2.5 py-1 text-xs font-bold text-cyan-300 hover:bg-cyan-500 hover:text-black transition-all"
+                          >
+                            👁️ View Live Preview
+                          </button>
+                        </div>
                       </div>
                       {Object.keys(comp.defaultParams).map((key) => (
                         <div key={key} className="flex flex-col gap-1.5">

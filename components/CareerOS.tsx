@@ -45,7 +45,9 @@ import { INITIAL_INTERVIEWS, MASTER_STAR_STORIES } from "../lib/career/interview
 import {
   exportToMarkdown,
   exportToPlainTextATS,
+  exportToWordDoc,
   triggerPrintPDF,
+  downloadWordResume,
   downloadMarkdownResume,
   downloadPlainTextResume,
   downloadJsonResume,
@@ -584,6 +586,28 @@ export default function CareerOS({ onClose }: { onClose: () => void }) {
                       </button>
                       <button
                         onClick={() => {
+                          downloadWordResume(res);
+                          setCopilotActionStatus(`Downloaded Microsoft Word Resume: ${res.slug || res.id}.doc`);
+                          setTimeout(() => setCopilotActionStatus(null), 3000);
+                        }}
+                        style={{
+                          padding: "6px 10px",
+                          background: "rgba(59, 130, 246, 0.12)",
+                          border: "1px solid rgba(59, 130, 246, 0.35)",
+                          borderRadius: 6,
+                          color: "#60a5fa",
+                          fontSize: 10.5,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                        title="Download Microsoft Word Document (.doc)"
+                      >
+                        <FileText size={11} /> .doc
+                      </button>
+                      <button
+                        onClick={() => {
                           downloadPlainTextResume(res);
                           setCopilotActionStatus(`Downloaded Plain Text ATS: ${res.slug || res.id}.txt`);
                           setTimeout(() => setCopilotActionStatus(null), 3000);
@@ -786,6 +810,8 @@ export default function CareerOS({ onClose }: { onClose: () => void }) {
 
               {/* Right Column: Live Printable Preview */}
               <div
+                id="printable-resume"
+                className="printable-sheet"
                 style={{
                   background: "#ffffff",
                   color: "#111827",
@@ -802,6 +828,7 @@ export default function CareerOS({ onClose }: { onClose: () => void }) {
               >
                 {/* Download Actions Toolbar */}
                 <div
+                  className="no-print"
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -817,6 +844,26 @@ export default function CareerOS({ onClose }: { onClose: () => void }) {
                   </span>
 
                   <div style={{ display: "flex", gap: 6 }}>
+                    <button
+                      onClick={() => {
+                        downloadWordResume(selectedResume);
+                        setCopilotActionStatus(`Downloaded Microsoft Word Document (.doc)`);
+                        setTimeout(() => setCopilotActionStatus(null), 3000);
+                      }}
+                      style={{
+                        padding: "4px 8px",
+                        background: "#eff6ff",
+                        border: "1px solid #93c5fd",
+                        borderRadius: 6,
+                        color: "#1d4ed8",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                      }}
+                      title="Download Microsoft Word Document"
+                    >
+                      .doc
+                    </button>
                     <button
                       onClick={() => {
                         downloadPlainTextResume(selectedResume);

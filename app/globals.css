@@ -240,21 +240,64 @@ option {
   }
 }
 
-/* Print / PDF Export Media Query */
+/* Print / PDF Export Media Query - High Fidelity ATS 1-Page Layout */
 @media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-    overflow: visible !important;
+  @page {
+    size: A4 portrait;
+    margin: 0.4in;
   }
+  
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    overflow: visible !important;
+    height: auto !important;
+    width: 100% !important;
+    font-size: 10pt !important;
+  }
+
   body::after {
     display: none !important;
   }
-  .no-print {
+
+  /* Hide all background and UI chrome elements */
+  #main > header,
+  #main > section,
+  .no-print,
+  button,
+  nav,
+  input,
+  textarea {
     display: none !important;
   }
-  .print-only {
+
+  /* Specific targeting for printable resume sheet */
+  #printable-resume,
+  .printable-sheet {
     display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+
+  .printable-sheet * {
+    color: #111827 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  .resume-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 10pt !important;
   }
 }
 
