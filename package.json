@@ -1,7 +1,7 @@
 {
-  "name": "apex-ui",
-  "version": "1.0.0",
-  "description": "An animated autonomous-agent orb + reasoning-graph UI. Hand-written SVG/CSS, no 3D libraries.",
+  "name": "jarvis-ai-os",
+  "version": "4.0.0",
+  "description": "JARVIS AI OS — Autonomous Agent Operating System with 3D WebGL Constellation and Multi-Tier Task Runtime.",
   "license": "MIT",
   "private": false,
   "scripts": {

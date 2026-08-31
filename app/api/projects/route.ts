@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
 
-interface ProjectItem {
+export interface ProjectItem {
   id: string;
   name: string;
-  category: "core" | "saas" | "ai" | "template" | "mobile";
+  category: "core" | "saas" | "ai" | "mobile" | "job_experience";
+  type: "software_product" | "professional_job_responsibility";
   description: string;
-  status: "active" | "production" | "ready" | "in-development";
-  stars?: number;
+  status: "production" | "active" | "ready";
   tags: string[];
   repoUrl?: string;
   demoUrl?: string;
+  path?: string;
   stats?: {
     components: number;
     files: number;
@@ -17,81 +18,88 @@ interface ProjectItem {
   };
 }
 
-const USER_PROJECTS: ProjectItem[] = [
+const REAL_USER_SYSTEMS: ProjectItem[] = [
   {
     id: "jarvis-ai-os",
-    name: "JARVIS AI OS",
+    name: "JARVIS AI OS (This System)",
     category: "core",
-    description: "Intelligent Autonomous Operating System with multi-agent orchestration, live voice pipeline, and universal project workspaces.",
+    type: "software_product",
+    description: "Autonomous Personal Operating System with 18 specialist agents, 3D WebGL particle constellation, multi-tier task runtime, and voice pipeline.",
     status: "production",
-    tags: ["Next.js", "TanStack", "AI Agents", "Supabase", "Three.js"],
+    tags: ["React 19", "Next.js 15", "TypeScript", "Three.js", "Supabase", "Groq", "Gemini"],
     repoUrl: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
-    demoUrl: "http://localhost:8080/console",
+    demoUrl: "http://localhost:3000",
+    path: "D:\\Team of Vishwajeet",
     stats: { components: 142, files: 420, linesOfCode: "48.2k" },
   },
   {
     id: "learnify-platform",
-    name: "Learnify — Adaptive Learning Platform",
+    name: "Learnify AI — Adaptive Learning Platform",
     category: "saas",
-    description: "Next-gen AI education suite with interactive simulations, progress heatmaps, and personalized knowledge graphs.",
+    type: "software_product",
+    description: "Full-stack intelligent education platform combining AI tutoring, creator toolkits, gamification engine, and automated career roadmaps.",
     status: "production",
-    tags: ["React 19", "Tailwind CSS", "EdTech", "Analytics"],
-    repoUrl: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
-    demoUrl: "http://localhost:8080/console/projects/local-learnify",
+    tags: ["React 19", "Next.js", "TypeScript", "Supabase", "OpenRouter", "Cashfree", "Tailwind"],
+    repoUrl: "https://github.com/Vishwajeetsrk",
+    demoUrl: "https://learnifyai.in",
     stats: { components: 68, files: 120, linesOfCode: "18.5k" },
   },
   {
-    id: "staffu-crm-admin",
-    name: "StaffU CRM & Lead Management",
-    category: "template",
-    description: "Enterprise CRM and lead tracking dashboard with Kanban deal stages, pipeline analytics, and agent assignment.",
-    status: "ready",
-    tags: ["Next.js 15", "Lucide", "Charts", "Enterprise"],
-    repoUrl: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
-    demoUrl: "http://localhost:8080/preset-sites/crm-lead-management-panel-staffu-admin-template/",
-    stats: { components: 84, files: 145, linesOfCode: "22.1k" },
-  },
-  {
-    id: "voice-cloner-studio",
-    name: "Voice Cloner & Synthesis Studio",
-    category: "ai",
-    description: "Sub-second real-time neural voice cloning, multi-accent calibration, and bidirectional audio streaming.",
+    id: "wardelio-mobile-app",
+    name: "Wardelio Mobile App",
+    category: "mobile",
+    type: "software_product",
+    description: "Personal wardrobe styling and outfit coordination mobile app featuring 150+ interactive screens, 3D controls, and smooth animations for Android & iOS.",
     status: "active",
-    tags: ["Web Audio API", "ElevenLabs", "Whisper", "Orpheus"],
-    repoUrl: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
-    demoUrl: "http://localhost:8080/console/voice",
-    stats: { components: 32, files: 64, linesOfCode: "8.4k" },
+    tags: ["React", "Vite", "Capacitor", "Tailwind CSS", "Android", "iOS", "Mobile UX"],
+    repoUrl: "https://github.com/Vishwajeetsrk",
+    demoUrl: "https://vishwajeetsrk.github.io",
+    path: "C:\\Users\\vishw\\OneDrive\\Desktop\\Wardelio",
+    stats: { components: 154, files: 210, linesOfCode: "32.4k" },
   },
   {
-    id: "algorithmic-art-engine",
-    name: "Algorithmic Art & Generative Studio",
+    id: "dreamsync-career-platform",
+    name: "DreamSync — AI Career Intelligence Platform",
     category: "ai",
-    description: "Procedural shader visuals, mathematical flow fields, and autonomous design generation using p5.js and Three.js.",
-    status: "active",
-    tags: ["Three.js", "GLSL Shaders", "p5.js", "Generative Art"],
-    repoUrl: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
-    demoUrl: "http://localhost:8080/console/design",
-    stats: { components: 45, files: 89, linesOfCode: "14.2k" },
+    type: "software_product",
+    description: "AI-powered career engine featuring AI Resume Builder, ATS Checker, LinkedIn Profile Optimizer, and Portfolio Generator.",
+    status: "production",
+    tags: ["Next.js", "React", "Firebase", "OpenRouter", "Gemini", "Upstash Redis"],
+    repoUrl: "https://github.com/Vishwajeetsrk",
+    demoUrl: "https://vishwajeetsrk.github.io",
+    stats: { components: 52, files: 96, linesOfCode: "16.8k" },
   },
   {
-    id: "mcp-protocol-hub",
-    name: "MCP Protocol & Tool Hub",
-    category: "core",
-    description: "Model Context Protocol servers & clients powering bidirectional tooling with GitHub, Postgres, and Brave.",
+    id: "luxury-laundry-saas",
+    name: "Luxury Laundry — SaaS Platform",
+    category: "saas",
+    type: "software_product",
+    description: "Full-stack laundry management SaaS with customer booking portals, admin analytics dashboards, and real-time order tracking via WebSockets.",
     status: "ready",
-    tags: ["TypeScript", "JSON-RPC", "MCP Standard", "DevTools"],
+    tags: ["Next.js", "Express.js", "PostgreSQL", "Prisma", "Socket.io", "Tailwind"],
     repoUrl: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
-    demoUrl: "http://localhost:8080/console/connectors",
-    stats: { components: 28, files: 72, linesOfCode: "11.6k" },
+    demoUrl: "http://localhost:3000",
+    stats: { components: 48, files: 85, linesOfCode: "14.6k" },
+  },
+  {
+    id: "salesforce-rootbridge-role",
+    name: "Salesforce & Razorpay Donation Reconciliation",
+    category: "job_experience",
+    type: "professional_job_responsibility",
+    description: "Professional job responsibilities at Rootbridge Academy: 7-step daily reconciliation matching 200,000+ CRM records with Razorpay, boosting accuracy by 30%.",
+    status: "production",
+    tags: ["Rootbridge Academy", "Salesforce CRM", "Data Loader", "Razorpay API", "Python ETL", "Office Work"],
+    demoUrl: "http://localhost:3000",
+    path: "D:\\Team of Vishwajeet",
+    stats: { components: 18, files: 34, linesOfCode: "6.2k" },
   },
 ];
 
 export async function GET() {
   return NextResponse.json({
     owner: "Vishwajeet (Vishwajeetsrk)",
-    projects: USER_PROJECTS,
-    totalProjects: USER_PROJECTS.length,
-    activeEnvironments: 4,
+    projects: REAL_USER_SYSTEMS,
+    totalProjects: REAL_USER_SYSTEMS.length,
     timestamp: new Date().toISOString(),
   });
 }

@@ -17,5 +17,5 @@
     "paths": { "@/*": ["./*"] }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "cli"]
+  "exclude": ["node_modules", "cli", "Projects", "packages", "scratch", "scripts", "dist", "desktop", "src-tauri", "learnify-designs"]
 }

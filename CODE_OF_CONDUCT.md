@@ -6,15 +6,17 @@ We as members, contributors, and leaders pledge to make participation in the **J
 
 We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.
 
+---
+
 ## Our Standards
 
 Examples of behavior that contributes to a positive environment for our community include:
 
 * Demonstrating empathy and kindness toward other people
-* Being respectful of differing opinions, viewpoints, and experiences
+* Being respectful of differing opinions, viewpoints, and architectural approaches
 * Giving and gracefully accepting constructive feedback
 * Accepting responsibility and apologizing to those affected by our mistakes, and learning from the experience
-* Focusing on what is best not just for us as individuals, but for the overall community
+* Focusing on what is best not just for us as individuals, but for the overall open-source AI community
 
 Examples of unacceptable behavior include:
 
@@ -24,17 +26,25 @@ Examples of unacceptable behavior include:
 * Publishing others' private information, such as a physical or email address, without their explicit permission
 * Other conduct which could reasonably be considered inappropriate in a professional setting
 
+---
+
 ## Enforcement Responsibilities
 
 Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.
 
+---
+
 ## Scope
 
-This Code of Conduct applies within all community spaces, including the GitHub organization, repositories, issue trackers, discussions, Discord/Slack servers, and anywhere an individual is representing the project.
+This Code of Conduct applies within all community spaces, including the GitHub organization, repositories, issue trackers, discussions, Discord servers, and anywhere an individual is representing the project.
+
+---
 
 ## Enforcement Guidelines
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leadership at **vishwajeet@jarvis-ai.org** or by opening a confidential security advisory on GitHub. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leadership at **vishwajeetsrk@gmail.com** or by opening a confidential security advisory on GitHub. All complaints will be reviewed and investigated promptly and fairly.
+
+---
 
 ## Attribution
 

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { User, Briefcase, Code, Terminal, Trophy, MapPin, Mail, Globe, Target, Shield, X, Maximize2, Minimize2, GraduationCap, Award, Phone } from "lucide-react";
+import { User, Briefcase, Code, Terminal, MapPin, Mail, Globe, X, Maximize2, Minimize2, GraduationCap, Phone, Printer, ExternalLink, Download, FileText, Check, ArrowLeft } from "lucide-react";
 
 export default function CyberResume({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<"profile" | "experience" | "skills" | "projects" | "education">("profile");
   const [maximized, setMaximized] = useState(false);
+  const [template, setTemplate] = useState<"cyberpunk" | "executive" | "minimal">("cyberpunk");
+  const [copied, setCopied] = useState(false);
 
   const TABS = [
     { id: "profile", label: "Profile", icon: User },
@@ -57,25 +59,36 @@ export default function CyberResume({ onClose }: { onClose: () => void }) {
 
   const PROJECTS = [
     {
+      title: "JARVIS AI OS",
+      date: "Core OS Platform",
+      stack: "TypeScript, React 19, Next.js, Three.js, Groq, Gemini",
+      description: "Autonomous personal operating system featuring 3D WebGL particle orb, reasoning constellation web, and 15 specialist agents.",
+      github: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
+      live: "http://localhost:3000"
+    },
+    {
+      title: "Wardelio Mobile App",
+      date: "Android & iOS Companion",
+      stack: "React, Vite, Capacitor, Tailwind CSS",
+      description: "Mobile wardrobe & style companion featuring 150+ screens, 3D interactive buttons, smooth animations, and custom settings flow.",
+      github: "https://github.com/Vishwajeetsrk",
+      live: "C:\\Users\\vishw\\OneDrive\\Desktop\\Wardelio"
+    },
+    {
       title: "Learnify AI",
       date: "May 2026 - Present",
       stack: "React 19, TypeScript, Next.js, Tailwind, Supabase, OpenRouter",
-      description: "Built a full-stack AI-powered learning platform combining intelligent tutoring, creator tools, gamification, and AI career guidance.",
-      link: "learnifyai.in"
+      description: "Full-stack AI-powered learning platform combining intelligent tutoring, creator tools, gamification, and AI career guidance.",
+      github: "https://github.com/Vishwajeetsrk",
+      live: "https://learnifyai.in"
     },
     {
-      title: "DreamSync — AI Career Intelligence",
-      date: "Feb 2026 - Apr 2026",
-      stack: "Next.js, Tailwind, Firebase, Gemini, Upstash Redis, Framer Motion",
-      description: "Designed a modern AI-powered platform for career growth. Features AI Resume Builder, ATS Checker, LinkedIn Optimizer, and Portfolio Generator.",
-      link: ""
-    },
-    {
-      title: "Luxury Laundry — SaaS Platform",
-      date: "Apr 2026 - May 2026",
-      stack: "Next.js, Express.js, PostgreSQL, Prisma, Socket.io, Tailwind",
-      description: "Developed responsive customer and admin dashboards for a premium SaaS platform with real-time updates and scalable frontend architecture.",
-      link: ""
+      title: "Razorpay to Salesforce Sync Module",
+      date: "Office Automation Workflow",
+      stack: "TypeScript, Node.js, Python, Salesforce Data Loader",
+      description: "7-step daily donation reconciliation, Lead/Account matching, Opportunity insertion, and confirmation email automation.",
+      github: "https://github.com/Vishwajeetsrk/JARVIS-AI-OS",
+      live: ""
     }
   ];
 
@@ -92,314 +105,398 @@ export default function CyberResume({ onClose }: { onClose: () => void }) {
     }
   ];
 
+  const handlePrint = () => {
+    if (typeof window !== "undefined") {
+      window.print();
+    }
+  };
+
+  const handleShare = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText("https://github.com/Vishwajeetsrk/JARVIS-AI-OS");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <div
       style={{
         position: "fixed",
-        top: maximized ? 0 : "10%",
+        top: maximized ? 0 : "8%",
         left: maximized ? 0 : "50%",
         transform: maximized ? "none" : "translateX(-50%)",
-        width: maximized ? "100vw" : "clamp(340px, 80vw, 1000px)",
-        height: maximized ? "100vh" : "80vh",
-        background: "rgba(4, 10, 20, 0.85)",
+        width: maximized ? "100vw" : "clamp(340px, 86vw, 1040px)",
+        height: maximized ? "104vh" : "84vh",
+        background: template === "executive" ? "#0b1329" : template === "minimal" ? "#060913" : "rgba(4, 10, 20, 0.88)",
         backdropFilter: "blur(24px)",
-        border: "1px solid rgba(0, 229, 255, 0.2)",
+        border: "1px solid rgba(0, 229, 255, 0.25)",
         borderRadius: maximized ? 0 : 24,
-        boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0, 229, 255, 0.1)",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 0 35px rgba(0, 229, 255, 0.15)",
         display: "flex",
         flexDirection: "column",
-        zIndex: 100,
+        zIndex: 90,
         overflow: "hidden",
-        transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-        fontFamily: "var(--font-sans)",
-        color: "#f0ede8"
+        color: "#ffffff"
       }}
     >
-      {/* Header */}
+      {/* Header Bar */}
       <div
+        className="no-print"
         style={{
           padding: "16px 24px",
-          borderBottom: "1px solid rgba(0, 229, 255, 0.15)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
-          background: "linear-gradient(90deg, rgba(0, 229, 255, 0.05), transparent)",
+          justifyContent: "space-between",
+          background: "rgba(0, 229, 255, 0.04)"
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: "rgba(0, 229, 255, 0.1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid rgba(0, 229, 255, 0.3)"
-            }}
-          >
-            <User size={16} color="#00e5ff" />
-          </div>
-          <div>
-            <h2 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600, letterSpacing: "0.05em" }}>Vishwajeet | Dossier</h2>
-            <div style={{ fontSize: "0.75rem", color: "rgba(0, 229, 255, 0.7)", fontFamily: "var(--font-mono)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              Classified Personnel File
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: "flex", gap: 8 }}>
-          <button
-            onClick={() => setMaximized(!maximized)}
-            style={{
-              background: "transparent",
-              border: "none",
-              color: "rgba(240,237,232,0.5)",
-              cursor: "pointer",
-              padding: 4,
-            }}
-          >
-            {maximized ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
-          </button>
           <button
             onClick={onClose}
             style={{
-              background: "transparent",
-              border: "none",
-              color: "rgba(240,237,232,0.5)",
+              background: "rgba(0, 229, 255, 0.12)",
+              border: "1px solid rgba(0, 229, 255, 0.4)",
+              borderRadius: 12,
+              padding: "5px 12px",
+              color: "#00e5ff",
               cursor: "pointer",
-              padding: 4,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 11,
+              fontWeight: 700,
+              fontFamily: "var(--font-mono)",
             }}
           >
-            <X size={20} />
+            <ArrowLeft size={13} /> Back
+          </button>
+          <User size={22} style={{ color: "#00e5ff" }} />
+          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, fontFamily: "var(--font-display)" }}>
+            Vishwajeet Cyber Resume & Credentials
+          </h2>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {/* Format selector */}
+          <select
+            value={template}
+            onChange={(e) => setTemplate(e.target.value as any)}
+            className="cyber-dropdown"
+            style={{ fontSize: 11, padding: "4px 8px" }}
+          >
+            <option value="cyberpunk">Cyberpunk Dark</option>
+            <option value="executive">Executive Modern</option>
+            <option value="minimal">Minimalist Clean</option>
+          </select>
+
+          {/* Download PDF / Print Button */}
+          <button
+            onClick={handlePrint}
+            style={{
+              background: "rgba(0, 229, 255, 0.15)",
+              border: "1px solid #00e5ff",
+              color: "#00e5ff",
+              padding: "5px 12px",
+              borderRadius: 14,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 11,
+              fontWeight: 700,
+              fontFamily: "var(--font-mono)"
+            }}
+          >
+            <Printer size={13} /> Print / Export PDF
+          </button>
+
+          <button
+            onClick={handleShare}
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "rgba(255,255,255,0.8)",
+              padding: "5px 12px",
+              borderRadius: 14,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 11,
+              fontFamily: "var(--font-mono)"
+            }}
+          >
+            {copied ? <Check size={13} style={{ color: "#10b981" }} /> : <Download size={13} />}
+            {copied ? "Copied Link!" : "Share Link"}
+          </button>
+
+          <button
+            onClick={() => setMaximized(!maximized)}
+            style={{ background: "transparent", border: "none", color: "rgba(240,237,232,0.6)", cursor: "pointer" }}
+          >
+            {maximized ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+          </button>
+
+          <button
+            onClick={onClose}
+            style={{ background: "transparent", border: "none", color: "rgba(240,237,232,0.6)", cursor: "pointer" }}
+          >
+            <X size={18} />
           </button>
         </div>
       </div>
 
-      <div style={{ display: "flex", flex: 1, overflow: "hidden", flexDirection: maximized ? "row" : "column" }}>
-        
-        {/* Sidebar Tabs */}
-        <div
-          style={{
-            width: maximized ? 240 : "100%",
-            borderRight: maximized ? "1px solid rgba(255,255,255,0.05)" : "none",
-            borderBottom: maximized ? "none" : "1px solid rgba(255,255,255,0.05)",
-            padding: 16,
-            display: "flex",
-            flexDirection: maximized ? "column" : "row",
-            gap: 8,
-            overflowX: "auto",
-            background: "rgba(0,0,0,0.2)"
-          }}
-        >
-          {TABS.map((tab) => {
-            const isActive = activeTab === tab.id;
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+      {/* Navigation Tabs */}
+      <div
+        className="no-print"
+        style={{
+          display: "flex",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          background: "rgba(0,0,0,0.2)",
+          overflowX: "auto"
+        }}
+      >
+        {TABS.map((tab) => {
+          const Icon = tab.icon;
+          const active = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              style={{
+                flex: 1,
+                minWidth: 100,
+                padding: "12px 16px",
+                background: active ? "rgba(0, 229, 255, 0.1)" : "transparent",
+                border: "none",
+                borderBottom: active ? "2px solid #00e5ff" : "2px solid transparent",
+                color: active ? "#00e5ff" : "rgba(240,237,232,0.6)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                fontSize: "0.8rem",
+                fontFamily: "var(--font-mono)",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                transition: "all 0.2s"
+              }}
+            >
+              <Icon size={14} /> {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Main Content Area */}
+      <div style={{ flex: 1, overflowY: "auto", padding: 28 }}>
+        {activeTab === "profile" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            <div
+              style={{
+                background: "rgba(6, 16, 32, 0.75)",
+                padding: 24,
+                borderRadius: 20,
+                border: "1px solid rgba(0, 229, 255, 0.2)",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 20,
+                alignItems: "center"
+              }}
+            >
+              <div
                 style={{
+                  width: 76,
+                  height: 76,
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #00e5ff, #10b981)",
                   display: "flex",
                   alignItems: "center",
-                  gap: 12,
-                  padding: "12px 16px",
-                  background: isActive ? "rgba(0, 229, 255, 0.1)" : "transparent",
-                  border: isActive ? "1px solid rgba(0, 229, 255, 0.3)" : "1px solid transparent",
-                  borderRadius: 12,
-                  color: isActive ? "#00e5ff" : "rgba(240,237,232,0.6)",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  transition: "all 0.2s",
-                  minWidth: maximized ? "auto" : 140
+                  justifyContent: "center",
+                  fontSize: 28,
+                  fontWeight: 800,
+                  color: "#000",
+                  fontFamily: "var(--font-display)"
                 }}
               >
-                <Icon size={18} />
-                <span style={{ fontWeight: 500, fontSize: "0.9rem", fontFamily: "var(--font-mono)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                  {tab.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Content Area */}
-        <div style={{ flex: 1, padding: 32, overflowY: "auto" }}>
-          
-          {activeTab === "profile" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 32, animation: "fadeIn 0.3s ease-out" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
-                <div
-                  style={{
-                    width: 120,
-                    height: 120,
-                    borderRadius: "50%",
-                    background: "linear-gradient(45deg, #00e5ff, #0077ff)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 0 30px rgba(0, 229, 255, 0.3)",
-                    border: "2px solid rgba(0, 229, 255, 0.5)"
-                  }}
-                >
-                  <Terminal size={48} color="#fff" />
-                </div>
-                <div>
-                  <h1 style={{ fontSize: "2.5rem", margin: 0, fontWeight: 700, color: "#fff" }}>Vishwajeet</h1>
-                  <p style={{ fontSize: "1.2rem", color: "#00e5ff", margin: "4px 0 16px 0", fontFamily: "var(--font-mono)" }}>
-                    AI Software Engineer & Full Stack Developer
-                  </p>
-                  
-                  <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, color: "rgba(240,237,232,0.7)", fontSize: "0.9rem" }}>
-                      <MapPin size={16} /> Bengaluru, India
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, color: "rgba(240,237,232,0.7)", fontSize: "0.9rem" }}>
-                      <Mail size={16} /> vishwajeetsrk@gmail.com
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, color: "rgba(240,237,232,0.7)", fontSize: "0.9rem" }}>
-                      <Phone size={16} /> +91 85952 02922
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 12 }}>
-                    <a href="https://vishwajeetsrk.github.io" target="_blank" style={{ display: "flex", alignItems: "center", gap: 6, color: "#00e5ff", textDecoration: "none", fontSize: "0.9rem" }}>
-                      <Globe size={16} /> Portfolio
-                    </a>
-                    <a href="https://github.com/Vishwajeetsrk" target="_blank" style={{ display: "flex", alignItems: "center", gap: 6, color: "#00e5ff", textDecoration: "none", fontSize: "0.9rem" }}>
-                      <Globe size={16} /> GitHub
-                    </a>
-                    <a href="https://learnifyai.in" target="_blank" style={{ display: "flex", alignItems: "center", gap: 6, color: "#00e5ff", textDecoration: "none", fontSize: "0.9rem" }}>
-                      <Globe size={16} /> learnifyai.in
-                    </a>
-                  </div>
-                </div>
+                V
               </div>
 
-              <div style={{ background: "rgba(255,255,255,0.03)", padding: 24, borderRadius: 16, border: "1px solid rgba(255,255,255,0.05)" }}>
-                <h3 style={{ margin: "0 0 12px 0", color: "#00e5ff", display: "flex", alignItems: "center", gap: 8 }}>
-                  <Shield size={18} /> Executive Objective
-                </h3>
-                <p style={{ lineHeight: 1.7, color: "rgba(240,237,232,0.8)", fontSize: "0.95rem" }}>
-                  AI-focused Full Stack Developer with hands-on experience building AI-powered SaaS applications, modern web platforms, 
-                  and automation workflows. Skilled in modern frontend architectures, Supabase, AI API integration, and responsive design. 
-                  Passionate about Generative AI, cloud technologies, and creating scalable digital products that improve learning and productivity.
+              <div style={{ flex: 1, minWidth: 200 }}>
+                <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#ffffff", fontFamily: "var(--font-display)" }}>
+                  Vishwajeet
+                </h1>
+                <p style={{ margin: "4px 0 0", fontSize: 13, color: "#00e5ff", fontFamily: "var(--font-mono)" }}>
+                  Full-Stack AI Software Engineer & Systems Architect
                 </p>
+                <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 10, fontSize: 11, color: "rgba(240,237,232,0.7)" }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><MapPin size={12} /> Bengaluru, India</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><Mail size={12} /> vishwajeetsrk@github</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><Globe size={12} /> github.com/Vishwajeetsrk</span>
+                </div>
               </div>
             </div>
-          )}
 
-          {activeTab === "skills" && (
-            <div style={{ animation: "fadeIn 0.3s ease-out" }}>
-              <h3 style={{ margin: "0 0 24px 0", color: "#fff", fontSize: "1.5rem" }}>Technical Arsenal</h3>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
-                {SKILLS.map(skillGroup => (
-                  <div key={skillGroup.category} style={{ background: "rgba(0, 229, 255, 0.03)", padding: 20, borderRadius: 16, border: "1px solid rgba(0, 229, 255, 0.1)" }}>
-                    <h4 style={{ color: "#00e5ff", margin: "0 0 16px 0", fontSize: "1rem" }}>{skillGroup.category}</h4>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                      {skillGroup.items.map(item => (
-                        <span key={item} style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.1)", padding: "6px 12px", borderRadius: 20, fontSize: "0.85rem", color: "rgba(240,237,232,0.9)" }}>
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div>
+              <h3 style={{ fontSize: 14, color: "#00e5ff", textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "var(--font-mono)" }}>
+                Executive Summary
+              </h3>
+              <p style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(240,237,232,0.8)" }}>
+                Results-driven Full-Stack AI Engineer specializing in Next.js 19, TypeScript, React 19, Supabase, and autonomous multi-agent orchestration. Proven track record in optimizing enterprise workflows, high-precision data reconciliation (200,000+ records), and crafting high-conversion 60fps digital experiences across web, desktop (Tauri/Rust), and mobile (Capacitor/React Native).
+              </p>
             </div>
-          )}
+          </div>
+        )}
 
-          {activeTab === "experience" && (
-            <div style={{ animation: "fadeIn 0.3s ease-out" }}>
-               <h3 style={{ margin: "0 0 24px 0", color: "#fff", fontSize: "1.5rem" }}>Professional Experience</h3>
-               <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-                 {EXPERIENCE.map((exp, i) => (
-                   <div key={i} style={{ position: "relative", paddingLeft: 24, borderLeft: "2px solid rgba(0, 229, 255, 0.3)" }}>
-                     <div style={{ position: "absolute", left: -6, top: 4, width: 10, height: 10, borderRadius: "50%", background: "#00e5ff", boxShadow: "0 0 10px #00e5ff" }} />
-                     <h4 style={{ margin: 0, fontSize: "1.2rem", color: "#fff" }}>{exp.title}</h4>
-                     <div style={{ color: "#00e5ff", fontSize: "0.9rem", margin: "4px 0 12px 0", fontFamily: "var(--font-mono)" }}>
-                       {exp.company} | {exp.location} | {exp.date}
-                     </div>
-                     <p style={{ color: "rgba(240,237,232,0.7)", lineHeight: 1.6, fontSize: "0.95rem" }}>
-                       {exp.description}
-                     </p>
-                   </div>
-                 ))}
-               </div>
-            </div>
-          )}
-
-          {activeTab === "projects" && (
-            <div style={{ animation: "fadeIn 0.3s ease-out" }}>
-               <h3 style={{ margin: "0 0 24px 0", color: "#fff", fontSize: "1.5rem" }}>Key Projects</h3>
-               <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                 {PROJECTS.map((proj, i) => (
-                   <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: 24 }}>
-                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-                       <h4 style={{ margin: 0, fontSize: "1.2rem", color: "#00e5ff" }}>{proj.title}</h4>
-                       <div style={{ fontSize: "0.85rem", color: "rgba(240,237,232,0.5)", fontFamily: "var(--font-mono)" }}>{proj.date}</div>
-                     </div>
-                     <div style={{ color: "#10b981", fontSize: "0.85rem", margin: "8px 0 16px 0", fontFamily: "var(--font-mono)" }}>
-                       Tech Stack: {proj.stack}
-                     </div>
-                     <p style={{ color: "rgba(240,237,232,0.8)", lineHeight: 1.6, fontSize: "0.95rem", margin: 0 }}>
-                       {proj.description}
-                     </p>
-                     {proj.link && (
-                       <a href={`https://${proj.link}`} target="_blank" style={{ display: "inline-block", marginTop: 16, color: "#00e5ff", fontSize: "0.9rem", textDecoration: "none", borderBottom: "1px solid #00e5ff" }}>
-                         View Project ↗
-                       </a>
-                     )}
-                   </div>
-                 ))}
-               </div>
-            </div>
-          )}
-
-          {activeTab === "education" && (
-            <div style={{ animation: "fadeIn 0.3s ease-out", display: "flex", flexDirection: "column", gap: 40 }}>
-              <div>
-                <h3 style={{ margin: "0 0 24px 0", color: "#fff", fontSize: "1.5rem" }}>Education</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                  {EDUCATION.map((edu, i) => (
-                    <div key={i} style={{ display: "flex", gap: 16 }}>
-                      <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(0, 229, 255, 0.1)", border: "1px solid rgba(0, 229, 255, 0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <GraduationCap size={24} color="#00e5ff" />
-                      </div>
-                      <div>
-                        <h4 style={{ margin: 0, fontSize: "1.1rem", color: "#fff" }}>{edu.degree}</h4>
-                        <div style={{ color: "rgba(240,237,232,0.7)", fontSize: "0.95rem", margin: "4px 0" }}>{edu.school}</div>
-                        <div style={{ color: "#00e5ff", fontSize: "0.85rem", fontFamily: "var(--font-mono)" }}>{edu.date}</div>
-                      </div>
-                    </div>
+        {activeTab === "skills" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+            {SKILLS.map((group) => (
+              <div
+                key={group.category}
+                style={{
+                  background: "rgba(6, 16, 32, 0.6)",
+                  padding: 18,
+                  borderRadius: 16,
+                  border: "1px solid rgba(0, 229, 255, 0.15)"
+                }}
+              >
+                <h4 style={{ margin: "0 0 12px", fontSize: 13, color: "#00e5ff", fontFamily: "var(--font-mono)", textTransform: "uppercase" }}>
+                  {group.category}
+                </h4>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {group.items.map((item) => (
+                    <span
+                      key={item}
+                      style={{
+                        fontSize: 11,
+                        padding: "4px 10px",
+                        borderRadius: 12,
+                        background: "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        color: "rgba(240,237,232,0.9)"
+                      }}
+                    >
+                      {item}
+                    </span>
                   ))}
                 </div>
               </div>
+            ))}
+          </div>
+        )}
 
-              <div>
-                <h3 style={{ margin: "0 0 24px 0", color: "#fff", fontSize: "1.5rem" }}>Awards & Certifications</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 16, background: "rgba(245, 166, 35, 0.1)", padding: 20, borderRadius: 12, border: "1px solid rgba(245, 166, 35, 0.3)" }}>
-                    <Award color="#f5a623" size={24} />
-                    <div>
-                      <h4 style={{ margin: 0, color: "#fff" }}>1st Prize in Web Design Competition</h4>
-                      <p style={{ margin: "4px 0 0 0", color: "rgba(240,237,232,0.7)", fontSize: "0.9rem" }}>NEURO2026 organized by Charan's Degree College (Apr 2026)</p>
-                    </div>
+        {activeTab === "experience" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {EXPERIENCE.map((exp, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: "rgba(6, 16, 32, 0.75)",
+                  padding: 20,
+                  borderRadius: 16,
+                  border: "1px solid rgba(0, 229, 255, 0.15)"
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#ffffff" }}>{exp.title}</h3>
+                    <div style={{ fontSize: 12, color: "#00e5ff", marginTop: 2 }}>{exp.company} · {exp.location}</div>
                   </div>
-                  
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 8 }}>
-                    {["Full Stack Development (ISM UNIV)", "MySQL Basics (Great Learning)", "Google Sheets (Google Cloud)", "Build Brand using Canva"].map((cert, i) => (
-                      <span key={i} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", padding: "8px 16px", borderRadius: 8, fontSize: "0.85rem", color: "rgba(240,237,232,0.8)" }}>
-                        🏅 {cert}
-                      </span>
-                    ))}
+                  <span style={{ fontSize: 11, color: "rgba(240,237,232,0.5)", fontFamily: "var(--font-mono)" }}>{exp.date}</span>
+                </div>
+                <p style={{ margin: "10px 0 0", fontSize: 12.5, lineHeight: 1.6, color: "rgba(240,237,232,0.75)" }}>
+                  {exp.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === "projects" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+            {PROJECTS.map((proj, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: "rgba(6, 16, 32, 0.75)",
+                  padding: 20,
+                  borderRadius: 16,
+                  border: "1px solid rgba(0, 229, 255, 0.2)",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between"
+                }}
+              >
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#ffffff" }}>{proj.title}</h3>
+                    <span style={{ fontSize: 10, color: "#10b981", fontFamily: "var(--font-mono)", fontWeight: 700 }}>{proj.date}</span>
                   </div>
+                  <div style={{ fontSize: 10.5, color: "#00e5ff", fontFamily: "var(--font-mono)", marginTop: 4 }}>
+                    {proj.stack}
+                  </div>
+                  <p style={{ margin: "10px 0 0", fontSize: 12, lineHeight: 1.5, color: "rgba(240,237,232,0.75)" }}>
+                    {proj.description}
+                  </p>
+                </div>
+
+                <div style={{ display: "flex", gap: 12, marginTop: 14 }}>
+                  {proj.github && (
+                    <a
+                      href={proj.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: 11,
+                        color: "#00e5ff",
+                        textDecoration: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        fontFamily: "var(--font-mono)"
+                      }}
+                    >
+                      <ExternalLink size={12} /> GitHub Link
+                    </a>
+                  )}
+                  {proj.live && (
+                    <span style={{ fontSize: 11, color: "rgba(240,237,232,0.6)", fontFamily: "var(--font-mono)" }}>
+                      🔗 {proj.live}
+                    </span>
+                  )}
                 </div>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+        )}
 
-        </div>
+        {activeTab === "education" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {EDUCATION.map((edu, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: "rgba(6, 16, 32, 0.75)",
+                  padding: 20,
+                  borderRadius: 16,
+                  border: "1px solid rgba(0, 229, 255, 0.15)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap"
+                }}
+              >
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#ffffff" }}>{edu.degree}</h3>
+                  <div style={{ fontSize: 12, color: "#00e5ff", marginTop: 2 }}>{edu.school}</div>
+                </div>
+                <span style={{ fontSize: 11, color: "rgba(240,237,232,0.5)", fontFamily: "var(--font-mono)" }}>{edu.date}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 # Contributing to JARVIS AI OS
 
-First off, thank you for taking the time to contribute! 🎉
+First off, thank you for taking the time to contribute to **JARVIS AI OS**! 🎉
 
-We welcome contributions from developers, designers, prompt engineers, and AI researchers of all skill levels.
+We welcome contributions from software engineers, AI researchers, UI/UX designers, and open-source contributors of all backgrounds.
 
 ---
 
@@ -16,58 +16,60 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 
 ### 1. Reporting Bugs
 - Check the [GitHub Issues](https://github.com/Vishwajeetsrk/JARVIS-AI-OS/issues) to see if the bug has already been reported.
-- If not, open a new issue with a clear title, description, reproduction steps, and console logs.
+- If not, open a new issue with a clear title, description, reproduction steps, environment details, and console logs.
 
 ### 2. Suggesting Enhancements
 - Open an issue with the label `enhancement`.
-- Describe the feature, why it is useful, and how it aligns with the JARVIS AI OS architecture.
+- Describe the feature, why it is useful, and how it fits into the **JARVIS AI OS v4.0** architectural contract.
 
 ### 3. Submitting Pull Requests
 1. Fork the repository (`https://github.com/Vishwajeetsrk/JARVIS-AI-OS`).
 2. Create a feature branch:
    ```bash
-   git checkout -b feature/amazing-feature
+   git checkout -b feat/your-feature-name
    ```
-3. Commit your changes with clear semantic messages:
-   ```bash
-   git commit -m "feat(voice): add neural audio emotion tag processing"
-   ```
-4. Ensure all tests pass:
+3. Follow the **Core Architectural Invariants**:
+   - **Zero-Fabrication Policy**: Any resume or career evidence must be backed by verifiable data.
+   - **Level 6 Human Approval Gate**: All high-risk or external dispatch actions require explicit user confirmation.
+   - **Type Safety**: Strictly typed TypeScript with zero compilation errors.
+4. Test your changes:
    ```bash
    npm run build
    npx tsc --noEmit
    ```
-5. Push to your branch:
+5. Commit with clean semantic commit messages:
    ```bash
-   git push origin feature/amazing-feature
+   git commit -m "feat(content): add tiktok viral hook synthesizer"
    ```
-6. Open a Pull Request on GitHub.
+6. Push to your fork and submit a Pull Request on GitHub.
 
 ---
 
-## Local Development Workflow
+## Local Development Setup
 
-1. **Clone the repository**:
+1. **Clone your fork**:
    ```bash
-   git clone https://github.com/Vishwajeetsrk/JARVIS-AI-OS.git
+   git clone https://github.com/your-username/JARVIS-AI-OS.git
    cd JARVIS-AI-OS
    ```
 2. **Install dependencies**:
    ```bash
-   npm install
+   npm install --legacy-peer-deps
    ```
 3. **Configure Environment Variables**:
-   Copy `.env.example` to `.env` and fill in your Supabase, Gemini, Groq, or OpenRouter keys.
-4. **Start the Development Server**:
+   Copy `.env.example` to `.env.local` and configure your API keys (Gemini, Groq, OpenRouter, Supabase).
+4. **Start the local server**:
    ```bash
    npm run dev
    ```
 
 ---
 
-## Architecture Guidelines
-- **Type Safety**: Strictly typed TypeScript with zero compilation errors (`npx tsc --noEmit`).
-- **Design System**: Use OKLCH dark-mode surface tokens and glassmorphic micro-animations.
-- **Security**: Never expose API keys or service role tokens on client bundles.
+## Coding Standards & Style
 
-Thank you for building the future of autonomous personal intelligence with us! 🚀
+- **Framework**: Next.js 15 App Router with React 19 and TypeScript 5.
+- **Styling**: Vanilla CSS, design tokens, and OKLCH color palettes with glassmorphic aesthetic.
+- **Three.js / WebGL**: Decouple 3D render loops from React state tree updates to preserve steady 60 FPS performance.
+- **Security**: Never expose API keys or service role secrets in client-side code.
+
+Thank you for helping us build the future of autonomous personal intelligence! 🚀

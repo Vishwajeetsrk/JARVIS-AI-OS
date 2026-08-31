@@ -1,1 +1,1 @@
-export * from "../../packages/contracts/src/design-systems/token-schema.ts";
+export * from "../../_schema/tokens.schema";

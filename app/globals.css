@@ -164,6 +164,7 @@ body::after {
   border: var(--glass-border);
   border-radius: 20px;
   box-shadow: var(--shadow-neon);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .glass-panel-interactive {
@@ -172,13 +173,13 @@ body::after {
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid rgba(0, 229, 255, 0.2);
   border-radius: 16px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .glass-panel-interactive:hover {
   border-color: var(--border-active);
   background: var(--bg-surface-elevated);
   box-shadow: 0 0 28px rgba(0, 229, 255, 0.25), 0 8px 24px rgba(0,0,0,0.8);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.01);
 }
 
 .neon-pill {
@@ -195,15 +196,66 @@ body::after {
   align-items: center;
   gap: 6px;
   box-shadow: 0 0 14px rgba(0, 229, 255, 0.15);
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .neon-pill:hover {
   background: rgba(0, 229, 255, 0.18);
   border-color: var(--accent-cyan);
   box-shadow: 0 0 22px rgba(0, 229, 255, 0.35);
+  transform: translateY(-1px);
 }
 
 /* Status-bar hint is hidden on small screens */
 @media (max-width: 700px) {
   .sb-hint { display: none; }
 }
+
+/* Dropdown Menu Z-Index & Visibility Fixes */
+select, option, .cyber-dropdown {
+  background: #081224 !important;
+  color: #00e5ff !important;
+  border: 1px solid rgba(0, 229, 255, 0.4) !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  z-index: 1000 !important;
+  cursor: pointer;
+}
+option {
+  background: #050b16 !important;
+  color: #ffffff !important;
+}
+
+/* Mobile Responsiveness Improvements */
+@media (max-width: 768px) {
+  html, body {
+    overflow-y: auto !important;
+  }
+  .glass-panel {
+    border-radius: 14px !important;
+    padding: 14px !important;
+  }
+  .neon-pill {
+    padding: 5px 10px !important;
+    font-size: 0.6rem !important;
+  }
+}
+
+/* Print / PDF Export Media Query */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+  }
+  body::after {
+    display: none !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
+
+

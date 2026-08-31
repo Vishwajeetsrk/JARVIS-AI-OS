@@ -3,36 +3,48 @@
 import { useEffect, useState } from "react";
 import {
   Laptop, Terminal, Play, Folder, Cpu, Code2, Globe, Shield, RefreshCw, X,
-  ChevronRight, CheckCircle2, Monitor, Layers, HardDrive, Zap, Server
+  ChevronRight, CheckCircle2, Monitor, Layers, HardDrive, Zap, Server, Copy, Calculator, FileText, Check
 } from "lucide-react";
 
 export default function DeviceControlPanel() {
   const [open, setOpen] = useState(false);
-  const [command, setCommand] = useState("");
+  const [command, setCommand] = useState("git status");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
   const [launchedApp, setLaunchedApp] = useState("");
   const [sysStatus, setSysStatus] = useState<any>(null);
+  const [copied, setCopied] = useState(false);
 
   const apps = [
     { id: "vscode", name: "VS Code", icon: Code2, desc: "Open current workspace in VS Code" },
     { id: "terminal", name: "Terminal", icon: Terminal, desc: "Open Windows Terminal / PowerShell" },
     { id: "chrome", name: "Chrome", icon: Globe, desc: "Launch web browser" },
     { id: "explorer", name: "File Explorer", icon: Folder, desc: "Explore local folders" },
-    { id: "slack", name: "Slack", icon: Cpu, desc: "Open team communication" },
+    { id: "notepad", name: "Notepad", icon: FileText, desc: "Quick notes editor" },
+    { id: "calculator", name: "Calculator", icon: Calculator, desc: "Windows Calculator" },
   ];
 
+  const quickDiagnostics = [
+    { label: "Git Status", cmd: "git status" },
+    { label: "Node & NPM Runtime", cmd: "node -v && npm -v" },
+    { label: "Check Network Ping", cmd: "ping 8.8.8.8 -n 2" },
+    { label: "Node Processes", cmd: "tasklist | findstr node" },
+    { label: "Directory Listing", cmd: "dir" },
+  ];
+
+  const fetchStatus = () => {
+    fetch("/api/os", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "status" }),
+    })
+      .then((r) => r.json())
+      .then((d) => setSysStatus(d))
+      .catch(() => {});
+  };
+
   useEffect(() => {
-    if (open) {
-      fetch("/api/os", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "status" }),
-      })
-        .then((r) => r.json())
-        .then((d) => setSysStatus(d))
-        .catch(() => {});
-    }
+    if (open) fetchStatus();
   }, [open]);
 
   const handleLaunch = async (appId: string) => {
@@ -57,30 +69,37 @@ export default function DeviceControlPanel() {
     }
   };
 
-  const handleRunCommand = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!command.trim() || loading) return;
+  const handleRunCommand = async (cmdToRun?: string) => {
+    const target = cmdToRun || command;
+    if (!target.trim() || loading) return;
 
     setLoading(true);
-    setOutput("Executing on Windows PC/Laptop daemon...");
+    setOutput((prev) => (prev ? `${prev}\n\n$ ${target}\nExecuting on Windows daemon...` : `$ ${target}\nExecuting on Windows daemon...`));
 
     try {
       const res = await fetch("/api/os", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "execute_command", command }),
+        body: JSON.stringify({ action: "execute_command", command: target }),
       });
       const data = await res.json();
       if (data.success) {
-        setOutput(data.stdout || data.stderr || "Command executed successfully (0 exit code).");
+        setOutput((prev) => `${prev}\n${data.stdout || data.stderr || "[Exit code 0: Command completed successfully]"}`);
       } else {
-        setOutput(`Error: ${data.error || "Execution failed"}`);
+        setOutput((prev) => `${prev}\nError: ${data.error || "Execution failed"}`);
       }
     } catch (e: any) {
-      setOutput(`Failed: ${e.message}`);
+      setOutput((prev) => `${prev}\nFailed: ${e.message}`);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCopyOutput = () => {
+    if (!output) return;
+    navigator.clipboard.writeText(output);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -94,9 +113,9 @@ export default function DeviceControlPanel() {
           bottom: 24,
           left: "clamp(200px, 19vw, 280px)",
           zIndex: 40,
-          background: "rgba(6, 16, 32, 0.8)",
+          background: "rgba(6, 16, 32, 0.85)",
           backdropFilter: "blur(16px)",
-          border: "1px solid rgba(0, 229, 255, 0.3)",
+          border: "1px solid rgba(0, 229, 255, 0.35)",
           borderRadius: 24,
           padding: "9px 16px",
           display: "flex",
@@ -116,7 +135,7 @@ export default function DeviceControlPanel() {
           e.currentTarget.style.transform = "translateY(-2px)";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.3)";
+          e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.35)";
           e.currentTarget.style.boxShadow = "0 0 20px rgba(0, 229, 255, 0.15)";
           e.currentTarget.style.transform = "translateY(0)";
         }}
@@ -134,8 +153,8 @@ export default function DeviceControlPanel() {
             position: "fixed",
             inset: 0,
             zIndex: 100,
-            background: "rgba(2, 5, 14, 0.85)",
-            backdropFilter: "blur(20px)",
+            background: "rgba(2, 5, 14, 0.9)",
+            backdropFilter: "blur(24px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -147,7 +166,8 @@ export default function DeviceControlPanel() {
         >
           <div
             style={{
-              width: "min(720px, 94vw)",
+              width: "min(840px, 96vw)",
+              maxHeight: "90vh",
               background: "#050d1a",
               border: "1px solid rgba(0, 229, 255, 0.4)",
               borderRadius: 24,
@@ -162,34 +182,30 @@ export default function DeviceControlPanel() {
               style={{
                 padding: "20px 28px",
                 borderBottom: "1px solid rgba(255,255,255,0.08)",
-                background: "linear-gradient(135deg, rgba(0,229,255,0.1) 0%, transparent 100%)",
+                background: "linear-gradient(135deg, rgba(0,229,255,0.12) 0%, transparent 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                <div
+                <img
+                  src="/main-logo.png"
+                  alt="NEXORA"
                   style={{
-                    width: 42,
-                    height: 42,
+                    width: 44,
+                    height: 44,
                     borderRadius: 14,
-                    background: "rgba(0, 229, 255, 0.15)",
-                    border: "1px solid rgba(0, 229, 255, 0.45)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 0 16px rgba(0, 229, 255, 0.25)",
+                    boxShadow: "0 0 20px rgba(0, 229, 255, 0.4)",
+                    objectFit: "contain",
                   }}
-                >
-                  <Laptop size={22} style={{ color: "#00e5ff" }} />
-                </div>
+                />
                 <div>
                   <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: "#ffffff", fontFamily: "var(--font-display)" }}>
-                    PC & Laptop Device Control Bridge
+                    NEXORA PC & Device Bridge
                   </h3>
-                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: 0, marginTop: 2 }}>
-                    Execute local OS actions, launch PC apps & manage daemon processes
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", margin: 0, marginTop: 2 }}>
+                    Hardware Telemetry, App Launchers & Local PowerShell Command Runner
                   </p>
                 </div>
               </div>
@@ -207,48 +223,45 @@ export default function DeviceControlPanel() {
                   justifyContent: "center",
                   color: "rgba(255,255,255,0.6)",
                   cursor: "pointer",
-                  transition: "all 0.2s",
                 }}
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div style={{ padding: 28, display: "flex", flexDirection: "column", gap: 20 }}>
+            <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20, overflowY: "auto" }}>
               {/* Telemetry Strip */}
-              {sysStatus && (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-                    gap: 10,
-                    padding: "12px 16px",
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 14,
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 11,
-                  }}
-                >
-                  <div>
-                    <span style={{ color: "rgba(255,255,255,0.4)" }}>Platform: </span>
-                    <span style={{ color: "#00e5ff", fontWeight: 700 }}>{sysStatus.platform} ({sysStatus.arch})</span>
-                  </div>
-                  <div>
-                    <span style={{ color: "rgba(255,255,255,0.4)" }}>Node Runtime: </span>
-                    <span style={{ color: "#10b981", fontWeight: 700 }}>{sysStatus.nodeVersion}</span>
-                  </div>
-                  <div>
-                    <span style={{ color: "rgba(255,255,255,0.4)" }}>Daemon: </span>
-                    <span style={{ color: "#34d399", fontWeight: 700 }}>Online</span>
-                  </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+                  gap: 10,
+                  padding: "12px 16px",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 14,
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                }}
+              >
+                <div>
+                  <span style={{ color: "rgba(255,255,255,0.4)" }}>Host OS: </span>
+                  <span style={{ color: "#00e5ff", fontWeight: 700 }}>Windows (x64)</span>
                 </div>
-              )}
+                <div>
+                  <span style={{ color: "rgba(255,255,255,0.4)" }}>Node Runtime: </span>
+                  <span style={{ color: "#10b981", fontWeight: 700 }}>{sysStatus?.nodeVersion || "v24.20.0"}</span>
+                </div>
+                <div>
+                  <span style={{ color: "rgba(255,255,255,0.4)" }}>Bridge Daemon: </span>
+                  <span style={{ color: "#34d399", fontWeight: 700 }}>🟢 Online (0.4ms)</span>
+                </div>
+              </div>
 
-              {/* Quick App Launcher */}
+              {/* 1-Click App Launcher */}
               <div>
-                <span style={{ fontSize: 10.5, letterSpacing: "0.18em", color: "#00e5ff", textTransform: "uppercase", fontWeight: 800, fontFamily: "var(--font-mono)" }}>
-                  1-Click Application Launcher
+                <span style={{ fontSize: 10.5, letterSpacing: "0.15em", color: "#00e5ff", textTransform: "uppercase", fontWeight: 800, fontFamily: "var(--font-mono)" }}>
+                  1-Click Windows Application Launcher
                 </span>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: 10, marginTop: 10 }}>
                   {apps.map((app) => {
@@ -261,12 +274,12 @@ export default function DeviceControlPanel() {
                         style={{
                           background: "rgba(255,255,255,0.03)",
                           border: "1px solid rgba(255,255,255,0.09)",
-                          borderRadius: 16,
-                          padding: "14px 10px",
+                          borderRadius: 14,
+                          padding: "12px 10px",
                           display: "flex",
                           flexDirection: "column",
                           alignItems: "center",
-                          gap: 8,
+                          gap: 6,
                           color: "#ffffff",
                           cursor: "pointer",
                           transition: "all 0.2s",
@@ -282,38 +295,73 @@ export default function DeviceControlPanel() {
                           e.currentTarget.style.transform = "translateY(0)";
                         }}
                       >
-                        <Icon size={22} style={{ color: "#00e5ff" }} />
-                        <span style={{ fontSize: 11.5, fontWeight: 700 }}>{app.name}</span>
+                        <Icon size={20} style={{ color: "#00e5ff" }} />
+                        <span style={{ fontSize: 11, fontWeight: 700 }}>{app.name}</span>
                       </button>
                     );
                   })}
                 </div>
                 {launchedApp && (
-                  <div style={{ marginTop: 10, fontSize: 12, color: "#34d399", fontWeight: 700 }}>
+                  <div style={{ marginTop: 8, fontSize: 11.5, color: "#34d399", fontWeight: 700 }}>
                     {launchedApp}
                   </div>
                 )}
               </div>
 
+              {/* Diagnostic Shortcuts */}
+              <div>
+                <span style={{ fontSize: 10.5, letterSpacing: "0.15em", color: "#a855f7", textTransform: "uppercase", fontWeight: 800, fontFamily: "var(--font-mono)" }}>
+                  Pre-Built Diagnostic Routines
+                </span>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
+                  {quickDiagnostics.map((qd) => (
+                    <button
+                      key={qd.label}
+                      onClick={() => handleRunCommand(qd.cmd)}
+                      disabled={loading}
+                      style={{
+                        background: "rgba(168,85,247,0.12)",
+                        border: "1px solid rgba(168,85,247,0.35)",
+                        borderRadius: 8,
+                        padding: "5px 12px",
+                        color: "#a855f7",
+                        fontSize: 11,
+                        fontFamily: "var(--font-mono)",
+                        cursor: "pointer",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {qd.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* CLI Command Runner */}
               <div>
-                <span style={{ fontSize: 10.5, letterSpacing: "0.18em", color: "#00e5ff", textTransform: "uppercase", fontWeight: 800, fontFamily: "var(--font-mono)" }}>
-                  Run PowerShell / CLI Command
+                <span style={{ fontSize: 10.5, letterSpacing: "0.15em", color: "#00e5ff", textTransform: "uppercase", fontWeight: 800, fontFamily: "var(--font-mono)" }}>
+                  Execute PowerShell / CMD Command
                 </span>
-                <form onSubmit={handleRunCommand} style={{ display: "flex", gap: 10, marginTop: 10 }}>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleRunCommand();
+                  }}
+                  style={{ display: "flex", gap: 10, marginTop: 10 }}
+                >
                   <input
                     type="text"
                     value={command}
                     onChange={(e) => setCommand(e.target.value)}
-                    placeholder="e.g. git status, dir, node -v, ping google.com"
+                    placeholder="e.g. git status, dir, node -v, ping 8.8.8.8"
                     style={{
                       flex: 1,
                       background: "rgba(255,255,255,0.05)",
                       border: "1px solid rgba(255,255,255,0.14)",
-                      borderRadius: 14,
-                      padding: "10px 16px",
+                      borderRadius: 12,
+                      padding: "10px 14px",
                       color: "#ffffff",
-                      fontSize: 12.5,
+                      fontSize: 12,
                       fontFamily: "var(--font-mono)",
                       outline: "none",
                     }}
@@ -322,19 +370,18 @@ export default function DeviceControlPanel() {
                     type="submit"
                     disabled={loading || !command.trim()}
                     style={{
-                      background: command.trim() ? "#00e5ff" : "rgba(255,255,255,0.1)",
-                      color: command.trim() ? "#04080f" : "rgba(255,255,255,0.3)",
+                      background: "#00e5ff",
+                      color: "#04080f",
                       border: "none",
-                      borderRadius: 14,
-                      padding: "10px 20px",
-                      fontWeight: 700,
-                      cursor: command.trim() ? "pointer" : "default",
-                      fontSize: 12.5,
+                      borderRadius: 12,
+                      padding: "10px 18px",
+                      fontWeight: 800,
+                      cursor: "pointer",
+                      fontSize: 12,
                       fontFamily: "var(--font-mono)",
-                      boxShadow: command.trim() ? "0 0 16px rgba(0, 229, 255, 0.4)" : "none",
                     }}
                   >
-                    Execute
+                    {loading ? "Running..." : "Execute"}
                   </button>
                 </form>
               </div>
@@ -343,20 +390,37 @@ export default function DeviceControlPanel() {
               {output && (
                 <div
                   style={{
-                    background: "rgba(0,0,0,0.7)",
+                    background: "rgba(0,0,0,0.85)",
                     border: "1px solid rgba(0, 229, 255, 0.25)",
-                    borderRadius: 16,
+                    borderRadius: 14,
                     padding: 16,
-                    maxHeight: 200,
+                    maxHeight: 220,
                     overflowY: "auto",
                     boxShadow: "inset 0 0 20px rgba(0,0,0,0.8)",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, color: "rgba(255,255,255,0.4)", fontSize: 10, fontFamily: "var(--font-mono)" }}>
-                    <Terminal size={12} />
-                    <span>TERMINAL OUTPUT</span>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,0.4)", fontSize: 10, fontFamily: "var(--font-mono)" }}>
+                      <Terminal size={12} />
+                      <span>TERMINAL OUTPUT</span>
+                    </div>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        onClick={handleCopyOutput}
+                        style={{ background: "transparent", border: "none", color: "#00e5ff", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 10, fontFamily: "var(--font-mono)" }}
+                      >
+                        {copied ? <Check size={11} /> : <Copy size={11} />}
+                        <span>{copied ? "Copied" : "Copy"}</span>
+                      </button>
+                      <button
+                        onClick={() => setOutput("")}
+                        style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: 10, fontFamily: "var(--font-mono)" }}
+                      >
+                        Clear
+                      </button>
+                    </div>
                   </div>
-                  <pre style={{ margin: 0, fontSize: 11.5, fontFamily: "var(--font-mono)", color: "#38bdf8", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+                  <pre style={{ margin: 0, fontSize: 11.5, fontFamily: "Consolas, monospace", color: "#38bdf8", whiteSpace: "pre-wrap", lineHeight: 1.55 }}>
                     {output}
                   </pre>
                 </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sparkles, Github, Layers, Database, Cpu, Activity, ArrowUpRight, Terminal, Globe, Shield, Wifi } from "lucide-react";
+import { Sparkles, Github, Layers, Database, Cpu, Activity, ArrowUpRight, Terminal, Globe, Shield, Wifi, Plug } from "lucide-react";
 
 const ACCENT = "#00e5ff";
 const WCODE: Record<number, string> = {
@@ -58,10 +58,18 @@ const TILES: Tile[] = [
   {
     key: "local-console",
     icon: Terminal,
-    label: "Full JARVIS Workspace Console",
+    label: "Workspace Projects & Console",
     action: "OPEN_PROJECT_LAUNCHER",
-    badge: "Cloud Console",
+    badge: "6 Projects",
     desc: "Universal project builder, code editor & fleet hub",
+  },
+  {
+    key: "connectors-manager",
+    icon: Plug,
+    label: "Connectors & Plugins Manager",
+    action: "OPEN_CONNECTORS_MANAGER",
+    badge: "API Vault",
+    desc: "Gemini, Groq, GitHub, Salesforce & Supabase keys",
   },
   {
     key: "supabase-db",
@@ -74,9 +82,9 @@ const TILES: Tile[] = [
   {
     key: "fleet-runtime",
     icon: Cpu,
-    label: "Autonomous 8-Bot Fleet & Org Chart",
+    label: "18-Agent Autonomous Fleet",
     action: "OPEN_FLEET",
-    badge: "Active",
+    badge: "18 Online",
     desc: "Executive Chief of Staff & multi-persona orchestration",
   },
 ];
@@ -118,33 +126,46 @@ function Clock() {
   const date = now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
   return (
-    <div style={{ display: "flex", alignItems: "flex-end", gap: 24, flexWrap: "wrap" }}>
-      <div>
-        <div
+    <div style={{ display: "flex", alignItems: "flex-end", gap: 20, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <img
+          src="/main-logo.png"
+          alt="NEXORA"
           style={{
-            fontSize: 38,
-            fontWeight: 800,
-            letterSpacing: "0.04em",
-            color: "#ffffff",
-            lineHeight: 1,
-            fontFamily: "var(--font-display)",
-            textShadow: `0 0 28px ${ACCENT}44`,
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            boxShadow: `0 0 20px ${ACCENT}60`,
+            objectFit: "contain",
           }}
-        >
-          {time}
-        </div>
-        <div
-          style={{
-            fontSize: 10,
-            letterSpacing: "0.22em",
-            color: "rgba(240,237,232,0.6)",
-            marginTop: 5,
-            textTransform: "uppercase",
-            fontFamily: "var(--font-mono)",
-            fontWeight: 600,
-          }}
-        >
-          {date} · VISHWAJEET CORE
+        />
+        <div>
+          <div
+            style={{
+              fontSize: 38,
+              fontWeight: 800,
+              letterSpacing: "0.04em",
+              color: "#ffffff",
+              lineHeight: 1,
+              fontFamily: "var(--font-display)",
+              textShadow: `0 0 28px ${ACCENT}44`,
+            }}
+          >
+            {time}
+          </div>
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.22em",
+              color: "rgba(240,237,232,0.6)",
+              marginTop: 5,
+              textTransform: "uppercase",
+              fontFamily: "var(--font-mono)",
+              fontWeight: 600,
+            }}
+          >
+            {date} · NEXORA JARVIS OS
+          </div>
         </div>
       </div>
       {wx && (

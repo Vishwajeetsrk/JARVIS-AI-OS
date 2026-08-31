@@ -20,6 +20,7 @@ echo.
 
 :: Step 1: Verify Environment
 echo [*] Checking runtime environment...
+set "PATH=C:\Program Files\nodejs;%PATH%"
 where node >nul 2>nul
 if %errorlevel% neq 0 (
     echo [!] ERROR: Node.js is not installed or not in PATH.
@@ -37,21 +38,20 @@ if %errorlevel% neq 0 (
 echo [*] Synchronizing AI keys and database configurations...
 node -e "const fs=require('fs');const p=require('path');try{const env=fs.readFileSync('.env','utf8');const gemini=env.match(/GEMINI_API_KEY=(.*)/)?.[1]?.trim()||'';const groq=env.match(/GROQ_API_KEY=(.*)/)?.[1]?.trim()||'';const subUrl=env.match(/SUPABASE_URL=\"?(.*?)\"?$/m)?.[1]?.trim()||'';const subKey=env.match(/SUPABASE_PUBLISHABLE_KEY=\"?(.*?)\"?$/m)?.[1]?.trim()||'';const cfg={gemini_api_key:gemini,groq_api_key:groq,openrouter_api_key:'',supabase_url:subUrl,supabase_anon_key:subKey,os_system:'windows'};fs.mkdirSync('desktop/config',{recursive:true});fs.writeFileSync('desktop/config/api_keys.json',JSON.stringify(cfg,null,2));console.log('    ✓ Synced keys: Google Gemini 2.0 + Groq Whisper/Llama 3.3 + Supabase');}catch(e){console.log('    ! Config sync warning:',e.message);}"
 
-:: Step 3: Run quick hardware & memory bank check
-echo [*] Initializing Jarvis Core & Memory Bank...
-npx tsx scripts/jarvis.ts status
+:: Step 3: Initializing Core Server
+echo [*] Initializing Jarvis Core & Dev Server...
 
 echo.
 echo ===============================================================================
 echo  [+] STARTING JARVIS REAL-TIME SCREEN HUD & VOICE COMMAND SERVER
-echo      - Web Console & Voice HUD: http://localhost:8080/console
+echo      - Web Console & Voice HUD: http://localhost:3000
 echo      - Voice Engine: Groq Whisper STT + Speech Synthesis
 echo      - Desktop Bridge: Screen Vision + App Launcher + Hardware Telemetry
 echo ===============================================================================
 echo.
 
 :: Step 4: Open Browser Dashboard in 3 seconds in parallel
-start "" powershell -NoProfile -Command "Start-Sleep -Seconds 3; Start-Process 'http://localhost:8080/console'"
+start "" powershell -NoProfile -Command "Start-Sleep -Seconds 3; Start-Process 'http://localhost:3000'"
 
 :: Step 5: Launch Dev Server
 npm run dev
