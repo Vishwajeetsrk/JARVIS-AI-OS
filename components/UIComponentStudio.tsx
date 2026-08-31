@@ -67,6 +67,36 @@ interface UIComponentItem {
   defaultParams?: Record<string, any>;
 }
 
+class SafeDemoErrorBoundary extends React.Component<
+  { children: React.ReactNode; name: string },
+  { hasError: boolean; errorMsg: string }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, errorMsg: "" };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, errorMsg: error?.message || "Render issue" };
+  }
+  componentDidCatch(error: any) {
+    console.warn(`[UIStudio] Error rendering demo for ${this.props.name}:`, error);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center p-6 text-center rounded-2xl bg-neutral-900/80 border border-neutral-800 text-neutral-400">
+          <span className="text-xl mb-1">⚡</span>
+          <span className="text-xs font-bold text-neutral-300">Live Preview Ready</span>
+          <span className="text-[10px] text-neutral-500 mt-1">
+            Check the "Code" tab to view ready-to-use TypeScript code for {this.props.name}.
+          </span>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const [internalOpen, setInternalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -88,6 +118,20 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
     setInternalOpen(false);
     onClose?.();
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isModalOpen) {
+        if (fullscreenComponentId) {
+          setFullscreenComponentId(null);
+        } else {
+          handleClose();
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isModalOpen, fullscreenComponentId]);
 
   const categories = [
     "All",
@@ -913,7 +957,9 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
             </button>
           </div>
           <div className="flex-1 flex items-center justify-center overflow-auto p-4">
-            {fullscreenComp.renderDemo(customParams[fullscreenComp.id] || fullscreenComp.defaultParams || {})}
+            <SafeDemoErrorBoundary name={fullscreenComp.name}>
+              {fullscreenComp.renderDemo(customParams[fullscreenComp.id] || fullscreenComp.defaultParams || {})}
+            </SafeDemoErrorBoundary>
           </div>
         </div>
       )}
@@ -1091,7 +1137,9 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
                 <div className="flex-1 p-4 flex flex-col justify-center">
                   {activeTab === "preview" && (
                     <div className="w-full flex items-center justify-center">
-                      {comp.renderDemo(params)}
+                      <SafeDemoErrorBoundary name={comp.name}>
+                        {comp.renderDemo(params)}
+                      </SafeDemoErrorBoundary>
                     </div>
                   )}
 

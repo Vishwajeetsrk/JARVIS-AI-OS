@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import ApexWorld from "@/components/ApexWorld";
 import ApexOverviewPanel from "@/components/ApexOverviewPanel";
 import PortfolioOverlay from "@/components/PortfolioOverlay";
@@ -9,10 +10,25 @@ import ConnectorsManager from "@/components/ConnectorsManager";
 import ContentStudio from "@/components/ContentStudio";
 import ClientAgencyOS from "@/components/ClientAgencyOS";
 import UIComponentStudio from "@/components/UIComponentStudio";
+import CyberResume from "@/components/CyberResume";
 import { Terminal, Plug, Github, Sparkles, FileText } from "lucide-react";
 import Image from "next/image";
 
 export default function Home() {
+  const [uiStudioOpen, setUiStudioOpen] = useState(false);
+  const [resumeStudioOpen, setResumeStudioOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenUI = () => setUiStudioOpen(true);
+    const handleOpenResume = () => setResumeStudioOpen(true);
+    window.addEventListener("OPEN_UI_STUDIO", handleOpenUI);
+    window.addEventListener("OPEN_RESUME_STUDIO", handleOpenResume);
+    return () => {
+      window.removeEventListener("OPEN_UI_STUDIO", handleOpenUI);
+      window.removeEventListener("OPEN_RESUME_STUDIO", handleOpenResume);
+    };
+  }, []);
+
   const handleOpenConsole = () => {
     window.dispatchEvent(new CustomEvent("OPEN_PROJECT_LAUNCHER"));
   };
@@ -22,10 +38,12 @@ export default function Home() {
   };
 
   const handleOpenUIStudio = () => {
+    setUiStudioOpen(true);
     window.dispatchEvent(new CustomEvent("OPEN_UI_STUDIO"));
   };
 
   const handleOpenResumeStudio = () => {
+    setResumeStudioOpen(true);
     window.dispatchEvent(new CustomEvent("OPEN_RESUME_STUDIO"));
   };
 
@@ -97,7 +115,8 @@ export default function Home() {
       <ConnectorsManager />
       <ContentStudio />
       <ClientAgencyOS />
-      <UIComponentStudio />
+      <UIComponentStudio isOpen={uiStudioOpen} onClose={() => setUiStudioOpen(false)} />
+      {resumeStudioOpen && <CyberResume onClose={() => setResumeStudioOpen(false)} />}
 
       {/* Top Right Header Controls */}
       <div

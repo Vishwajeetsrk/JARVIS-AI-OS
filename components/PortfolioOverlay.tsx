@@ -8,24 +8,29 @@ import MissionLog from "./MissionLog";
 import GithubProjectsPanel from "./GithubProjectsPanel";
 import GrowthCenter from "./GrowthCenter";
 import WorkspaceProjectsPanel from "./WorkspaceProjectsPanel";
+import UIComponentStudio from "./UIComponentStudio";
 
 export default function PortfolioOverlay() {
-  const [activePanel, setActivePanel] = useState<"career" | "resume" | "mission" | "github" | "growth" | "workspace" | null>(null);
+  const [activePanel, setActivePanel] = useState<"career" | "resume" | "uistudio" | "mission" | "github" | "growth" | "workspace" | null>(null);
 
   useEffect(() => {
     const handleOpenResume = () => setActivePanel("resume");
     const handleOpenCareer = () => setActivePanel("career");
+    const handleOpenUI = () => setActivePanel("uistudio");
     window.addEventListener("OPEN_RESUME_STUDIO", handleOpenResume);
     window.addEventListener("OPEN_CYBER_RESUME", handleOpenResume);
     window.addEventListener("OPEN_CAREER_OS", handleOpenCareer);
+    window.addEventListener("OPEN_UI_STUDIO", handleOpenUI);
     return () => {
       window.removeEventListener("OPEN_RESUME_STUDIO", handleOpenResume);
       window.removeEventListener("OPEN_CYBER_RESUME", handleOpenResume);
       window.removeEventListener("OPEN_CAREER_OS", handleOpenCareer);
+      window.removeEventListener("OPEN_UI_STUDIO", handleOpenUI);
     };
   }, []);
 
   const handleOpenUIStudio = () => {
+    setActivePanel("uistudio");
     window.dispatchEvent(new CustomEvent("OPEN_UI_STUDIO"));
   };
 
@@ -311,6 +316,7 @@ export default function PortfolioOverlay() {
       {activePanel === "workspace" && <WorkspaceProjectsPanel onClose={() => setActivePanel(null)} />}
       {activePanel === "career" && <CareerOS onClose={() => setActivePanel(null)} />}
       {activePanel === "resume" && <CyberResume onClose={() => setActivePanel(null)} />}
+      {activePanel === "uistudio" && <UIComponentStudio isOpen={true} onClose={() => setActivePanel(null)} />}
       {activePanel === "mission" && <MissionLog onClose={() => setActivePanel(null)} />}
       {activePanel === "github" && <GithubProjectsPanel onClose={() => setActivePanel(null)} />}
       {activePanel === "growth" && <GrowthCenter onClose={() => setActivePanel(null)} />}
