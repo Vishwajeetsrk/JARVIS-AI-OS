@@ -22,6 +22,7 @@ export default function CyberResume({ onClose }: { onClose?: () => void }) {
   const [selectedResumeId, setSelectedResumeId] = useState<string>(RESUME_VARIANTS[0].id);
   const [theme, setTheme] = useState<"cyberpunk" | "executive" | "paper">("cyberpunk");
   const [activeTab, setActiveTab] = useState<"preview" | "editor" | "variants">("preview");
+  const [editorMobileView, setEditorMobileView] = useState<"fields" | "preview">("fields");
   const [copied, setCopied] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -653,180 +654,245 @@ export default function CyberResume({ onClose }: { onClose?: () => void }) {
 
         {/* TAB 2: INTERACTIVE LIVE EDITOR */}
         {activeTab === "editor" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, maxWidth: 1200, margin: "0 auto" }}>
-            {/* Editor Panel */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#00e5ff" }}>
-                  Editing: {currentResume.title}
-                </h3>
-                <span style={{ fontSize: 10.5, color: "#10b981", fontFamily: "var(--font-mono)" }}>
-                  ✓ Instant Auto-Save
-                </span>
-              </div>
-
-              {/* Summary Editor */}
-              <div
+          <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Mobile / Tablet View Switcher (< 1024px) */}
+            <div
+              className="show-on-tablet"
+              style={{
+                display: "flex",
+                background: "rgba(6, 16, 32, 0.9)",
+                border: "1px solid rgba(0, 229, 255, 0.3)",
+                borderRadius: 12,
+                padding: 4,
+                gap: 4,
+                marginBottom: 8,
+              }}
+            >
+              <button
+                onClick={() => setEditorMobileView("fields")}
                 style={{
-                  background: "rgba(6, 16, 32, 0.8)",
-                  border: "1px solid rgba(0, 229, 255, 0.2)",
-                  borderRadius: 14,
-                  padding: 16,
+                  flex: 1,
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  background: editorMobileView === "fields" ? "rgba(0, 229, 255, 0.25)" : "transparent",
+                  border: editorMobileView === "fields" ? "1px solid #00e5ff" : "none",
+                  color: editorMobileView === "fields" ? "#00e5ff" : "#94a3b8",
+                  fontSize: 12,
+                  fontWeight: 800,
+                  cursor: "pointer",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                  <label style={{ fontSize: 11, fontWeight: 800, color: "#00e5ff", textTransform: "uppercase" }}>
-                    Professional Summary
-                  </label>
-                  <button
-                    onClick={() => showToast("AI Copilot polished summary for ATS keywords!")}
-                    style={{
-                      background: "rgba(0, 229, 255, 0.15)",
-                      border: "1px solid #00e5ff",
-                      borderRadius: 6,
-                      padding: "2px 8px",
-                      color: "#00e5ff",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                    }}
-                  >
-                    <Sparkles size={11} /> AI Optimize
-                  </button>
-                </div>
-                <textarea
-                  value={currentResume.summary}
-                  onChange={(e) => handleUpdateSummary(e.target.value)}
-                  rows={4}
-                  style={{
-                    width: "100%",
-                    background: "rgba(0,0,0,0.5)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: 8,
-                    padding: 10,
-                    color: "#ffffff",
-                    fontSize: 11.5,
-                    lineHeight: 1.4,
-                    outline: "none",
-                  }}
-                />
-              </div>
+                ✏️ Edit Content Fields
+              </button>
+              <button
+                onClick={() => setEditorMobileView("preview")}
+                style={{
+                  flex: 1,
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  background: editorMobileView === "preview" ? "rgba(0, 229, 255, 0.25)" : "transparent",
+                  border: editorMobileView === "preview" ? "1px solid #00e5ff" : "none",
+                  color: editorMobileView === "preview" ? "#00e5ff" : "#94a3b8",
+                  fontSize: 12,
+                  fontWeight: 800,
+                  cursor: "pointer",
+                }}
+              >
+                👁️ Live Paper Sheet Preview
+              </button>
+            </div>
 
-              {/* Sections Editor */}
-              {currentResume.sections.map((sec) => (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+                gap: 24,
+              }}
+            >
+              {/* Editor Panel Column */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 16,
+                  ...(editorMobileView === "preview" ? { display: "var(--desktop-flex, flex)" } : {}),
+                }}
+                className={editorMobileView === "preview" ? "hide-on-tablet" : ""}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#00e5ff" }}>
+                    Editing: {currentResume.title}
+                  </h3>
+                  <span style={{ fontSize: 10.5, color: "#10b981", fontFamily: "var(--font-mono)" }}>
+                    ✓ Instant Auto-Save
+                  </span>
+                </div>
+
+                {/* Summary Editor */}
                 <div
-                  key={sec.id}
                   style={{
                     background: "rgba(6, 16, 32, 0.8)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    border: "1px solid rgba(0, 229, 255, 0.2)",
                     borderRadius: 14,
                     padding: 16,
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                    <span style={{ fontSize: 12, fontWeight: 800, color: "#ffffff", textTransform: "uppercase" }}>
-                      {sec.title}
-                    </span>
-                    <span style={{ fontSize: 9.5, color: "#10b981", fontFamily: "var(--font-mono)" }}>
-                      ✓ Evidence Verified
-                    </span>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <label style={{ fontSize: 11, fontWeight: 800, color: "#00e5ff", textTransform: "uppercase" }}>
+                      Professional Summary
+                    </label>
+                    <button
+                      onClick={() => showToast("AI Copilot polished summary for ATS keywords!")}
+                      style={{
+                        background: "rgba(0, 229, 255, 0.15)",
+                        border: "1px solid #00e5ff",
+                        borderRadius: 6,
+                        padding: "2px 8px",
+                        color: "#00e5ff",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                      }}
+                    >
+                      <Sparkles size={11} /> AI Optimize
+                    </button>
                   </div>
-
-                  {sec.bullets?.map((b) => (
-                    <div key={b.id} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 8 }}>
-                      <span style={{ color: "#00e5ff", marginTop: 6 }}>•</span>
-                      <textarea
-                        value={b.text}
-                        onChange={(e) => handleUpdateBullet(sec.id, b.id, e.target.value)}
-                        rows={2}
-                        style={{
-                          flex: 1,
-                          background: "rgba(0,0,0,0.4)",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          borderRadius: 6,
-                          padding: "6px 10px",
-                          color: "#ffffff",
-                          fontSize: 11,
-                          lineHeight: 1.4,
-                          outline: "none",
-                        }}
-                      />
-                      <button
-                        onClick={() => handleAIOptimize(sec.id, b.id)}
-                        style={{
-                          background: "rgba(0, 229, 255, 0.1)",
-                          border: "1px solid rgba(0, 229, 255, 0.3)",
-                          borderRadius: 6,
-                          padding: 6,
-                          color: "#00e5ff",
-                          cursor: "pointer",
-                        }}
-                        title="AI Polish Bullet"
-                      >
-                        <Sparkles size={12} />
-                      </button>
-                    </div>
-                  ))}
+                  <textarea
+                    value={currentResume.summary}
+                    onChange={(e) => handleUpdateSummary(e.target.value)}
+                    rows={4}
+                    style={{
+                      width: "100%",
+                      background: "rgba(0,0,0,0.5)",
+                      border: "1px solid rgba(255,255,255,0.15)",
+                      borderRadius: 8,
+                      padding: 10,
+                      color: "#ffffff",
+                      fontSize: 11.5,
+                      lineHeight: 1.4,
+                      outline: "none",
+                    }}
+                  />
                 </div>
-              ))}
-            </div>
 
-            {/* Live Paper Preview Column */}
-            <div
-              style={{
-                background: "#ffffff",
-                color: "#111827",
-                borderRadius: 14,
-                padding: 28,
-                boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
-                maxHeight: "80vh",
-                overflowY: "auto",
-                fontFamily: "Arial, sans-serif",
-              }}
-            >
-              <div style={{ borderBottom: "2px solid #000000", paddingBottom: 10, marginBottom: 12 }}>
-                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: "#000000" }}>VISHWAJEET</h2>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#1f2937", marginTop: 2 }}>{currentResume.targetRole}</div>
-                <div style={{ fontSize: 9.5, color: "#4b5563", marginTop: 4, lineHeight: 1.4 }}>
-                  Bengaluru, Karnataka, India | +91 85952 02922 | vishwajeetsrk@gmail.com<br />
-                  LinkedIn: Vishwajeetsrk | GitHub: Vishwajeetsrk | learnifyai.in
-                </div>
-              </div>
-
-              <div style={{ marginBottom: 12 }}>
-                <h4 style={{ margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", borderBottom: "1px solid #e5e7eb" }}>
-                  Summary
-                </h4>
-                <p style={{ margin: 0, fontSize: 9.5, lineHeight: 1.4, color: "#374151" }}>{currentResume.summary}</p>
-              </div>
-
-              {currentResume.sections.map((sec) => (
-                <div key={sec.id} style={{ marginBottom: 12 }}>
-                  <h4 style={{ margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", borderBottom: "1px solid #e5e7eb" }}>
-                    {sec.title}
-                  </h4>
-                  {sec.bullets?.map((b) => (
-                    <div key={b.id} style={{ fontSize: 9.5, lineHeight: 1.4, color: "#374151", marginBottom: 3 }}>
-                      • {b.text}
+                {/* Sections Editor */}
+                {currentResume.sections.map((sec) => (
+                  <div
+                    key={sec.id}
+                    style={{
+                      background: "rgba(6, 16, 32, 0.8)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      borderRadius: 14,
+                      padding: 16,
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                      <span style={{ fontSize: 12, fontWeight: 800, color: "#ffffff", textTransform: "uppercase" }}>
+                        {sec.title}
+                      </span>
+                      <span style={{ fontSize: 9.5, color: "#10b981", fontFamily: "var(--font-mono)" }}>
+                        ✓ Evidence Verified
+                      </span>
                     </div>
-                  ))}
-                  {sec.items?.map((item) => (
-                    <div key={item.id} style={{ marginBottom: 6 }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: "#111827" }}>
-                        {item.title} {item.dateRange ? `(${item.dateRange})` : ""}
+
+                    {sec.bullets?.map((b) => (
+                      <div key={b.id} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 8 }}>
+                        <span style={{ color: "#00e5ff", marginTop: 6 }}>•</span>
+                        <textarea
+                          value={b.text}
+                          onChange={(e) => handleUpdateBullet(sec.id, b.id, e.target.value)}
+                          rows={2}
+                          style={{
+                            flex: 1,
+                            background: "rgba(0,0,0,0.4)",
+                            border: "1px solid rgba(255,255,255,0.12)",
+                            borderRadius: 6,
+                            padding: "6px 10px",
+                            color: "#ffffff",
+                            fontSize: 11,
+                            lineHeight: 1.4,
+                            outline: "none",
+                          }}
+                        />
+                        <button
+                          onClick={() => handleAIOptimize(sec.id, b.id)}
+                          style={{
+                            background: "rgba(0, 229, 255, 0.1)",
+                            border: "1px solid rgba(0, 229, 255, 0.3)",
+                            borderRadius: 6,
+                            padding: 6,
+                            color: "#00e5ff",
+                            cursor: "pointer",
+                          }}
+                          title="AI Polish Bullet"
+                        >
+                          <Sparkles size={12} />
+                        </button>
                       </div>
-                      {item.bullets?.map((b) => (
-                        <div key={b.id} style={{ fontSize: 9.5, lineHeight: 1.4, color: "#374151" }}>
-                          • {b.text}
-                        </div>
-                      ))}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                ))}
+              </div>
+
+              {/* Live Paper Preview Column */}
+              <div
+                id="printable-resume"
+                className={`printable-sheet ${editorMobileView === "fields" ? "hide-on-tablet" : ""}`}
+                style={{
+                  background: "#ffffff",
+                  color: "#111827",
+                  borderRadius: 14,
+                  padding: 28,
+                  boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
+                  maxHeight: "80vh",
+                  overflowY: "auto",
+                  fontFamily: "Arial, sans-serif",
+                }}
+              >
+                <div style={{ borderBottom: "2px solid #000000", paddingBottom: 10, marginBottom: 12 }}>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: "#000000" }}>VISHWAJEET</h2>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#1f2937", marginTop: 2 }}>{currentResume.targetRole}</div>
+                  <div style={{ fontSize: 9.5, color: "#4b5563", marginTop: 4, lineHeight: 1.4 }}>
+                    Bengaluru, Karnataka, India | +91 85952 02922 | vishwajeetsrk@gmail.com<br />
+                    LinkedIn: Vishwajeetsrk | GitHub: Vishwajeetsrk | learnifyai.in
+                  </div>
                 </div>
-              ))}
+
+                <div style={{ marginBottom: 12 }}>
+                  <h4 style={{ margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", borderBottom: "1px solid #e5e7eb" }}>
+                    Summary
+                  </h4>
+                  <p style={{ margin: 0, fontSize: 9.5, lineHeight: 1.4, color: "#374151" }}>{currentResume.summary}</p>
+                </div>
+
+                {currentResume.sections.map((sec) => (
+                  <div key={sec.id} style={{ marginBottom: 12 }}>
+                    <h4 style={{ margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", borderBottom: "1px solid #e5e7eb" }}>
+                      {sec.title}
+                    </h4>
+                    {sec.bullets?.map((b) => (
+                      <div key={b.id} style={{ fontSize: 9.5, lineHeight: 1.4, color: "#374151", marginBottom: 3 }}>
+                        • {b.text}
+                      </div>
+                    ))}
+                    {sec.items?.map((item) => (
+                      <div key={item.id} style={{ marginBottom: 6 }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: "#111827" }}>
+                          {item.title} {item.dateRange ? `(${item.dateRange})` : ""}
+                        </div>
+                        {item.bullets?.map((b) => (
+                          <div key={b.id} style={{ fontSize: 9.5, lineHeight: 1.4, color: "#374151" }}>
+                            • {b.text}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

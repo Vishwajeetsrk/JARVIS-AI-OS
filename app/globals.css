@@ -225,10 +225,11 @@ option {
   color: #ffffff !important;
 }
 
-/* Mobile Responsiveness Improvements */
+/* Mobile & Tablet Responsiveness Enhancements */
 @media (max-width: 768px) {
   html, body {
     overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
   }
   .glass-panel {
     border-radius: 14px !important;
@@ -238,6 +239,73 @@ option {
     padding: 5px 10px !important;
     font-size: 0.6rem !important;
   }
+  /* Prevent iOS automatic input zoom by enforcing 16px minimum touch input font */
+  input[type="text"],
+  input[type="search"],
+  input[type="email"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Responsive Helper Utility Classes */
+@media (max-width: 640px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .show-on-mobile {
+    display: flex !important;
+  }
+  .mobile-p-2 {
+    padding: 8px !important;
+  }
+  .mobile-w-full {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 641px) {
+  .show-on-mobile {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hide-on-tablet {
+    display: none !important;
+  }
+  .show-on-tablet {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .show-on-tablet {
+    display: none !important;
+  }
+}
+
+/* Touch targets and smooth scrolling */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+.dvh-screen {
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
 }
 
 /* Print / PDF Export Media Query - High Fidelity ATS 1-Page Layout */

@@ -54,8 +54,8 @@ export default function Home() {
           zIndex: 40,
           display: "flex",
           alignItems: "center",
-          gap: 12,
-          padding: "6px 18px",
+          gap: 10,
+          padding: "6px 14px",
           background: "rgba(4, 10, 22, 0.75)",
           backdropFilter: "blur(20px)",
           border: "1px solid rgba(0, 229, 255, 0.25)",
@@ -64,7 +64,7 @@ export default function Home() {
           pointerEvents: "auto",
         }}
       >
-        <div style={{ position: "relative", width: 28, height: 28, borderRadius: 8, overflow: "hidden" }}>
+        <div style={{ position: "relative", width: 26, height: 26, borderRadius: 8, overflow: "hidden", flexShrink: 0 }}>
           <img
             src="/main-logo.png"
             alt="NEXORA Logo"
@@ -73,11 +73,11 @@ export default function Home() {
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.18em", color: "#ffffff", fontFamily: "var(--font-display)" }}>
+            <span className="hide-on-mobile" style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.18em", color: "#ffffff", fontFamily: "var(--font-display)" }}>
               NEXORA
             </span>
-            <span style={{ fontSize: 9.5, padding: "1px 6px", borderRadius: 6, background: "rgba(0,229,255,0.15)", border: "1px solid #00e5ff", color: "#00e5ff", fontWeight: 800, fontFamily: "var(--font-mono)" }}>
-              JARVIS AI OS v4.0
+            <span style={{ fontSize: 9.5, padding: "1px 6px", borderRadius: 6, background: "rgba(0,229,255,0.15)", border: "1px solid #00e5ff", color: "#00e5ff", fontWeight: 800, fontFamily: "var(--font-mono)", whiteSpace: "nowrap" }}>
+              JARVIS AI OS
             </span>
           </div>
         </div>
@@ -103,17 +103,18 @@ export default function Home() {
       <div
         style={{
           position: "absolute",
-          top: 16,
-          right: "clamp(16px, 3vw, 40px)",
+          top: 14,
+          right: "clamp(12px, 2.5vw, 36px)",
           zIndex: 40,
           display: "flex",
           alignItems: "center",
-          gap: 10,
+          gap: 6,
         }}
       >
         <button
           onClick={handleOpenUIStudio}
           aria-label="Open UI Studio"
+          title="Open UI Component Studio (50+ Pro Components)"
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "0.68rem",
@@ -122,7 +123,7 @@ export default function Home() {
             color: "#c084fc",
             border: "1px solid rgba(192, 132, 252, 0.45)",
             borderRadius: 20,
-            padding: "7px 16px",
+            padding: "6px 12px",
             background: "rgba(168, 85, 247, 0.15)",
             backdropFilter: "blur(8px)",
             boxShadow: "0 0 16px rgba(168, 85, 247, 0.25)",
@@ -130,7 +131,7 @@ export default function Home() {
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 6,
+            gap: 5,
             transition: "all 0.2s",
           }}
           onMouseEnter={(e) => {
@@ -143,12 +144,13 @@ export default function Home() {
           }}
         >
           <Sparkles size={13} color="#c084fc" />
-          <span>UI Studio</span>
+          <span className="hide-on-mobile">UI Studio</span>
         </button>
 
         <button
           onClick={handleOpenResumeStudio}
           aria-label="Open Resume Studio"
+          title="Open Career OS Resume Studio (8 Canonical Resumes)"
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "0.68rem",
@@ -157,7 +159,7 @@ export default function Home() {
             color: "#34d399",
             border: "1px solid rgba(16, 185, 129, 0.45)",
             borderRadius: 20,
-            padding: "7px 16px",
+            padding: "6px 12px",
             background: "rgba(16, 185, 129, 0.15)",
             backdropFilter: "blur(8px)",
             boxShadow: "0 0 16px rgba(16, 185, 129, 0.25)",
@@ -165,7 +167,7 @@ export default function Home() {
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 6,
+            gap: 5,
             transition: "all 0.2s",
           }}
           onMouseEnter={(e) => {
@@ -178,12 +180,13 @@ export default function Home() {
           }}
         >
           <FileText size={13} color="#34d399" />
-          <span>Resume Studio</span>
+          <span className="hide-on-mobile">Resume Studio</span>
         </button>
 
         <button
           onClick={handleOpenConsole}
           aria-label="Open Workspace Console"
+          title="Open Workspace Console & Project Hub"
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "0.68rem",
@@ -192,7 +195,7 @@ export default function Home() {
             color: "#00e5ff",
             border: "1px solid rgba(0, 229, 255, 0.45)",
             borderRadius: 20,
-            padding: "7px 16px",
+            padding: "6px 12px",
             background: "rgba(0, 229, 255, 0.12)",
             backdropFilter: "blur(8px)",
             boxShadow: "0 0 16px rgba(0, 229, 255, 0.2)",
@@ -200,7 +203,7 @@ export default function Home() {
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 6,
+            gap: 5,
             transition: "all 0.2s",
           }}
           onMouseEnter={(e) => {
@@ -213,12 +216,13 @@ export default function Home() {
           }}
         >
           <Terminal size={13} />
-          <span>Workspace Console</span>
+          <span className="hide-on-mobile">Console</span>
         </button>
 
         <button
           onClick={handleOpenConnectors}
           aria-label="Open Connectors & Keys"
+          title="Open Connectors & API Vault"
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "0.68rem",
@@ -227,7 +231,7 @@ export default function Home() {
             color: "#a855f7",
             border: "1px solid rgba(168, 85, 247, 0.45)",
             borderRadius: 20,
-            padding: "7px 14px",
+            padding: "6px 12px",
             background: "rgba(168, 85, 247, 0.12)",
             backdropFilter: "blur(8px)",
             boxShadow: "0 0 16px rgba(168, 85, 247, 0.2)",
@@ -235,7 +239,7 @@ export default function Home() {
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 6,
+            gap: 5,
             transition: "all 0.2s",
           }}
           onMouseEnter={(e) => {
@@ -248,13 +252,14 @@ export default function Home() {
           }}
         >
           <Plug size={13} />
-          <span>Connectors</span>
+          <span className="hide-on-mobile">Connectors</span>
         </button>
 
         <a
           href="https://github.com/Vishwajeetsrk/JARVIS-AI-OS"
           target="_blank"
           rel="noopener noreferrer"
+          title="GitHub Repository"
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "0.68rem",
@@ -263,27 +268,27 @@ export default function Home() {
             color: "rgba(240, 237, 232, 0.8)",
             border: "1px solid rgba(255, 255, 255, 0.15)",
             borderRadius: 20,
-            padding: "7px 14px",
+            padding: "6px 12px",
             background: "rgba(255, 255, 255, 0.05)",
             backdropFilter: "blur(8px)",
             fontWeight: 700,
             display: "flex",
             alignItems: "center",
-            gap: 6,
+            gap: 5,
             textDecoration: "none",
             transition: "all 0.2s",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(255, 255, 255, 0.12)";
-            e.currentTarget.style.color = "#ffffff";
+            e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.35)";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
-            e.currentTarget.style.color = "rgba(240, 237, 232, 0.8)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
           }}
         >
           <Github size={13} />
-          <span>GitHub</span>
+          <span className="hide-on-mobile">GitHub</span>
         </a>
       </div>
     </main>

@@ -704,7 +704,7 @@ export default function CareerOS({ onClose }: { onClose: () => void }) {
 
           {/* TAB 3: RESUME EDITOR */}
           {activeTab === "editor" && (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 20 }}>
               {/* Left Column: Sections & Copilot */}
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

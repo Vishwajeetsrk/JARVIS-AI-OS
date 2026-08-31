@@ -653,17 +653,19 @@ export default function AgentCockpit({
     <div
       role="dialog"
       aria-modal="true"
+      className="dvh-screen"
       style={{
         position: "fixed",
-        right: isMaximized ? 20 : "clamp(12px, 3vw, 40px)",
-        top: isMaximized ? 20 : "clamp(60px, 9vh, 90px)",
-        bottom: isMaximized ? 20 : "clamp(60px, 9vh, 90px)",
-        width: isMaximized ? "calc(100vw - 40px)" : "min(540px, 95vw)",
+        right: isMaximized ? 0 : "clamp(0px, 2vw, 36px)",
+        top: isMaximized ? 0 : "clamp(0px, 6vh, 70px)",
+        bottom: isMaximized ? 0 : "clamp(0px, 6vh, 70px)",
+        width: isMaximized ? "100vw" : "min(560px, 100vw)",
+        maxHeight: "100dvh",
         zIndex: 9999,
         background: "rgba(3, 7, 18, 0.95)",
         backdropFilter: "blur(32px)",
         border: `1px solid ${c}55`,
-        borderRadius: 28,
+        borderRadius: isMaximized ? 0 : 24,
         boxShadow: `0 0 70px ${c}25, 0 24px 70px rgba(0,0,0,0.95)`,
         display: "flex",
         flexDirection: "column",

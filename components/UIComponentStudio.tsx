@@ -1007,8 +1007,8 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       </div>
 
       {/* Main Component Showcase Grid */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-6 sm:space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-7xl mx-auto">
           {filteredComponents.map((comp) => {
             const activeTab = activeTabMap[comp.id] || "preview";
             const params = customParams[comp.id] || comp.defaultParams || {};
