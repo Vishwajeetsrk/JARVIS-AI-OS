@@ -39,37 +39,50 @@ export default function PortfolioOverlay() {
 
   return (
     <>
-      {/* Interactive Trigger Buttons Bar */}
+      {/* Sleek Cyber Right Sidebar Dock */}
       <div
+        id="right-sidebar-dock"
         style={{
-          position: "absolute",
-          bottom: "clamp(24px, 5vw, 40px)",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 50,
+          position: "fixed",
+          right: "clamp(8px, 1.4vw, 20px)",
+          top: "54%",
+          transform: "translateY(-50%)",
+          zIndex: 60,
           display: "flex",
-          gap: 10,
-          alignItems: "center",
-          background: "rgba(4, 10, 20, 0.85)",
-          padding: "7px 16px",
-          borderRadius: 32,
-          backdropFilter: "blur(20px)",
+          flexDirection: "column",
+          gap: 6,
+          alignItems: "stretch",
+          background: "rgba(4, 10, 20, 0.9)",
+          padding: "10px 8px",
+          borderRadius: 22,
+          backdropFilter: "blur(28px)",
           border: "1px solid rgba(0, 229, 255, 0.35)",
-          boxShadow: "0 0 30px rgba(0, 229, 255, 0.2)",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          maxWidth: "96vw",
+          boxShadow: "0 0 35px rgba(0, 229, 255, 0.2), 0 20px 50px rgba(0,0,0,0.85)",
+          maxWidth: "220px",
+          maxHeight: "calc(100dvh - 110px)",
+          overflowY: "auto",
         }}
+        className="no-scrollbar"
       >
-        {/* Brand Icon */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, paddingRight: 6, borderRight: "1px solid rgba(255,255,255,0.12)" }}>
+        {/* Sidebar Brand Header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            padding: "4px 8px 8px 8px",
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
+            marginBottom: 2,
+          }}
+        >
           <img
             src="/main-logo.png"
             alt="NEXORA"
-            style={{ width: 22, height: 22, borderRadius: 6, objectFit: "contain" }}
+            style={{ width: 18, height: 18, borderRadius: 5, objectFit: "contain" }}
           />
-          <span style={{ fontSize: "0.75rem", fontWeight: 900, letterSpacing: "0.12em", color: "#ffffff", fontFamily: "var(--font-display)" }}>
-            NEXORA
+          <span style={{ fontSize: "0.68rem", fontWeight: 900, letterSpacing: "0.14em", color: "#00e5ff", fontFamily: "var(--font-display)" }}>
+            NEXORA HUB
           </span>
         </div>
 
@@ -77,62 +90,76 @@ export default function PortfolioOverlay() {
         <button
           onClick={() => setActivePanel(activePanel === "workspace" ? null : "workspace")}
           style={{
-            background: activePanel === "workspace" ? "rgba(0, 229, 255, 0.2)" : "transparent",
-            border: activePanel === "workspace" ? "1px solid rgba(0, 229, 255, 0.5)" : "1px solid transparent",
+            background: activePanel === "workspace" ? "rgba(0, 229, 255, 0.25)" : "transparent",
+            border: activePanel === "workspace" ? "1px solid #00e5ff" : "1px solid transparent",
             color: activePanel === "workspace" ? "#00e5ff" : "rgba(240,237,232,0.9)",
-            padding: "7px 14px",
-            borderRadius: 20,
+            padding: "7px 11px",
+            borderRadius: 14,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 7,
+            gap: 8,
             fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
+            fontSize: "0.72rem",
             textTransform: "uppercase",
-            letterSpacing: "0.05em",
+            letterSpacing: "0.04em",
             fontWeight: 700,
             transition: "all 0.2s",
+            textAlign: "left",
           }}
+          onMouseEnter={(e) => {
+            if (activePanel !== "workspace") {
+              e.currentTarget.style.background = "rgba(0, 229, 255, 0.1)";
+              e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.3)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activePanel !== "workspace") {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.borderColor = "transparent";
+            }
+          }}
+          title="Projects Hub & Workspace"
         >
-          <FolderGit2 size={15} /> Projects Hub
+          <FolderGit2 size={15} color="#00e5ff" />
+          <span style={{ whiteSpace: "nowrap" }}>Projects Hub</span>
         </button>
-
-        <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
 
         {/* 2. UI Studio (50+ Components) */}
         <button
           onClick={handleOpenUIStudio}
           style={{
-            background: "rgba(168, 85, 247, 0.18)",
-            border: "1px solid #a855f7",
+            background: "rgba(168, 85, 247, 0.16)",
+            border: "1px solid rgba(168, 85, 247, 0.45)",
             color: "#d8b4fe",
-            padding: "7px 14px",
-            borderRadius: 20,
+            padding: "7px 11px",
+            borderRadius: 14,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 7,
+            gap: 8,
             fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
+            fontSize: "0.72rem",
             textTransform: "uppercase",
-            letterSpacing: "0.05em",
+            letterSpacing: "0.04em",
             fontWeight: 800,
-            boxShadow: "0 0 16px rgba(168, 85, 247, 0.25)",
+            boxShadow: "0 0 14px rgba(168, 85, 247, 0.2)",
             transition: "all 0.2s",
+            textAlign: "left",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(168, 85, 247, 0.35)";
+            e.currentTarget.style.background = "rgba(168, 85, 247, 0.3)";
             e.currentTarget.style.borderColor = "#c084fc";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(168, 85, 247, 0.18)";
-            e.currentTarget.style.borderColor = "#a855f7";
+            e.currentTarget.style.background = "rgba(168, 85, 247, 0.16)";
+            e.currentTarget.style.borderColor = "rgba(168, 85, 247, 0.45)";
           }}
+          title="Open UI Component Studio (50+ Pro Components)"
         >
-          <Sparkles size={15} color="#c084fc" /> UI Studio (50+)
+          <Sparkles size={15} color="#c084fc" />
+          <span style={{ whiteSpace: "nowrap" }}>UI Studio (50+)</span>
         </button>
-
-        <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
 
         {/* 3. Career OS 2.0 */}
         <button
@@ -141,73 +168,92 @@ export default function PortfolioOverlay() {
             background: activePanel === "career" ? "rgba(0, 229, 255, 0.25)" : "rgba(0, 229, 255, 0.08)",
             border: activePanel === "career" ? "1px solid #00e5ff" : "1px solid rgba(0, 229, 255, 0.35)",
             color: "#00e5ff",
-            padding: "7px 14px",
-            borderRadius: 20,
+            padding: "7px 11px",
+            borderRadius: 14,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 7,
+            gap: 8,
             fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
+            fontSize: "0.72rem",
             textTransform: "uppercase",
-            letterSpacing: "0.05em",
+            letterSpacing: "0.04em",
             fontWeight: 800,
             boxShadow: "0 0 14px rgba(0,229,255,0.15)",
             transition: "all 0.2s",
+            textAlign: "left",
           }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(0, 229, 255, 0.22)";
+            e.currentTarget.style.borderColor = "#00e5ff";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = activePanel === "career" ? "rgba(0, 229, 255, 0.25)" : "rgba(0, 229, 255, 0.08)";
+            e.currentTarget.style.borderColor = activePanel === "career" ? "#00e5ff" : "rgba(0, 229, 255, 0.35)";
+          }}
+          title="Career OS 2.0 & Job Intelligence"
         >
-          <Briefcase size={15} /> Career OS 2.0
+          <Briefcase size={15} color="#00e5ff" />
+          <span style={{ whiteSpace: "nowrap" }}>Career OS 2.0</span>
         </button>
 
-        <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
-
-        {/* 3.5 Resume Studio (8 Canonical Resumes) */}
+        {/* 4. Resume Studio (8 Canonical Resumes) */}
         <button
           onClick={() => setActivePanel(activePanel === "resume" ? null : "resume")}
           style={{
             background: activePanel === "resume" ? "rgba(16, 185, 129, 0.25)" : "rgba(16, 185, 129, 0.08)",
             border: activePanel === "resume" ? "1px solid #10b981" : "1px solid rgba(16, 185, 129, 0.35)",
             color: "#34d399",
-            padding: "7px 14px",
-            borderRadius: 20,
+            padding: "7px 11px",
+            borderRadius: 14,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 7,
+            gap: 8,
             fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
+            fontSize: "0.72rem",
             textTransform: "uppercase",
-            letterSpacing: "0.05em",
+            letterSpacing: "0.04em",
             fontWeight: 800,
             boxShadow: "0 0 14px rgba(16,185,129,0.15)",
             transition: "all 0.2s",
+            textAlign: "left",
           }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(16, 185, 129, 0.22)";
+            e.currentTarget.style.borderColor = "#10b981";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = activePanel === "resume" ? "rgba(16, 185, 129, 0.25)" : "rgba(16, 185, 129, 0.08)";
+            e.currentTarget.style.borderColor = activePanel === "resume" ? "#10b981" : "rgba(16, 185, 129, 0.35)";
+          }}
+          title="Resume Studio (8 Canonical Variations)"
         >
-          <FileText size={15} /> Resume Studio
+          <FileText size={15} color="#34d399" />
+          <span style={{ whiteSpace: "nowrap" }}>Resume Studio</span>
         </button>
 
-        <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
-
-        {/* 4. Content & Video Studio */}
+        {/* 5. Video & Content Studio */}
         <button
           onClick={handleOpenContentStudio}
           style={{
             background: "rgba(236, 72, 153, 0.12)",
             border: "1px solid rgba(236, 72, 153, 0.4)",
             color: "#ec4899",
-            padding: "7px 14px",
-            borderRadius: 20,
+            padding: "7px 11px",
+            borderRadius: 14,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 7,
+            gap: 8,
             fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
+            fontSize: "0.72rem",
             textTransform: "uppercase",
-            letterSpacing: "0.05em",
+            letterSpacing: "0.04em",
             fontWeight: 800,
             boxShadow: "0 0 14px rgba(236, 72, 153, 0.2)",
             transition: "all 0.2s",
+            textAlign: "left",
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = "rgba(236, 72, 153, 0.25)";
@@ -217,93 +263,122 @@ export default function PortfolioOverlay() {
             e.currentTarget.style.background = "rgba(236, 72, 153, 0.12)";
             e.currentTarget.style.borderColor = "rgba(236, 72, 153, 0.4)";
           }}
+          title="Video & Social Content Studio"
         >
-          <Video size={15} /> Video & Content Studio
+          <Video size={15} color="#ec4899" />
+          <span style={{ whiteSpace: "nowrap" }}>Video Studio</span>
         </button>
 
-        <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
-
-        {/* 5. Client Finder & Agency OS */}
+        {/* 6. Client Finder & Agency OS */}
         <button
           onClick={handleOpenAgencyOS}
           style={{
             background: "rgba(16, 185, 129, 0.12)",
             border: "1px solid rgba(16, 185, 129, 0.4)",
             color: "#10b981",
-            padding: "7px 14px",
-            borderRadius: 20,
+            padding: "7px 11px",
+            borderRadius: 14,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 7,
+            gap: 8,
             fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
+            fontSize: "0.72rem",
             textTransform: "uppercase",
-            letterSpacing: "0.05em",
+            letterSpacing: "0.04em",
             fontWeight: 800,
             boxShadow: "0 0 14px rgba(16, 185, 129, 0.2)",
             transition: "all 0.2s",
+            textAlign: "left",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(168, 85, 247, 0.25)";
+            e.currentTarget.style.background = "rgba(16, 185, 129, 0.25)";
             e.currentTarget.style.borderColor = "#10b981";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = "rgba(16, 185, 129, 0.12)";
             e.currentTarget.style.borderColor = "rgba(16, 185, 129, 0.4)";
           }}
+          title="Client Finder & Freelance Agency OS"
         >
-          <Building2 size={15} /> Client Finder & Agency
+          <Building2 size={15} color="#10b981" />
+          <span style={{ whiteSpace: "nowrap" }}>Agency OS</span>
         </button>
 
-        <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
-
-        {/* 6. Mission Log */}
+        {/* 7. Mission Log */}
         <button
           onClick={() => setActivePanel(activePanel === "mission" ? null : "mission")}
           style={{
-            background: activePanel === "mission" ? "rgba(16, 185, 129, 0.15)" : "transparent",
-            border: activePanel === "mission" ? "1px solid rgba(16, 185, 129, 0.4)" : "1px solid transparent",
-            color: activePanel === "mission" ? "#10b981" : "rgba(240,237,232,0.8)",
-            padding: "7px 14px",
-            borderRadius: 20,
+            background: activePanel === "mission" ? "rgba(16, 185, 129, 0.2)" : "transparent",
+            border: activePanel === "mission" ? "1px solid rgba(16, 185, 129, 0.5)" : "1px solid transparent",
+            color: activePanel === "mission" ? "#10b981" : "rgba(240,237,232,0.85)",
+            padding: "7px 11px",
+            borderRadius: 14,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 7,
+            gap: 8,
             fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
+            fontSize: "0.72rem",
             textTransform: "uppercase",
-            letterSpacing: "0.05em",
+            letterSpacing: "0.04em",
             transition: "all 0.2s",
+            textAlign: "left",
           }}
+          onMouseEnter={(e) => {
+            if (activePanel !== "mission") {
+              e.currentTarget.style.background = "rgba(16, 185, 129, 0.1)";
+              e.currentTarget.style.borderColor = "rgba(16, 185, 129, 0.3)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activePanel !== "mission") {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.borderColor = "transparent";
+            }
+          }}
+          title="Mission Log & Agent Tasks"
         >
-          <Target size={15} /> Mission Log
+          <Target size={15} color="#10b981" />
+          <span style={{ whiteSpace: "nowrap" }}>Mission Log</span>
         </button>
 
-        <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
-
-        {/* 7. GitHub */}
+        {/* 8. GitHub */}
         <button
           onClick={() => setActivePanel(activePanel === "github" ? null : "github")}
           style={{
-            background: activePanel === "github" ? "rgba(0, 229, 255, 0.15)" : "transparent",
-            border: activePanel === "github" ? "1px solid rgba(0, 229, 255, 0.4)" : "1px solid transparent",
-            color: activePanel === "github" ? "#00e5ff" : "rgba(240,237,232,0.8)",
-            padding: "7px 14px",
-            borderRadius: 20,
+            background: activePanel === "github" ? "rgba(0, 229, 255, 0.2)" : "transparent",
+            border: activePanel === "github" ? "1px solid rgba(0, 229, 255, 0.5)" : "1px solid transparent",
+            color: activePanel === "github" ? "#00e5ff" : "rgba(240,237,232,0.85)",
+            padding: "7px 11px",
+            borderRadius: 14,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 7,
+            gap: 8,
             fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
+            fontSize: "0.72rem",
             textTransform: "uppercase",
-            letterSpacing: "0.05em",
+            letterSpacing: "0.04em",
             transition: "all 0.2s",
+            textAlign: "left",
           }}
+          onMouseEnter={(e) => {
+            if (activePanel !== "github") {
+              e.currentTarget.style.background = "rgba(0, 229, 255, 0.1)";
+              e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.3)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activePanel !== "github") {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.borderColor = "transparent";
+            }
+          }}
+          title="GitHub Projects & Repos"
         >
-          <Github size={15} /> GitHub Hub
+          <Github size={15} color="#00e5ff" />
+          <span style={{ whiteSpace: "nowrap" }}>GitHub Hub</span>
         </button>
       </div>
 

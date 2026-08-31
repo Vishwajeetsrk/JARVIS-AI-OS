@@ -121,10 +121,10 @@ export default function Home() {
       {/* Top Right Header Controls */}
       <div
         style={{
-          position: "absolute",
+          position: "fixed",
           top: 14,
-          right: "clamp(12px, 2.5vw, 36px)",
-          zIndex: 40,
+          right: "clamp(8px, 1.4vw, 20px)",
+          zIndex: 85,
           display: "flex",
           alignItems: "center",
           gap: 6,

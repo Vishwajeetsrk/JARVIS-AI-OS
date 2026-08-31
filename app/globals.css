@@ -258,6 +258,21 @@ option {
   .show-on-mobile {
     display: flex !important;
   }
+
+  /* Compact Mobile Vertical Icon Rail for Right Sidebar */
+  #right-sidebar-dock {
+    right: 6px !important;
+    padding: 6px 4px !important;
+    max-width: 46px !important;
+  }
+  #right-sidebar-dock span {
+    display: none !important;
+  }
+  #right-sidebar-dock button {
+    padding: 8px !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+  }
   .mobile-p-2 {
     padding: 8px !important;
   }
