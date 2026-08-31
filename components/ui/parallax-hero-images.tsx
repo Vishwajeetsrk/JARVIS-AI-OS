@@ -1,80 +1,171 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useMemo, memo } from "react";
 import { cn } from "@/lib/utils";
 
-interface ParallaxHeroImagesProps {
+type ImagePosition = {
+  src: string;
+  position:
+    | "top-left"
+    | "top-right"
+    | "mid-left"
+    | "mid-right"
+    | "bottom-left"
+    | "bottom-right"
+    | "far-left"
+    | "far-right";
+  depth: number;
+  delay: number;
+};
+
+const positionStyles: Record<
+  ImagePosition["position"],
+  { top: string; left?: string; right?: string }
+> = {
+  "top-left": { top: "8%", left: "4%" },
+  "top-right": { top: "8%", right: "4%" },
+  "mid-left": { top: "38%", left: "6%" },
+  "mid-right": { top: "38%", right: "6%" },
+  "bottom-left": { top: "68%", left: "4%" },
+  "bottom-right": { top: "68%", right: "4%" },
+  "far-left": { top: "52%", left: "2%" },
+  "far-right": { top: "52%", right: "2%" },
+};
+
+const positionOrder: ImagePosition["position"][] = [
+  "top-left",
+  "top-right",
+  "mid-left",
+  "mid-right",
+  "bottom-left",
+  "bottom-right",
+  "far-left",
+  "far-right",
+];
+
+type DepthVariant = "default" | "edge-focus";
+
+const depthValuesByVariant: Record<DepthVariant, number[]> = {
+  default: [0.3, 0.35, 0.9, 0.85, 0.4, 0.45, 0.25, 0.2],
+  "edge-focus": [0.85, 0.9, 0.3, 0.35, 0.8, 0.85, 0.4, 0.45],
+};
+
+export interface ParallaxHeroImagesProps {
   images: string[];
-  variant?: "edge-focus" | "grid";
   className?: string;
+  imageClassName?: string;
+  variant?: DepthVariant;
 }
 
-export function ParallaxHeroImages({
-  images = [],
-  variant = "edge-focus",
+export const ParallaxHeroImages = ({
+  images,
   className,
-}: ParallaxHeroImagesProps) {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  imageClassName,
+  variant = "default",
+}: ParallaxHeroImagesProps) => {
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+
+  const positions = useMemo(() => {
+    const limitedImages = images.slice(0, 8);
+    const depthValues = depthValuesByVariant[variant];
+    return limitedImages.map((src, index) => ({
+      src,
+      position: positionOrder[index],
+      depth: depthValues[index],
+      delay: index * 0.12,
+    }));
+  }, [images, variant]);
 
   useEffect(() => {
+    let animationFrameId: number;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+
     const handleMouseMove = (e: MouseEvent) => {
-      const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth - 0.5) * 40;
-      const y = (e.clientY / innerHeight - 0.5) * 40;
-      setMousePos({ x, y });
+      targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      targetY = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+
+    const updateMouse = () => {
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+      setMouse({ x: currentX, y: currentY });
+      animationFrameId = requestAnimationFrame(updateMouse);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    animationFrameId = requestAnimationFrame(updateMouse);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
-  const defaultImages = images.length > 0 ? images : [
-    "https://assets.aceternity.com/components/hero-section-with-mesh-gradient.webp",
-    "https://assets.aceternity.com/components/3d-globe.webp",
-    "https://assets.aceternity.com/components/keyboard-2.webp",
-    "https://assets.aceternity.com/components/hero-1.webp",
-    "https://assets.aceternity.com/components/hero-2.webp",
-    "https://assets.aceternity.com/components/hero-3.webp",
-  ];
-
   return (
-    <div className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}>
-      {defaultImages.map((src, idx) => {
-        const factor = (idx + 1) * 0.4;
-        const offsetX = mousePos.x * factor;
-        const offsetY = mousePos.y * factor;
-
-        // Position images around the periphery
-        const positions = [
-          "top-10 left-10 w-48 sm:w-64 rotate-[-6deg]",
-          "top-12 right-12 w-52 sm:w-72 rotate-[8deg]",
-          "bottom-16 left-16 w-56 sm:w-80 rotate-[4deg]",
-          "bottom-20 right-20 w-48 sm:w-64 rotate-[-8deg]",
-          "top-1/3 left-4 w-40 sm:w-56 rotate-[-12deg]",
-          "top-1/2 right-4 w-44 sm:w-60 rotate-[10deg]",
-        ];
-
-        const posClass = positions[idx % positions.length];
-
-        return (
-          <div
-            key={idx}
-            className={cn(
-              "absolute rounded-2xl border border-white/10 bg-neutral-900/60 p-2 shadow-2xl backdrop-blur-sm transition-transform duration-200 ease-out",
-              posClass
-            )}
-            style={{
-              transform: `translate(${offsetX}px, ${offsetY}px)`,
-            }}
-          >
-            <img
-              src={src}
-              alt={`Parallax Layer ${idx}`}
-              className="h-32 w-full rounded-xl object-cover sm:h-44 opacity-80 hover:opacity-100"
-            />
-          </div>
-        );
-      })}
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-0 overflow-hidden",
+        className,
+      )}
+    >
+      {positions.map((pos, index) => (
+        <ParallaxImage
+          key={`${pos.src}-${index}`}
+          src={pos.src}
+          position={pos.position}
+          depth={pos.depth}
+          delay={pos.delay}
+          imageClassName={imageClassName}
+          mouseX={mouse.x}
+          mouseY={mouse.y}
+        />
+      ))}
     </div>
   );
+};
+
+interface ParallaxImageProps extends ImagePosition {
+  imageClassName?: string;
+  mouseX: number;
+  mouseY: number;
 }
+
+const ParallaxImage = memo(function ParallaxImage({
+  src,
+  position,
+  depth,
+  imageClassName,
+  mouseX,
+  mouseY,
+}: ParallaxImageProps) {
+  const maxOffset = 45;
+  const translateX = mouseX * maxOffset * depth;
+  const translateY = mouseY * maxOffset * depth;
+  const posStyle = positionStyles[position];
+
+  return (
+    <div
+      className="absolute transition-transform duration-75 ease-out"
+      style={{
+        top: posStyle.top,
+        left: posStyle.left,
+        right: posStyle.right,
+        transform: `translate3d(${translateX}px, ${translateY}px, 0)`,
+        zIndex: Math.round(depth * 10),
+      }}
+    >
+      <img
+        src={src}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className={cn(
+          "aspect-4/3 h-20 w-32 rounded-xl object-cover shadow-2xl border border-white/15 backdrop-blur-md sm:h-36 sm:w-52 md:h-48 md:w-72",
+          imageClassName,
+        )}
+      />
+    </div>
+  );
+});
