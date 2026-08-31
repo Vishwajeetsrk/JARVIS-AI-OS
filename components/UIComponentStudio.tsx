@@ -475,7 +475,7 @@ export function UIComponentStudio({ isOpen, onClose }: { isOpen?: boolean; onClo
       category: "WebGL & Shaders",
       description: "Bayer 4x4 matrix dithering algorithm canvas filter.",
       codeSnippet: `import { DitherShader } from "@/components/ui/dither-shader";\n\nexport function Demo() {\n  return <DitherShader gridSize={2} />;\n}`,
-      renderDemo: (p) => <DitherShader className="h-64 w-full" gridSize={p?.gridSize || 3} />,
+      renderDemo: (p) => <DitherShader src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" className="h-64 w-full" gridSize={p?.gridSize || 3} />,
       defaultParams: { gridSize: 3 },
     },
     {
