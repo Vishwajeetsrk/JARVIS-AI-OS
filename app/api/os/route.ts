@@ -97,3 +97,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message || "OS Operation Failed" }, { status: 500 });
   }
 }
+
+export async function GET() {
+  return NextResponse.json({
+    success: true,
+    platform: process.platform,
+    arch: process.arch,
+    nodeVersion: process.version,
+    uptime: process.uptime(),
+    availableShortcuts: Object.keys(APP_SHORTCUTS),
+  });
+}

@@ -9,7 +9,7 @@ import ConnectorsManager from "@/components/ConnectorsManager";
 import ContentStudio from "@/components/ContentStudio";
 import ClientAgencyOS from "@/components/ClientAgencyOS";
 import UIComponentStudio from "@/components/UIComponentStudio";
-import { Terminal, Plug, Github, Sparkles } from "lucide-react";
+import { Terminal, Plug, Github, Sparkles, FileText } from "lucide-react";
 import Image from "next/image";
 
 export default function Home() {
@@ -23,6 +23,10 @@ export default function Home() {
 
   const handleOpenUIStudio = () => {
     window.dispatchEvent(new CustomEvent("OPEN_UI_STUDIO"));
+  };
+
+  const handleOpenResumeStudio = () => {
+    window.dispatchEvent(new CustomEvent("OPEN_RESUME_STUDIO"));
   };
 
   return (
@@ -140,6 +144,41 @@ export default function Home() {
         >
           <Sparkles size={13} color="#c084fc" />
           <span>UI Studio</span>
+        </button>
+
+        <button
+          onClick={handleOpenResumeStudio}
+          aria-label="Open Resume Studio"
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.68rem",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            color: "#34d399",
+            border: "1px solid rgba(16, 185, 129, 0.45)",
+            borderRadius: 20,
+            padding: "7px 16px",
+            background: "rgba(16, 185, 129, 0.15)",
+            backdropFilter: "blur(8px)",
+            boxShadow: "0 0 16px rgba(16, 185, 129, 0.25)",
+            fontWeight: 700,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(16, 185, 129, 0.35)";
+            e.currentTarget.style.borderColor = "#34d399";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(16, 185, 129, 0.15)";
+            e.currentTarget.style.borderColor = "rgba(16, 185, 129, 0.45)";
+          }}
+        >
+          <FileText size={13} color="#34d399" />
+          <span>Resume Studio</span>
         </button>
 
         <button
