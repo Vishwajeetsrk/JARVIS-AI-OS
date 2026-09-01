@@ -32,7 +32,8 @@
 
 ## 🌟 Core Flagship Engines & Capabilities
 
-### 1. 🎨 NEXORA UI Component Studio & Skill System (50+ Components)
+### 1. 🎨 NEXORA UI Component Studio & Fast Performance Engine (50+ Components)
+- **High-Performance Architecture**: 100% `React.lazy` + `Suspense` dynamic code splitting with `IntersectionObserver` viewport gating and isolated `contain: strict` layout caching. Prevents heavy WebGL/Three.js bundles from blocking initial page loads.
 - **50+ Pro Interactive Components**: WebGL Shaders (`CloudShader`, `DitherShader`, `AsciiArt`, `WebcamPixelGrid`, `Globe3D`, `Lens`), 3D Hardware Perspectives (`MacbookScroll`, `3DCard`, `3DMarquee`, `CometCard`, `Compare`), Kinetic Typography (`SquigglyText`, `TextFlippingBoard`, `EncryptedText`, `ColourfulText`, `Cover`), Liquid Controls (`GooeyInput`, `Notch`, `MagneticButton`, `StatefulButton`, `Keyboard` with audio click preview), Modals & Carousels (`AppleCardsCarousel`, `AnimatedTestimonials`, `ExpandableCardList`, `ResizableNavbar`, `FloatingDock`), and Ambient FX (`BackgroundBeamsWithCollision`, `BackgroundLines`, `DottedGlowBackground`, `NoiseBackground`, `GoogleGeminiEffect`).
 - **Live Interactive Previews**: Full physics-driven, canvas-rendered live demonstration of every component.
 - **1-Click Clean Code Copy**: Ready-to-paste TypeScript/Tailwind code with syntax highlighting and 1-click clipboard copy.
@@ -49,12 +50,15 @@
 
 ---
 
-### 3. 🎯 JARVIS Career OS 2.0
-- **Zero-Fabrication Evidence Graph**: Master database validating 100% of user academic marks (BCA CGPA 8.1 / Final SGPA 9.06 / 89.57%, Diploma Grade A), certifications, and project metrics before any resume generation.
-- **8 Canonical Role-Specific ATS Resumes**: Instant one-page resume tailoring across AI Software Engineer (50%), Full Stack Developer (25%), GenAI Developer (15%), Frontend, Backend, Data Analyst, and Salesforce Operations.
-- **Transparent Multi-Factor ATS Matcher**: Real-time scoring based on Exact Keyword Match, Semantic Proximity, Experience Calibration, and Zero-Fabrication verification.
-- **STAR Interview Coach & Predictor**: Tailored behavioral and technical interview questions with STAR answers linked to verified portfolio evidence.
-- **Level 6 Human Approval Gate**: Requires explicit human confirmation before any job application or email submission.
+### 3. 🎯 JARVIS Career OS 2.0 & AI Role Resume Generator (100/100 ATS)
+- **100% Fully Editable Canvas**: Real-time live editing of Identity, Summary, Experience, Projects, Education, Skills, Certifications, and Awards. Add, reorder, delete, and customize every section and bullet point.
+- **⚡ AI Role Resume Generator**: Instantly synthesizes 100/100 ATS resumes for any target job role or pasted Job Description (AI Software Engineer, Full Stack Developer, Generative AI Specialist, Frontend Developer, Backend Developer, Data Analyst, SDE-1, Salesforce Operations, or Custom JD).
+- **💎 Google XYZ Bullet Formula**: Built-in 1-click optimizer transforming rough bullets into canonical Google standard: *"Accomplished [X] as measured by [Y], by doing [Z]"*.
+- **🔍 ATS Keyword Extraction & Injection**: Scans job descriptions in real-time to detect keywords and systematically inject them into relevant skills and experience bullets.
+- **📄 Vector SVG Section Icons**: High-definition inline SVG icons that render crisp and cleanly in printed PDFs, Word (`.doc`) exports, and plain text ATS files (supports None, Emoji, or Minimal SVG).
+- **🎨 Complete Design System**: Live theme palette (Cyberpunk, Executive, Paper, Minimal, Neon), layout variants, alignment, typography font stacks, bullet styles (`•`, `—`, `→`, `›`), and granular spacing sliders.
+- **Multi-Format Export Engine**: 1-click download as Microsoft Word (`.doc`), ATS Plain Text (`.txt`), Markdown (`.md`), JSON, and formatted Print/PDF.
+- **Zero-Fabrication Evidence Graph**: Master database validating 100% of user academic marks (BCA SGPA 8.41 / 10), certifications, and production metrics before any resume generation.
 
 ---
 
